@@ -1,0 +1,11 @@
+---
+title: Libraries
+description: "documented functions as an R package"
+image: /images/components/libraries.png
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+or maybe later Python module
+

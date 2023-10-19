@@ -1,0 +1,11 @@
+---
+title: Server
+description: "server software configuration using Docker"
+image: /images/components/server.png
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+Using Docker.
+

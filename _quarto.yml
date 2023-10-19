@@ -1,0 +1,31 @@
+project:
+  type: book
+
+book:
+  title: "Marine Sensitivities Tech Docs"
+  author: "Ben Best"
+  date: today
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - part: components.qmd
+      chapters:
+        - components/server.qmd
+        - components/workflows.qmd
+        - components/libraries.qmd
+        - components/api.qmd
+        - components/apps.qmd
+        - components/docs.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+
+

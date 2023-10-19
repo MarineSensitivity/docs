@@ -1,0 +1,16 @@
+---
+listing: 
+  id: list-components
+  contents: 
+   - "components/*.qmd"
+  type: grid
+  categories: true
+---
+
+## Components
+
+
+::: {#list-resources}
+:::
+
+

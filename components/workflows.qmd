@@ -1,0 +1,29 @@
+---
+title: Workflows
+description: "scripts for exploring plus production workflows"
+image: /images/components/workflows.png
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+librarian::shelf(
+  dplyr, gh, glue, knitr, tidyjson,
+  quiet = T)
+
+org   <- "MarineSensitivities"
+```
+
+## Get Descriptions
+
+```{r}
+gh(glue("GET /orgs/{org}/repos")) |> 
+  spread_all() |> 
+  as_tibble() |> 
+  select(name, description) |>
+  arrange(name) |> 
+  kable()
+```
+
+

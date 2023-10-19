@@ -1,0 +1,9 @@
+---
+title: Docs
+description: "technical documentation for working across components"
+image: /images/components/docs.png
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
