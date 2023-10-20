@@ -32,7 +32,7 @@
     "href": "components.html",
     "title": "Components",
     "section": "",
-    "text": "API\n\n\napplication programming interface (API) using Plumber\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApps\n\n\ninteractive applications using Shiny\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDocs\n\n\ntechnical documentation for working across components\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLibraries\n\n\ndocumented functions as an R package\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nServer\n\n\nserver software configuration using Docker\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorkflows\n\n\nscripts for exploring plus production workflows\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "API\n\n\n\nAPI\n\n\n\napplication programming interface (API) using Plumber\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApps\n\n\n\nApps\n\n\n\ninteractive applications using Shiny\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDocs\n\n\n\nDocs\n\n\n\ntechnical documentation for working across components\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLibraries\n\n\n\nLibraries\n\n\n\ndocumented functions as an R package\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nServer\n\n\n\nServer\n\n\n\nserver software configuration using Docker\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorkflows\n\n\n\nWorkflows\n\n\n\nscripts for exploring plus production workflows\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "components/workflows.html#get-descriptions",
@@ -53,7 +53,7 @@
     "href": "components/libraries.html",
     "title": "4  Libraries",
     "section": "",
-    "text": "For now R package. Maybe Python module later."
+    "text": "or maybe later Python module"
   },
   {
     "objectID": "components/api.html",

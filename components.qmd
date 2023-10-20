@@ -5,6 +5,7 @@ listing:
    - "components/*.qmd"
   type: grid
   categories: true
+  image-height: 100px
 ---
 
 ## Components

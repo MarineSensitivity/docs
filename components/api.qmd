@@ -2,6 +2,7 @@
 title: API
 description: "application programming interface (API) using Plumber"
 image: /images/components/api.png
+categories: [API]
 output: html_document
 editor_options: 
   chunk_output_type: console

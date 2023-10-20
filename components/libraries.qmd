@@ -2,6 +2,7 @@
 title: Libraries
 description: "documented functions as an R package"
 image: /images/components/libraries.png
+categories: [Libraries]
 output: html_document
 editor_options: 
   chunk_output_type: console

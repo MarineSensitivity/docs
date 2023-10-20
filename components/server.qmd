@@ -2,6 +2,7 @@
 title: Server
 description: "server software configuration using Docker"
 image: /images/components/server.png
+categories: [Server]
 output: html_document
 editor_options: 
   chunk_output_type: console
