@@ -12,6 +12,8 @@ editor_options:
 librarian::shelf(
   dplyr, gh, glue, knitr, tidyjson,
   quiet = T)
+# renv::dependencies(); renv::snapshot()
+library(dplyr); library(gh); library(glue); library(knitr); library(tidyjson)
 
 org   <- "MarineSensitivities"
 ```
