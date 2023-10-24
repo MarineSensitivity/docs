@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Marine Sensitivities Tech Docs",
+    "section": "",
+    "text": "Preface\nThis is a Quarto book.\nTo learn more about Quarto books visit https://quarto.org/docs/books.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "intro.html",
+    "href": "intro.html",
+    "title": "1  Introduction",
+    "section": "",
+    "text": "This is a book created from markdown and executable code.\nSee Knuth (1984) for additional discussion of literate programming.\n\n1 + 1\n\n[1] 2\n\n\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+  },
+  {
+    "objectID": "components.html",
+    "href": "components.html",
+    "title": "Components",
+    "section": "",
+    "text": "API\n\n\n\nAPI\n\n\n\napplication programming interface (API) using Plumber\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApps\n\n\n\nApps\n\n\n\ninteractive applications using Shiny\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDocs\n\n\n\nDocs\n\n\n\ntechnical documentation for working across components\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLibraries\n\n\n\nLibraries\n\n\n\ndocumented functions as an R package\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nServer\n\n\n\nServer\n\n\n\nserver software configuration using Docker\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorkflows\n\n\n\nWorkflows\n\n\n\nscripts for exploring plus production workflows\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "components/server.html",
+    "href": "components/server.html",
+    "title": "2  Server",
+    "section": "",
+    "text": "Using Docker."
+  },
+  {
+    "objectID": "components/workflows.html#get-descriptions",
+    "href": "components/workflows.html#get-descriptions",
+    "title": "3  Workflows",
+    "section": "3.1 Get Descriptions",
+    "text": "3.1 Get Descriptions\n\ngh(glue(\"GET /orgs/{org}/repos\")) |&gt; \n  spread_all() |&gt; \n  as_tibble() |&gt; \n  select(name, description) |&gt;\n  arrange(name) |&gt; \n  kable()\n\n\n\n\n\n\n\n\nname\ndescription\n\n\n\n\nMarineSensitivities.github.io\ndefault website\n\n\napi\napplication programming interface (API) using R Plumber package\n\n\napps\nShiny applications\n\n\ndocs\ndocumentation for BOEM’s offshore environmental sensitivity index products\n\n\nmsens\nR library of functions for mapping marine sensitivities, sponsored by BOEM\n\n\nobjectives\nrepository for issues spanning multiple repositories and doing big picture roadmapping\n\n\nserver\nserver setup for R Shiny apps, RStudio IDE, R Plumber API, PostGIS database, pg_tileserv\n\n\nworkflows\nscripts for testing data analytics and visualization as well as production workflows"
+  },
+  {
+    "objectID": "components/libraries.html",
+    "href": "components/libraries.html",
+    "title": "4  Libraries",
+    "section": "",
+    "text": "or maybe later Python module"
+  },
+  {
+    "objectID": "summary.html",
+    "href": "summary.html",
+    "title": "8  Summary",
+    "section": "",
+    "text": "In summary, this book has no content whatsoever.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+  }
+]
