@@ -5,6 +5,10 @@ book:
   title: "Marine Sensitivities Tech Docs"
   author: "Ben Best"
   date: today
+  repo-url: https://github.com/MarineSensitivities/docs/
+  repo-actions: [edit]
+  downloads: [pdf, docx]
+  sharing: [twitter, facebook]
   chapters:
     - index.qmd
     - intro.qmd
@@ -26,6 +30,10 @@ format:
     theme: cosmo
   pdf:
     documentclass: scrreprt
+  docx:
+    toc: true
+    number-sections: true
+    highlight-style: github
 
 
 
