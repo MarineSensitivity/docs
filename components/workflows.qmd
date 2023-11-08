@@ -15,7 +15,7 @@ librarian::shelf(
 # renv::dependencies(); renv::snapshot()
 library(dplyr); library(gh); library(glue); library(knitr); library(tidyjson)
 
-org   <- "MarineSensitivities"
+org   <- "MarineSensitivity"
 ```
 
 ## Get Descriptions

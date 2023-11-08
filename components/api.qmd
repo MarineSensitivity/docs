@@ -10,19 +10,19 @@ editor_options:
 
 There are actually three APIs, each used for different purposes:
 
-1. [**api**](https://api.marinesensitivities.org)\
+1. [**api**](https://api.marinesensitivity.org)\
   _custom API: using R [plumber](https://www.rplumber.io/)_\
-  source: [MarineSensitivities/api]( https://github.com/MarineSensitivities/api/blob/main/plumber.R)\
-  <img width="300" alt="Screenshot 2023-10-26 at 1 02 05 PM" src="https://github.com/MarineSensitivities/server/assets/2837257/3ff49d8c-8569-4111-9e63-2998960ea192">\
+  source: [MarineSensitivity/api]( https://github.com/MarineSensitivity/api/blob/main/plumber.R)\
+  <img width="300" alt="Screenshot 2023-10-26 at 1 02 05 PM" src="https://github.com/MarineSensitivity/server/assets/2837257/3ff49d8c-8569-4111-9e63-2998960ea192">\
   
-1. [**swagger**](https://swagger.marinesensitivities.org)\
+1. [**swagger**](https://swagger.marinesensitivity.org)\
   _generic database API: using [PostGREST](https://postgrest.org/en/stable/)_\
   source: Postgres database, non-spatial\
-  <img width="300" alt="Screenshot 2023-10-26 at 1 02 05 PM" src="https://github.com/MarineSensitivities/server/assets/2837257/787cc7b6-b1cd-4c1a-b896-4f17777b1d7d">\
+  <img width="300" alt="Screenshot 2023-10-26 at 1 02 05 PM" src="https://github.com/MarineSensitivity/server/assets/2837257/787cc7b6-b1cd-4c1a-b896-4f17777b1d7d">\
 
-1. [**tile**](https://tile.marinesensitivities.org)\
+1. [**tile**](https://tile.marinesensitivity.org)\
   _spatial database API: using [pg_tileserv](https://postgrest.org/en/stable/) for serving vector tiles_\
   source: Postgres database, spatial\
-  <img width="300" alt="Screenshot 2023-10-26 at 1 46 00 PM" src="https://github.com/MarineSensitivities/server/assets/2837257/73398fe2-4b09-4ec9-8b14-2ef25165ecf4">\
+  <img width="300" alt="Screenshot 2023-10-26 at 1 46 00 PM" src="https://github.com/MarineSensitivity/server/assets/2837257/73398fe2-4b09-4ec9-8b14-2ef25165ecf4">\
 
 

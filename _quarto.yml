@@ -5,7 +5,7 @@ book:
   title: "Marine Sensitivities Tech Docs"
   author: "Ben Best"
   date: today
-  repo-url: https://github.com/MarineSensitivities/docs/
+  repo-url: https://github.com/MarineSensitivity/docs/
   repo-actions: [edit]
   downloads: [pdf, docx]
   sharing: [twitter, facebook]
