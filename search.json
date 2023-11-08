@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Marine Sensitivities Tech Docs",
     "section": "",
-    "text": "Preface\nThis is a Quarto book.\nTo learn more about Quarto books visit https://quarto.org/docs/books.\n\n1 + 1\n\n[1] 2"
+    "text": "Preface\nThis is a Quarto book.\nTo learn more about Quarto books visit https://quarto.org/docs/books."
   },
   {
     "objectID": "intro.html",
@@ -21,18 +21,25 @@
     "text": "API\n\n\n\nAPI\n\n\n\napplication programming interface (API) using Plumber\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApps\n\n\n\nApps\n\n\n\ninteractive applications using Shiny\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDocs\n\n\n\nDocs\n\n\n\ntechnical documentation for working across components\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLibraries\n\n\n\nLibraries\n\n\n\ndocumented functions as an R package\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nServer\n\n\n\nServer\n\n\n\nserver software configuration using Docker\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorkflows\n\n\n\nWorkflows\n\n\n\nscripts for exploring plus production workflows\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
-    "objectID": "components/server.html",
-    "href": "components/server.html",
+    "objectID": "components/server.html#setup",
+    "href": "components/server.html#setup",
     "title": "2  Server",
-    "section": "",
-    "text": "Using Docker."
+    "section": "2.1 Setup",
+    "text": "2.1 Setup\nFor instructions on launching an Amazon instance and installing the server software, see Server Setup · MarineSensitivity/server Wiki."
+  },
+  {
+    "objectID": "components/server.html#services",
+    "href": "components/server.html#services",
+    "title": "2  Server",
+    "section": "2.2 Services",
+    "text": "2.2 Services\nThe server is running the following services:\n\n\nrstudio\nintegrated development environment (IDE) to code and debug directly on the server \nMore info..\nshiny\ninteractive applications\ne.g., shiny.marinesensitivity.org/map\n\nMore info..\npgadmin\nPostGreSQL database administration interface\n\nMore info..\napi\ncustom API: using R plumber\n\nMore info..\nswagger\ngeneric database API: using PostGREST\n\nMore info..\ntile\nspatial database API: using pg_tileserv for serving vector tiles\n\nMore info.."
   },
   {
     "objectID": "components/workflows.html#get-descriptions",
     "href": "components/workflows.html#get-descriptions",
     "title": "3  Workflows",
     "section": "3.1 Get Descriptions",
-    "text": "3.1 Get Descriptions\n\ngh(glue(\"GET /orgs/{org}/repos\")) |&gt; \n  spread_all() |&gt; \n  as_tibble() |&gt; \n  select(name, description) |&gt;\n  arrange(name) |&gt; \n  kable()\n\n\n\n\n\n\n\n\nname\ndescription\n\n\n\n\nMarineSensitivities.github.io\ndefault website\n\n\napi\napplication programming interface (API) using R Plumber package\n\n\napps\nShiny applications\n\n\ndocs\ndocumentation for BOEM’s offshore environmental sensitivity index products\n\n\nmsens\nR library of functions for mapping marine sensitivities, sponsored by BOEM\n\n\nobjectives\nrepository for issues spanning multiple repositories and doing big picture roadmapping\n\n\nserver\nserver setup for R Shiny apps, RStudio IDE, R Plumber API, PostGIS database, pg_tileserv\n\n\nworkflows\nscripts for testing data analytics and visualization as well as production workflows"
+    "text": "3.1 Get Descriptions\n\ngh(glue(\"GET /orgs/{org}/repos\")) |&gt; \n  spread_all() |&gt; \n  as_tibble() |&gt; \n  select(name, description) |&gt;\n  arrange(name) |&gt; \n  kable()\n\n\n\n\n\n\n\n\nname\ndescription\n\n\n\n\nMarineSensitivity.github.io\ndefault website\n\n\napi\napplication programming interface (API) using R Plumber package\n\n\napps\nShiny applications\n\n\ndocs\ndocumentation for BOEM’s offshore environmental sensitivity index products\n\n\nmanuscripts\nManuscripts with review of sensitivities by industry and receptors (species, habitats, human uses)\n\n\nmsens\nR library of functions for mapping marine sensitivities, sponsored by BOEM\n\n\nobjectives\nrepository for issues spanning multiple repositories and doing big picture roadmapping\n\n\nserver\nserver setup for R Shiny apps, RStudio IDE, R Plumber API, PostGIS database, pg_tileserv\n\n\nworkflows\nscripts for testing data analytics and visualization as well as production workflows"
   },
   {
     "objectID": "components/libraries.html",
@@ -40,6 +47,13 @@
     "title": "4  Libraries",
     "section": "",
     "text": "or maybe later Python module"
+  },
+  {
+    "objectID": "components/api.html",
+    "href": "components/api.html",
+    "title": "5  API",
+    "section": "",
+    "text": "There are actually three APIs, each used for different purposes:\n\napi\ncustom API: using R plumber\nsource: MarineSensitivity/api\n\n\nswagger\ngeneric database API: using PostGREST\nsource: Postgres database, non-spatial\n\n\ntile\nspatial database API: using pg_tileserv for serving vector tiles\nsource: Postgres database, spatial"
   },
   {
     "objectID": "summary.html",

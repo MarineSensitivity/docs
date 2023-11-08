@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.361">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,6 +91,43 @@ ul.task-list li input[type="checkbox"] {
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Marine Sensitivities Tech Docs</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/MarineSensitivity/docs/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="../Marine-Sensitivities-Tech-Docs.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="../Marine-Sensitivities-Tech-Docs.docx">
+              <i class="bi bi-bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -202,6 +239,24 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
+<p>There are actually three APIs, each used for different purposes:</p>
+<ol type="1">
+<li><p><a href="https://api.marinesensitivity.org"><strong>api</strong></a><br>
+<em>custom API: using R <a href="https://www.rplumber.io/">plumber</a></em><br>
+source: <a href="https://github.com/MarineSensitivity/api/blob/main/plumber.R">MarineSensitivity/api</a><br>
+<img width="300" alt="Screenshot 2023-10-26 at 1 02 05 PM" src="https://github.com/MarineSensitivity/server/assets/2837257/3ff49d8c-8569-4111-9e63-2998960ea192"><br>
+</p></li>
+<li><p><a href="https://swagger.marinesensitivity.org"><strong>swagger</strong></a><br>
+<em>generic database API: using <a href="https://postgrest.org/en/stable/">PostGREST</a></em><br>
+source: Postgres database, non-spatial<br>
+<img width="300" alt="Screenshot 2023-10-26 at 1 02 05 PM" src="https://github.com/MarineSensitivity/server/assets/2837257/787cc7b6-b1cd-4c1a-b896-4f17777b1d7d"><br>
+</p></li>
+<li><p><a href="https://tile.marinesensitivity.org"><strong>tile</strong></a><br>
+<em>spatial database API: using <a href="https://postgrest.org/en/stable/">pg_tileserv</a> for serving vector tiles</em><br>
+source: Postgres database, spatial<br>
+<img width="300" alt="Screenshot 2023-10-26 at 1 46 00 PM" src="https://github.com/MarineSensitivity/server/assets/2837257/73398fe2-4b09-4ec9-8b14-2ef25165ecf4"><br>
+</p></li>
+</ol>
 
 
 
@@ -455,4 +510,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-</body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/MarineSensitivity/docs/edit/main/components/api.qmd" class="toc-action">Edit this page</a></p></div></div></div></div></footer></body></html>
