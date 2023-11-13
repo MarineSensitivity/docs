@@ -2,7 +2,7 @@ project:
   type: book
 
 book:
-  title: "Marine Sensitivities Tech Docs"
+  title: "Marine Sensitivity Tech Docs"
   author: "Ben Best"
   date: today
   repo-url: https://github.com/MarineSensitivity/docs/
