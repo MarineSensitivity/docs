@@ -18,4 +18,4 @@ $$
 cell_{S} = \sum_{spp}{p * w}
 $$ {#eq-cells-sens}
 
-The raster of sensitivity ($S$) contains cells representing a sum across species of species presence ($p$) multiplied by the sensitivity weight ($w$) (@eq-cells-sens).
+The raster of sensitivity ($S$) contains cells representing a sum across species ($spp$) of presence ($p$) multiplied by the sensitivity weight ($w$) (@eq-cells-sens).
