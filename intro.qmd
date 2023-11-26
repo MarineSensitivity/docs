@@ -1,9 +1,21 @@
 # Introduction
 
-This is a book created from markdown and executable code.
-
-See @knuth84 for additional discussion of literate programming.
-
-```{r}
-1 + 1
+```{mermaid}
+%%| label: fig-process
+%%| fig-cap: "Diagram of data preparation for generating marine species sensitivities."
+%%| file: diagrams/process.mmd
 ```
+
+![Overview of process.](figures/gdraw_spp-sens_rast-tbl-aoi.svg){#fig-spp-sens_rast-tbl-aoi}
+
+```{=html}
+<!--
+Edit Google Drawing:
+* [gdraw_spp-sens_rast-tbl-aoi - (https://docs.google.com/drawings/d/16vr4BpARl9qWMsXeNkasorGwfMM69662OywMN2AsLT4/edit)
+-->
+```
+$$
+cell_{S} = \sum_{spp}{p * w}
+$$ {#eq-cells-sens}
+
+The raster of sensitivity ($S$) contains cells representing a sum across species of species presence ($p$) multiplied by the sensitivity weight ($w$) (@eq-cells-sens).

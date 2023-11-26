@@ -1,7 +1,7 @@
 ---
 title: Apps
 description: "interactive applications using Shiny"
-image: /images/components/apps.png
+image: /figures/components/apps.png
 categories: [Apps]
 output: html_document
 editor_options: 

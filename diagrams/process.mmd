@@ -1,0 +1,34 @@
+flowchart LR
+
+  %% nodes
+  sm("spp maps"):::in
+  st[[spp tbl]]:::in
+  ms[("MarineSpecies.org")]:::in
+  mt[/match taxa id/]:::fxn
+  st2("spp tbl (2)"):::out
+  tx[/transform/]:::fxn
+  cg("common raster"):::in
+  sr("spp rasters"):::out
+
+  %% edges
+  st  --> mt
+  ms  --> mt
+  mt  --> st2
+  sm  --> tx
+  cg  --> tx
+  tx  --> sr
+
+  %% Legend
+  in(input):::in
+  fxn[/process/]:::fxn
+  out(output):::out
+  subgraph Legend
+    in
+    fxn
+    out
+  end
+
+  %% styles
+  classDef in  fill:lightblue
+  classDef out fill:lightgreen
+  classDef fxn fill:yellow

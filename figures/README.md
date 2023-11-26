@@ -9,7 +9,7 @@
 
 
 ```bash
-dir_png=/Users/bbest/Github/MarineSensitivity/docs/images/components
+dir_png=/Users/bbest/Github/MarineSensitivity/docs/figures/components
 dir_svg=$dir_png/_google-material-icons_svg
 # assume square height & width for input svg
 svg_hw=100
