@@ -11,7 +11,7 @@
     "href": "intro.html",
     "title": "1  Introduction",
     "section": "",
-    "text": "This is a book created from markdown and executable code.\nSee Knuth (1984) for additional discussion of literate programming.\n\n1 + 1\n\n[1] 2\n\n\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+    "text": "flowchart LR\n\n  %% nodes\n  sm(\"spp maps\"):::in\n  st[[spp tbl]]:::in\n  ms[(\"MarineSpecies.org\")]:::in\n  mt[/match/]:::fxn\n  st2[[\"spp tbl &lt;br&gt;(+aphia_id)\"]]:::out\n  tx[/transform/]:::fxn\n  cg(\"common raster\"):::in\n  sr(\"spp rasters\"):::out\n\n  %% edges\n  st  --&gt; mt\n  ms  --&gt; mt\n  mt  --&gt; st2\n  sm  --&gt; tx\n  cg  --&gt; tx\n  tx  --&gt; sr\n\n  %% Legend\n  in(input):::in\n  fxn[/process/]:::fxn\n  out(output):::out\n  subgraph Legend\n    in\n    fxn\n    out\n  end\n\n  %% styles\n  classDef in  fill:lightblue\n  classDef out fill:lightgreen\n  classDef fxn fill:yellow\n\n\nFigure 1.1: Diagram of data preparation for generating marine species sensitivities.\n\n\n\n\n\n\n\nFigure 1.2: Overview of process.\n\n\n\n\\[\ncell_{S} = \\sum_{spp}{p * w}\n\\tag{1.1}\\]\nThe raster of sensitivity (\\(S\\)) contains cells representing a sum across species (\\(spp\\)) of presence (\\(p\\)) multiplied by the sensitivity weight (\\(w\\)) (Equation 1.1)."
   },
   {
     "objectID": "components.html",
@@ -61,12 +61,5 @@
     "title": "8  Summary",
     "section": "",
     "text": "In summary, this book has no content whatsoever.\n\n1 + 1\n\n[1] 2"
-  },
-  {
-    "objectID": "references.html",
-    "href": "references.html",
-    "title": "References",
-    "section": "",
-    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
   }
 ]
