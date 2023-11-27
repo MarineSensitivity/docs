@@ -16,6 +16,8 @@ jobs:
 
       # - name: Install curl headers for curl R package source install
       #   run: sudo apt-get install libcurl4-openssl-dev
+      - name: Install librsvg (svg for pdf)
+        run: brew install librsvg
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
