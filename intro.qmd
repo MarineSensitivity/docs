@@ -1,4 +1,14 @@
-# Introduction
+---
+title: Introduction
+engine: knitr # force knitr engine for inline-only R code
+---
+
+
+$$
+V = f(E, S, A)
+$$
+
+The term `r glossary("vulnerability")` ($V$) is a function of `r glossary("exposure")` ($E$), `r glossary("sensitivity")` ($S$) and `r glossary("adaptive capacity")` ($A$).
 
 ```{mermaid}
 %%| label: fig-process
@@ -8,12 +18,11 @@
 
 ![Overview of process.](figures/gdraw_spp-sens_rast-tbl-aoi.svg){#fig-spp-sens_rast-tbl-aoi}
 
-```{=html}
 <!--
-Edit Google Drawing:
+Edit Google Drawing:d
 * [gdraw_spp-sens_rast-tbl-aoi - (https://docs.google.com/drawings/d/16vr4BpARl9qWMsXeNkasorGwfMM69662OywMN2AsLT4/edit)
 -->
-```
+
 $$
 cell_{S} = \sum_{spp}{p * w}
 $$ {#eq-cells-sens}

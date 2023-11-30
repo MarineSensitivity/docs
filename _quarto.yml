@@ -5,13 +5,24 @@ project:
   - "/.nojekyll"
 
 book:
-  title: "Marine Sensitivity Tech Docs"
+  title: "Marine Sensitivity"
+  subtitle: "Marine Sensitivity Documentation"
   author: "Ben Best"
   date: today
+  date-format: "YYYY-MM-DD"
   repo-url: https://github.com/MarineSensitivity/docs/
   repo-actions: [edit]
   downloads: [pdf, docx]
   sharing: [twitter, facebook]
+  # google-analytics: "G-V3HZN14Z8G" # TODO: add Google Analytics
+  search: true
+  page-navigation: true
+  page-footer:
+    left: |
+      © <a href="https://bbest.github.io/cv/"  target="_blank">Ben Best</a>,
+      <a href="https://www.boem.gov/environment/environmental-studies/environmental-studies-information"  target="_blank">BOEM-ESP</a>
+    right: |
+      Built with <a href="https://quarto.org/" target="_blank">Quarto</a>
   chapters:
     - index.qmd
     - intro.qmd
@@ -25,12 +36,15 @@ book:
         - components/docs.qmd
     - summary.qmd
     - references.qmd
+  appendices:
+    - glossary.qmd
 
 bibliography: references.bib
 
 format:
   html:
     theme: cosmo
+    css: glossary/glossary.css
   pdf:
     documentclass: scrreprt
   docx:
