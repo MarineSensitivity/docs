@@ -3,7 +3,6 @@ title: Introduction
 engine: knitr # force knitr engine for inline-only R code
 ---
 
-
 $$
 V = f(E, S, A)
 $$
@@ -18,10 +17,7 @@ The term `r glossary("vulnerability")` ($V$) is a function of `r glossary("expos
 
 ![Overview of process.](figures/gdraw_spp-sens_rast-tbl-aoi.svg){#fig-spp-sens_rast-tbl-aoi}
 
-<!--
-Edit Google Drawing:d
-* [gdraw_spp-sens_rast-tbl-aoi - (https://docs.google.com/drawings/d/16vr4BpARl9qWMsXeNkasorGwfMM69662OywMN2AsLT4/edit)
--->
+<!--# edit drawing: https://docs.google.com/drawings/d/16vr4BpARl9qWMsXeNkasorGwfMM69662OywMN2AsLT4/edit -->
 
 $$
 cell_{S} = \sum_{spp}{p * w}
