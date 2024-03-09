@@ -42,18 +42,18 @@ Explanation of categories:
 - docs: external reference for general and technical users
 -->
 
-- [**rstudio**](https://rstudio.marinesensitivity.org)\
+- [**RStudio**](https://rstudio.marinesensitivity.org)\
   _integrated development environment (IDE) to code and debug directly on the server_
   <img width="300" src="https://github.com/MarineSensitivity/server/assets/2837257/cfd04553-15a7-4cd9-9206-32bec377750a">\
   [More info..](https://posit.co/products/open-source/rstudio-server/)
 
-- **shiny**\
+- [**Shiny**](https://shiny.marinesensitivity.org)\
   _interactive applications_\
   e.g., [**shiny**.marinesensitivity.org/**map**](https://shiny.marinesensitivity.org/map)\
   <img width="300" alt="Screenshot 2023-10-26 at 12 35 53 PM" src="https://github.com/MarineSensitivity/server/assets/2837257/36052617-275d-4d32-a1b5-f2db3a17c13a">\
   [More info..](https://shiny.posit.co/)
   
-- [**pgadmin**](https://pgadmin.marinesensitivity.org)\
+- [**PGadmin**](https://pgadmin.marinesensitivity.org)\
   _PostGreSQL database administration interface_\
   <img width="300" alt="Screenshot 2023-10-26 at 12 42 46 PM" src="https://github.com/MarineSensitivity/server/assets/2837257/4439a844-65c9-4ea2-9685-8ba6d4b2cd29">\
   [More info..](https://www.pgadmin.org/)

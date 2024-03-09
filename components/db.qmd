@@ -1,0 +1,39 @@
+---
+title: Database
+description: "PostgreSQL database extended spatially with PostGIS"
+image: /figures/components/db.png
+categories: [Database]
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+---
+title: "Database"
+---
+
+## Table and Column Naming Conventions
+
+- Table names are plural and use all lower case.
+- Unique identifiers are suffixed with:
+  - `*_id` for unique integer keys;
+  - `*_key` for unique string keys;
+  - `*_seq` for auto-incrementing sequence integer keys.
+- Column names are singular and use snake_case.
+- Foreign keys are named with the singular form of the table they reference, followed by _id.
+- Primary keys are named id.
+
+## Species Distribution Models
+
+See entity relationship diagram (ERD) for the species distribution models (SDM) database tables in this workflow:
+
+* [Create SDM Tables](https://marinesensitivity.org/workflows/create_sdm-tables.html)
+
+And example of ingesting SDM outputs into the database in this workflow:
+
+* [Ingest GoMex cetacean & sea turtle SDMs](https://marinesensitivity.org/workflows/ingest_sdm-gm.html)
+
+
+
+
+

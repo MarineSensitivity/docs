@@ -28,12 +28,13 @@ book:
     - intro.qmd
     - part: components.qmd
       chapters:
-        - components/server.qmd
-        - components/workflows.qmd
-        - components/libraries.qmd
         - components/api.qmd
         - components/apps.qmd
+        - components/db.qmd
         - components/docs.qmd
+        - components/libraries.qmd
+        - components/server.qmd
+        - components/workflows.qmd
     - summary.qmd
     - references.qmd
   appendices:
