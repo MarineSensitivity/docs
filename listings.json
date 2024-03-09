@@ -4,6 +4,7 @@
     "items": [
       "/components/api.html",
       "/components/apps.html",
+      "/components/db.html",
       "/components/docs.html",
       "/components/libraries.html",
       "/components/server.html",
