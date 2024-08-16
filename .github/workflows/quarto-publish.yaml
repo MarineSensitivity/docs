@@ -21,14 +21,17 @@ jobs:
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
-        with:
-          tinytex: true  # for pdf
+        # with:
+          # tinytex: true  # for pdf
       # - name: Install TinyTeX for pdf
       #   run: |
       #     quarto install tool tinytex --log-level warning
 
-      - name: Install headless chromium for static image generation
-        run: quarto tools install chromium
+      - name: Install TinyTex for pdf
+        run: quarto install tinytex
+
+      - name: Install headless chromium (mmd -> img)
+        run: quarto install chromium
 
       - name: Install R
         uses: r-lib/actions/setup-r@v2
