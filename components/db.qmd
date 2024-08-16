@@ -8,10 +8,6 @@ editor_options:
   chunk_output_type: console
 ---
 
----
-title: "Database"
----
-
 ## Table and Column Naming Conventions
 
 - Table names are plural and use all lower case.
