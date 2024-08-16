@@ -1,0 +1,16 @@
+sequenceDiagram
+  autonumber
+  Client        ->> ShinyServer: request Shiny map app with a vector layer
+  ShinyServer   ->> Client: return JavaScript (JS) with URL specification for vector tiles
+  loop for every tile in the current view (based on zoom level and bounding box)
+    Client      ->> VarnishCache: request specific vector tile ({z}/{x}/{y})
+    alt cache hit
+      VarnishCache ->> Client: return vector tile
+    else cache miss
+      VarnishCache ->> pg_tileserv:  request specific vector tile ({z}/{x}/{y})
+      pg_tileserv  ->> pgDB:         run query to create vector tile in PostGIS database
+      pgDB         ->> pg_tileserv:  return vector tile in compressed Protobuf format (*.pbf)
+      pg_tileserv  ->> VarnishCache: store vector tile
+      VarnishCache ->> Client:       return vector tile
+    end
+  end

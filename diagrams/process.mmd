@@ -1,22 +1,36 @@
 flowchart LR
 
   %% nodes
-  sm("spp maps"):::in
-  st[[spp tbl]]:::in
-  ms[("MarineSpecies.org")]:::in
-  mt[/match/]:::fxn
-  st2[["spp tbl <br>(+aphia_id)"]]:::out
-  tx[/transform/]:::fxn
-  cg("common raster"):::in
-  sr("spp rasters"):::out
+  ta[("<a href='https://docs.ropensci.org/taxize/articles/datasources.html'>taxonomic<br>authority</a>")]:::in
+  sd("species<br><b>distributions</b><br>(vector|raster)"):::in
+  sdm("species<br><b>distributions</b><br>(+taxaid)"):::out
+  sdmt("species<br><b>distributions</b><br>(aligned rasters)"):::out
+  sdmte("species<br><b>vulnerability</b><br>raster"):::out
+  ct("<b>topology</b><br>to share<br>"):::in
+  st[["species<br><b>sensitivities</b><br>(tables)"]]:::in
+  stm[["species<br><b>sensitivities</b><br>(+ taxaid)"]]:::out
+  stmc[["species<br><b>sensitivities</b><br>(equation ready)"]]:::out
+  eq[["<b>equation</b><br>of sensitivities per species"]]:::in
+  m[/"<b>match</b><br>taxa"/]:::fxn
+  t[/"<b>transform</b><br>to rasters"/]:::fxn
+  c[/"<b>clean</b><br>tables"/]:::fxn
+  e[/"<b>evaluate</b><br>rescale(&sum;eq<sub>sp</sub>)"/]:::fxn
 
   %% edges
-  st  --> mt
-  ms  --> mt
-  mt  --> st2
-  sm  --> tx
-  cg  --> tx
-  tx  --> sr
+  ta   --> m
+  sd   --> m
+  st   --> m
+  m    --> sdm
+  m    --> stm
+  sdm  --> t
+  ct   --> t
+  t    --> sdmt
+  stm  --> c
+  c    --> stmc
+  eq   --> e
+  sdmt --> e
+  stmc --> e
+  e    --> sdmte
 
   %% Legend
   in(input):::in

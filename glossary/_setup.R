@@ -3,8 +3,8 @@
 # initiated by .Rprofile:
 #   source("glossary/_setup.R") # glossary setup
 
-if (!"glossary" %in% rownames(installed.packages()))
-  install.packages(
+if (!"glossary" %in% rownames(utils::installed.packages()))
+  utils::install.packages(
     "glossary",
     repos = c(
       "https://debruine.r-universe.dev",

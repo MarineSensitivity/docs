@@ -12,8 +12,11 @@ editor_options:
 librarian::shelf(
   dplyr, gh, glue, knitr, tidyjson,
   quiet = T)
-# renv::dependencies(); renv::snapshot()
-library(dplyr); library(gh); library(glue); library(knitr); library(tidyjson)
+# OLD: renv
+#   # renv::dependencies(); renv::snapshot()
+#   library(dplyr); library(gh); library(glue); library(knitr); library(tidyjson)
+# NEW: r-lib/actions/setup-r-dependencies@v2
+#   sapply(c("dplyr","gh","glue","knitr","tidyjson"), usethis::use_package)
 
 org   <- "MarineSensitivity"
 ```
