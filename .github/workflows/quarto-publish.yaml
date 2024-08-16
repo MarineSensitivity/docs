@@ -27,15 +27,19 @@ jobs:
       #   run: |
       #     quarto install tool tinytex --log-level warning
 
+      - name: Install headless chromium for static image generation
+        run: quarto tools install chromium
+
       - name: Install R
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: '4.4.0'
 
-      - name: Install R Dependencies using DESCRIPTION file
+      - name: Install R Dependencies
         # uses: r-lib/actions/setup-renv@v2
         # with:
         #   cache-version: 1
+        # NEW: simpler using DESCRIPTION file
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           cache-version: 2
