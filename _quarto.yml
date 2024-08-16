@@ -46,8 +46,8 @@ format:
   html:
     theme: cosmo
     css: glossary/glossary.css
-  pdf:
-    documentclass: scrreprt
+  # pdf:
+  #   documentclass: scrreprt
   docx:
     toc: true
     number-sections: true
