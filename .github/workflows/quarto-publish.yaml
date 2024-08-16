@@ -24,11 +24,10 @@ jobs:
         # with:
           # tinytex: true  # for pdf
       # - name: Install TinyTeX for pdf
-      #   run: |
+      #   run: quarto install tinytex
       #     quarto install tool tinytex --log-level warning
-
-      # - name: Install TinyTex for pdf
-      #   run: quarto tools install tinytex
+      #     quarto tools install tinytex
+      #   https://quarto.org/docs/output-formats/pdf-engine.html
 
       - name: Install headless chromium (mmd -> img)
         run: quarto install chromium
