@@ -28,7 +28,7 @@ jobs:
       #     quarto install tool tinytex --log-level warning
 
       - name: Install TinyTex for pdf
-        run: quarto install tinytex
+        run: quarto tools install tinytex
 
       - name: Install headless chromium (mmd -> img)
         run: quarto install chromium
