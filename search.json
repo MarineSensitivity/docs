@@ -43,7 +43,7 @@
   {
     "objectID": "components/db.html",
     "href": "components/db.html",
-    "title": "Database",
+    "title": "4  Database",
     "section": "",
     "text": "4.1 Table and Column Naming Conventions",
     "crumbs": [
@@ -54,7 +54,7 @@
   {
     "objectID": "components/db.html#table-and-column-naming-conventions",
     "href": "components/db.html#table-and-column-naming-conventions",
-    "title": "Database",
+    "title": "4  Database",
     "section": "",
     "text": "Table names are plural and use all lower case.\nUnique identifiers are suffixed with:\n\n*_id for unique integer keys;\n*_key for unique string keys;\n*_seq for auto-incrementing sequence integer keys.\n\nColumn names are singular and use snake_case.\nForeign keys are named with the singular form of the table they reference, followed by _id.\nPrimary keys are named id.",
     "crumbs": [
@@ -65,7 +65,7 @@
   {
     "objectID": "components/db.html#species-distribution-models",
     "href": "components/db.html#species-distribution-models",
-    "title": "Database",
+    "title": "4  Database",
     "section": "4.2 Species Distribution Models",
     "text": "4.2 Species Distribution Models\nSee entity relationship diagram (ERD) for the species distribution models (SDM) database tables in this workflow:\n\nCreate SDM Tables\n\nAnd example of ingesting SDM outputs into the database in this workflow:\n\nIngest GoMex cetacean & sea turtle SDMs",
     "crumbs": [
