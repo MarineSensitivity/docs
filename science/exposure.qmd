@@ -2,3 +2,5 @@
 title: "Exposure"
 editor: visual
 ---
+
+Cumulative exposure (@fig-cum-effects) is important for understanding impacts to a population.
