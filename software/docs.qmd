@@ -1,0 +1,25 @@
+---
+title: Docs
+description: "technical documentation"
+image: /figures/components/docs.png
+categories: [Docs]
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+Technical documentation is principally in this book:
+
+- [marinesensitivity.org/docs](https://marinesensitivity.org/workflows/)\
+  the main documentation site
+
+- [github.com/MarineSensitivity/docs](https://github.com/MarineSensitivity/workflows)\
+  source code in the Github repository
+
+But there are also some other self-documenting resources:
+
+- [marinesensitivity.org/`msens`](https://marinesensitivity.org/faq/)\
+  documented R functions
+
+
+

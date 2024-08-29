@@ -1,6 +1,6 @@
 ---
-title: API
-description: "application programming interface (API) using Plumber"
+title: APIs
+description: "application programming interfaces (APIs)"
 image: /figures/components/api.png
 categories: [API]
 output: html_document
@@ -8,7 +8,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-There are actually three APIs, each used for different purposes:
+There three APIs, each used for different purposes:
 
 1. [**api**](https://api.marinesensitivity.org)\
   _custom API: using R [plumber](https://www.rplumber.io/)_\

@@ -6,6 +6,15 @@ categories: [Apps]
 output: html_document
 editor_options: 
   chunk_output_type: console
+listing: 
+  id: list-apps
+  contents: 
+   - "../apps/*.qmd"
+  type: grid
+  categories: true
+  image-height: 100px
 ---
 
+::: {#list-apps}
+:::
 

@@ -1,0 +1,69 @@
+---
+listing: 
+  id: list-components
+  contents: 
+   - "/software/*.qmd"
+  type: grid
+  categories: true
+  image-height: 100px
+---
+
+## Software
+
+### Interactive Applications
+
+We have developed a series of interactive applications to explore the data and results of the MS project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the [`shiny`](https://shiny.posit.co) package in R, which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.
+
+### Overcoming Challenges with Large Spatial Data
+
+The MS project incorporates many large spatial datasets that are problematic to render in a typical interactive application. For instance, the most common interactive mapping R package `leaflet` has a 4MB limitation for displaying rasters (see "Large Raster Warning" in [Raster Images • leaflet](https://rstudio.github.io/leaflet/articles/raster.html#large-raster-warning)). Vectors (i.e., points, lines and polygons) get smoothed when containing many vertices, but contiguity gets lost between polygons and rendering degrades to non-usable depending on the internet speed of the user's connection.
+
+To work around these limitations, we have implemented "cloud native" web services and formats (see also [Cloud-Optimized Geospatial Formats Guide](https://guide.cloudnativegeo.org/)). Our implementations effectively reduce the size of any given spatial object based on the zoom level of the user's browser. For rasters, we use cloud-optimized GeoTIFFs (COGs) and for vectors, we use Mapbox Vector Tiles (MVT). These formats are designed to be fast and efficient for web mapping applications, and they allow us to display large spatial datasets in an interactive web application without sacrificing performance or usability. Let's take a closer look at implementation of each.
+
+#### Raster: Cloud-Optimized GeoTIFFs (**COGs**) and **Titiler**
+
+Historically, to read a raster, such as a GeoTIFF, from the web, the client software would have to read the entire file before rendering. Cloud Optimized GeoTIFFs ([COGs](https://www.cogeo.org)) take advantage of [HTTP GET range requests](https://tools.ietf.org/html/rfc7233) to read only the part of the file needed for rendering. So a COG stores quadtree simplifications of the original raster at multiple zoom levels and metadata for accessing their byte ranges in the file in the metadata header. This allows the client software to request only the parts of the file needed for rendering, which can greatly reduce the amount of data transferred and speed up rendering. This is for accessing the raw data in pixel values, e.g., for a raster of species distribution then the abundance of a species in each cell. We would want to also apply a color ramp to visualize the data. The open-source ([TiTiler](https://developmentseed.org/titiler/) software is a lightweight web service that serves up these color ramped tiles on the fly. So COGs can be stored on a simple file server (like Amazon S3 or Azure Blob Storage) and served up as interactive web maps with TiTiler as an intermediary between the COG files and the client accessing the interactive Shiny mapping app (@fig-raster).
+
+```{mermaid}
+%%| label: fig-raster
+%%| fig-cap: "Sequence diagram implementing large raster interactive display using Cloud-Optimized GeoTIFFs (COGs) and Titiler in a Shiny mapping app."
+%%| file: diagrams/raster.mmd
+```
+
+#### Vector: Mapbox Vector Tiles (**MVTs**) and **pg_tileserv**
+
+Although "cloud native" vector formats exist for simple file storage (see [Cloud-Optimized Geospatial Formats Guide](https://guide.cloudnativegeo.org/)), none of these allow for flexible filtering and manipulation. Instead, we use PostgreSQL with the spatial extension ([PostGIS](https://postgis.net)) to store the vector data and serve it as Mapbox Vector Tiles ([MVTs](https://docs.mapbox.com/vector-tiles/specification/)) using the [**pg_tileserv**](https://github.com/CrunchyData/pg_tileserv) web service written in the language Go, which is very fast. This means that we don't have to pre-render the MVTs (such as you might do with [tippecanoe](https://github.com/mapbox/tippecanoe)), but can instead serve the raw vector data directly from the database and let **pg_tileserv** handle the rendering on the fly. Filters (in the form of [CQL](https://github.com/CrunchyData/pg_tileserv/blob/master/hugo/content/usage/cql.md)) can be applied to the request. Symbology is rendered client-side via JavaScript, which allows for interactive hover and click events on vector objects (e.g., BOEM aliquot). Some speed-up is enabled by implementing a [Varnish](https://varnish-cache.org) cache service in between. We can even write our own database functions for customized rendering, such as H3 hexagonal summaries. This allows us to serve vector data as web maps with minimal configuration and setup, and it provides a fast and efficient way to display large vector datasets in an interactive web application (@fig-vector). 
+
+```{mermaid}
+%%| label: fig-vector
+%%| fig-cap: "Sequence diagram implementing large vector interactive display using Mapbox Vector Tiles (MVTs) and pg_tileserv in a Shiny mapping app."
+%%| file: diagrams/vector.mmd
+```
+
+### Github Repositories
+
+```{r}
+librarian::shelf(
+  dplyr, gh, glue, knitr, tidyjson,
+  quiet = T)
+# r-lib/actions/setup-r-dependencies@v2
+#   sapply(c("dplyr","gh","glue","knitr","tidyjson"), usethis::use_package)
+
+org   <- "MarineSensitivity"
+gh(glue("GET /orgs/{org}/repos")) |> 
+  spread_all() |> 
+  as_tibble() |> 
+  arrange(tolower(name)) |> 
+  mutate(
+    # repo = glue("<a href='{html_url}' target='_blank'>{name}</a>"))
+    repo = glue("[{name}]({html_url})")) |> 
+  select(repo, description) |>
+  kable()
+```
+
+### Software Components
+
+::: {#list-components}
+:::
+
+

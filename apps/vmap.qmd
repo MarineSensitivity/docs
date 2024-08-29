@@ -1,0 +1,32 @@
+---
+description: "Combine species distribution models (raster) and vulnerability metrics (tables) to identify areas of high conservation concern."
+image: "/figures/apps/vmap.png"
+url: "https://shiny.marinesensitivity.org/vmap/"
+url-code: "https://github.com/MarineSensitivity/apps/tree/main/vmap"
+categories: 
+   - "distributions"
+   - "vulnerabilities"
+   - "raster"
+editor: source   
+---
+
+# Vulnerability Mapper {.unnumbered}
+
+```{r}
+#| echo: false
+#| warning: false
+
+library(rmarkdown)
+descr    <- metadata[["description"]]
+img      <- metadata[["image"]]
+url_web  <- metadata[["url"]]
+url_code <- metadata[["url-code"]]
+```
+
+`r descr`
+
+-   [{{< fa globe >}} website](`r url_web`)
+
+-   [{{< fa brands github >}} `code`](`r url_code`)
+
+![](`r img`)

@@ -1,0 +1,31 @@
+---
+description: "Show species distributions with high resolution vectors (as vector tiles)."
+image: "/figures/apps/sdm.png"
+url: "https://shiny.marinesensitivity.org/sdm/"
+url-code: "https://github.com/MarineSensitivity/apps/tree/main/sdm"
+categories: 
+   - "distributions"
+   - "vector"
+editor: source   
+---
+
+# Distributions, Vector {.unnumbered}
+
+```{r}
+#| echo: false
+#| warning: false
+
+library(rmarkdown)
+descr    <- metadata[["description"]]
+img      <- metadata[["image"]]
+url_web  <- metadata[["url"]]
+url_code <- metadata[["url-code"]]
+```
+
+`r descr`
+
+-   [{{< fa globe >}} website](`r url_web`)
+
+-   [{{< fa brands github >}} `code`](`r url_code`)
+
+![](`r img`)

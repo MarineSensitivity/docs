@@ -1,0 +1,15 @@
+{
+  "hash": "9d6540b8cfc7cdc57947ac7813662c3f",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: Workflows\ndescription: \"scripts for exploring plus production workflows\"\nimage: /figures/components/workflows.png\ncategories: [Workflows]\neditor_options: \n  chunk_output_type: console\n---\n\n::: {.cell}\n\n:::\n\n\n### Github Repositories\n\n\n::: {.cell}\n::: {.cell-output-display}\n\n\n|repo                        |description                                                                                        |\n|:---------------------------|:--------------------------------------------------------------------------------------------------|\n|[MarineSensitivity.github.io](https://github.com/MarineSensitivity/MarineSensitivity.github.io)|default website                                                                                    |\n|[api](https://github.com/MarineSensitivity/api)|application programming interface (API) using R Plumber package                                    |\n|[apps](https://github.com/MarineSensitivity/apps)|Shiny applications                                                                                 |\n|[docs](https://github.com/MarineSensitivity/docs)|documentation for BOEM's offshore environmental sensitivity index products                         |\n|[manuscripts](https://github.com/MarineSensitivity/manuscripts)|Manuscripts with review of sensitivities by industry and receptors (species, habitats, human uses) |\n|[msens](https://github.com/MarineSensitivity/msens)|R library of functions for mapping marine sensitivities, sponsored by BOEM                         |\n|[objectives](https://github.com/MarineSensitivity/objectives)|repository for issues spanning multiple repositories and doing big picture roadmapping             |\n|[server](https://github.com/MarineSensitivity/server)|server setup for R Shiny apps, RStudio IDE, R Plumber API, PostGIS database, pg_tileserv           |\n|[workflows](https://github.com/MarineSensitivity/workflows)|scripts for testing data analytics and visualization as well as production workflows               |\n\n\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

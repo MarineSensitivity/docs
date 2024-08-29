@@ -1,0 +1,18 @@
+---
+title: Libraries
+description: "documented functions as an R package"
+image: /figures/components/libraries.png
+categories: [Libraries]
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+By creating an R package, we can document functions and make them easily available to other users. 
+
+- [`msens`](https://github.com/MarineSensitivity/msens)\
+  R library of functions for mapping marine sensitivities, sponsored by BOEM
+
+Functions can _**read**_ data from the one [APIs](api.qmd) (which communicate with the [Database](db.qmd)), _**analyze**_ the data, _**visualize**_ the results and store some smaller _**data**_.
+
+

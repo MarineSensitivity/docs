@@ -1,0 +1,17 @@
+---
+title: Workflows
+description: "scripts for exploring plus production workflows"
+image: /figures/components/workflows.png
+categories: [Workflows]
+editor_options: 
+  chunk_output_type: console
+---
+
+Workflows are scripts for testing data analytics and visualization as well as production workflows for ingesting data. See:
+
+- [marinesensitivity.org/workflows](https://marinesensitivity.org/workflows/)\
+  rendered html pages from the scripts (as Quarto notebooks) 
+
+- [github.com/MarineSensitivity/workflows](https://github.com/MarineSensitivity/workflows)\
+  source code in the Github repository
+

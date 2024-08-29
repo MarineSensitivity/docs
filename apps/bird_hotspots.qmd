@@ -1,0 +1,31 @@
+---
+description: "Bird hotspots application showing hotspot probability for species present given drawn Area of Interest."
+image: "/figures/apps/bird_hotspots.png"
+url: "https://shiny.marinesensitivity.org/bird_hotspots/"
+url-code: "https://github.com/MarineSensitivity/apps/tree/main/bird_hotspots"
+categories: 
+   - "distributions"
+   - "hotspots"
+editor: source   
+---
+
+# Bird Hotspots {.unnumbered}
+
+```{r}
+#| echo: false
+#| warning: false
+
+library(rmarkdown)
+descr    <- metadata[["description"]]
+img      <- metadata[["image"]]
+url_web  <- metadata[["url"]]
+url_code <- metadata[["url-code"]]
+```
+
+`r descr`
+
+-   [{{< fa globe >}} website](`r url_web`)
+
+-   [{{< fa brands github >}} `code`](`r url_code`)
+
+![](`r img`)

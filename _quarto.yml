@@ -26,19 +26,33 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
-    - part: components.qmd
+    - part: science.qmd
       chapters:
-        - components/api.qmd
-        - components/apps.qmd
-        - components/db.qmd
-        - components/docs.qmd
-        - components/libraries.qmd
-        - components/server.qmd
-        - components/workflows.qmd
+        - science/stressors.qmd
+        - science/receptors.qmd
+        - science/exposure.qmd
+    - part: software.qmd
+      chapters:
+        - software/server.qmd
+        - software/db.qmd
+        - software/workflows.qmd
+        - software/apis.qmd
+        - software/libraries.qmd
+        - software/apps.qmd
+        - software/docs.qmd
     - summary.qmd
     - references.qmd
   appendices:
     - glossary.qmd
+    - part: software/apps.qmd
+      chapters:
+        - apps/vmap.qmd
+        - apps/sdm-cog.qmd
+        - apps/sdm.qmd
+        - apps/aoi.qmd
+        - apps/bird_hotspots.qmd
+        - apps/map.qmd
+
 
 bibliography: references.bib
 
@@ -46,10 +60,12 @@ format:
   html:
     theme: cosmo
     css: glossary/glossary.css
+    echo: false
   # pdf:
   #   documentclass: scrreprt
   docx:
     toc: true
+    echo: false
     number-sections: true
     highlight-style: github
 
