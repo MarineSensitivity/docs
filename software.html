@@ -80,9 +80,9 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: ['listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description","listing-categories"],
+      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -377,7 +377,7 @@ window.Quarto = {
   <li><a href="#software-components" id="toc-software-components" class="nav-link" data-scroll-target="#software-components">Software Components</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/software.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(7)</span></div><div class="category" data-category="API">API <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Apps">Apps <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Database">Database <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Docs">Docs <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Libraries">Libraries <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Server">Server <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Workflows">Workflows <span class="quarto-category-count">(1)</span></div></div></div>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -532,7 +532,7 @@ Figure&nbsp;2: Sequence diagram implementing large vector interactive display us
 <h3 class="anchored" data-anchor-id="software-components">Software Components</h3>
 <div id="listing-list-components" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="API" data-listing-file-modified-sort="1724942291627" data-listing-reading-time-sort="1" data-listing-word-count-sort="82">
+<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1724942651362" data-listing-reading-time-sort="1" data-listing-word-count-sort="82">
 <a href="./software/apis.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -542,11 +542,6 @@ Figure&nbsp;2: Sequence diagram implementing large vector interactive display us
 <h5 class="no-anchor card-title listing-title">
 APIs
 </h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('API'); return false;">
-API
-</div>
-</div>
 <div class="card-text listing-description">
 application programming interfaces (APIs)
 </div>
@@ -559,7 +554,7 @@ application programming interfaces (APIs)
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="1" data-categories="Apps" data-listing-file-modified-sort="1724942291627" data-listing-reading-time-sort="1" data-listing-word-count-sort="2">
+<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1724942651362" data-listing-reading-time-sort="1" data-listing-word-count-sort="2">
 <a href="./software/apps.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -569,11 +564,6 @@ application programming interfaces (APIs)
 <h5 class="no-anchor card-title listing-title">
 Apps
 </h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Apps'); return false;">
-Apps
-</div>
-</div>
 <div class="card-text listing-description">
 interactive applications using Shiny
 </div>
@@ -586,7 +576,7 @@ interactive applications using Shiny
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="2" data-categories="Database" data-listing-file-modified-sort="1724942291628" data-listing-reading-time-sort="1" data-listing-word-count-sort="104">
+<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1724942651362" data-listing-reading-time-sort="1" data-listing-word-count-sort="104">
 <a href="./software/db.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -596,11 +586,6 @@ interactive applications using Shiny
 <h5 class="no-anchor card-title listing-title">
 Database
 </h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Database'); return false;">
-Database
-</div>
-</div>
 <div class="card-text listing-description">
 PostgreSQL database extended spatially with PostGIS
 </div>
@@ -613,7 +598,7 @@ PostgreSQL database extended spatially with PostGIS
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="3" data-categories="Docs" data-listing-file-modified-sort="1724942291631" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
+<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1724942651365" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
 <a href="./software/docs.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -623,11 +608,6 @@ PostgreSQL database extended spatially with PostGIS
 <h5 class="no-anchor card-title listing-title">
 Docs
 </h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Docs'); return false;">
-Docs
-</div>
-</div>
 <div class="card-text listing-description">
 technical documentation
 </div>
@@ -640,7 +620,7 @@ technical documentation
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="4" data-categories="Libraries" data-listing-file-modified-sort="1724942291631" data-listing-reading-time-sort="1" data-listing-word-count-sort="54">
+<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1724942651365" data-listing-reading-time-sort="1" data-listing-word-count-sort="54">
 <a href="./software/libraries.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -650,11 +630,6 @@ technical documentation
 <h5 class="no-anchor card-title listing-title">
 Libraries
 </h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Libraries'); return false;">
-Libraries
-</div>
-</div>
 <div class="card-text listing-description">
 documented functions as an R package
 </div>
@@ -667,7 +642,7 @@ documented functions as an R package
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="5" data-categories="Server" data-listing-file-modified-sort="1724942291631" data-listing-reading-time-sort="2" data-listing-word-count-sort="259">
+<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1724942651365" data-listing-reading-time-sort="2" data-listing-word-count-sort="259">
 <a href="./software/server.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -677,11 +652,6 @@ documented functions as an R package
 <h5 class="no-anchor card-title listing-title">
 Server
 </h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Server'); return false;">
-Server
-</div>
-</div>
 <div class="card-text listing-description">
 server software configuration using Docker
 </div>
@@ -694,7 +664,7 @@ server software configuration using Docker
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="6" data-categories="Workflows" data-listing-file-modified-sort="1724942291631" data-listing-reading-time-sort="1" data-listing-word-count-sort="38">
+<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1724942651365" data-listing-reading-time-sort="1" data-listing-word-count-sort="38">
 <a href="./software/workflows.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -704,11 +674,6 @@ server software configuration using Docker
 <h5 class="no-anchor card-title listing-title">
 Workflows
 </h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Workflows'); return false;">
-Workflows
-</div>
-</div>
 <div class="card-text listing-description">
 scripts for exploring plus production workflows
 </div>
