@@ -1,14 +1,25 @@
 [
   {
-    "listing": "/components.html",
+    "listing": "/software/apps.html",
     "items": [
-      "/components/api.html",
-      "/components/apps.html",
-      "/components/db.html",
-      "/components/docs.html",
-      "/components/libraries.html",
-      "/components/server.html",
-      "/components/workflows.html"
+      "/apps/aoi.html",
+      "/apps/bird_hotspots.html",
+      "/apps/sdm-cog.html",
+      "/apps/sdm.html",
+      "/apps/map.html",
+      "/apps/vmap.html"
+    ]
+  },
+  {
+    "listing": "/software.html",
+    "items": [
+      "/software/apis.html",
+      "/software/apps.html",
+      "/software/db.html",
+      "/software/docs.html",
+      "/software/libraries.html",
+      "/software/server.html",
+      "/software/workflows.html"
     ]
   }
 ]
