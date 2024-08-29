@@ -28,23 +28,23 @@ book:
     - intro.qmd
     - part: science.qmd
       chapters:
-        - science/stressors.qmd
-        - science/receptors.qmd
-        - science/exposure.qmd
+        - stressors.qmd
+        - receptors.qmd
+        - exposure.qmd
     - part: software.qmd
       chapters:
-        - software/server.qmd
-        - software/db.qmd
-        - software/workflows.qmd
-        - software/apis.qmd
-        - software/libraries.qmd
-        - software/apps.qmd
-        - software/docs.qmd
+        - server.qmd
+        - db.qmd
+        - workflows.qmd
+        - apis.qmd
+        - libraries.qmd
+        - apps.qmd
+        - docs.qmd
     - summary.qmd
     - references.qmd
   appendices:
     - glossary.qmd
-    - part: software/apps.qmd
+    - part: apps.qmd
       chapters:
         - apps/vmap.qmd
         - apps/sdm-cog.qmd
