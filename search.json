@@ -20,6 +20,50 @@
     ]
   },
   {
+    "objectID": "science/stressors.html",
+    "href": "science/stressors.html",
+    "title": "2  Stressors",
+    "section": "",
+    "text": "2.1 Offshore Wind Energy\nEvaluation of stressors from the offshore wind industry needs to be evaluated based on human activities given the phase of development, whether pre-construction, construction, operation or decommissioning (Figure 2.1).",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Stressors</span>"
+    ]
+  },
+  {
+    "objectID": "science/stressors.html#offshore-wind-energy",
+    "href": "science/stressors.html#offshore-wind-energy",
+    "title": "2  Stressors",
+    "section": "",
+    "text": "Figure 2.1: Cumulative adverse effects of offshore wind energy development on wildlife (Goodale and Milman 2016).",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Stressors</span>"
+    ]
+  },
+  {
+    "objectID": "science/stressors.html#oil-gas",
+    "href": "science/stressors.html#oil-gas",
+    "title": "2  Stressors",
+    "section": "2.2 Oil & Gas",
+    "text": "2.2 Oil & Gas\n\n\n\n\nGoodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse Effects of Offshore Wind Energy Development on Wildlife.” Journal of Environmental Planning and Management 0 (0): 1–21. https://doi.org/10.1080/09640568.2014.973483.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Stressors</span>"
+    ]
+  },
+  {
+    "objectID": "science/receptors.html",
+    "href": "science/receptors.html",
+    "title": "3  Receptors",
+    "section": "",
+    "text": "Receptors are the species and habitats that are potentially impacted by the human activity.\n\n3.0.1 Corals\n\n\n3.0.2 Invertebrates\n\n\n3.0.3 Fish\n\n\n3.0.4 Marine Mammals\n\n\n3.0.5 Seabirds\n\n\n3.0.6 Sea Turtles",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Receptors</span>"
+    ]
+  },
+  {
     "objectID": "software/server.html",
     "href": "software/server.html",
     "title": "5  Server",
@@ -144,7 +188,7 @@
     "href": "references.html",
     "title": "References",
     "section": "",
-    "text": "Boyce, Daniel G., Derek P. Tittensor, Cristina Garilao, Stephanie\nHenson, Kristin Kaschner, Kathleen Kesner-Reyes, Alex Pigot, et al.\n2022. “A Climate Risk Index for Marine Life.” Nature\nClimate Change 12 (9): 854–62. https://doi.org/10.1038/s41558-022-01437-y.\n\n\nJones, Miranda C., and William W. L. Cheung. 2018. “Using Fuzzy\nLogic to Determine the Vulnerability of Marine Species to Climate\nChange.” Global Change Biology 24 (2): e719–31. https://doi.org/10.1111/gcb.13869.\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, Tracy D. Ainsworth,\nJennifer M. Donelson, Shawna A. Foo, Pat Hutchings, Vengatesen\nThiyagarajan, and Laura M. Parker. 2023. “Surviving the\nAnthropocene: The Resilience of Marine Animals to Climate\nChange.” In. CRC Press.\n\n\nWeis, Shawn W. Margles, Vera N. Agostini, Lynnette M. Roth, Ben Gilmer,\nSteven R. Schill, John English Knowles, and Ruth Blyther. 2016.\n“Assessing Vulnerability: An Integrated Approach for Mapping\nAdaptive Capacity, Sensitivity, and Exposure.” Climatic\nChange 136 (3-4): 615–29. https://doi.org/10.1007/s10584-016-1642-0.\n\n\nZacharias, Mark A., and Edward J. Gregr. 2005. “Sensitivity and\nVulnerability in Marine Environments: An Approach to Identifying\nVulnerable Marine Areas.” Conservation Biology 19 (1):\n86–97. https://doi.org/10.1111/j.1523-1739.2005.00148.x.",
+    "text": "Boyce, Daniel G., Derek P. Tittensor, Cristina Garilao, Stephanie\nHenson, Kristin Kaschner, Kathleen Kesner-Reyes, Alex Pigot, et al.\n2022. “A Climate Risk Index for Marine Life.” Nature\nClimate Change 12 (9): 854–62. https://doi.org/10.1038/s41558-022-01437-y.\n\n\nGoodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse\nEffects of Offshore Wind Energy Development on Wildlife.”\nJournal of Environmental Planning and Management 0 (0): 1–21.\nhttps://doi.org/10.1080/09640568.2014.973483.\n\n\nJones, Miranda C., and William W. L. Cheung. 2018. “Using Fuzzy\nLogic to Determine the Vulnerability of Marine Species to Climate\nChange.” Global Change Biology 24 (2): e719–31. https://doi.org/10.1111/gcb.13869.\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, Tracy D. Ainsworth,\nJennifer M. Donelson, Shawna A. Foo, Pat Hutchings, Vengatesen\nThiyagarajan, and Laura M. Parker. 2023. “Surviving the\nAnthropocene: The Resilience of Marine Animals to Climate\nChange.” In. CRC Press.\n\n\nWeis, Shawn W. Margles, Vera N. Agostini, Lynnette M. Roth, Ben Gilmer,\nSteven R. Schill, John English Knowles, and Ruth Blyther. 2016.\n“Assessing Vulnerability: An Integrated Approach for Mapping\nAdaptive Capacity, Sensitivity, and Exposure.” Climatic\nChange 136 (3-4): 615–29. https://doi.org/10.1007/s10584-016-1642-0.\n\n\nZacharias, Mark A., and Edward J. Gregr. 2005. “Sensitivity and\nVulnerability in Marine Environments: An Approach to Identifying\nVulnerable Marine Areas.” Conservation Biology 19 (1):\n86–97. https://doi.org/10.1111/j.1523-1739.2005.00148.x.",
     "crumbs": [
       "References"
     ]

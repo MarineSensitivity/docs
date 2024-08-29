@@ -20,7 +20,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -303,8 +323,15 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#offshore-wind-energy" id="toc-offshore-wind-energy" class="nav-link active" data-scroll-target="#offshore-wind-energy"><span class="header-section-number">2.1</span> Offshore Wind Energy</a></li>
+  <li><a href="#oil-gas" id="toc-oil-gas" class="nav-link" data-scroll-target="#oil-gas"><span class="header-section-number">2.2</span> Oil &amp; Gas</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/science/stressors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -328,8 +355,30 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="offshore-wind-energy" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="offshore-wind-energy"><span class="header-section-number">2.1</span> Offshore Wind Energy</h2>
+<p>Evaluation of stressors from the offshore wind industry needs to be evaluated based on human activities given the phase of development, whether pre-construction, construction, operation or decommissioning (<a href="#fig-cum-effects" class="quarto-xref">Figure&nbsp;<span>2.1</span></a>).</p>
+<div id="fig-cum-effects" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cum-effects-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../figures/goodale2016_cumulative-effects.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cum-effects-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.1: Cumulative adverse effects of offshore wind energy development on wildlife <span class="citation" data-cites="goodale2016">(<a href="../references.html#ref-goodale2016" role="doc-biblioref">Goodale and Milman 2016</a>)</span>.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="oil-gas" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="oil-gas"><span class="header-section-number">2.2</span> Oil &amp; Gas</h2>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-goodale2016" class="csl-entry" role="listitem">
+Goodale, M. Wing, and Anita Milman. 2016. <span>“Cumulative Adverse Effects of Offshore Wind Energy Development on Wildlife.”</span> <em>Journal of Environmental Planning and Management</em> 0 (0): 1–21. <a href="https://doi.org/10.1080/09640568.2014.973483">https://doi.org/10.1080/09640568.2014.973483</a>.
+</div>
+</div>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -772,7 +821,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/science/stressors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/science/stressors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org/" target="_blank">Quarto</a></p>
 </div>
