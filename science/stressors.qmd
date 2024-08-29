@@ -2,3 +2,11 @@
 title: "Stressors"
 editor: visual
 ---
+
+## Offshore Wind Energy
+
+Evaluation of stressors from the offshore wind industry needs to be evaluated based on human activities given the phase of development, whether pre-construction, construction, operation or decommissioning (@fig-cum-effects).
+
+![Cumulative adverse effects of offshore wind energy development on wildlife [@goodale2016].](/figures/goodale2016_cumulative-effects.png){#fig-cum-effects}
+
+## Oil & Gas

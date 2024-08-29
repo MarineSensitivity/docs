@@ -2,3 +2,17 @@
 title: "Receptors"
 editor: visual
 ---
+
+Receptors are the species and habitats that are potentially impacted by the human activity.
+
+### **Corals**
+
+### **Invertebrates**
+
+### **Fish**
+
+### **Marine Mammals**
+
+### **Seabirds**
+
+### **Sea Turtles**
