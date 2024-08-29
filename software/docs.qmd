@@ -2,7 +2,6 @@
 title: Docs
 description: "technical documentation"
 image: /figures/components/docs.png
-categories: [Docs]
 output: html_document
 editor_options: 
   chunk_output_type: console

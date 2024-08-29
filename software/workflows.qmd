@@ -2,7 +2,6 @@
 title: Workflows
 description: "scripts for exploring plus production workflows"
 image: /figures/components/workflows.png
-categories: [Workflows]
 editor_options: 
   chunk_output_type: console
 ---

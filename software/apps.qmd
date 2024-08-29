@@ -2,7 +2,6 @@
 title: Apps
 description: "interactive applications using Shiny"
 image: /figures/components/apps.png
-categories: [Apps]
 output: html_document
 editor_options: 
   chunk_output_type: console
