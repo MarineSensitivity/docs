@@ -5,14 +5,14 @@ editor: visual
 
 Receptors are the species and habitats that are potentially impacted by the human activity.
 
-### **Corals**
+## Corals
 
-### **Invertebrates**
+## Invertebrates
 
-### **Fish**
+## Fish
 
-### **Marine Mammals**
+## Marine Mammals
 
-### **Seabirds**
+## Seabirds
 
-### **Sea Turtles**
+## Sea Turtles
