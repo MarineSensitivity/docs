@@ -2,7 +2,13 @@
 listing: 
   id: list-components
   contents: 
-   - "/software/*.qmd"
+   - apis.qmd
+   - apps.qmd
+   - db.qmd
+   - docs.qmd
+   - libraries.qmd
+   - server.qmd
+   - workflows.qmd
   type: grid
   categories: false
   image-height: 100px

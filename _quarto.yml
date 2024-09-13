@@ -4,6 +4,10 @@ project:
   resources:
   - "/.nojekyll"
 
+execute:
+  echo: false
+  warning: false
+
 book:
   title: "Marine Sensitivity"
   subtitle: "Marine Sensitivity Documentation"
@@ -12,7 +16,7 @@ book:
   date-format: "YYYY-MM-DD"
   repo-url: https://github.com/MarineSensitivity/docs/
   repo-actions: [edit]
-  downloads: [docx]
+  downloads: [pdf, docx]
   sharing: [twitter, facebook]
   # google-analytics: "G-V3HZN14Z8G" # TODO: add Google Analytics
   search: true
@@ -44,6 +48,7 @@ book:
     - references.qmd
   appendices:
     - glossary.qmd
+    # - notes.qmd
     - part: apps.qmd
       chapters:
         - apps/vmap.qmd
@@ -61,8 +66,8 @@ format:
     theme: cosmo
     css: glossary/glossary.css
     echo: false
-  # pdf:
-  #   documentclass: scrreprt
+  pdf:
+    documentclass: scrreprt
   docx:
     toc: true
     echo: false
