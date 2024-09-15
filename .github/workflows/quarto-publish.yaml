@@ -21,8 +21,8 @@ jobs:
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
-          with:
-            tinytex: true  # for pdf
+        with:
+          tinytex: true  # for pdf
 
       # - name: Install TinyTeX for pdf
       #   run: quarto install tinytex
