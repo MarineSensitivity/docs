@@ -20,8 +20,8 @@
     ]
   },
   {
-    "objectID": "science/stressors.html",
-    "href": "science/stressors.html",
+    "objectID": "stressors.html",
+    "href": "stressors.html",
     "title": "2  Stressors",
     "section": "",
     "text": "2.1 Offshore Wind Energy\nEvaluation of stressors from the offshore wind industry needs to be evaluated based on human activities given the phase of development, whether pre-construction, construction, operation or decommissioning (Figure 2.1).",
@@ -31,8 +31,8 @@
     ]
   },
   {
-    "objectID": "science/stressors.html#offshore-wind-energy",
-    "href": "science/stressors.html#offshore-wind-energy",
+    "objectID": "stressors.html#offshore-wind-energy",
+    "href": "stressors.html#offshore-wind-energy",
     "title": "2  Stressors",
     "section": "",
     "text": "Figure 2.1: Cumulative adverse effects of offshore wind energy development on wildlife (Goodale and Milman 2016).",
@@ -42,8 +42,8 @@
     ]
   },
   {
-    "objectID": "science/stressors.html#oil-gas",
-    "href": "science/stressors.html#oil-gas",
+    "objectID": "stressors.html#oil-gas",
+    "href": "stressors.html#oil-gas",
     "title": "2  Stressors",
     "section": "2.2 Oil & Gas",
     "text": "2.2 Oil & Gas\n\n\n\n\nGoodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse Effects of Offshore Wind Energy Development on Wildlife.” Journal of Environmental Planning and Management 0 (0): 1–21. https://doi.org/10.1080/09640568.2014.973483.",
@@ -53,8 +53,8 @@
     ]
   },
   {
-    "objectID": "science/receptors.html",
-    "href": "science/receptors.html",
+    "objectID": "receptors.html",
+    "href": "receptors.html",
     "title": "3  Receptors",
     "section": "",
     "text": "3.1 Corals",
@@ -64,8 +64,8 @@
     ]
   },
   {
-    "objectID": "science/receptors.html#invertebrates",
-    "href": "science/receptors.html#invertebrates",
+    "objectID": "receptors.html#invertebrates",
+    "href": "receptors.html#invertebrates",
     "title": "3  Receptors",
     "section": "3.2 Invertebrates",
     "text": "3.2 Invertebrates",
@@ -75,8 +75,8 @@
     ]
   },
   {
-    "objectID": "science/receptors.html#fish",
-    "href": "science/receptors.html#fish",
+    "objectID": "receptors.html#fish",
+    "href": "receptors.html#fish",
     "title": "3  Receptors",
     "section": "3.3 Fish",
     "text": "3.3 Fish",
@@ -86,8 +86,8 @@
     ]
   },
   {
-    "objectID": "science/receptors.html#marine-mammals",
-    "href": "science/receptors.html#marine-mammals",
+    "objectID": "receptors.html#marine-mammals",
+    "href": "receptors.html#marine-mammals",
     "title": "3  Receptors",
     "section": "3.4 Marine Mammals",
     "text": "3.4 Marine Mammals",
@@ -97,8 +97,8 @@
     ]
   },
   {
-    "objectID": "science/receptors.html#seabirds",
-    "href": "science/receptors.html#seabirds",
+    "objectID": "receptors.html#seabirds",
+    "href": "receptors.html#seabirds",
     "title": "3  Receptors",
     "section": "3.5 Seabirds",
     "text": "3.5 Seabirds",
@@ -108,8 +108,8 @@
     ]
   },
   {
-    "objectID": "science/receptors.html#sea-turtles",
-    "href": "science/receptors.html#sea-turtles",
+    "objectID": "receptors.html#sea-turtles",
+    "href": "receptors.html#sea-turtles",
     "title": "3  Receptors",
     "section": "3.6 Sea Turtles",
     "text": "3.6 Sea Turtles",
@@ -119,8 +119,8 @@
     ]
   },
   {
-    "objectID": "science/exposure.html",
-    "href": "science/exposure.html",
+    "objectID": "exposure.html",
+    "href": "exposure.html",
     "title": "4  Exposure",
     "section": "",
     "text": "Cumulative exposure (Figure 2.1) is important for understanding impacts to a population.",
@@ -130,8 +130,8 @@
     ]
   },
   {
-    "objectID": "software/server.html",
-    "href": "software/server.html",
+    "objectID": "server.html",
+    "href": "server.html",
     "title": "5  Server",
     "section": "",
     "text": "5.1 Setup\nFor instructions on launching an Amazon instance and installing the server software, see Server Setup · MarineSensitivity/server Wiki.",
@@ -141,8 +141,8 @@
     ]
   },
   {
-    "objectID": "software/server.html#services",
-    "href": "software/server.html#services",
+    "objectID": "server.html#services",
+    "href": "server.html#services",
     "title": "5  Server",
     "section": "5.2 Services",
     "text": "5.2 Services\nThe server is running the following services:\n\n\nRStudio\nintegrated development environment (IDE) to code and debug directly on the server \nMore info..\nShiny\ninteractive applications\ne.g., shiny.marinesensitivity.org/map\n\nMore info..\nPGadmin\nPostGreSQL database administration interface\n\nMore info..\napi\ncustom API: using R plumber\n\nMore info..\nswagger\ngeneric database API: using PostGREST\n\nMore info..\ntile\nspatial database API: using pg_tileserv for serving vector tiles\n\nMore info..",
@@ -152,8 +152,8 @@
     ]
   },
   {
-    "objectID": "software/db.html",
-    "href": "software/db.html",
+    "objectID": "db.html",
+    "href": "db.html",
     "title": "6  Database",
     "section": "",
     "text": "6.1 Table and Column Naming Conventions",
@@ -163,8 +163,8 @@
     ]
   },
   {
-    "objectID": "software/db.html#table-and-column-naming-conventions",
-    "href": "software/db.html#table-and-column-naming-conventions",
+    "objectID": "db.html#table-and-column-naming-conventions",
+    "href": "db.html#table-and-column-naming-conventions",
     "title": "6  Database",
     "section": "",
     "text": "Table names are plural and use all lower case.\nUnique identifiers are suffixed with:\n\n*_id for unique integer keys;\n*_key for unique string keys;\n*_seq for auto-incrementing sequence integer keys.\n\nColumn names are singular and use snake_case.\nForeign keys are named with the singular form of the table they reference, followed by _id.\nPrimary keys are named id.",
@@ -174,8 +174,8 @@
     ]
   },
   {
-    "objectID": "software/db.html#species-distribution-models",
-    "href": "software/db.html#species-distribution-models",
+    "objectID": "db.html#species-distribution-models",
+    "href": "db.html#species-distribution-models",
     "title": "6  Database",
     "section": "6.2 Species Distribution Models",
     "text": "6.2 Species Distribution Models\nSee entity relationship diagram (ERD) for the species distribution models (SDM) database tables in this workflow:\n\nCreate SDM Tables\n\nAnd example of ingesting SDM outputs into the database in this workflow:\n\nIngest GoMex cetacean & sea turtle SDMs",
@@ -185,8 +185,8 @@
     ]
   },
   {
-    "objectID": "software/workflows.html",
-    "href": "software/workflows.html",
+    "objectID": "workflows.html",
+    "href": "workflows.html",
     "title": "7  Workflows",
     "section": "",
     "text": "Workflows are scripts for testing data analytics and visualization as well as production workflows for ingesting data. See:\n\nmarinesensitivity.org/workflows\nrendered html pages from the scripts (as Quarto notebooks)\ngithub.com/MarineSensitivity/workflows\nsource code in the Github repository",
@@ -196,8 +196,8 @@
     ]
   },
   {
-    "objectID": "software/apis.html",
-    "href": "software/apis.html",
+    "objectID": "apis.html",
+    "href": "apis.html",
     "title": "8  APIs",
     "section": "",
     "text": "There three APIs, each used for different purposes:\n\napi\ncustom API: using R plumber\nsource: MarineSensitivity/api\n\n\nswagger\ngeneric database API: using PostGREST\nsource: Postgres database, non-spatial\n\n\ntile\nspatial database API: using pg_tileserv for serving vector tiles\nsource: Postgres database, spatial",
@@ -207,8 +207,8 @@
     ]
   },
   {
-    "objectID": "software/libraries.html",
-    "href": "software/libraries.html",
+    "objectID": "libraries.html",
+    "href": "libraries.html",
     "title": "9  Libraries",
     "section": "",
     "text": "By creating an R package, we can document functions and make them easily available to other users.\n\nmsens\nR library of functions for mapping marine sensitivities, sponsored by BOEM\n\nFunctions can read data from the one APIs (which communicate with the Database), analyze the data, visualize the results and store some smaller data.",
@@ -218,8 +218,8 @@
     ]
   },
   {
-    "objectID": "software/apps.html",
-    "href": "software/apps.html",
+    "objectID": "apps.html",
+    "href": "apps.html",
     "title": "10  Apps",
     "section": "",
     "text": "Areas of Interest\n\n\n\nareas\n\n\nvector\n\n\n\nMap high resolution Areas of Interest (using vector tiles) for visualization (and later summarization).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBird Hotspots\n\n\n\ndistributions\n\n\nhotspots\n\n\n\nBird hotspots application showing hotspot probability for species present given drawn Area of Interest.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDistributions, Raster\n\n\n\ndistributions\n\n\nraster\n\n\n\nShow species distributions with high resolution rasters as cloud-optimized GeoTIFFs (COGs).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDistributions, Vector\n\n\n\ndistributions\n\n\nvector\n\n\n\nShow species distributions with high resolution vectors (as vector tiles).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRegional Map\n\n\n\nareas\n\n\n\nBasic interactive map of BOEM regions.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVulnerability Mapper\n\n\n\ndistributions\n\n\nvulnerabilities\n\n\nraster\n\n\n\nCombine species distribution models (raster) and vulnerability metrics (tables) to identify areas of high conservation concern.\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items",
@@ -229,8 +229,8 @@
     ]
   },
   {
-    "objectID": "software/docs.html",
-    "href": "software/docs.html",
+    "objectID": "docs.html",
+    "href": "docs.html",
     "title": "11  Docs",
     "section": "",
     "text": "Technical documentation is principally in this book:\n\nmarinesensitivity.org/docs\nthe main documentation site\ngithub.com/MarineSensitivity/docs\nsource code in the Github repository\n\nBut there are also some other self-documenting resources:\n\nmarinesensitivity.org/msens\ndocumented R functions",
@@ -254,7 +254,7 @@
     "href": "references.html",
     "title": "References",
     "section": "",
-    "text": "Boyce, Daniel G., Derek P. Tittensor, Cristina Garilao, Stephanie\nHenson, Kristin Kaschner, Kathleen Kesner-Reyes, Alex Pigot, et al.\n2022. “A Climate Risk Index for Marine Life.” Nature\nClimate Change 12 (9): 854–62. https://doi.org/10.1038/s41558-022-01437-y.\n\n\nGoodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse\nEffects of Offshore Wind Energy Development on Wildlife.”\nJournal of Environmental Planning and Management 0 (0): 1–21.\nhttps://doi.org/10.1080/09640568.2014.973483.\n\n\nJones, Miranda C., and William W. L. Cheung. 2018. “Using Fuzzy\nLogic to Determine the Vulnerability of Marine Species to Climate\nChange.” Global Change Biology 24 (2): e719–31. https://doi.org/10.1111/gcb.13869.\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, Tracy D. Ainsworth,\nJennifer M. Donelson, Shawna A. Foo, Pat Hutchings, Vengatesen\nThiyagarajan, and Laura M. Parker. 2023. “Surviving the\nAnthropocene: The Resilience of Marine Animals to Climate\nChange.” In. CRC Press.\n\n\nWeis, Shawn W. Margles, Vera N. Agostini, Lynnette M. Roth, Ben Gilmer,\nSteven R. Schill, John English Knowles, and Ruth Blyther. 2016.\n“Assessing Vulnerability: An Integrated Approach for Mapping\nAdaptive Capacity, Sensitivity, and Exposure.” Climatic\nChange 136 (3-4): 615–29. https://doi.org/10.1007/s10584-016-1642-0.\n\n\nZacharias, Mark A., and Edward J. Gregr. 2005. “Sensitivity and\nVulnerability in Marine Environments: An Approach to Identifying\nVulnerable Marine Areas.” Conservation Biology 19 (1):\n86–97. https://doi.org/10.1111/j.1523-1739.2005.00148.x.",
+    "text": "Goodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse\nEffects of Offshore Wind Energy Development on Wildlife.”\nJournal of Environmental Planning and Management 0 (0): 1–21.\nhttps://doi.org/10.1080/09640568.2014.973483.",
     "crumbs": [
       "References"
     ]
@@ -264,51 +264,7 @@
     "href": "glossary.html",
     "title": "Glossary",
     "section": "",
-    "text": "(Ross et al. 2023)\nGlossary.",
-    "crumbs": [
-      "Appendices",
-      "Glossary"
-    ]
-  },
-  {
-    "objectID": "glossary.html#weis2016",
-    "href": "glossary.html#weis2016",
-    "title": "Glossary",
-    "section": "(Weis et al. 2016)",
-    "text": "(Weis et al. 2016)\n\\[\nV = f(E, S, A)\n\\]\nVulnerability (\\(V\\)) is a function of exposure (\\(E\\)), sensitivity (\\(S\\)) and adaptive capacity (\\(A\\)).",
-    "crumbs": [
-      "Appendices",
-      "Glossary"
-    ]
-  },
-  {
-    "objectID": "glossary.html#jones2018",
-    "href": "glossary.html#jones2018",
-    "title": "Glossary",
-    "section": "(Jones and Cheung 2018)",
-    "text": "(Jones and Cheung 2018)\nSuch vulnerability assessments recognize that a species’ vulnerability to climate change depends on an interaction between its intrinsic biological or ecological characteristics (sensitivity and adaptive capacity) and the extrinsic threats or stimuli (exposure and hazard) (Figure 1). In this study, we adopted the climate vulnerability and risk assessment framework used by the fifth assessment report of the Intergovernmental Panel on Climate Change (IPCC) (Field et al. (2014).\nSensitivity of a species, referred to here as the susceptibility to impacts from climate change, is affected by species’ biological and ecological traits. Species’ sensitivity may be moderated by their\nadaptive capacity, which reflects a species’ ability to adapt and thus cope with, or avoid, the impacts of climate change.\nAs the unit of assessment is an individual species, we consider a species’ ability to shift in distribution to avoid or minimize negative impacts from changing habitat conditions on its viability as an adaptive response to climate change. Specifically, in this study, we focus on characteristics that determine a species ability to show this response, within its current distribution. Thus, the spatial response of a distribution shift may itself be influenced by adaptive characteristics included here. The combination of a species’ sensitivity and (lack of) adaptive capacity determines its vulnerability to climate change. Ultimately, the risk of impacts of climate change on the species is determined by its vulnerability as well as the potential occurrence of climate-related ocean changes (i.e., hazards such as warming, ocean acidification) and the degree of exposure to such event (i.e., exposure) (Figure 1).\n\n\n\n\n\n\nFigure 1: Framework for assessing climate change vulnerability and risk adopted by the fifth assessment report of the IPCC (Field et al., 2014)",
-    "crumbs": [
-      "Appendices",
-      "Glossary"
-    ]
-  },
-  {
-    "objectID": "glossary.html#zacharias2005",
-    "href": "glossary.html#zacharias2005",
-    "title": "Glossary",
-    "section": "(Zacharias and Gregr 2005)",
-    "text": "(Zacharias and Gregr 2005)\n\nDefinitions of Sensitivity and Vulnerability\nSensitivity and vulnerability are central concepts in the protection of marine ecosystems, yet the marine literature provides few explicit definitions (Holt et al. 1997; Tyler-Walters & Jackson 1999). Consequently, their meaning often relies on the context in which they are used. To avoid context-dependent definitions of these terms, we took the following value-neutral approach to defining sensitivity and vulnerability.\nIt is axiomatic that all marine features have either evolved (in the case of biotic features) or been formed (in the case of abiotic features) within a certain range of environmental conditions. We define stress as a deviation of these environmental conditions beyond the expected range. Sensitivity is the degree to which marine features respond to such stress. Specifically, sensitivity is measured using one or more indicators (of species, communities, and habitats) that respond to one or more natural or anthropogenic stressors. These responses are potentially nonlinear and are likely to include interactions between stressors. In this context, sensitivity does not inherently assume the characteristics of fragility or intolerance with which it is often associated. There is no implied judgement that an increased association between the indicator and the stressor reduces a feature’s probability of persistence. Nevertheless, as exposure to a chronic perturbation or stress increases, the persistence of that feature is diminished.\nVulnerability is the probability that a feature will be exposed to a stressor to which it is sensitive. In other words, vulnerability is the likelihood of exposure to a relevant external stress factor (sensu Tyler-Walters & Jackson 1999), combined in some way with the exposure (duration, magnitude, rate of change) to that stress.\nSubsumed under the concepts of sensitivity and vulnerability are the concepts of stability and fragility. Although these terms lack general consensus on their definitions, Holling (1986) states that\nstability is the tendency of a system to attain or retain an equilibrium condition of steady state or stable oscillation.\nResilience is the ability of a system to maintain its structure and behavioral patterns when subjected to disturbance. A feature, therefore, that is stable or resilient in the presence of a stressor is not sensitive to that stress as we have defined it. Also, a feature that is sensitive to a stressor for which it has a low probability of exposure is not vulnerable.\nOur definitions of sensitivity and vulnerability are consistent with the ESI approach used for oil spill response and countermeasures (Gundlach & Hayes 1978). Under the ESI approach a resource is defined as sensitive to oil if it would be harmed by physical contact with oil or concentrations of oil in water. A resource is defined as vulnerable if it is likely that it would be exposed to oil or high concentrations of oil for long enough periods for the oil to affect it. Vulnerability in terms of oil spills on shorelines, therefore, is a function of duration of exposure, recognizing that certain resources are vulnerable to oiling regardless of duration.\nOur definition of a VMA, which incorporates the concepts of sensitivity and vulnerability, is a geographically definable area containing features that are sensitive to natural and/or anthropogenic stressors they are likely to encounter. Features may be biotic (species, communities) or abiotic (habitats) structures or processes.\nWe caution against equating VMAs as we have defined them (and their sensitivity and vulnerability components) with terms such as priority areas, biodiversity hotspots, critical habitat, environmental significance, and areas of interest, which are often used to identify areas of special concern or areas requiring management attention. Although certain VMAs may also represent priority areas or hotspots, depending on how these terms are defined and applied, an area may be sensitive or vulnerable but not meet criteria commonly used (e.g., species diversity) to identify these areas. In addition, although our definitions of sensitivity and vulnerability may contribute to measures or assessments of ecological (or ecosystem) integrity, these concepts are again different. Lastly, identification of an area as sensitive or vulnerable does not suggest that an area should be recommended as a marine protected area (MPA) or marine reserve or that MPAs are the only management tool applicable to the management and conservation of VMAs.",
-    "crumbs": [
-      "Appendices",
-      "Glossary"
-    ]
-  },
-  {
-    "objectID": "glossary.html#boyce2022",
-    "href": "glossary.html#boyce2022",
-    "title": "Glossary",
-    "section": "(Boyce et al. 2022)",
-    "text": "(Boyce et al. 2022)\nclimate change vulnerability assessments (CCVAs)\n\n\n\n\n\n\nFigure 2: a–e, Within each grid cell (1° × 1° here) across the native geographic distribution of a species (a), 12 standardized climate indices are calculated (b) and used to define the three dimensions of climate vulnerability (c): present-day sensitivity (blue), projected future exposure (red) and innate adaptivity (yellow). The dimensions are used to calculate the species’ climate vulnerability (d), and the relative vulnerability scores are translated into absolute climate risk categories (e). f, Species maps are superimposed to assess the climate vulnerability and risk for marine ecosystems. Basemaps in a,c–e from Natural Earth.\n\n\n\n\nDistribution (\\(xy\\))\nof species\nIndices (n=12):\nspecies weights\n\nExposure (current)\n\nThermal safety margin\nVertical habitat use\nAnthropogenic stressors\nConservation status\n\nSensitivity (future)\n\nEcosystem disruption\nTime of climate emergence\nThermal habitat loss\nClimate velocity\n\nAdaptivity (innate)\n\nThermal habitat variability\nGeographic range extent\nMaximum body length\nHabitat fragmentation\n\n\nDimensions (\\(D\\))\n\nExposure (\\(E\\))\nSensitivity (\\(S\\))\nAdaptivity (\\(A\\))\n\n(Climate) Vulnerability\n\n\\[\nV = E * S * A\n\\]\n\n(Climate) Risk (\\(R\\))\n\nSpecies (\\(sp\\))\nEcosystem\n\\[\nR_{eco} = \\sum{sp}\n\\]\n\n\nFrom the supplement:\n\nFollowing an early IPCC definition7 and subsequent broad adoption (4–6,8–10), species’ climate\nvulnerability has been defined by three dimensions: their sensitivity, exposure, and adaptive capacity (adaptivity) to climate change.\nSensitivity refers to the propensity for a species to be adversely affected by its exposure to climate change.\nExposure refers to the extent to which species will be subjected to hazardous climate changes, including the magnitude of the effects.\nAdaptivity refers to the potential of species to adapt to any adverse exposure to climate change.\nThese dimensions have close analogies in other disciplines, including community ecology and dynamic complex systems theory (11–13). For example,\nsensitivity is analogous to the ecological concept of resistance,\nexposure is analogous to reactivity, and\nadaptivity is analogous to resilience (14–16).\n\n\n\n\n\nBoyce, Daniel G., Derek P. Tittensor, Cristina Garilao, Stephanie Henson, Kristin Kaschner, Kathleen Kesner-Reyes, Alex Pigot, et al. 2022. “A Climate Risk Index for Marine Life.” Nature Climate Change 12 (9): 854–62. https://doi.org/10.1038/s41558-022-01437-y.\n\n\nJones, Miranda C., and William W. L. Cheung. 2018. “Using Fuzzy Logic to Determine the Vulnerability of Marine Species to Climate Change.” Global Change Biology 24 (2): e719–31. https://doi.org/10.1111/gcb.13869.\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, Tracy D. Ainsworth, Jennifer M. Donelson, Shawna A. Foo, Pat Hutchings, Vengatesen Thiyagarajan, and Laura M. Parker. 2023. “Surviving the Anthropocene: The Resilience of Marine Animals to Climate Change.” In. CRC Press.\n\n\nWeis, Shawn W. Margles, Vera N. Agostini, Lynnette M. Roth, Ben Gilmer, Steven R. Schill, John English Knowles, and Ruth Blyther. 2016. “Assessing Vulnerability: An Integrated Approach for Mapping Adaptive Capacity, Sensitivity, and Exposure.” Climatic Change 136 (3-4): 615–29. https://doi.org/10.1007/s10584-016-1642-0.\n\n\nZacharias, Mark A., and Edward J. Gregr. 2005. “Sensitivity and Vulnerability in Marine Environments: An Approach to Identifying Vulnerable Marine Areas.” Conservation Biology 19 (1): 86–97. https://doi.org/10.1111/j.1523-1739.2005.00148.x.",
+    "text": "Table 1: Glossary of terms.\n\n\n\n\n\n\nterm\ndefinition\n\n\n\n\nacclimation\nThe adjustment of an organism to experimental conditions in the laboratory without an adjustment in their genetics. Acclimation has been used to describe phenotypically plastic responses of organisms generated under controlled laboratory and experimental manipulations when the factor of interest can be isolated.\n\n\nAcclimatisation\nThe adjustment of an organism to environmental conditions in the field or environment rather than the laboratory without an adjustment in their genetics. Acclimatisation has been used to describe phenotypically plastic responses in natural conditions. Source: Ross et al. (2023)\n\n\nadaptation\nthe ability to change in response to the change\n\n\nAdaptive capacity\nThe capacity of the ecosystem or organism to improve and reorganise in response to stress such as climate change through phenotypic plasticity (acclimation, acclimatisation) or adaptation, distributional shifts, and rapid evolution of traits suited to new conditions. Source: Ross et al. (2023)\n\n\nEpigenetics\nThe modification of phenotype plasticity of an organism through altered gene expression without an alteration to the DNA sequence. ‘Epi’ means above the DNA and includes DNA methylation, modification of histones, and non-coding RNA. Source: Ross et al. (2023)\n\n\nexposure\nthe magnitude of the change in the environment\n\n\nFecundity\nThe maximum physiological potential reproductive output of an organism to produce offspring (reproductive output). This differs from fertility, which is the number of offspring born. Source: Ross et al. (2023)\n\n\nMBON\nMarine Biodiversity Observation Network; see MarineBON.org\n\n\nresilience\nthe ability to recover from the change\n\n\nsensitivity\nthe magnitude of response to the change\n\n\nstressor\nthe stimulus that causes stress to an organism\n\n\nvulnerability\ncombination of exposure and sensitivity",
     "crumbs": [
       "Appendices",
       "Glossary"

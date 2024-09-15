@@ -1,6 +1,6 @@
 [
   {
-    "listing": "/software/apps.html",
+    "listing": "/apps.html",
     "items": [
       "/apps/aoi.html",
       "/apps/bird_hotspots.html",
@@ -13,13 +13,13 @@
   {
     "listing": "/software.html",
     "items": [
-      "/software/apis.html",
-      "/software/apps.html",
-      "/software/db.html",
-      "/software/docs.html",
-      "/software/libraries.html",
-      "/software/server.html",
-      "/software/workflows.html"
+      "/apis.html",
+      "/apps.html",
+      "/db.html",
+      "/docs.html",
+      "/libraries.html",
+      "/server.html",
+      "/workflows.html"
     ]
   }
 ]
