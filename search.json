@@ -244,7 +244,7 @@
     "href": "apps.html",
     "title": "12  Apps",
     "section": "",
-    "text": "Areas of Interest\n\n\n\nareas\n\n\nvector\n\n\n\nMap high resolution Areas of Interest (using vector tiles) for visualization (and later summarization).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBird Hotspots\n\n\n\ndistributions\n\n\nhotspots\n\n\n\nBird hotspots application showing hotspot probability for species present given drawn Area of Interest.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDistributions, Raster\n\n\n\ndistributions\n\n\nraster\n\n\n\nShow species distributions with high resolution rasters as cloud-optimized GeoTIFFs (COGs).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDistributions, Vector\n\n\n\ndistributions\n\n\nvector\n\n\n\nShow species distributions with high resolution vectors (as vector tiles).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRegional Map\n\n\n\nareas\n\n\n\nBasic interactive map of BOEM regions.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVulnerability Mapper\n\n\n\ndistributions\n\n\nvulnerabilities\n\n\nraster\n\n\n\nCombine species distribution models (raster) and vulnerability metrics (tables) to identify areas of high conservation concern.\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items",
+    "text": "Areas of Interest\n\n\n\nareas\n\n\nvector\n\n\n\nMap high resolution Areas of Interest (using vector tiles) for visualization (and later summarization).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBird Hotspots\n\n\n\ndistributions\n\n\nhotspots\n\n\n\nBird hotspots application showing hotspot probability for species present given drawn Area of Interest.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDistributions, Raster\n\n\n\ndistributions\n\n\nraster\n\n\n\nShow species distributions with high resolution rasters as cloud-optimized GeoTIFFs (COGs).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDistributions, Vector\n\n\n\ndistributions\n\n\nvector\n\n\n\nShow species distributions with high resolution vectors (as vector tiles).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRegional Map\n\n\n\nareas\n\n\n\nBasic interactive map of BOEM regions.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVulnerability Mapper\n\n\n\ndistributions\n\n\nvulnerabilities\n\n\nraster\n\n\n\nCombine species distribution models (raster) and vulnerability metrics (tables) to identify areas of high conservation concern.\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items\n\n\nSee also details of individual applications in the Appendix.",
     "crumbs": [
       "Software",
       "<span class='chapter-number'>12</span>  <span class='chapter-title'>Apps</span>"
@@ -293,42 +293,6 @@
     ]
   },
   {
-    "objectID": "apps/vmap.html",
-    "href": "apps/vmap.html",
-    "title": "Vulnerability Mapper",
-    "section": "",
-    "text": "Combine species distribution models (raster) and vulnerability metrics (tables) to identify areas of high conservation concern.\n\n website\n code",
-    "crumbs": [
-      "Appendices",
-      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Apps</span>",
-      "Vulnerability Mapper"
-    ]
-  },
-  {
-    "objectID": "apps/sdm-cog.html",
-    "href": "apps/sdm-cog.html",
-    "title": "Distributions, Raster",
-    "section": "",
-    "text": "Show species distributions with high resolution rasters as cloud-optimized GeoTIFFs (COGs).\n\n website\n code",
-    "crumbs": [
-      "Appendices",
-      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Apps</span>",
-      "Distributions, Raster"
-    ]
-  },
-  {
-    "objectID": "apps/sdm.html",
-    "href": "apps/sdm.html",
-    "title": "Distributions, Vector",
-    "section": "",
-    "text": "Show species distributions with high resolution vectors (as vector tiles).\n\n website\n code",
-    "crumbs": [
-      "Appendices",
-      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Apps</span>",
-      "Distributions, Vector"
-    ]
-  },
-  {
     "objectID": "apps/aoi.html",
     "href": "apps/aoi.html",
     "title": "Areas of Interest",
@@ -336,7 +300,7 @@
     "text": "Map high resolution Areas of Interest (using vector tiles) for visualization (and later summarization).\n\n website\n code",
     "crumbs": [
       "Appendices",
-      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Apps</span>",
+      "Applications",
       "Areas of Interest"
     ]
   },
@@ -348,7 +312,7 @@
     "text": "Bird hotspots application showing hotspot probability for species present given drawn Area of Interest.\n\n website\n code",
     "crumbs": [
       "Appendices",
-      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Apps</span>",
+      "Applications",
       "Bird Hotspots"
     ]
   },
@@ -360,8 +324,44 @@
     "text": "Basic interactive map of BOEM regions.\n\n website\n code",
     "crumbs": [
       "Appendices",
-      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Apps</span>",
+      "Applications",
       "Regional Map"
+    ]
+  },
+  {
+    "objectID": "apps/sdm.html",
+    "href": "apps/sdm.html",
+    "title": "Distributions, Vector",
+    "section": "",
+    "text": "Show species distributions with high resolution vectors (as vector tiles).\n\n website\n code",
+    "crumbs": [
+      "Appendices",
+      "Applications",
+      "Distributions, Vector"
+    ]
+  },
+  {
+    "objectID": "apps/sdm-cog.html",
+    "href": "apps/sdm-cog.html",
+    "title": "Distributions, Raster",
+    "section": "",
+    "text": "Show species distributions with high resolution rasters as cloud-optimized GeoTIFFs (COGs).\n\n website\n code",
+    "crumbs": [
+      "Appendices",
+      "Applications",
+      "Distributions, Raster"
+    ]
+  },
+  {
+    "objectID": "apps/vmap.html",
+    "href": "apps/vmap.html",
+    "title": "Vulnerability Mapper",
+    "section": "",
+    "text": "Combine species distribution models (raster) and vulnerability metrics (tables) to identify areas of high conservation concern.\n\n website\n code",
+    "crumbs": [
+      "Appendices",
+      "Applications",
+      "Vulnerability Mapper"
     ]
   }
 ]
