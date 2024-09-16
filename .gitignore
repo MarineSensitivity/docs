@@ -5,3 +5,6 @@
 /.quarto/
 .DS_Store
 _book
+*.docx.md
+site_libs/
+*_files/

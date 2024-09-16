@@ -13,6 +13,10 @@ Imports:
     dplyr,
     gh,
     glue,
+    here,
     knitr,
     librarian,
-    tidyjson
+    quarto,
+    stringr,
+    tidyjson,
+    yaml

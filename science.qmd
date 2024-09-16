@@ -1,14 +1,10 @@
----
-title: "Science"
-editor: visual
----
+# Science
 
 ```{r}
-source("glossary/_setup.R")
+# source("libs/glossary_setup.R") # to use inline glossary terms
 ```
 
-
-The term `r glossary("vulnerability")` ($V$) is a function of `r glossary("exposure")` ($E$), `r glossary("sensitivity")` ($S$) and `r glossary("adaptive capacity")` ($A$).
+The term `r g("vulnerability")` {{< glossary vulnerability >}} ($V$) is a function of `r g("exposure")` {{< glossary exposure >}} ($E$), `r g("sensitivity")` {{< glossary sensitivity >}} ($S$) and `r g("adaptive capacity")` {{< glossary "adaptive capacity" >}} ($A$).
 
 $$
 V = f(E, S, A)

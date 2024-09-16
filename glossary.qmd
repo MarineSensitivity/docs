@@ -1,17 +1,59 @@
 # Glossary {.unnumbered}
 
 ```{r}
-#| label: tbl-glossary
-#| tbl-cap: Glossary of terms.
-#| results: markup
-#| echo: false
+#| label: glossary-md-old
+#| eval: false
+#| output: asis
 
-glossary_load_all("glossary/glossary.yml")
+library(glossary)
+
+# glossary::glossary_path("libs/glossary.yml")
+glossary::glossary_path(quarto::quarto_inspect()$config$glossary$path)
 
 glossary::glossary_table(as_kable=F) |> 
-  dplyr::filter(
+    dplyr::filter(
     !duplicated(tolower(term))) |> 
-  knitr::kable("pipe", escape = F, row.names = F)
+  dplyr::mutate(
+    term_hyphenated = term |> 
+      stringr::str_replace_all(" ", "-") |> 
+      stringr::str_to_lower(),
+    md = glue::glue("
+      {term}<a name='{term_hyphenated}'></a>
+      : {definition}")) |> 
+  dplyr::pull(md) |> 
+  paste(collapse = "\n\n") |> 
+  cat()
+
+# {{< glossary table=true >}}
 ```
 
+```{r}
+#| label: glossary-md
+#| output: asis
+
+librarian::shelf(
+  dplyr, glue, here, quarto, stringr, yaml)
+
+glossary_yml <- here(quarto_inspect()$config$glossary$path)
+# TODO: add quarto to DESCRIPTION
+
+g <- read_yaml(glossary_yml)
+
+tibble(
+  term       = names(g),
+  definition = as.character(g)) |> 
+  arrange(tolower(term)) |> 
+  filter(
+    !duplicated(tolower(term))) |> 
+  mutate(
+    term_hyphenated = term |> 
+      str_replace_all(" ", "-") |> 
+      str_to_lower(),
+    md = glue("
+      {term}<a name='{term_hyphenated}'></a>
+      : {definition}")) |> 
+  pull(md) |> 
+  paste(collapse = "\n\n") |> 
+  cat()
+```
 

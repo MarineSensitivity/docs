@@ -14,8 +14,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # - name: Install curl headers for curl R package source install
-      #   run: sudo apt-get install libcurl4-openssl-dev
       - name: Install librsvg (svg for pdf)
         run: brew install librsvg
 
@@ -26,8 +24,6 @@ jobs:
 
       # - name: Install TinyTeX for pdf
       #   run: quarto install tinytex
-      #     quarto install tool tinytex --log-level warning
-      #     quarto tools install tinytex
       #   https://quarto.org/docs/output-formats/pdf-engine.html
 
       - name: Install headless chromium (mmd -> img)
@@ -39,10 +35,6 @@ jobs:
           r-version: '4.4.0'
 
       - name: Install R Dependencies
-        # uses: r-lib/actions/setup-renv@v2
-        # with:
-        #   cache-version: 1
-        # NEW: simpler using DESCRIPTION file
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           cache-version: 2

@@ -3,6 +3,8 @@ project:
   output-dir: _book
   resources:
   - "/.nojekyll"
+  post-render:
+    - libs/cleanup.R
 
 execute:
   echo: false
@@ -30,13 +32,15 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
-    - part: science.qmd
+    - part: Science
       chapters:
+        - science.qmd
         - stressors.qmd
         - receptors.qmd
         - exposure.qmd
-    - part: software.qmd
+    - part: Software
       chapters:
+        - software.qmd
         - server.qmd
         - db.qmd
         - workflows.qmd
@@ -58,21 +62,22 @@ book:
         - apps/bird_hotspots.qmd
         - apps/map.qmd
 
-
 bibliography: references.bib
+
+glossary:  # https://debruine.github.io/quarto-glossary/
+  path: glossary.yml
+  popup: click
+  show: true
 
 format:
   html:
     theme: cosmo
-    css: glossary/glossary.css
     echo: false
-  pdf:
-    documentclass: scrreprt
   docx:
     toc: true
     echo: false
     number-sections: true
     highlight-style: github
-
-
-
+    keep-md: true  # see libs/cleanup.R
+  pdf:
+    documentclass: scrreprt

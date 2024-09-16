@@ -34,6 +34,7 @@ Historically, to read a raster, such as a GeoTIFF, from the web, the client soft
 %%| label: fig-raster
 %%| fig-cap: "Sequence diagram implementing large raster interactive display using Cloud-Optimized GeoTIFFs (COGs) and Titiler in a Shiny mapping app."
 %%| file: diagrams/raster.mmd
+%%| fig-width: 6
 ```
 
 #### Vector: Mapbox Vector Tiles (**MVTs**) and **pg_tileserv**
@@ -44,6 +45,7 @@ Although "cloud native" vector formats exist for simple file storage (see [Cloud
 %%| label: fig-vector
 %%| fig-cap: "Sequence diagram implementing large vector interactive display using Mapbox Vector Tiles (MVTs) and pg_tileserv in a Shiny mapping app."
 %%| file: diagrams/vector.mmd
+%%| fig-width: 6
 ```
 
 ### Github Repositories

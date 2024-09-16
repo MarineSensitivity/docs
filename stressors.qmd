@@ -1,7 +1,4 @@
----
-title: "Stressors"
-editor: visual
----
+# Stressors
 
 ## Offshore Wind Energy
 
