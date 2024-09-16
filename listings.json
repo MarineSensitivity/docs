@@ -1,16 +1,5 @@
 [
   {
-    "listing": "/apps.html",
-    "items": [
-      "/apps/aoi.html",
-      "/apps/bird_hotspots.html",
-      "/apps/sdm-cog.html",
-      "/apps/sdm.html",
-      "/apps/map.html",
-      "/apps/vmap.html"
-    ]
-  },
-  {
     "listing": "/software.html",
     "items": [
       "/apis.html",
@@ -20,6 +9,17 @@
       "/libraries.html",
       "/server.html",
       "/workflows.html"
+    ]
+  },
+  {
+    "listing": "/apps.html",
+    "items": [
+      "/apps/aoi.html",
+      "/apps/bird_hotspots.html",
+      "/apps/sdm-cog.html",
+      "/apps/sdm.html",
+      "/apps/map.html",
+      "/apps/vmap.html"
     ]
   }
 ]
