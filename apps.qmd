@@ -1,5 +1,4 @@
 ---
-title: Apps
 description: "interactive applications using Shiny"
 image: /figures/components/apps.png
 output: html_document
@@ -8,12 +7,15 @@ editor_options:
 listing: 
   id: list-apps
   contents: 
-   - "./apps/*.qmd"
+   - "/apps/*.qmd"
   type: grid
   categories: true
   image-height: 100px
 ---
 
+# Apps
+
 ::: {#list-apps}
 :::
 
+See also details of individual applications in the Appendix.

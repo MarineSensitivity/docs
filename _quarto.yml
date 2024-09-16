@@ -53,14 +53,14 @@ book:
   appendices:
     - glossary.qmd
     # - notes.qmd
-    - part: apps.qmd
+    - part: Applications
       chapters:
-        - apps/vmap.qmd
-        - apps/sdm-cog.qmd
-        - apps/sdm.qmd
         - apps/aoi.qmd
         - apps/bird_hotspots.qmd
         - apps/map.qmd
+        - apps/sdm.qmd
+        - apps/sdm-cog.qmd
+        - apps/vmap.qmd
 
 bibliography: references.bib
 

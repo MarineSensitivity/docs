@@ -2,7 +2,7 @@
 #   keep-md: true
 #  per [Supporting file are cleanup to soon when using multiformat](https://github.com/quarto-dev/quarto-cli/issues/8373#issuecomment-1979245883)
 
-mds <- list.files(pattern = ".+\\.docx\\.md")
+mds <- list.files(pattern = ".+\\.docx\\.md", recursive = T)
 unlink(mds)
 
 dirs <- list.files(pattern = ".+_files")
