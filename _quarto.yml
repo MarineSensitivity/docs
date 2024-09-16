@@ -12,7 +12,7 @@ execute:
 
 book:
   title: "Marine Sensitivity"
-  subtitle: "Marine Sensitivity Documentation"
+  subtitle: "Project Documentation"
   author: "Ben Best"
   date: today
   date-format: "YYYY-MM-DD"
