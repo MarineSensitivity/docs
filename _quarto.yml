@@ -3,8 +3,10 @@ project:
   output-dir: _book
   resources:
   - "/.nojekyll"
+  pre-render:
+    - libs/pre-render.R
   post-render:
-    - libs/cleanup.R
+    - libs/post-render.R
 
 execute:
   echo: false

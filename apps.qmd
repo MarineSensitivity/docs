@@ -18,4 +18,10 @@ listing:
 ::: {#list-apps}
 :::
 
+```{r}
+# initiate for inline r code
+```
+
+`{r} I(g("![](figures/listing-apps.png)"))`
+
 See also details of individual applications in the Appendix.

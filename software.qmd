@@ -74,4 +74,11 @@ gh(glue("GET /orgs/{org}/repos")) |>
 ::: {#list-components}
 :::
 
+```{r}
+# initiate for inline r code
+```
+
+`{r} I(g("![](figures/listing-software.png)"))`
+
+
 

@@ -19,4 +19,5 @@ Imports:
     quarto,
     stringr,
     tidyjson,
+    webshot2,
     yaml
