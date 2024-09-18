@@ -3,7 +3,7 @@
 # add to DESCRIPTION
 pkgs <- c(
   "dplyr", "gh", "glue", "here", "knitr", "quarto", "stringr", "tidyjson",
-  "yaml","webshot2")
+  "yaml")
 sapply(pkgs, usethis::use_package)
 
 # install Quarto _extensions in Terminal:
