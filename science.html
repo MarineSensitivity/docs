@@ -385,8 +385,8 @@ window.Quarto = {
 </header>
 
 
-<p>The term <button class="glossary"><span class="def">combination of exposure and sensitivity</span>vulnerability</button> (<span class="math inline">\(V\)</span>) is a function of <button class="glossary"><span class="def">the magnitude of the change in the environment</span>exposure</button> (<span class="math inline">\(E\)</span>), <button class="glossary"><span class="def">the magnitude of response to the change</span>sensitivity</button> (<span class="math inline">\(S\)</span>) and <button class="glossary"><span class="def">the capacity of the ecosystem or organism to improve and reorganise in response to stress such as climate change through phenotypic plasticity (acclimation, acclimatisation) or adaptation, distributional shifts, and rapid evolution of traits suited to new conditions. Source: @ross2023.</span>adaptive capacity</button> (<span class="math inline">\(A\)</span>).</p>
-<p><span id="eq-vuln"><span class="math display">\[
+<p>The term <button class="glossary"><span class="def">combination of exposure and sensitivity</span>vulnerability</button> (<span class="math inline">\(V\)</span>) is a function of <button class="glossary"><span class="def">the magnitude of the change in the environment</span>exposure</button> (<span class="math inline">\(E\)</span>), <button class="glossary"><span class="def">the magnitude of response to the change</span>sensitivity</button> (<span class="math inline">\(S\)</span>) and <button class="glossary"><span class="def">the capacity of the ecosystem or organism to improve and reorganise in response to stress such as climate change through phenotypic plasticity (acclimation, acclimatisation) or adaptation, distributional shifts, and rapid evolution of traits suited to new conditions. Source: @ross2023.</span>adaptive capacity</button> (<span class="math inline">\(A\)</span>) (<a href="#eq-v" class="quarto-xref">Equation&nbsp;<span>2.1</span></a>).</p>
+<p><span id="eq-v"><span class="math display">\[
 V = f(E, S, A)
 \tag{2.1}\]</span></span></p>
 <div id="fig-spp-sens_rast-tbl-aoi" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -399,11 +399,16 @@ Figure&nbsp;2.1: Overview of process.
 </figcaption>
 </figure>
 </div>
-<!--# edit drawing: https://docs.google.com/drawings/d/16vr4BpARl9qWMsXeNkasorGwfMM69662OywMN2AsLT4/edit -->
-<p><span id="eq-cells-sens"><span class="math display">\[
-cell_{S} = \sum_{spp}{p * w}
+<!--
+* edit drawing: 
+  [gdraw_spp-sens_rast-tbl-aoi - Google Drawings](https://docs.google.com/drawings/d/16vr4BpARl9qWMsXeNkasorGwfMM69662OywMN2AsLT4/edit)
+- updated locally:
+  libs/pre-render.R
+-->
+<p><span id="eq-cells-v"><span class="math display">\[
+cell_{V} = \sum_{spp}{p * w}
 \tag{2.2}\]</span></span></p>
-<p>The raster of sensitivity (<span class="math inline">\(S\)</span>) contains cells representing a sum across species (<span class="math inline">\(spp\)</span>) of presence (<span class="math inline">\(p\)</span>) multiplied by the sensitivity weight (<span class="math inline">\(w\)</span>) (<a href="#eq-cells-sens" class="quarto-xref">Equation&nbsp;<span>2.2</span></a>).</p>
+<p>The raster of vulnerability (<span class="math inline">\(V\)</span>) contains cells representing a sum across species (<span class="math inline">\(spp\)</span>) of presence (<span class="math inline">\(p\)</span>) multiplied by the sensitivity weight (<span class="math inline">\(w\)</span>) (<a href="#eq-cells-v" class="quarto-xref">Equation&nbsp;<span>2.2</span></a>).</p>
 
 
 
