@@ -32,3 +32,18 @@ Receptors are the species and habitats that are potentially impacted by the huma
 ### Seamounts
 
 ## Primary Productivity
+
+Primary productivity is specified in the explicit mandate for BOEM's management, per the Outer Continental Shelf Lands Act (OCSLA), Section 18(a)(2) of the OCSLA Amendments of 1978 specifying 8 factors the USDOI must consider in the timing and location of OCS oil and gas activities, including “the relative environmental sensitivity and marine productivity of different areas of the OCS.” [@balcom2011]
+
+We processed the Vertically Generalized Production Model (VGPM) product from [Oregon State's Ocean Productivity Lab](http://sites.science.oregonstate.edu/ocean.productivity) (using the script [vg.R](https://github.com/offshorewindhabitat/offhabr/blob/main/data-raw/datasets/vg.R)) (@fig-vgpm).
+
+```{r}
+#| label: fig-vgpm
+#| fig-cap: "Primary productivity throughout the continental United States averaged across months of 2021, as measured by Oregon State's Vertically Generalized Production Model (VGPM). Expansion is anticipated across the entire US EEZ and for more recent years."
+
+librarian::shelf(
+  offshorewindhabitat/offhabr,
+  quiet = T)
+con <- oh_con()
+oh_map_cog_lyr("vg_web", "Primary Productivity", con=con)
+```

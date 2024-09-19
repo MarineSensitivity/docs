@@ -16,7 +16,10 @@ Imports:
     here,
     knitr,
     librarian,
+    offhabr (>= 0.13.3),
     quarto,
     stringr,
     tidyjson,
     yaml
+Remotes:  
+    offshorewindhabitat/offhabr
