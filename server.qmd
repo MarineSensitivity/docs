@@ -42,7 +42,7 @@ Explanation of categories:
 -->
 
 - [**RStudio**](https://rstudio.marinesensitivity.org)\
-  _integrated development environment (IDE) to code and debug directly on the server_
+  _integrated development environment (IDE) to code and debug directly on the server_\
   ![](figures/server/rstudio.png){width=300}\
   [More info..](https://posit.co/products/open-source/rstudio-server/)
 
