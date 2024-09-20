@@ -101,7 +101,7 @@
     "href": "receptors.html#primary-productivity",
     "title": "4  Receptors",
     "section": "4.3 Primary Productivity",
-    "text": "4.3 Primary Productivity",
+    "text": "4.3 Primary Productivity\nPrimary productivity is specified in the explicit mandate for BOEM’s management, per the Outer Continental Shelf Lands Act (OCSLA), Section 18(a)(2) of the OCSLA Amendments of 1978 specifying 8 factors the USDOI must consider in the timing and location of OCS oil and gas activities, including “the relative environmental sensitivity and marine productivity of different areas of the OCS.” (Balcom et al. 2011)\nWe processed the Vertically Generalized Production Model (VGPM) product from Oregon State’s Ocean Productivity Lab (using the script vg.R) (Figure 4.1).\n\n\n\n\n\n\nFigure 4.1: Primary productivity throughout the continental United States averaged across months of 2021, as measured by Oregon State’s Vertically Generalized Production Model (VGPM). Expansion is anticipated across the entire US EEZ and for more recent years.\n\n\n\n\n\n\n\nBalcom, Brian J., Douglas C. Biggs, Chuanmin Hu, Paul Montagna, and Dean A. Stockwell. 2011. “A Comparison of Marine Productivity Among Outer Continental Shelf Planning Areas. Final Report.”",
     "crumbs": [
       "Science",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Receptors</span>"
@@ -254,7 +254,7 @@
     "href": "references.html",
     "title": "References",
     "section": "",
-    "text": "Goodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse\nEffects of Offshore Wind Energy Development on Wildlife.”\nJournal of Environmental Planning and Management 0 (0): 1–21.\nhttps://doi.org/10.1080/09640568.2014.973483.\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, Tracy D. Ainsworth,\nJennifer M. Donelson, Shawna A. Foo, Pat Hutchings, Vengatesen\nThiyagarajan, and Laura M. Parker. 2023. “Surviving the\nAnthropocene: The Resilience of Marine Animals to Climate\nChange.” In. CRC Press.",
+    "text": "Balcom, Brian J., Douglas C. Biggs, Chuanmin Hu, Paul Montagna, and Dean\nA. Stockwell. 2011. “A Comparison of Marine Productivity Among\nOuter Continental Shelf Planning Areas. Final Report.”\n\n\nGoodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse\nEffects of Offshore Wind Energy Development on Wildlife.”\nJournal of Environmental Planning and Management 0 (0): 1–21.\nhttps://doi.org/10.1080/09640568.2014.973483.\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, Tracy D. Ainsworth,\nJennifer M. Donelson, Shawna A. Foo, Pat Hutchings, Vengatesen\nThiyagarajan, and Laura M. Parker. 2023. “Surviving the\nAnthropocene: The Resilience of Marine Animals to Climate\nChange.” In. CRC Press.",
     "crumbs": [
       "References"
     ]

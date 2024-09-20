@@ -20,7 +20,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -420,8 +440,25 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="primary-productivity" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="primary-productivity"><span class="header-section-number">4.3</span> Primary Productivity</h2>
+<p>Primary productivity is specified in the explicit mandate for BOEM’s management, per the Outer Continental Shelf Lands Act (OCSLA), Section 18(a)(2) of the OCSLA Amendments of 1978 specifying 8 factors the USDOI must consider in the timing and location of OCS oil and gas activities, including “the relative environmental sensitivity and marine productivity of different areas of the OCS.” <span class="citation" data-cites="balcom2011">(<a href="references.html#ref-balcom2011" role="doc-biblioref">Balcom et al. 2011</a>)</span></p>
+<p>We processed the Vertically Generalized Production Model (VGPM) product from <a href="http://sites.science.oregonstate.edu/ocean.productivity">Oregon State’s Ocean Productivity Lab</a> (using the script <a href="https://github.com/offshorewindhabitat/offhabr/blob/main/data-raw/datasets/vg.R">vg.R</a>) (<a href="#fig-vgpm" class="quarto-xref">Figure&nbsp;<span>4.1</span></a>).</p>
+<div id="fig-vgpm" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-vgpm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/vgpm2021_offhab.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vgpm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.1: Primary productivity throughout the continental United States averaged across months of 2021, as measured by Oregon State’s Vertically Generalized Production Model (VGPM). Expansion is anticipated across the entire US EEZ and for more recent years.
+</figcaption>
+</figure>
+</div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-balcom2011" class="csl-entry" role="listitem">
+Balcom, Brian J., Douglas C. Biggs, Chuanmin Hu, Paul Montagna, and Dean A. Stockwell. 2011. <span>“A Comparison of Marine Productivity Among Outer Continental Shelf Planning Areas. Final Report.”</span>
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
