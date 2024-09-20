@@ -119,134 +119,156 @@
     ]
   },
   {
+    "objectID": "scoring.html",
+    "href": "scoring.html",
+    "title": "6  Scoring",
+    "section": "",
+    "text": "6.1 Visualization\nWe are in process with sorting the scoring methodology informed by visualization approaches.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#visualization",
+    "href": "scoring.html#visualization",
+    "title": "6  Scoring",
+    "section": "",
+    "text": "6.1.1 Treemap\n\n\nAudience: scientists\nShow contribution of each element to a given pixel or area of interest\nElements can be hierarchical across Sensitivity metrics and/or taxonomy\nInteractively zoom, e.g.: 4. Critically Endangered &gt; Animalia &gt; Mammalia\n\n\n\n\n6.1.2 Flower Plot\n\nPetal Length\n“One question was about the meaning of the numbers on the pedal plot. I explained that a higher sensitivity score indicates an area that could be susceptible to minor perturbations, while a lower score suggests an area that is more robust to minor changes.” - TW\n\nOHI\nIn the original Ocean Health Index (Halpern et al. 2012), the length of the petal reflected the percent towards maximum sustainability of the given goal. The framework is also based on a reference point, either spatially or temporally (Samhouri et al. 2012).\n\nRESA ’25\nIt makes sense to make the most vulnerable the highest score, so a low score is preferable (versus a preferred high score for sustainability of an OHI goal). We’ll need to determine what the “highest” score means as a reference point and consider SMART criteria. (Specific, Measurable, Assignable, Realistic, Time-related). Will the reference point be the same globally or vary based on some regional maximum?\n\nPetal Width (and possiblyvarying weights)\n“Another question was about how we manage the weights. I mentioned that we are not currently applying weights, but someone seemed concerned about it. We can discuss this further if needed.” - TW\n\nOHI\nFor the OHI flower plot, the width of the petal represents its weight contributing to the weighted average score in the center of the flower. The varying importance of each goal is based on societally held values with potentially different value sets, such as preservationist vs extractive:\n\nRESA ’25\nFor the RESA ’25, when looking at Species, Habitats and Primary Productivity, how shall they be weighted to factor into a final score? Shall species groups be simply weighted based on the number of species within, total biomass, extinction risk, commercial value, etc? And then Species versus less numerous Benthic Habitats and a singular value for Primary Productivity? I will conduct a literature survey to assign sensible value sets, but an App could also apply a user-defined value set to assign weights. That gets messy, but if transparent and easy ideally would lead to scientific consensus with a workshop and/or survey.\n\n\n\n\n\n\n\nHalpern, Benjamin S., Catherine Longo, Darren Hardy, Karen L. McLeod, Jameal F. Samhouri, Steven K. Katona, Kristin Kleisner, et al. 2012. “An Index to Assess the Health and Benefits of the Global Ocean.” Nature. https://doi.org/10.1038/nature11397.\n\n\nSamhouri, Jameal F., Sarah E. Lester, Elizabeth R. Selig, Benjamin S. Halpern, Michael J. Fogarty, Catherine Longo, and Karen L. McLeod. 2012. “Sea Sick? Setting Targets to Assess Ocean Health and Ecosystem Services.” Ecosphere 3 (5): 1–18. https://doi.org/10.1890/es11-00366.1.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
     "objectID": "software.html",
     "href": "software.html",
-    "title": "6  Software",
+    "title": "7  Software",
     "section": "",
-    "text": "6.0.1 Interactive Applications\nWe have developed a series of interactive applications to explore the data and results of the MS project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the shiny package in R, which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.\n\n\n6.0.2 Overcoming Challenges with Large Spatial Data\nThe MS project incorporates many large spatial datasets that are problematic to render in a typical interactive application. For instance, the most common interactive mapping R package leaflet has a 4MB limitation for displaying rasters (see “Large Raster Warning” in Raster Images • leaflet). Vectors (i.e., points, lines and polygons) get smoothed when containing many vertices, but contiguity gets lost between polygons and rendering degrades to non-usable depending on the internet speed of the user’s connection.\nTo work around these limitations, we have implemented “cloud native” web services and formats (see also Cloud-Optimized Geospatial Formats Guide). Our implementations effectively reduce the size of any given spatial object based on the zoom level of the user’s browser. For rasters, we use cloud-optimized GeoTIFFs (COGs) and for vectors, we use Mapbox Vector Tiles (MVT). These formats are designed to be fast and efficient for web mapping applications, and they allow us to display large spatial datasets in an interactive web application without sacrificing performance or usability. Let’s take a closer look at implementation of each.\n\n6.0.2.1 Raster: Cloud-Optimized GeoTIFFs (COGs) and Titiler\nHistorically, to read a raster, such as a GeoTIFF, from the web, the client software would have to read the entire file before rendering. Cloud Optimized GeoTIFFs (COGs) take advantage of HTTP GET range requests to read only the part of the file needed for rendering. So a COG stores quadtree simplifications of the original raster at multiple zoom levels and metadata for accessing their byte ranges in the file in the metadata header. This allows the client software to request only the parts of the file needed for rendering, which can greatly reduce the amount of data transferred and speed up rendering. This is for accessing the raw data in pixel values, e.g., for a raster of species distribution then the abundance of a species in each cell. We would want to also apply a color ramp to visualize the data. The open-source (TiTiler software is a lightweight web service that serves up these color ramped tiles on the fly. So COGs can be stored on a simple file server (like Amazon S3 or Azure Blob Storage) and served up as interactive web maps with TiTiler as an intermediary between the COG files and the client accessing the interactive Shiny mapping app (Figure 6.1).\n\n\n\n\n\n\nsequenceDiagram\n  autonumber\n  Client      -&gt;&gt; ShinyServer: request Shiny map app with a raster layer\n  ShinyServer -&gt;&gt; Client:      return JavaScript (JS) with URL specification for raster tiles\n  loop for every tile in the current view (based on zoom level and bounding box)\n    Client     -&gt;&gt; TiTiler:    request specific raster tile ({z}/{x}/{y})\n    TiTiler    -&gt;&gt; FileServer: read metadata from COG file and request byte range for tile ({z}/{x}/{y})\n    FileServer -&gt;&gt; TiTiler:    send byte range for tile\n    TiTiler    -&gt;&gt; Client:     apply color ramp to tile and return PNG\n  end\n\n\n\n\nFigure 6.1: Sequence diagram implementing large raster interactive display using Cloud-Optimized GeoTIFFs (COGs) and Titiler in a Shiny mapping app.\n\n\n\n\n\n\n\n6.0.2.2 Vector: Mapbox Vector Tiles (MVTs) and pg_tileserv\nAlthough “cloud native” vector formats exist for simple file storage (see Cloud-Optimized Geospatial Formats Guide), none of these allow for flexible filtering and manipulation. Instead, we use PostgreSQL with the spatial extension (PostGIS) to store the vector data and serve it as Mapbox Vector Tiles (MVTs) using the pg_tileserv web service written in the language Go, which is very fast. This means that we don’t have to pre-render the MVTs (such as you might do with tippecanoe), but can instead serve the raw vector data directly from the database and let pg_tileserv handle the rendering on the fly. Filters (in the form of CQL) can be applied to the request. Symbology is rendered client-side via JavaScript, which allows for interactive hover and click events on vector objects (e.g., BOEM aliquot). Some speed-up is enabled by implementing a Varnish cache service in between. We can even write our own database functions for customized rendering, such as H3 hexagonal summaries. This allows us to serve vector data as web maps with minimal configuration and setup, and it provides a fast and efficient way to display large vector datasets in an interactive web application (Figure 6.2).\n\n\n\n\n\n\nsequenceDiagram\n  autonumber\n  Client        -&gt;&gt; ShinyServer: request Shiny map app with a vector layer\n  ShinyServer   -&gt;&gt; Client: return JavaScript (JS) with URL specification for vector tiles\n  loop for every tile in the current view (based on zoom level and bounding box)\n    Client      -&gt;&gt; VarnishCache: request specific vector tile ({z}/{x}/{y})\n    alt cache hit\n      VarnishCache -&gt;&gt; Client: return vector tile\n    else cache miss\n      VarnishCache -&gt;&gt; pg_tileserv:  request specific vector tile ({z}/{x}/{y})\n      pg_tileserv  -&gt;&gt; pgDB:         run query to create vector tile in PostGIS database\n      pgDB         -&gt;&gt; pg_tileserv:  return vector tile in compressed Protobuf format (*.pbf)\n      pg_tileserv  -&gt;&gt; VarnishCache: store vector tile\n      VarnishCache -&gt;&gt; Client:       return vector tile\n    end\n  end\n\n\n\n\nFigure 6.2: Sequence diagram implementing large vector interactive display using Mapbox Vector Tiles (MVTs) and pg_tileserv in a Shiny mapping app.\n\n\n\n\n\n\n\n\n6.0.3 Github Repositories\n\n\n\n\n\nrepo\ndescription\n\n\n\n\napi\napplication programming interface (API) using R Plumber package\n\n\napps\nShiny applications\n\n\ndocs\ndocumentation for BOEM’s offshore environmental sensitivity index products\n\n\nmanuscripts\nManuscripts with review of sensitivities by industry and receptors (species, habitats, human uses)\n\n\nMarineSensitivity.github.io\ndefault website\n\n\nmsens\nR library of functions for mapping marine sensitivities, sponsored by BOEM\n\n\nobjectives\nrepository for issues spanning multiple repositories and doing big picture roadmapping\n\n\nserver\nserver setup for R Shiny apps, RStudio IDE, R Plumber API, PostGIS database, pg_tileserv\n\n\nworkflows\nscripts for testing data analytics and visualization as well as production workflows\n\n\n\n\n\n\n\n6.0.4 Software Components\n\n\n\n\n\n\n\n\n\n\nAPIs\n\n\napplication programming interfaces (APIs)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApps\n\n\ninteractive applications using Shiny\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDatabase\n\n\nPostgreSQL database extended spatially with PostGIS\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDocs\n\n\ntechnical documentation\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLibraries\n\n\ndocumented functions as an R package\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nServer\n\n\nserver software configuration using Docker\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorkflows\n\n\nscripts for exploring plus production workflows\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items",
+    "text": "7.0.1 Interactive Applications\nWe have developed a series of interactive applications to explore the data and results of the MS project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the shiny package in R, which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.\n\n\n7.0.2 Overcoming Challenges with Large Spatial Data\nThe MS project incorporates many large spatial datasets that are problematic to render in a typical interactive application. For instance, the most common interactive mapping R package leaflet has a 4MB limitation for displaying rasters (see “Large Raster Warning” in Raster Images • leaflet). Vectors (i.e., points, lines and polygons) get smoothed when containing many vertices, but contiguity gets lost between polygons and rendering degrades to non-usable depending on the internet speed of the user’s connection.\nTo work around these limitations, we have implemented “cloud native” web services and formats (see also Cloud-Optimized Geospatial Formats Guide). Our implementations effectively reduce the size of any given spatial object based on the zoom level of the user’s browser. For rasters, we use cloud-optimized GeoTIFFs (COGs) and for vectors, we use Mapbox Vector Tiles (MVT). These formats are designed to be fast and efficient for web mapping applications, and they allow us to display large spatial datasets in an interactive web application without sacrificing performance or usability. Let’s take a closer look at implementation of each.\n\n7.0.2.1 Raster: Cloud-Optimized GeoTIFFs (COGs) and Titiler\nHistorically, to read a raster, such as a GeoTIFF, from the web, the client software would have to read the entire file before rendering. Cloud Optimized GeoTIFFs (COGs) take advantage of HTTP GET range requests to read only the part of the file needed for rendering. So a COG stores quadtree simplifications of the original raster at multiple zoom levels and metadata for accessing their byte ranges in the file in the metadata header. This allows the client software to request only the parts of the file needed for rendering, which can greatly reduce the amount of data transferred and speed up rendering. This is for accessing the raw data in pixel values, e.g., for a raster of species distribution then the abundance of a species in each cell. We would want to also apply a color ramp to visualize the data. The open-source (TiTiler software is a lightweight web service that serves up these color ramped tiles on the fly. So COGs can be stored on a simple file server (like Amazon S3 or Azure Blob Storage) and served up as interactive web maps with TiTiler as an intermediary between the COG files and the client accessing the interactive Shiny mapping app (Figure 7.1).\n\n\n\n\n\n\nsequenceDiagram\n  autonumber\n  Client      -&gt;&gt; ShinyServer: request Shiny map app with a raster layer\n  ShinyServer -&gt;&gt; Client:      return JavaScript (JS) with URL specification for raster tiles\n  loop for every tile in the current view (based on zoom level and bounding box)\n    Client     -&gt;&gt; TiTiler:    request specific raster tile ({z}/{x}/{y})\n    TiTiler    -&gt;&gt; FileServer: read metadata from COG file and request byte range for tile ({z}/{x}/{y})\n    FileServer -&gt;&gt; TiTiler:    send byte range for tile\n    TiTiler    -&gt;&gt; Client:     apply color ramp to tile and return PNG\n  end\n\n\n\n\nFigure 7.1: Sequence diagram implementing large raster interactive display using Cloud-Optimized GeoTIFFs (COGs) and Titiler in a Shiny mapping app.\n\n\n\n\n\n\n\n7.0.2.2 Vector: Mapbox Vector Tiles (MVTs) and pg_tileserv\nAlthough “cloud native” vector formats exist for simple file storage (see Cloud-Optimized Geospatial Formats Guide), none of these allow for flexible filtering and manipulation. Instead, we use PostgreSQL with the spatial extension (PostGIS) to store the vector data and serve it as Mapbox Vector Tiles (MVTs) using the pg_tileserv web service written in the language Go, which is very fast. This means that we don’t have to pre-render the MVTs (such as you might do with tippecanoe), but can instead serve the raw vector data directly from the database and let pg_tileserv handle the rendering on the fly. Filters (in the form of CQL) can be applied to the request. Symbology is rendered client-side via JavaScript, which allows for interactive hover and click events on vector objects (e.g., BOEM aliquot). Some speed-up is enabled by implementing a Varnish cache service in between. We can even write our own database functions for customized rendering, such as H3 hexagonal summaries. This allows us to serve vector data as web maps with minimal configuration and setup, and it provides a fast and efficient way to display large vector datasets in an interactive web application (Figure 7.2).\n\n\n\n\n\n\nsequenceDiagram\n  autonumber\n  Client        -&gt;&gt; ShinyServer: request Shiny map app with a vector layer\n  ShinyServer   -&gt;&gt; Client: return JavaScript (JS) with URL specification for vector tiles\n  loop for every tile in the current view (based on zoom level and bounding box)\n    Client      -&gt;&gt; VarnishCache: request specific vector tile ({z}/{x}/{y})\n    alt cache hit\n      VarnishCache -&gt;&gt; Client: return vector tile\n    else cache miss\n      VarnishCache -&gt;&gt; pg_tileserv:  request specific vector tile ({z}/{x}/{y})\n      pg_tileserv  -&gt;&gt; pgDB:         run query to create vector tile in PostGIS database\n      pgDB         -&gt;&gt; pg_tileserv:  return vector tile in compressed Protobuf format (*.pbf)\n      pg_tileserv  -&gt;&gt; VarnishCache: store vector tile\n      VarnishCache -&gt;&gt; Client:       return vector tile\n    end\n  end\n\n\n\n\nFigure 7.2: Sequence diagram implementing large vector interactive display using Mapbox Vector Tiles (MVTs) and pg_tileserv in a Shiny mapping app.\n\n\n\n\n\n\n\n\n7.0.3 Github Repositories\n\n\n\n\n\nrepo\ndescription\n\n\n\n\napi\napplication programming interface (API) using R Plumber package\n\n\napps\nShiny applications\n\n\ndocs\ndocumentation for BOEM’s offshore environmental sensitivity index products\n\n\nmanuscripts\nManuscripts with review of sensitivities by industry and receptors (species, habitats, human uses)\n\n\nMarineSensitivity.github.io\ndefault website\n\n\nmsens\nR library of functions for mapping marine sensitivities, sponsored by BOEM\n\n\nobjectives\nrepository for issues spanning multiple repositories and doing big picture roadmapping\n\n\nserver\nserver setup for R Shiny apps, RStudio IDE, R Plumber API, PostGIS database, pg_tileserv\n\n\nworkflows\nscripts for testing data analytics and visualization as well as production workflows\n\n\n\n\n\n\n\n7.0.4 Software Components\n\n\n\n\n\n\n\n\n\n\nAPIs\n\n\napplication programming interfaces (APIs)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApps\n\n\ninteractive applications using Shiny\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDatabase\n\n\nPostgreSQL database extended spatially with PostGIS\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDocs\n\n\ntechnical documentation\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLibraries\n\n\ndocumented functions as an R package\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nServer\n\n\nserver software configuration using Docker\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorkflows\n\n\nscripts for exploring plus production workflows\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Software</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Software</span>"
     ]
   },
   {
     "objectID": "server.html",
     "href": "server.html",
-    "title": "7  Server",
+    "title": "8  Server",
     "section": "",
-    "text": "7.1 Setup\nFor instructions on launching an Amazon instance and installing the server software, see Server Setup · MarineSensitivity/server Wiki.",
+    "text": "8.1 Setup\nFor instructions on launching an Amazon instance and installing the server software, see Server Setup · MarineSensitivity/server Wiki.",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Server</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Server</span>"
     ]
   },
   {
     "objectID": "server.html#services",
     "href": "server.html#services",
-    "title": "7  Server",
-    "section": "7.2 Services",
-    "text": "7.2 Services\nThe server is running the following services:\n\n\nRStudio\nintegrated development environment (IDE) to code and debug directly on the server \nMore info..\nShiny\ninteractive applications\ne.g., shiny.marinesensitivity.org/map\n\nMore info..\nPGadmin\nPostGreSQL database administration interface\n\nMore info..\napi\ncustom API: using R plumber\n\nMore info..\nswagger\ngeneric database API: using PostGREST\n\nMore info..\ntile\nspatial database API: using pg_tileserv for serving vector tiles\n\nMore info..",
+    "title": "8  Server",
+    "section": "8.2 Services",
+    "text": "8.2 Services\nThe server is running the following services:\n\n\nRStudio\nintegrated development environment (IDE) to code and debug directly on the server\n\nMore info..\nShiny\ninteractive applications\ne.g., shiny.marinesensitivity.org/map\n\nMore info..\nPGadmin\nPostGreSQL database administration interface\n\nMore info..\napi\ncustom API: using R plumber\n\nMore info..\nswagger\ngeneric database API: using PostGREST\n\nMore info..\ntile\nspatial database API: using pg_tileserv for serving vector tiles\n\nMore info..",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Server</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Server</span>"
     ]
   },
   {
     "objectID": "db.html",
     "href": "db.html",
-    "title": "8  Database",
+    "title": "9  Database",
     "section": "",
-    "text": "8.1 Table and Column Naming Conventions",
+    "text": "9.1 Table and Column Naming Conventions",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Database</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Database</span>"
     ]
   },
   {
     "objectID": "db.html#table-and-column-naming-conventions",
     "href": "db.html#table-and-column-naming-conventions",
-    "title": "8  Database",
+    "title": "9  Database",
     "section": "",
     "text": "Table names are plural and use all lower case.\nUnique identifiers are suffixed with:\n\n*_id for unique integer keys;\n*_key for unique string keys;\n*_seq for auto-incrementing sequence integer keys.\n\nColumn names are singular and use snake_case.\nForeign keys are named with the singular form of the table they reference, followed by _id.\nPrimary keys are named id.",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Database</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Database</span>"
     ]
   },
   {
     "objectID": "db.html#species-distribution-models",
     "href": "db.html#species-distribution-models",
-    "title": "8  Database",
-    "section": "8.2 Species Distribution Models",
-    "text": "8.2 Species Distribution Models\nSee entity relationship diagram (ERD) for the species distribution models (SDM) database tables in this workflow:\n\nCreate SDM Tables\n\nAnd example of ingesting SDM outputs into the database in this workflow:\n\nIngest GoMex cetacean & sea turtle SDMs",
+    "title": "9  Database",
+    "section": "9.2 Species Distribution Models",
+    "text": "9.2 Species Distribution Models\nSee entity relationship diagram (ERD) for the species distribution models (SDM) database tables in this workflow:\n\nCreate SDM Tables\n\nAnd example of ingesting SDM outputs into the database in this workflow:\n\nIngest GoMex cetacean & sea turtle SDMs",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Database</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Database</span>"
     ]
   },
   {
     "objectID": "workflows.html",
     "href": "workflows.html",
-    "title": "9  Workflows",
+    "title": "10  Workflows",
     "section": "",
     "text": "Workflows are scripts for testing data analytics and visualization as well as production workflows for ingesting data. See:\n\nmarinesensitivity.org/workflows\nrendered html pages from the scripts (as Quarto notebooks)\ngithub.com/MarineSensitivity/workflows\nsource code in the Github repository",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Workflows</span>"
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Workflows</span>"
     ]
   },
   {
     "objectID": "apis.html",
     "href": "apis.html",
-    "title": "10  APIs",
+    "title": "11  APIs",
     "section": "",
     "text": "There three APIs, each used for different purposes:\n\napi\ncustom API: using R plumber\nsource: MarineSensitivity/api\n\n\nswagger\ngeneric database API: using PostGREST\nsource: Postgres database, non-spatial\n\n\ntile\nspatial database API: using pg_tileserv for serving vector tiles\nsource: Postgres database, spatial",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>10</span>  <span class='chapter-title'>APIs</span>"
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>APIs</span>"
     ]
   },
   {
     "objectID": "libraries.html",
     "href": "libraries.html",
-    "title": "11  Libraries",
+    "title": "12  Libraries",
     "section": "",
     "text": "By creating an R package, we can document functions and make them easily available to other users.\n\nmsens\nR library of functions for mapping marine sensitivities, sponsored by BOEM\n\nFunctions can read data from the one APIs (which communicate with the Database), analyze the data, visualize the results and store some smaller data.",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Libraries</span>"
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Libraries</span>"
     ]
   },
   {
     "objectID": "apps.html",
     "href": "apps.html",
-    "title": "12  Apps",
+    "title": "13  Apps",
     "section": "",
     "text": "Areas of Interest\n\n\n\nareas\n\n\nvector\n\n\n\nMap high resolution Areas of Interest (using vector tiles) for visualization (and later summarization).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBird Hotspots\n\n\n\ndistributions\n\n\nhotspots\n\n\n\nBird hotspots application showing hotspot probability for species present given drawn Area of Interest.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDistributions, Raster\n\n\n\ndistributions\n\n\nraster\n\n\n\nShow species distributions with high resolution rasters as cloud-optimized GeoTIFFs (COGs).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDistributions, Vector\n\n\n\ndistributions\n\n\nvector\n\n\n\nShow species distributions with high resolution vectors (as vector tiles).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRegional Map\n\n\n\nareas\n\n\n\nBasic interactive map of BOEM regions.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVulnerability Mapper\n\n\n\ndistributions\n\n\nvulnerabilities\n\n\nraster\n\n\n\nCombine species distribution models (raster) and vulnerability metrics (tables) to identify areas of high conservation concern.\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items\n\n\nSee also details of individual applications in the Appendix.",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Apps</span>"
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Apps</span>"
     ]
   },
   {
     "objectID": "docs.html",
     "href": "docs.html",
-    "title": "13  Docs",
+    "title": "14  Docs",
     "section": "",
     "text": "Technical documentation is principally in this book:\n\nmarinesensitivity.org/docs\nthe main documentation site\ngithub.com/MarineSensitivity/docs\nsource code in the Github repository\n\nBut there are also some other self-documenting resources:\n\nmarinesensitivity.org/msens\ndocumented R functions",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Docs</span>"
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Docs</span>"
     ]
   },
   {
     "objectID": "summary.html",
     "href": "summary.html",
-    "title": "14  Summary",
+    "title": "15  Summary",
     "section": "",
     "text": "…",
     "crumbs": [
-      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Summary</span>"
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Summary</span>"
     ]
   },
   {
@@ -254,7 +276,7 @@
     "href": "references.html",
     "title": "References",
     "section": "",
-    "text": "Balcom, Brian J., Douglas C. Biggs, Chuanmin Hu, Paul Montagna, and Dean\nA. Stockwell. 2011. “A Comparison of Marine Productivity Among\nOuter Continental Shelf Planning Areas. Final Report.”\n\n\nGoodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse\nEffects of Offshore Wind Energy Development on Wildlife.”\nJournal of Environmental Planning and Management 0 (0): 1–21.\nhttps://doi.org/10.1080/09640568.2014.973483.\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, Tracy D. Ainsworth,\nJennifer M. Donelson, Shawna A. Foo, Pat Hutchings, Vengatesen\nThiyagarajan, and Laura M. Parker. 2023. “Surviving the\nAnthropocene: The Resilience of Marine Animals to Climate\nChange.” In. CRC Press.",
+    "text": "Balcom, Brian J., Douglas C. Biggs, Chuanmin Hu, Paul Montagna, and Dean\nA. Stockwell. 2011. “A Comparison of Marine Productivity Among\nOuter Continental Shelf Planning Areas. Final Report.”\n\n\nGoodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse\nEffects of Offshore Wind Energy Development on Wildlife.”\nJournal of Environmental Planning and Management 0 (0): 1–21.\nhttps://doi.org/10.1080/09640568.2014.973483.\n\n\nHalpern, Benjamin S., Catherine Longo, Darren Hardy, Karen L. McLeod,\nJameal F. Samhouri, Steven K. Katona, Kristin Kleisner, et al. 2012.\n“An Index to Assess the Health and Benefits of the Global\nOcean.” Nature. https://doi.org/10.1038/nature11397.\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, Tracy D. Ainsworth,\nJennifer M. Donelson, Shawna A. Foo, Pat Hutchings, Vengatesen\nThiyagarajan, and Laura M. Parker. 2023. “Surviving the\nAnthropocene: The Resilience of Marine Animals to Climate\nChange.” In. CRC Press.\n\n\nSamhouri, Jameal F., Sarah E. Lester, Elizabeth R. Selig, Benjamin S.\nHalpern, Michael J. Fogarty, Catherine Longo, and Karen L. McLeod. 2012.\n“Sea Sick? Setting Targets to Assess Ocean Health and Ecosystem\nServices.” Ecosphere 3 (5): 1–18. https://doi.org/10.1890/es11-00366.1.",
     "crumbs": [
       "References"
     ]
