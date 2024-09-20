@@ -39,7 +39,9 @@ We processed the Vertically Generalized Production Model (VGPM) product from [Or
 
 ```{r}
 #| label: fig-vgpm-code
-#| eval: false # GH Action problem with offhabr install https://github.com/MarineSensitivity/docs/actions/runs/10956584027/job/30422934639
+#| eval: false 
+# eval: false b/c GH Action problem with offhabr install:
+#   https://github.com/MarineSensitivity/docs/actions/runs/10956584027/job/30422934639
 #| fig-cap: "Primary productivity throughout the continental United States averaged across months of 2021, as measured by Oregon State's Vertically Generalized Production Model (VGPM). Expansion is anticipated across the entire US EEZ and for more recent years."
 
 librarian::shelf(
