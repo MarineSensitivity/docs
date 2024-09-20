@@ -38,7 +38,8 @@ Primary productivity is specified in the explicit mandate for BOEM's management,
 We processed the Vertically Generalized Production Model (VGPM) product from [Oregon State's Ocean Productivity Lab](http://sites.science.oregonstate.edu/ocean.productivity) (using the script [vg.R](https://github.com/offshorewindhabitat/offhabr/blob/main/data-raw/datasets/vg.R)) (@fig-vgpm).
 
 ```{r}
-#| label: fig-vgpm
+#| label: fig-vgpm-code
+#| eval: false # GH Action problem with offhabr install https://github.com/MarineSensitivity/docs/actions/runs/10956584027/job/30422934639
 #| fig-cap: "Primary productivity throughout the continental United States averaged across months of 2021, as measured by Oregon State's Vertically Generalized Production Model (VGPM). Expansion is anticipated across the entire US EEZ and for more recent years."
 
 librarian::shelf(
@@ -47,3 +48,5 @@ librarian::shelf(
 con <- oh_con()
 oh_map_cog_lyr("vg_web", "Primary Productivity", con=con)
 ```
+
+![Primary productivity throughout the continental United States averaged across months of 2021, as measured by Oregon State's Vertically Generalized Production Model (VGPM). Expansion is anticipated across the entire US EEZ and for more recent years.](figures/vgpm2021_offhab.jpg){#fig-vgpm}
