@@ -8,3 +8,4 @@ _book
 *.docx.md
 site_libs/
 *_files/
+*.html
