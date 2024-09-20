@@ -40,6 +40,7 @@ book:
         - stressors.qmd
         - receptors.qmd
         - exposure.qmd
+        - scoring.qmd
     - part: Software
       chapters:
         - software.qmd
