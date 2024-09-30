@@ -16,6 +16,8 @@ listing:
 
 ## Software
 
+We ascribe to the philosophy of sharing all code for the sake of reproducibility, transparency and efficiency [@maitner2024; @lowndes2017]; i.e. the FAIR principles of Findability, Accessibility, Interoperability, and Reusability [@wilkinson2016].
+
 ### Interactive Applications
 
 We have developed a series of interactive applications to explore the data and results of the MS project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the [`shiny`](https://shiny.posit.co) package in R, which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.
@@ -39,7 +41,7 @@ Historically, to read a raster, such as a GeoTIFF, from the web, the client soft
 
 #### Vector: Mapbox Vector Tiles (**MVTs**) and **pg_tileserv**
 
-Although "cloud native" vector formats exist for simple file storage (see [Cloud-Optimized Geospatial Formats Guide](https://guide.cloudnativegeo.org/)), none of these allow for flexible filtering and manipulation. Instead, we use PostgreSQL with the spatial extension ([PostGIS](https://postgis.net)) to store the vector data and serve it as Mapbox Vector Tiles ([MVTs](https://docs.mapbox.com/vector-tiles/specification/)) using the [**pg_tileserv**](https://github.com/CrunchyData/pg_tileserv) web service written in the language Go, which is very fast. This means that we don't have to pre-render the MVTs (such as you might do with [tippecanoe](https://github.com/mapbox/tippecanoe)), but can instead serve the raw vector data directly from the database and let **pg_tileserv** handle the rendering on the fly. Filters (in the form of [CQL](https://github.com/CrunchyData/pg_tileserv/blob/master/hugo/content/usage/cql.md)) can be applied to the request. Symbology is rendered client-side via JavaScript, which allows for interactive hover and click events on vector objects (e.g., BOEM aliquot). Some speed-up is enabled by implementing a [Varnish](https://varnish-cache.org) cache service in between. We can even write our own database functions for customized rendering, such as H3 hexagonal summaries. This allows us to serve vector data as web maps with minimal configuration and setup, and it provides a fast and efficient way to display large vector datasets in an interactive web application (@fig-vector). 
+Although "cloud native" vector formats exist for simple file storage (see [Cloud-Optimized Geospatial Formats Guide](https://guide.cloudnativegeo.org/)), none of these allow for flexible filtering and manipulation. Instead, we use PostgreSQL with the spatial extension ([PostGIS](https://postgis.net)) to store the vector data and serve it as Mapbox Vector Tiles ([MVTs](https://docs.mapbox.com/vector-tiles/specification/)) using the [**pg_tileserv**](https://github.com/CrunchyData/pg_tileserv) web service written in the language Go, which is very fast. This means that we don't have to pre-render the MVTs (such as you might do with [tippecanoe](https://github.com/mapbox/tippecanoe)), but can instead serve the raw vector data directly from the database and let **pg_tileserv** handle the rendering on the fly. Filters (in the form of [CQL](https://github.com/CrunchyData/pg_tileserv/blob/master/hugo/content/usage/cql.md)) can be applied to the request. Symbology is rendered client-side via JavaScript, which allows for interactive hover and click events on vector objects (e.g., BOEM aliquot). Some speed-up is enabled by implementing a [Varnish](https://varnish-cache.org) cache service in between. We can even write our own database functions for customized rendering, such as H3 hexagonal summaries. This allows us to serve vector data as web maps with minimal configuration and setup, and it provides a fast and efficient way to display large vector datasets in an interactive web application (@fig-vector).
 
 ```{mermaid}
 %%| label: fig-vector
@@ -79,6 +81,3 @@ gh(glue("GET /orgs/{org}/repos")) |>
 ```
 
 `{r} I(g("![](figures/listing-software.png)"))`
-
-
-
