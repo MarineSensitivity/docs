@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -342,7 +376,13 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">8.1</span> Setup</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">8.1</span> Setup</a>
+  <ul class="collapse">
+  <li><a href="#launch-instance" id="toc-launch-instance" class="nav-link" data-scroll-target="#launch-instance"><span class="header-section-number">8.1.1</span> Launch instance</a></li>
+  <li><a href="#ssh-to-server" id="toc-ssh-to-server" class="nav-link" data-scroll-target="#ssh-to-server"><span class="header-section-number">8.1.2</span> SSH to server</a></li>
+  <li><a href="#install-docker" id="toc-install-docker" class="nav-link" data-scroll-target="#install-docker"><span class="header-section-number">8.1.3</span> Install Docker</a></li>
+  <li><a href="#backup-share-with-snapshots" id="toc-backup-share-with-snapshots" class="nav-link" data-scroll-target="#backup-share-with-snapshots"><span class="header-section-number">8.1.4</span> Backup <code>/share</code> with snapshots</a></li>
+  </ul></li>
   <li><a href="#services" id="toc-services" class="nav-link" data-scroll-target="#services"><span class="header-section-number">8.2</span> Services</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/server.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
@@ -372,7 +412,132 @@ ul.task-list li input[type="checkbox"] {
 <p>The server is for serving up any web services outside those of Github (e.g., <a href="https://marinesensitivity.org/">website</a>, <a href="https://marinesensitivity.org/docs">docs</a> and R package <a href="https://marinesensitivity.org/msens">msens</a>) using <a href="https://www.docker.com/">Docker</a> (see the <a href="https://github.com/MarineSensitivity/server/blob/main/docker-compose.yml">docker-compose.yml</a>; with reverse proxying from subdomains to ports by <a href="https://caddyserver.com">Caddy</a>).</p>
 <section id="setup" class="level2" data-number="8.1">
 <h2 data-number="8.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">8.1</span> Setup</h2>
-<p>For instructions on launching an Amazon instance and installing the server software, see <a href="https://github.com/MarineSensitivity/server/wiki/Server-Setup">Server Setup · MarineSensitivity/server Wiki</a>.</p>
+<p>For the latest instructions on launching an Amazon instance and installing the server software, see <a href="https://github.com/MarineSensitivity/server/wiki/Server-Setup">Server Setup · MarineSensitivity/server Wiki</a>, which is pasted below for convenience:</p>
+<p><em>on AWS as EC2 instance using Docker</em></p>
+<section id="launch-instance" class="level3" data-number="8.1.1">
+<h3 data-number="8.1.1" class="anchored" data-anchor-id="launch-instance"><span class="header-section-number">8.1.1</span> Launch instance</h3>
+<p>name: <strong>msens1</strong>:</p>
+<ul>
+<li>Software Image (AMI)<br>
+Canonical, <strong>Ubuntu</strong>, 22.04 LTS, amd64 jammy image build on 2023-09-19 ami-0fc5d935ebf8bc3bc</li>
+<li>Virtual server type (instance type)<br>
+<strong>t2.xlarge</strong> (4 vCPU, 16 GB memory)<br>
+</li>
+<li>Firewall (security group)<br>
+New security group</li>
+<li>Storage (volumes)<br>
+2 volume(s)
+<ul>
+<li><strong>20 GB</strong><br>
+<code>/</code> server software, disposable</li>
+<li><strong>60 GB</strong><br>
+<code>/share</code> for all data, persistent and to be backed up</li>
+</ul></li>
+</ul>
+<section id="allocate-ip-address" class="level4" data-number="8.1.1.1">
+<h4 data-number="8.1.1.1" class="anchored" data-anchor-id="allocate-ip-address"><span class="header-section-number">8.1.1.1</span> Allocate IP address</h4>
+<ul>
+<li><p><a href="https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#Addresses:">Elastic IP addresses | EC2 | us-east-1</a> for persistent IP address</p></li>
+<li><p>Allocated IPv4 address: <code>100.25.173.0</code></p></li>
+<li><p>Associate Elastic IP address</p></li>
+</ul>
+</section>
+</section>
+<section id="ssh-to-server" class="level3" data-number="8.1.2">
+<h3 data-number="8.1.2" class="anchored" data-anchor-id="ssh-to-server"><span class="header-section-number">8.1.2</span> SSH to server</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">pem</span><span class="op">=</span><span class="st">'/Users/bbest/My Drive/private/msens_key_pair.pem'</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-i</span> <span class="va">$pem</span> ubuntu@msens1.marinesensitivity.org</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="set-hostname" class="level4" data-number="8.1.2.1">
+<h4 data-number="8.1.2.1" class="anchored" data-anchor-id="set-hostname"><span class="header-section-number">8.1.2.1</span> Set hostname</h4>
+<ul>
+<li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/set-hostname.html">Change the hostname of your Amazon Linux instance - Amazon Elastic Compute Cloud</a></li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> vi /etc/cloud/cloud.cfg</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># preserve_hostname: true</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> hostnamectl set-hostname msens1.marinesensitivity.org</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="mount-volume" class="level4" data-number="8.1.2.2">
+<h4 data-number="8.1.2.2" class="anchored" data-anchor-id="mount-volume"><span class="header-section-number">8.1.2.2</span> Mount volume</h4>
+<p>The extra volume (60 GB for <code>/share</code>) was added during EC2 launch instance wizard, but needs to be mounted before available for use.</p>
+<ul>
+<li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html">Make an Amazon EBS volume available for use on Linux - Amazon Elastic Compute Cloud</a></li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-H</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        21G  2.3G   19G  11% /
+tmpfs           8.4G     0  8.4G   0% /dev/shm
+tmpfs           3.4G  898k  3.4G   1% /run
+tmpfs           5.3M     0  5.3M   0% /run/lock
+/dev/xvda15     110M  6.4M  104M   6% /boot/efi
+tmpfs           1.7G  4.1k  1.7G   1% /run/user/1000</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>NAME     MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+loop0      7:0    0  24.6M  1 loop /snap/amazon-ssm-agent/7528
+loop1      7:1    0  55.7M  1 loop /snap/core18/2790
+loop2      7:2    0  63.5M  1 loop /snap/core20/2015
+loop3      7:3    0 111.9M  1 loop /snap/lxd/24322
+loop4      7:4    0  40.8M  1 loop /snap/snapd/20092
+xvda     202:0    0    20G  0 disk 
+├─xvda1  202:1    0  19.9G  0 part /
+├─xvda14 202:14   0     4M  0 part 
+└─xvda15 202:15   0   106M  0 part /boot/efi
+xvdb     202:16   0    60G  0 disk</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> file <span class="at">-s</span> /dev/xvdb</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># /dev/xvdb: data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>So no file system on <code>/dev/xvdb</code> yet.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mkfs <span class="at">-t</span> xfs /dev/xvdb</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mkdir /share</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mount /dev/xvdb /share</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cp /etc/fstab /etc/fstab.orig</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> blkid</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># /dev/xvdb: UUID="bc766dfb-1c42-49cf-9320-2242a2d48a2e" BLOCK_SIZE="512" TYPE="xfs"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> vim /etc/fstab</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># UUID=bc766dfb-1c42-49cf-9320-2242a2d48a2e  /share  xfs  defaults,nofail  0  2</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-h</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> umount /share <span class="kw">;</span> <span class="fu">df</span> <span class="at">-h</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mount <span class="at">-a</span>      <span class="kw">;</span> <span class="fu">df</span> <span class="at">-h</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="install-docker" class="level3" data-number="8.1.3">
+<h3 data-number="8.1.3" class="anchored" data-anchor-id="install-docker"><span class="header-section-number">8.1.3</span> Install Docker</h3>
+<p>Following:</p>
+<ul>
+<li><a href="https://medium.com/@srijaanaparthy/step-by-step-guide-to-install-docker-on-ubuntu-in-aws-a39746e5a63d">Step-by-Step Guide to Install Docker on Ubuntu in AWS | by Srija Anaparthy | Medium</a></li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#OLD: sudo apt-get install docker.io -y</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>NEW: [[Migrate to <code>docker compose</code>]]</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl start docker</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> docker run hello-world</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable docker</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> <span class="at">--version</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Docker version 24.0.6, build ed223bc</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> usermod <span class="at">-a</span> <span class="at">-G</span> docker <span class="va">$(</span><span class="fu">whoami</span><span class="va">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="run-docker-compose" class="level4" data-number="8.1.3.1">
+<h4 data-number="8.1.3.1" class="anchored" data-anchor-id="run-docker-compose"><span class="header-section-number">8.1.3.1</span> Run docker compose</h4>
+<ul>
+<li>/Users/bbest/My Drive/private/<a href="https://drive.google.com/open?id=17B3djETDU8SVwGvJdZ3rp7TKtX8w0cfl&amp;usp=drive_fs"><code>msens_server_env-password.txt</code></a></li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> chown <span class="at">-R</span> ubuntu:ubuntu /share</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> /share/github/MarineSensitivity</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /share/github/MarineSensitivity</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># clone server repo</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/MarineSensitivity/server.git</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> server</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># add password, used as $PASSWORD in docker-compose.yml</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'PASSWORD=******'</span> <span class="op">&gt;</span> .env</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># launch docker instances</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> docker-compose up <span class="at">-d</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="backup-share-with-snapshots" class="level3" data-number="8.1.4">
+<h3 data-number="8.1.4" class="anchored" data-anchor-id="backup-share-with-snapshots"><span class="header-section-number">8.1.4</span> Backup <code>/share</code> with snapshots</h3>
+<p>Per <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-ami-policy.html#create-snap-policy">Automate snapshot lifecycles - Amazon Elastic Compute Cloud</a>, created two policies: - <strong>bkup_msens-share_daily</strong> every 24 hrs at 09:00 UTC, max of 7 - <strong>bkup_msens-share_weekly</strong> every Monday 09:00 UTC, max of 8</p>
+</section>
 </section>
 <section id="services" class="level2" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="services"><span class="header-section-number">8.2</span> Services</h2>
