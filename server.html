@@ -76,6 +76,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -103,6 +105,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 
 </head>
@@ -378,12 +381,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">8.1</span> Setup</a>
   <ul class="collapse">
-  <li><a href="#launch-instance" id="toc-launch-instance" class="nav-link" data-scroll-target="#launch-instance"><span class="header-section-number">8.1.1</span> Launch instance</a></li>
-  <li><a href="#ssh-to-server" id="toc-ssh-to-server" class="nav-link" data-scroll-target="#ssh-to-server"><span class="header-section-number">8.1.2</span> SSH to server</a></li>
-  <li><a href="#install-docker" id="toc-install-docker" class="nav-link" data-scroll-target="#install-docker"><span class="header-section-number">8.1.3</span> Install Docker</a></li>
+  <li><a href="#launch-instance" id="toc-launch-instance" class="nav-link" data-scroll-target="#launch-instance"><span class="header-section-number">8.1.1</span> launch instance</a></li>
+  <li><a href="#ssh-to-server" id="toc-ssh-to-server" class="nav-link" data-scroll-target="#ssh-to-server"><span class="header-section-number">8.1.2</span> ssh to server</a></li>
+  <li><a href="#install-docker" id="toc-install-docker" class="nav-link" data-scroll-target="#install-docker"><span class="header-section-number">8.1.3</span> install docker</a></li>
   <li><a href="#backup-share-with-snapshots" id="toc-backup-share-with-snapshots" class="nav-link" data-scroll-target="#backup-share-with-snapshots"><span class="header-section-number">8.1.4</span> Backup <code>/share</code> with snapshots</a></li>
   </ul></li>
-  <li><a href="#services" id="toc-services" class="nav-link" data-scroll-target="#services"><span class="header-section-number">8.2</span> Services</a></li>
+  <li><a href="#docker-compose" id="toc-docker-compose" class="nav-link" data-scroll-target="#docker-compose"><span class="header-section-number">8.2</span> Docker compose</a></li>
+  <li><a href="#dns" id="toc-dns" class="nav-link" data-scroll-target="#dns"><span class="header-section-number">8.3</span> DNS</a></li>
+  <li><a href="#caddyfile" id="toc-caddyfile" class="nav-link" data-scroll-target="#caddyfile"><span class="header-section-number">8.4</span> Caddyfile</a></li>
+  <li><a href="#services" id="toc-services" class="nav-link" data-scroll-target="#services"><span class="header-section-number">8.5</span> Services</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/server.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -410,12 +416,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>The server is for serving up any web services outside those of Github (e.g., <a href="https://marinesensitivity.org/">website</a>, <a href="https://marinesensitivity.org/docs">docs</a> and R package <a href="https://marinesensitivity.org/msens">msens</a>) using <a href="https://www.docker.com/">Docker</a> (see the <a href="https://github.com/MarineSensitivity/server/blob/main/docker-compose.yml">docker-compose.yml</a>; with reverse proxying from subdomains to ports by <a href="https://caddyserver.com">Caddy</a>).</p>
+<!--
+![Testing architecture.](diagrams/architecture.svg){#fig-arch}
+
+![Testing with mmd to png for fa-example.](diagrams/fa-example_big.png){#fig-fa-example}
+-->
 <section id="setup" class="level2" data-number="8.1">
 <h2 data-number="8.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">8.1</span> Setup</h2>
-<p>For the latest instructions on launching an Amazon instance and installing the server software, see <a href="https://github.com/MarineSensitivity/server/wiki/Server-Setup">Server Setup · MarineSensitivity/server Wiki</a>, which is pasted below for convenience:</p>
+<p>For the latest instructions on launching an Amazon instance and installing the server software, see <a href="https://github.com/MarineSensitivity/server/wiki/Server-Setup">Server Setup · MarineSensitivity/server Wiki</a>, which is pasted below for convenience…</p>
 <p><em>on AWS as EC2 instance using Docker</em></p>
 <section id="launch-instance" class="level3" data-number="8.1.1">
-<h3 data-number="8.1.1" class="anchored" data-anchor-id="launch-instance"><span class="header-section-number">8.1.1</span> Launch instance</h3>
+<h3 data-number="8.1.1" class="anchored" data-anchor-id="launch-instance"><span class="header-section-number">8.1.1</span> launch instance</h3>
 <p>name: <strong>msens1</strong>:</p>
 <ul>
 <li>Software Image (AMI)<br>
@@ -435,7 +446,7 @@ New security group</li>
 </ul></li>
 </ul>
 <section id="allocate-ip-address" class="level4" data-number="8.1.1.1">
-<h4 data-number="8.1.1.1" class="anchored" data-anchor-id="allocate-ip-address"><span class="header-section-number">8.1.1.1</span> Allocate IP address</h4>
+<h4 data-number="8.1.1.1" class="anchored" data-anchor-id="allocate-ip-address"><span class="header-section-number">8.1.1.1</span> allocate IP address</h4>
 <ul>
 <li><p><a href="https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#Addresses:">Elastic IP addresses | EC2 | us-east-1</a> for persistent IP address</p></li>
 <li><p>Allocated IPv4 address: <code>100.25.173.0</code></p></li>
@@ -444,11 +455,11 @@ New security group</li>
 </section>
 </section>
 <section id="ssh-to-server" class="level3" data-number="8.1.2">
-<h3 data-number="8.1.2" class="anchored" data-anchor-id="ssh-to-server"><span class="header-section-number">8.1.2</span> SSH to server</h3>
+<h3 data-number="8.1.2" class="anchored" data-anchor-id="ssh-to-server"><span class="header-section-number">8.1.2</span> ssh to server</h3>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">pem</span><span class="op">=</span><span class="st">'/Users/bbest/My Drive/private/msens_key_pair.pem'</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-i</span> <span class="va">$pem</span> ubuntu@msens1.marinesensitivity.org</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="set-hostname" class="level4" data-number="8.1.2.1">
-<h4 data-number="8.1.2.1" class="anchored" data-anchor-id="set-hostname"><span class="header-section-number">8.1.2.1</span> Set hostname</h4>
+<h4 data-number="8.1.2.1" class="anchored" data-anchor-id="set-hostname"><span class="header-section-number">8.1.2.1</span> set hostname</h4>
 <ul>
 <li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/set-hostname.html">Change the hostname of your Amazon Linux instance - Amazon Elastic Compute Cloud</a></li>
 </ul>
@@ -458,7 +469,7 @@ New security group</li>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="mount-volume" class="level4" data-number="8.1.2.2">
-<h4 data-number="8.1.2.2" class="anchored" data-anchor-id="mount-volume"><span class="header-section-number">8.1.2.2</span> Mount volume</h4>
+<h4 data-number="8.1.2.2" class="anchored" data-anchor-id="mount-volume"><span class="header-section-number">8.1.2.2</span> mount volume</h4>
 <p>The extra volume (60 GB for <code>/share</code>) was added during EC2 launch instance wizard, but needs to be mounted before available for use.</p>
 <ul>
 <li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html">Make an Amazon EBS volume available for use on Linux - Amazon Elastic Compute Cloud</a></li>
@@ -501,7 +512,7 @@ xvdb     202:16   0    60G  0 disk</code></pre>
 </section>
 </section>
 <section id="install-docker" class="level3" data-number="8.1.3">
-<h3 data-number="8.1.3" class="anchored" data-anchor-id="install-docker"><span class="header-section-number">8.1.3</span> Install Docker</h3>
+<h3 data-number="8.1.3" class="anchored" data-anchor-id="install-docker"><span class="header-section-number">8.1.3</span> install docker</h3>
 <p>Following:</p>
 <ul>
 <li><a href="https://medium.com/@srijaanaparthy/step-by-step-guide-to-install-docker-on-ubuntu-in-aws-a39746e5a63d">Step-by-Step Guide to Install Docker on Ubuntu in AWS | by Srija Anaparthy | Medium</a></li>
@@ -516,7 +527,7 @@ xvdb     202:16   0    60G  0 disk</code></pre>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Docker version 24.0.6, build ed223bc</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> usermod <span class="at">-a</span> <span class="at">-G</span> docker <span class="va">$(</span><span class="fu">whoami</span><span class="va">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="run-docker-compose" class="level4" data-number="8.1.3.1">
-<h4 data-number="8.1.3.1" class="anchored" data-anchor-id="run-docker-compose"><span class="header-section-number">8.1.3.1</span> Run docker compose</h4>
+<h4 data-number="8.1.3.1" class="anchored" data-anchor-id="run-docker-compose"><span class="header-section-number">8.1.3.1</span> run docker compose</h4>
 <ul>
 <li>/Users/bbest/My Drive/private/<a href="https://drive.google.com/open?id=17B3djETDU8SVwGvJdZ3rp7TKtX8w0cfl&amp;usp=drive_fs"><code>msens_server_env-password.txt</code></a></li>
 </ul>
@@ -536,11 +547,327 @@ xvdb     202:16   0    60G  0 disk</code></pre>
 </section>
 <section id="backup-share-with-snapshots" class="level3" data-number="8.1.4">
 <h3 data-number="8.1.4" class="anchored" data-anchor-id="backup-share-with-snapshots"><span class="header-section-number">8.1.4</span> Backup <code>/share</code> with snapshots</h3>
-<p>Per <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-ami-policy.html#create-snap-policy">Automate snapshot lifecycles - Amazon Elastic Compute Cloud</a>, created two policies: - <strong>bkup_msens-share_daily</strong> every 24 hrs at 09:00 UTC, max of 7 - <strong>bkup_msens-share_weekly</strong> every Monday 09:00 UTC, max of 8</p>
+<p>Per <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-ami-policy.html#create-snap-policy">Automate snapshot lifecycles - Amazon Elastic Compute Cloud</a>, created two policies:</p>
+<ul>
+<li><strong>bkup_msens-share_daily</strong> every 24 hrs at 09:00 UTC, max of 7</li>
+<li><strong>bkup_msens-share_weekly</strong> every Monday 09:00 UTC, max of 8</li>
+</ul>
 </section>
 </section>
-<section id="services" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="services"><span class="header-section-number">8.2</span> Services</h2>
+<section id="docker-compose" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="docker-compose"><span class="header-section-number">8.2</span> Docker compose</h2>
+<p>The Docker compose file is used to define and run multi-container Docker applications. Here is the <a href="https://github.com/MarineSensitivity/server/blob/main/docker-compose.yml"><code>docker-compose.yml</code></a> file for the server pasted for convenience …</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="st">"3.9"</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">services</span><span class="kw">:</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">caddy</span><span class="kw">:</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> caddy</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> caddy:latest</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 80:80</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 443:443</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> unless-stopped</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> ./caddy/Caddyfile:/etc/caddy/Caddyfile</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share/caddy/data:/data</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share/caddy/config:/config</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rstudio</span><span class="kw">:</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> rstudio</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./rstudio</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">ROOT</span><span class="kw">:</span><span class="at"> </span><span class="st">'true'</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">USER</span><span class="kw">:</span><span class="at"> admin</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PASSWORD</span><span class="kw">:</span><span class="at"> ${PASSWORD}</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">ADD</span><span class="kw">:</span><span class="at"> shiny</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 8787:8787</span><span class="co">  # rstudio</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 3838:3838</span><span class="co">  # shiny</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> unless-stopped</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share/shiny_apps:/srv/shiny-server</span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">plumber</span><span class="kw">:</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> plumber</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./plumber</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 8888:8888</span><span class="co">  # api</span></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> unless-stopped</span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> postgis</span></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">postgis</span><span class="kw">:</span></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> postgis</span></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> postgis/postgis:latest</span></span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">POSTGRES_DB</span><span class="kw">:</span><span class="at"> msens</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">POSTGRES_USER</span><span class="kw">:</span><span class="at"> admin</span></span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">POSTGRES_PASSWORD</span><span class="kw">:</span><span class="at"> ${PASSWORD}</span></span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">ANON_PASSWORD</span><span class="kw">:</span><span class="at"> ${ANON_PASSWORD}</span></span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PGDATA</span><span class="kw">:</span><span class="at"> /share/postgis/data</span></span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a><span class="co">      # all files in /docker-entrypoint-initdb.dare automatically executed</span></span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a><span class="co">      #  in alphabetical order on container creation</span></span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> ./postgis/init.sh:/docker-entrypoint-initdb.d/init.sh</span><span class="co">  # add user anon</span></span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share/postgis:/var/lib/postgresql</span></span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> unless-stopped</span></span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">healthcheck</span><span class="kw">:</span></span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">test</span><span class="kw">:</span><span class="at"> </span><span class="st">'exit 0'</span></span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 5432:5432</span></span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pgadmin</span><span class="kw">:</span></span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> pgadmin</span></span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> dpage/pgadmin4:latest</span></span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PGADMIN_DEFAULT_EMAIL</span><span class="kw">:</span><span class="at"> ben@ecoquants.com</span></span>
+<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PGADMIN_DEFAULT_PASSWORD</span><span class="kw">:</span><span class="at"> ${PASSWORD}</span></span>
+<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PGADMIN_LISTEN_PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">8088</span></span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a><span class="co">      # PGADMIN_CONFIG_CONFIG_DATABASE_URI: "'postgresql://admin:$PASSWORD@postgis:5432/msens'"</span></span>
+<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 8088:8088</span></span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share/pgadmin:/var/lib/pgadmin</span></span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> postgis</span></span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pgbkups</span><span class="kw">:</span></span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> pgbkups</span></span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> prodrigestivill/postgres-backup-local</span></span>
+<span id="cb13-84"><a href="#cb13-84" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb13-85"><a href="#cb13-85" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">user</span><span class="kw">:</span><span class="at"> postgres:postgres</span><span class="co"> # Optional: see below</span></span>
+<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-87"><a href="#cb13-87" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share/postgis_backups:/backups</span></span>
+<span id="cb13-88"><a href="#cb13-88" aria-hidden="true" tabindex="-1"></a><span class="co">      # sudo mkdir /share/postgis_backups; sudo chown -R 999:999 /share/postgis_backups</span></span>
+<span id="cb13-89"><a href="#cb13-89" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">links</span><span class="kw">:</span></span>
+<span id="cb13-90"><a href="#cb13-90" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> postgis</span></span>
+<span id="cb13-91"><a href="#cb13-91" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb13-92"><a href="#cb13-92" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> postgis</span></span>
+<span id="cb13-93"><a href="#cb13-93" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-94"><a href="#cb13-94" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_HOST=postgis</span></span>
+<span id="cb13-95"><a href="#cb13-95" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_DB=msens</span></span>
+<span id="cb13-96"><a href="#cb13-96" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_USER=admin</span></span>
+<span id="cb13-97"><a href="#cb13-97" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_PASSWORD=${PASSWORD}</span></span>
+<span id="cb13-98"><a href="#cb13-98" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_EXTRA_OPTS=-Z6 --blobs</span></span>
+<span id="cb13-99"><a href="#cb13-99" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> SCHEDULE=@daily</span></span>
+<span id="cb13-100"><a href="#cb13-100" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> BACKUP_KEEP_DAYS=7</span></span>
+<span id="cb13-101"><a href="#cb13-101" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> BACKUP_KEEP_WEEKS=4</span></span>
+<span id="cb13-102"><a href="#cb13-102" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> BACKUP_KEEP_MONTHS=6</span></span>
+<span id="cb13-103"><a href="#cb13-103" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> HEALTHCHECK_PORT=8088</span></span>
+<span id="cb13-104"><a href="#cb13-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-105"><a href="#cb13-105" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">tile</span><span class="kw">:</span></span>
+<span id="cb13-106"><a href="#cb13-106" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> tile</span></span>
+<span id="cb13-107"><a href="#cb13-107" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-108"><a href="#cb13-108" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">DATABASE_URL</span><span class="kw">:</span><span class="at"> </span><span class="st">'postgresql://admin:${PASSWORD}@postgis:5432/msens'</span></span>
+<span id="cb13-109"><a href="#cb13-109" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> pramsey/pg_tileserv:latest</span></span>
+<span id="cb13-110"><a href="#cb13-110" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb13-111"><a href="#cb13-111" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> postgis</span></span>
+<span id="cb13-112"><a href="#cb13-112" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-113"><a href="#cb13-113" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 7800:7800</span></span>
+<span id="cb13-114"><a href="#cb13-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-115"><a href="#cb13-115" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">tilecache</span><span class="kw">:</span></span>
+<span id="cb13-116"><a href="#cb13-116" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> tilecache</span></span>
+<span id="cb13-117"><a href="#cb13-117" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> varnish:latest</span><span class="co"> # 7.4.2  # last updated: 2023-12-26</span></span>
+<span id="cb13-118"><a href="#cb13-118" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-119"><a href="#cb13-119" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-120"><a href="#cb13-120" aria-hidden="true" tabindex="-1"></a><span class="co">      # - "./varnish/default.vcl:/etc/varnish/default.vcl"</span></span>
+<span id="cb13-121"><a href="#cb13-121" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-122"><a href="#cb13-122" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 6081:6081</span></span>
+<span id="cb13-123"><a href="#cb13-123" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-124"><a href="#cb13-124" aria-hidden="true" tabindex="-1"></a><span class="co">      # VARNISH_SIZE: '2G'</span></span>
+<span id="cb13-125"><a href="#cb13-125" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_HOST</span><span class="kw">:</span><span class="at"> tile</span><span class="co"> # .marinesensitivity.org</span></span>
+<span id="cb13-126"><a href="#cb13-126" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">7800</span></span>
+<span id="cb13-127"><a href="#cb13-127" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_HTTP_PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">6081</span><span class="co">  # VARNISH_PROXY_PORT: '6081'</span></span>
+<span id="cb13-128"><a href="#cb13-128" aria-hidden="true" tabindex="-1"></a><span class="co">    #command: "-p default_keep=43200" # 60*60*12 = 43200 sec = 12 hrs</span></span>
+<span id="cb13-129"><a href="#cb13-129" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb13-130"><a href="#cb13-130" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb13-131"><a href="#cb13-131" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"tile"</span></span>
+<span id="cb13-132"><a href="#cb13-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-133"><a href="#cb13-133" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rest</span><span class="kw">:</span></span>
+<span id="cb13-134"><a href="#cb13-134" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> rest</span></span>
+<span id="cb13-135"><a href="#cb13-135" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-136"><a href="#cb13-136" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PGRST_DB_URI</span><span class="kw">:</span><span class="at"> </span><span class="st">'postgresql://anon:${ANON_PASSWORD}@postgis:5432/msens'</span></span>
+<span id="cb13-137"><a href="#cb13-137" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PGRST_OPENAPI_SERVER_PROXY_URI</span><span class="kw">:</span><span class="at"> http://127.0.0.1:3000</span></span>
+<span id="cb13-138"><a href="#cb13-138" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PGRST_DB_ANON_ROLE</span><span class="kw">:</span><span class="at"> anon</span><span class="co">  # db-anon-role</span></span>
+<span id="cb13-139"><a href="#cb13-139" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> postgrest/postgrest</span></span>
+<span id="cb13-140"><a href="#cb13-140" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb13-141"><a href="#cb13-141" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> postgis</span></span>
+<span id="cb13-142"><a href="#cb13-142" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-143"><a href="#cb13-143" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"3000:3000"</span></span>
+<span id="cb13-144"><a href="#cb13-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-145"><a href="#cb13-145" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">swagger</span><span class="kw">:</span></span>
+<span id="cb13-146"><a href="#cb13-146" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> swagger</span></span>
+<span id="cb13-147"><a href="#cb13-147" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> swaggerapi/swagger-ui</span></span>
+<span id="cb13-148"><a href="#cb13-148" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb13-149"><a href="#cb13-149" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> rest</span></span>
+<span id="cb13-150"><a href="#cb13-150" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-151"><a href="#cb13-151" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8080:8080"</span></span>
+<span id="cb13-152"><a href="#cb13-152" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">expose</span><span class="kw">:</span></span>
+<span id="cb13-153"><a href="#cb13-153" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8080"</span></span>
+<span id="cb13-154"><a href="#cb13-154" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-155"><a href="#cb13-155" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">API_URL</span><span class="kw">:</span><span class="at"> https://rest.MarineSensitivity.org/</span></span>
+<span id="cb13-156"><a href="#cb13-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-157"><a href="#cb13-157" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">titiler</span><span class="kw">:</span></span>
+<span id="cb13-158"><a href="#cb13-158" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> titiler</span></span>
+<span id="cb13-159"><a href="#cb13-159" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> ghcr.io/developmentseed/titiler:latest</span></span>
+<span id="cb13-160"><a href="#cb13-160" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-161"><a href="#cb13-161" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">8000</span></span>
+<span id="cb13-162"><a href="#cb13-162" aria-hidden="true" tabindex="-1"></a><span class="co">      # WORKERS_PER_CORE: 1</span></span>
+<span id="cb13-163"><a href="#cb13-163" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-164"><a href="#cb13-164" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8000:8000"</span></span>
+<span id="cb13-165"><a href="#cb13-165" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="dns" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="dns"><span class="header-section-number">8.3</span> DNS</h2>
+<p>The domain name server (DNS) records are managed by <a href="https://account.squarespace.com/domains">SquareSpace</a>. The subdomains point to the server on Amazon at <code>100.25.173.0</code>, whereas the main website is hosted by Github servers, per <a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site">Managing a custom domain for your GitHub Pages site - GitHub Docs</a>.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Host</th>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>@</td>
+<td>A</td>
+<td>185.199.111.153</td>
+</tr>
+<tr class="even">
+<td>@</td>
+<td>A</td>
+<td>185.199.110.153</td>
+</tr>
+<tr class="odd">
+<td>@</td>
+<td>A</td>
+<td>185.199.109.153</td>
+</tr>
+<tr class="even">
+<td>@</td>
+<td>A</td>
+<td>185.199.108.153</td>
+</tr>
+<tr class="odd">
+<td>api</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="even">
+<td>file</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="odd">
+<td>msens1</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="even">
+<td>pgadmin</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="odd">
+<td>rest</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="even">
+<td>rstudio</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="odd">
+<td>shiny</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="even">
+<td>swagger</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="odd">
+<td>tile</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="even">
+<td>tilecache</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="odd">
+<td>titiler</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="even">
+<td>www</td>
+<td>CNAME</td>
+<td>marinesensitivity.org</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="caddyfile" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="caddyfile"><span class="header-section-number">8.4</span> Caddyfile</h2>
+<p>The Caddyfile parameterizes the reverse proxying between the external subdomains and the Docker’s internal ports. Here is the <a href="https://github.com/MarineSensitivity/server/blob/main/caddy/Caddyfile"><code>Caddyfile</code></a> pasted for convenience …</p>
+<pre class="caddyfile"><code>api.marinesensitivity.org {
+  reverse_proxy plumber:8888
+}
+
+file.marinesensitivity.org {
+  root * /share/public
+  file_server browse {
+    # serve *.zst, *.br or *.gz if file exists and client supports precompressed files
+    precompressed zstd br gzip
+  }
+}
+
+pgadmin.marinesensitivity.org {
+  reverse_proxy pgadmin:8088
+}
+
+rest.marinesensitivity.org {
+  reverse_proxy rest:3000
+}
+
+rstudio.marinesensitivity.org {
+  reverse_proxy rstudio:8787
+}
+
+shiny.marinesensitivity.org {
+  reverse_proxy rstudio:3838
+}
+
+swagger.marinesensitivity.org {
+  reverse_proxy swagger:8080
+}
+
+tile.marinesensitivity.org {
+  reverse_proxy tile:7800
+}
+
+tilecache.marinesensitivity.org {
+  reverse_proxy tilecache:6081
+}
+
+titiler.marinesensitivity.org {
+  reverse_proxy titiler:8000
+}
+</code></pre>
+</section>
+<section id="services" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="services"><span class="header-section-number">8.5</span> Services</h2>
 <p>The server is running the following services:</p>
 <!-- 
 TODO: + container/services with document listing and categories:
@@ -592,6 +919,7 @@ e.g., <a href="https://shiny.marinesensitivity.org/map"><strong>shiny</strong>.m
 <img src="figures/server/tile.png" class="img-fluid" width="300"><br>
 <a href="https://github.com/CrunchyData/pg_tileserv">More info..</a></p></li>
 </ul>
+<p><i class="fa-solid fa-ellipsis-h" aria-label="ellipsis-h"></i> <!-- init fontawesome to get in mermaid diagrams --></p>
 
 
 </section>

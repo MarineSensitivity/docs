@@ -453,10 +453,11 @@ window.Quarto = {
 </header>
 
 
+<p>The <strong>Marine Sensitivity Toolkit</strong> (MST) is a stack of software components for reproducibly, interactively and hierarchically generating environmental vulnerability maps and scores. Tabular data is collated across studies evaluating sensitivity of species to oil &amp; gas and offshore wind energy development. The best available species and benthic habitat distributions are being mosaicked across the US EEZ. Scores will be summarized according to subgroups within Species, Benthic Habitats and Primary Productivity. These scores will be averaged into an overall score and visualized as a flower plot, applicable to various levels of BOEM relevancy: regional, ecoregions, protraction diagrams, blocks and aliquots. The software components for achieving this interactively are: 1) server — a Docker configuration to spin up all the software; 2) database — a spatially enabled database (PostgreSQL with PostGIS extension); 3) workflows — scripts (as Quarto notebooks) to explore, ingest and update the database and output files; 4) APIs — application programming interfaces for rendering vector (using pg_tileserv) or raster (using TiTiler) tile services for interactive mapping as well as a custom API (using R plumber); 5) libraries — re-usable documented functions as an R package for import, analysis and visualization using the APIs; 6) applications — interactive apps using the R Shiny framework for rendering vulnerability maps; and 7) documentation — as a Quarto notebook with figures, tables, glossary and references in interactive html or static docx/pdf output formats. This toolbox is intended to primarily serve BOEM needs internally, but by being open-source and fully reproducible the hope is to enlist buy-in and even contributions from external partners, whether from other government agencies, academia, NGOs or industry.</p>
 <p>We ascribe to the philosophy of sharing all code for the sake of reproducibility, transparency and efficiency <span class="citation" data-cites="maitner2024 lowndes2017">(<a href="references.html#ref-maitner2024" role="doc-biblioref">Maitner et al. 2024</a>; <a href="references.html#ref-lowndes2017" role="doc-biblioref">Lowndes et al. 2017</a>)</span>; i.e.&nbsp;the FAIR principles of Findability, Accessibility, Interoperability, and Reusability <span class="citation" data-cites="wilkinson2016">(<a href="references.html#ref-wilkinson2016" role="doc-biblioref">Wilkinson et al. 2016</a>)</span>.</p>
 <section id="interactive-applications" class="level3" data-number="7.0.1">
 <h3 data-number="7.0.1" class="anchored" data-anchor-id="interactive-applications"><span class="header-section-number">7.0.1</span> Interactive Applications</h3>
-<p>We have developed a series of interactive applications to explore the data and results of the MS project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the <a href="https://shiny.posit.co"><code>shiny</code></a> package in R, which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.</p>
+<p>We have developed a series of interactive applications to explore the data and results of the MST project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the <a href="https://shiny.posit.co"><code>shiny</code></a> package in R <span class="citation" data-cites="shiny">(<a href="references.html#ref-shiny" role="doc-biblioref">Chang et al. 2024</a>)</span>, which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.</p>
 </section>
 <section id="overcoming-challenges-with-large-spatial-data" class="level3" data-number="7.0.2">
 <h3 data-number="7.0.2" class="anchored" data-anchor-id="overcoming-challenges-with-large-spatial-data"><span class="header-section-number">7.0.2</span> Overcoming Challenges with Large Spatial Data</h3>
@@ -481,6 +482,7 @@ window.Quarto = {
     FileServer -&gt;&gt; TiTiler:    send byte range for tile
     TiTiler    -&gt;&gt; Client:     apply color ramp to tile and return PNG
   end
+%% mmdc -i diagrams/raster.mmd --theme default --backgroundColor transparent --scale 8 -o diagrams/raster.png
 </pre>
 </div>
 </div>
@@ -517,6 +519,7 @@ Figure&nbsp;7.1: Sequence diagram implementing large raster interactive display 
       VarnishCache -&gt;&gt; Client:       return vector tile
     end
   end
+%% mmdc -i diagrams/vector.mmd --theme default --backgroundColor transparent --scale 8 -o diagrams/vector.png
 </pre>
 </div>
 </div>
@@ -586,7 +589,7 @@ Figure&nbsp;7.2: Sequence diagram implementing large vector interactive display 
 <h3 data-number="7.0.4" class="anchored" data-anchor-id="software-components"><span class="header-section-number">7.0.4</span> Software Components</h3>
 <div id="listing-list-components" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1728593906456" data-listing-reading-time-sort="1" data-listing-word-count-sort="55">
+<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1728939240575" data-listing-reading-time-sort="1" data-listing-word-count-sort="55">
 <a href="./apis.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -608,7 +611,7 @@ application programming interfaces (APIs)
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1728593906456" data-listing-reading-time-sort="1" data-listing-word-count-sort="16">
+<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1728939240575" data-listing-reading-time-sort="1" data-listing-word-count-sort="16">
 <a href="./apps.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -630,7 +633,7 @@ interactive applications using Shiny
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1728593906456" data-listing-reading-time-sort="1" data-listing-word-count-sort="104">
+<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1728939240576" data-listing-reading-time-sort="1" data-listing-word-count-sort="104">
 <a href="./db.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -652,7 +655,7 @@ PostgreSQL database extended spatially with PostGIS
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1728593906457" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
+<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1728939240585" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
 <a href="./docs.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -674,7 +677,7 @@ technical documentation
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1728593906532" data-listing-reading-time-sort="1" data-listing-word-count-sort="54">
+<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1728939240657" data-listing-reading-time-sort="1" data-listing-word-count-sort="54">
 <a href="./libraries.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -696,7 +699,7 @@ documented functions as an R package
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1728593906533" data-listing-reading-time-sort="5" data-listing-word-count-sort="843">
+<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1728939240658" data-listing-reading-time-sort="4" data-listing-word-count-sort="764">
 <a href="./server.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -718,7 +721,7 @@ server software configuration using Docker
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1728593906533" data-listing-reading-time-sort="1" data-listing-word-count-sort="38">
+<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1728939240658" data-listing-reading-time-sort="1" data-listing-word-count-sort="38">
 <a href="./workflows.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -749,6 +752,9 @@ No matching items
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-shiny" class="csl-entry" role="listitem">
+Chang, Winston, Joe Cheng, JJ Allaire, Carson Sievert, Barret Schloerke, Yihui Xie, Jeff Allen, Jonathan McPherson, Alan Dipert, and Barbara Borges. 2024. <span>“Shiny: Web Application Framework for r.”</span> <a href="https://CRAN.R-project.org/package=shiny">https://CRAN.R-project.org/package=shiny</a>.
+</div>
 <div id="ref-lowndes2017" class="csl-entry" role="listitem">
 Lowndes, Julia S. Stewart, Benjamin D. Best, Courtney Scarborough, Jamie C. Afflerbach, Melanie R. Frazier, Casey C. O’Hara, Ning Jiang, and Benjamin S. Halpern. 2017. <span>“Our Path to Better Science in Less Time Using Open Data Science Tools.”</span> <em>Nature Ecology &amp; Evolution</em> 1 (6): 0160. <a href="https://doi.org/10.1038/s41559-017-0160">https://doi.org/10.1038/s41559-017-0160</a>.
 </div>
