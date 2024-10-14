@@ -8,3 +8,4 @@ sequenceDiagram
     FileServer ->> TiTiler:    send byte range for tile
     TiTiler    ->> Client:     apply color ramp to tile and return PNG
   end
+%% mmdc -i diagrams/raster.mmd --theme default --backgroundColor transparent --scale 8 -o diagrams/raster.png

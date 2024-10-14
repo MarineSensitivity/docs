@@ -1,6 +1,7 @@
 architecture-beta
     group api(cloud)[API]
 
+    service server(fa:fa-server)[Server] in api
     service db(database)[Database] in api
     service disk1(disk)[Storage] in api
     service disk2(disk)[Storage] in api
@@ -9,4 +10,10 @@ architecture-beta
     db:L -- R:server
     disk1:T -- B:server
     disk2:T -- B:db
-    
+
+%% render in Terminal:
+%%   mmdc -i diagrams/architecture.mmd -o diagrams/architecture.svg
+%%   dark [t]heme, transparent [b]ackground
+%% https://quarto.org/docs/authoring/diagrams.html#using-mermaids-built-in-themes
+%%   mmdc -i diagrams/architecture.mmd -o diagrams/architecture.svg -t dark -b transparent
+%%   mmdc -i diagrams/architecture.mmd -o diagrams/architecture.svg -t default -b transparent

@@ -1,0 +1,14 @@
+graph LR
+App[fa:fa-server App]
+DB[fa:fa-database DB]
+LLM[fa:fa-language LLM]
+App --> |Schema + Query| LLM --> |SQL| App
+App --> |SQL| DB
+DB  --> |Data| App
+%% render in Terminal:
+%%   mmdc -i diagrams/fa-example.mmd -o diagrams/fa-example.png
+%%   mmdc -i diagrams/fa-example.mmd --theme dark --backgroundColor transparent --scale 8 -o diagrams/fa-example_big.png
+%% https://quarto.org/docs/authoring/diagrams.html#using-mermaids-built-in-themes
+%%   mmdc -i diagrams/fa-example.mmd --theme default --backgroundColor transparent --scale 8 -o diagrams/fa-example_big-default.png
+%%   mmdc -i diagrams/fa-example.mmd --theme neutral --backgroundColor transparent --scale 8 -o diagrams/fa-example_big-neutral.png
+%%   mmdc -i diagrams/fa-example.mmd --theme forest --backgroundColor transparent --scale 8 -o diagrams/fa-example_big-forest.png
