@@ -33,6 +33,9 @@ for (f in files) {
   download.file(u, o)
 }
 
+
+Sys.setenv(QUARTO_CHROMIUM_HEADLESS_MODE = "new")
+
 # wiki markdown ----
 
 

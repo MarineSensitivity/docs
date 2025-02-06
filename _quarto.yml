@@ -61,6 +61,7 @@ book:
         - apps/aoi.qmd
         - apps/bird_hotspots.qmd
         - apps/map.qmd
+        - apps/scores.qmd
         - apps/sdm.qmd
         - apps/sdm-cog.qmd
         - apps/vmap.qmd
