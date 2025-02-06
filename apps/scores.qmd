@@ -1,0 +1,32 @@
+---
+description: "Calculate scores based on sensitivity metric -- for now, extinction risk across taxonomic groups."
+image: "/figures/apps/scores.png"
+url: "https://shiny.marinesensitivity.org/scores/"
+url-code: "https://github.com/MarineSensitivity/apps/tree/main/scores"
+categories: 
+   - "distributions"
+   - "vulnerabilities"
+   - "vector"
+editor: source   
+---
+
+# Vulnerability Mapper {.unnumbered}
+
+```{r}
+#| echo: false
+#| warning: false
+
+library(rmarkdown)
+descr    <- metadata[["description"]]
+img      <- metadata[["image"]]
+url_web  <- metadata[["url"]]
+url_code <- metadata[["url-code"]]
+```
+
+`r descr`
+
+-   [{{< fa globe >}} website](`r url_web`)
+
+-   [{{< fa brands github >}} `code`](`r url_code`)
+
+![](`r img`)
