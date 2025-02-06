@@ -10,7 +10,7 @@ categories:
 editor: source   
 ---
 
-# Vulnerability Mapper {.unnumbered}
+# Scores Explorer {.unnumbered}
 
 ```{r}
 #| echo: false
