@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Marine Sensitivity",
     "section": "",
-    "text": "Preface\nThis is a Quarto book.",
+    "text": "Preface\nThe Marine Sensitivity Toolkit (MST) is a cloud-native system developed for the Bureau of Ocean Energy Management (BOEM) to assess the sensitivity of marine ecosystems to offshore energy development. It integrates 9,819 species distribution models with extinction risk assessments across 20 BOEM Program Areas spanning US waters.\n\n\n\n\n\n\nFigure 1: Overview of the MST methodology: species distribution models from 7 source datasets are merged, weighted by extinction risk scores (incorporating ESA, MMPA, MBTA, and IUCN protections), rescaled by ecoregion, and aggregated to management zones for visualization.\n\n\n\nThis book documents the scientific methodology, software infrastructure, and interactive applications that comprise the MST. It is organized in two parts:\n\nScience (2  Science) — data sources, taxonomic integration, extinction risk scoring, model merging, and sensitivity scoring methodology\nSoftware — server architecture, databases, workflows, APIs, R libraries, and interactive applications\n\n\nHow to Cite\n\nBest, B.D. (2026). Marine Sensitivity Toolkit: Project Documentation. Bureau of Ocean Energy Management, Environmental Studies Program. https://marinesensitivity.org/docs/\n\n\n\nAcknowledgments\nThis work is funded by the BOEM Environmental Studies Program (BOEM-ESP). We thank the data providers whose open datasets make this work possible: AquaMaps, BirdLife International, IUCN Red List, NOAA Fisheries, and U.S. Fish & Wildlife Service.",
     "crumbs": [
       "Preface"
     ]
@@ -14,7 +14,17 @@
     "href": "intro.html",
     "title": "1  Introduction",
     "section": "",
-    "text": "This Marine Sensitivity (MS) project of BOEM seeks to assess the sensitivity of marine species to offshore energy development, whether oil & gas or wind. By combining the best available species distributions with known species sensitivities we can map out areas of the ocean that are most vulnerable to human activities. This information can be used to inform decisions about where to place energy infrastructure and/or implement mitigations to minimize impacts on the marine environment.\nThis is a process, not a product. Information is imperfect, especially given the large expanse of US waters. Distributions and abundance of species change, modified increasingly by climate change and human activities. Knowledge on species sensitivities continues to expand with more research. And finally the methods for both modeling and distributing all this information continue to improve. We aim to provide a transparent and reproducible process that can be regularly updated as new data and methods become available.\n\n\n\n\n\n\nflowchart LR\n\n  %% nodes\n  ta[(\"&lt;a href='https://docs.ropensci.org/taxize/articles/datasources.html'&gt;taxonomic&lt;br&gt;authority&lt;/a&gt;\")]:::in\n  sd(\"species&lt;br&gt;&lt;b&gt;distributions&lt;/b&gt;&lt;br&gt;(vector|raster)\"):::in\n  sdm(\"species&lt;br&gt;&lt;b&gt;distributions&lt;/b&gt;&lt;br&gt;(+taxaid)\"):::out\n  sdmt(\"species&lt;br&gt;&lt;b&gt;distributions&lt;/b&gt;&lt;br&gt;(aligned rasters)\"):::out\n  sdmte(\"species&lt;br&gt;&lt;b&gt;vulnerability&lt;/b&gt;&lt;br&gt;raster\"):::out\n  ct(\"&lt;b&gt;topology&lt;/b&gt;&lt;br&gt;to share&lt;br&gt;\"):::in\n  st[[\"species&lt;br&gt;&lt;b&gt;sensitivities&lt;/b&gt;&lt;br&gt;(tables)\"]]:::in\n  stm[[\"species&lt;br&gt;&lt;b&gt;sensitivities&lt;/b&gt;&lt;br&gt;(+ taxaid)\"]]:::out\n  stmc[[\"species&lt;br&gt;&lt;b&gt;sensitivities&lt;/b&gt;&lt;br&gt;(equation ready)\"]]:::out\n  eq[[\"&lt;b&gt;equation&lt;/b&gt;&lt;br&gt;of sensitivities per species\"]]:::in\n  m[/\"&lt;b&gt;match&lt;/b&gt;&lt;br&gt;taxa\"/]:::fxn\n  t[/\"&lt;b&gt;transform&lt;/b&gt;&lt;br&gt;to rasters\"/]:::fxn\n  c[/\"&lt;b&gt;clean&lt;/b&gt;&lt;br&gt;tables\"/]:::fxn\n  e[/\"&lt;b&gt;evaluate&lt;/b&gt;&lt;br&gt;rescale(&sum;eq&lt;sub&gt;sp&lt;/sub&gt;)\"/]:::fxn\n\n  %% edges\n  ta   --&gt; m\n  sd   --&gt; m\n  st   --&gt; m\n  m    --&gt; sdm\n  m    --&gt; stm\n  sdm  --&gt; t\n  ct   --&gt; t\n  t    --&gt; sdmt\n  stm  --&gt; c\n  c    --&gt; stmc\n  eq   --&gt; e\n  sdmt --&gt; e\n  stmc --&gt; e\n  e    --&gt; sdmte\n\n  %% Legend\n  in(input):::in\n  fxn[/process/]:::fxn\n  out(output):::out\n  subgraph Legend\n    in\n    fxn\n    out\n  end\n\n  %% styles\n  classDef in  fill:lightblue\n  classDef out fill:lightgreen\n  classDef fxn fill:yellow\n\n\n\n\nFigure 1.1: Flowchart of process for incorporating marine species sensitivities with distributions and generating a holistic vulnerability map.",
+    "text": "1.1 Overview\nThe Marine Sensitivity Toolkit (MST) is a cloud-native system developed for BOEM (Bureau of Ocean Energy Management) to assess the sensitivity of marine species to offshore energy development, whether oil & gas or wind. The Outer Continental Shelf Lands Act (OCSLA), Section 18(a)(2)(G), mandates that BOEM consider “the relative environmental sensitivity and marine productivity of different areas of the OCS” when planning the timing and location of offshore energy activities. The MST operationalizes this mandate by combining the best available species distribution data with extinction risk assessments to map areas of the ocean that are most sensitive to human activities.\nThe current system integrates 9,819 valid marine species across 7 source datasets, mapped at 0.05° resolution (~4 km cells) across 20 BOEM Program Areas spanning US waters. Species distributions are weighted by extinction risk scores that incorporate protections under the Endangered Species Act (ESA), Marine Mammal Protection Act (MMPA), and Migratory Bird Treaty Act (MBTA), as well as IUCN Red List assessments.\nThis is a process, not a product. Information is imperfect, especially given the large expanse of US waters. Distributions and abundance of species change, modified increasingly by climate change and human activities. Knowledge on species sensitivities continues to expand with more research. Methods for both modeling and distributing this information continue to improve. In alignment with Executive Order 14303, we aim to provide a transparent and reproducible process that can be regularly updated as new data and methods become available.\nThe MST analytical pipeline proceeds through the following stages (Figure 1.1):\nFigure 1.1: Flowchart of the MST analytical pipeline: from source datasets and taxonomic matching through model merging, scoring, and visualization.\nFigure 1.2 illustrates the full methodology at a glance. On the left, species distribution data flows in from 7 source datasets and 5 taxonomic authorities. In the center, models are merged per species and weighted by extinction risk scores derived from ESA, MMPA, MBTA, and IUCN regulatory frameworks. On the right, cell-level scores are rescaled within BOEM ecoregions and aggregated to program areas for visualization in the interactive mapping applications.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "intro.html#overview",
+    "href": "intro.html#overview",
+    "title": "1  Introduction",
+    "section": "",
+    "text": "Data Sources: 7 source datasets of species distributions (AquaMaps SDM, NMFS Core Area, NMFS Critical Habitat, FWS Critical Habitat, FWS Range, BirdLife Range, IUCN Range)\nTaxonomy Matching: species names reconciled across WoRMS, GBIF, ITIS, IUCN, and BirdLife taxonomic authorities\nModel Merging: per-species models merged by taking the MAX suitability across datasets, constrained by IUCN/Critical Habitat spatial masks, with MMPA/MBTA spatial floors\nCell Scoring: extinction risk weighted by species presence, summed by species category (bird, coral, fish, invertebrate, mammal, reptile/turtle)\nEcoregional Rescaling: scores normalized to [0–100%] within each BOEM ecoregion for meaningful cross-region comparison\nZone Aggregation: area-weighted averages to program areas, subregions, and ecoregions\nVisualization: interactive flower plots, treemaps, and map applications\n\n\n\n\n\n\n\n\n\nFigure 1.2: Overview of the Marine Sensitivity Toolkit methodology showing the integration of species distribution models, extinction risk scoring, ecoregional rescaling, and spatial aggregation into interactive visualizations.",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
     ]
@@ -24,295 +34,579 @@
     "href": "science.html",
     "title": "2  Science",
     "section": "",
-    "text": "The term combination of exposure and sensitivityvulnerability (\\(V\\)) is a function of the magnitude of the change in the environmentexposure (\\(E\\)), the magnitude of response to the changesensitivity (\\(S\\)) and the capacity of the ecosystem or organism to improve and reorganise in response to stress such as climate change through phenotypic plasticity (acclimation, acclimatisation) or adaptation, distributional shifts, and rapid evolution of traits suited to new conditions. Source: @ross2023.adaptive capacity (\\(A\\)) (Equation 2.1).\n\\[\nV = f(E, S, A)\n\\tag{2.1}\\]\n\n\n\n\n\n\nFigure 2.1: Overview of process.\n\n\n\n\n\\[\ncell_{V} = \\sum_{spp}{p * w}\n\\tag{2.2}\\]\nThe raster of vulnerability (\\(V\\)) contains cells representing a sum across species (\\(spp\\)) of presence (\\(p\\)) multiplied by the sensitivity weight (\\(w\\)) (Equation 2.2).",
+    "text": "2.1 Conceptual Framework\nThe term combination of exposure and sensitivityvulnerability (\\(V\\)) is a function of the magnitude of the change in the environmentexposure (\\(E\\)), the magnitude of response to the changesensitivity (\\(S\\)) and the capacity of the ecosystem or organism to improve and reorganise in response to stress such as climate change through phenotypic plasticity (acclimation, acclimatisation) or adaptation, distributional shifts, and rapid evolution of traits suited to new conditions. Source: @ross2023.adaptive capacity (\\(A\\)) (Equation 2.1).\n\\[\nV = f(E, S, A)\n\\tag{2.1}\\]\nThe MST currently focuses on the sensitivity component, quantifying the intrinsic biological sensitivity of marine ecosystems based on the species present and their conservation status. Exposure and adaptive capacity components are planned for future phases (see Chapter 8).",
     "crumbs": [
       "Science",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Science</span>"
     ]
   },
   {
-    "objectID": "stressors.html",
-    "href": "stressors.html",
-    "title": "3  Stressors",
+    "objectID": "science.html#cell-vulnerability",
+    "href": "science.html#cell-vulnerability",
+    "title": "2  Science",
+    "section": "2.2 Cell Vulnerability",
+    "text": "2.2 Cell Vulnerability\nFor a given cell \\(c\\), the vulnerability score for a species group \\(g\\) is the sum across all \\(S_g\\) species of the product of species presence probability \\(p_{sc}\\) and extinction risk weight \\(w_s\\) (Equation 2.2):\n\\[\nv_c = \\sum_{s=1}^{S_g} p_{sc} \\cdot w_s\n\\tag{2.2}\\]\nwhere:\n\n\\(v_c\\) = vulnerability score of cell \\(c\\) for species group \\(g\\)\n\\(p_{sc}\\) = probability of species \\(s\\) presence in cell \\(c\\) (0–1 scale, from merged species distribution models)\n\\(w_s\\) = extinction risk weight for species \\(s\\) (0–1 scale, derived from ESA/MMPA/MBTA/IUCN status; see Chapter 5)\n\\(S_g\\) = total number of species in taxonomic group \\(g\\) (e.g., bird, fish, mammal, coral, invertebrate, reptile/turtle)",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Science</span>"
+    ]
+  },
+  {
+    "objectID": "science.html#sensitivity-components",
+    "href": "science.html#sensitivity-components",
+    "title": "2  Science",
+    "section": "2.3 Sensitivity Components",
+    "text": "2.3 Sensitivity Components\nThe MST assesses sensitivity through three components:\n\nSpecies — by taxonomic category (bird, coral, fish, invertebrate, mammal, reptile/turtle): extinction risk weighted species distribution models across 9,819 valid species (see Chapter 3, Chapter 5)\nHabitats — benthic habitats such as coral reefs, seamounts, and hydrothermal vents (planned for future phases)\nPrimary Productivity — satellite-derived net primary productivity from the Vertically Generalized Production Model (VGPM), measured as metric tons C km-2 yr-1 (see Chapter 3)",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Science</span>"
+    ]
+  },
+  {
+    "objectID": "science.html#ecoregional-rescaling",
+    "href": "science.html#ecoregional-rescaling",
+    "title": "2  Science",
+    "section": "2.4 Ecoregional Rescaling",
+    "text": "2.4 Ecoregional Rescaling\nRaw cell scores vary naturally across regions due to differences in species richness and oceanographic conditions. To enable meaningful cross-region comparison, scores are rescaled to a [0–100%] range within each BOEM ecoregion (Equation 2.3):\n\\[\nv'_c = \\frac{v_c - v_{min}}{v_{max} - v_{min}} \\times 100\n\\tag{2.3}\\]\nwhere \\(v_{min}\\) and \\(v_{max}\\) are the minimum and maximum cell scores within the ecoregion. This accounts for the natural gradient from species-rich tropical waters to less diverse polar regions, ensuring that a “high sensitivity” score has consistent meaning across all program areas.\nSee subsequent chapters for detailed descriptions of: data sources (Chapter 3), taxonomic integration (Chapter 4), extinction risk scoring (Chapter 5), model merging (Chapter 6), and scoring methodology (Chapter 7).",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Science</span>"
+    ]
+  },
+  {
+    "objectID": "data-sources.html",
+    "href": "data-sources.html",
+    "title": "3  Data Sources",
     "section": "",
-    "text": "3.1 Offshore Wind Energy\nEvaluation of stressors from the offshore wind industry needs to be evaluated based on human activities given the phase of development, whether pre-construction, construction, operation or decommissioning (Figure 3.1).",
+    "text": "3.1 Dataset Overview\nThe MST integrates species distribution data from 7 source datasets plus 1 derived merged dataset, all stored in a DuckDB database at 0.05° resolution (~4 km cells). Each dataset provides spatial predictions of species occurrence, ranging from continuous suitability models (AquaMaps) to binary range maps (NMFS, FWS, BirdLife, IUCN).\nTable 3.1 summarizes all 8 datasets in the MST database.\nThe sort order determines priority during model merging: datasets with continuous predictions (AquaMaps) are considered first, followed by progressively coarser range maps. The merged model (ms_merge) takes the MAX value across all available source datasets for each species in each cell.",
     "crumbs": [
       "Science",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Stressors</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Data Sources</span>"
     ]
   },
   {
-    "objectID": "stressors.html#offshore-wind-energy",
-    "href": "stressors.html#offshore-wind-energy",
-    "title": "3  Stressors",
+    "objectID": "data-sources.html#dataset-overview",
+    "href": "data-sources.html#dataset-overview",
+    "title": "3  Data Sources",
     "section": "",
-    "text": "Figure 3.1: Cumulative adverse effects of offshore wind energy development on wildlife (Goodale and Milman 2016).",
+    "text": "Table 3.1: Summary of the 8 datasets in the MST database. Cell values represent species presence probability or suitability as a percentage (1–100%). Datasets marked Is Mask = Yes can also serve as spatial masks during model merging.\n\n\n\n\n\n\n\n\n\n\n\n\nDataset Key\nDisplay Name\nCell Value Encoding\nIs Mask\nSort\n\n\n\n\nam_0.05\nAquaMaps SDM\nContinuous suitability 0–100%\nNo\n1\n\n\nca_nmfs\nNMFS Core Area\nCore: 100%\nYes\n2\n\n\nch_nmfs\nNMFS Critical Habitat\nEN: 100%, TN: 50%\nYes\n3\n\n\nch_fws\nFWS Critical Habitat\nEN: 100%, TN: 50%\nYes\n4\n\n\nrng_fws\nFWS Range\nEN: 100%, TN: 50%, LC: 1%\nYes\n5\n\n\nbl\nBirdLife Range\nCR: 50%, EN: 25%, VU: 5%, NT: 2%, LC: 1%\nYes\n6\n\n\nrng_iucn\nIUCN Range\nCR: 50%, EN: 25%, VU: 5%, NT: 2%, LC: 1%\nYes\n7\n\n\nms_merge\nMerged Model\nMAX across source datasets\nNo\n0",
     "crumbs": [
       "Science",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Stressors</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Data Sources</span>"
     ]
   },
   {
-    "objectID": "stressors.html#oil-gas",
-    "href": "stressors.html#oil-gas",
-    "title": "3  Stressors",
-    "section": "3.2 Oil & Gas",
-    "text": "3.2 Oil & Gas\n\n\n\n\nGoodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse Effects of Offshore Wind Energy Development on Wildlife.” Journal of Environmental Planning and Management 0 (0): 1–21. https://doi.org/10.1080/09640568.2014.973483.",
+    "objectID": "data-sources.html#source-datasets",
+    "href": "data-sources.html#source-datasets",
+    "title": "3  Data Sources",
+    "section": "3.2 Source Datasets",
+    "text": "3.2 Source Datasets\n\n3.2.1 AquaMaps SDM (am_0.05)\nAquaMaps provides standardized species distribution models (SDMs) for over 17,000 marine species based on environmental envelope models. Each species model defines habitat suitability as a function of depth, temperature, salinity, primary productivity, ice concentration, and distance from land.\n\nSpecies count: ~17,550 models\nNative resolution: 0.5° (c-squares), downscaled to 0.05° using bilinear interpolation\nCell values: continuous suitability from 0–100%\nCoverage: global ocean\n\nAquaMaps serves as the foundational dataset for most species, providing the highest spatial resolution and broadest taxonomic coverage.\n\n\n3.2.2 NMFS Core Area (ca_nmfs)\nCore areas delineated by the National Marine Fisheries Service (NMFS) identify regions of concentrated use for species under NMFS jurisdiction.\n\nSpecies count: limited to species with designated core areas\nCell values: 100% within core area boundaries\nRole: contributes to merged model as a mask dataset\n\n\n\n3.2.3 NMFS Critical Habitat (ch_nmfs)\nCritical habitat designated under the Endangered Species Act (ESA) by NMFS for marine species.\n\nSpecies count: 34 species\nCell values: Endangered species = 100%, Threatened species = 50%\nRole: dual function — contributes cell values AND forms part of the spatial mask for model merging\n\n\n\n3.2.4 FWS Critical Habitat (ch_fws)\nCritical habitat designated under the ESA by the U.S. Fish and Wildlife Service (FWS) for marine and coastal species.\n\nSpecies count: 29 species\nCell values: Endangered species = 100%, Threatened species = 50%\nRole: dual function — contributes cell values AND forms part of the spatial mask\n\n\n\n3.2.5 FWS Range (rng_fws)\nCurrent range maps maintained by FWS for ESA-listed marine and coastal species.\n\nSpecies count: 106 species\nCell values: Endangered = 100%, Threatened = 50%, Least Concern = 1%\nRole: mask dataset, providing spatial extent for species not covered by AquaMaps\n\n\n\n3.2.6 BirdLife Range (bl)\nExpert-reviewed range maps from BirdLife International’s Birds of the World (BOTW) dataset, representing the most authoritative global seabird distribution data.\n\nSpecies count: 573 seabird species\nCell values: scaled by IUCN Red List category — CR: 50%, EN: 25%, VU: 5%, NT: 2%, LC: 1%\nRole: mask dataset, providing spatial constraints for seabird species\nNote: BirdLife range maps are expert-delineated polygons; cell values reflect conservation status rather than habitat suitability\n\n\n\n3.2.7 IUCN Range (rng_iucn)\nRange maps from the IUCN Red List of Threatened Species spatial data, covering a broad array of marine taxa.\n\nCell values: scaled by IUCN Red List category — CR: 50%, EN: 25%, VU: 5%, NT: 2%, LC: 1%\nRole: mask dataset, providing spatial extent for species with IUCN range data",
     "crumbs": [
       "Science",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Stressors</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Data Sources</span>"
     ]
   },
   {
-    "objectID": "receptors.html",
-    "href": "receptors.html",
-    "title": "4  Receptors",
+    "objectID": "data-sources.html#merged-model-ms_merge",
+    "href": "data-sources.html#merged-model-ms_merge",
+    "title": "3  Data Sources",
+    "section": "3.3 Merged Model (ms_merge)",
+    "text": "3.3 Merged Model (ms_merge)\nThe merged model is the derived output of the model merging pipeline (see Chapter 6). For each of the 9,819 valid species, cell values are computed as:\n\nMAX across all source dataset values for that species in each cell\nMasked to the spatial extent defined by IUCN, NMFS CH, and FWS CH ranges (when available)\nFloored at minimum values for MMPA-protected species (20%) and MBTA-protected species (10%)",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Data Sources</span>"
+    ]
+  },
+  {
+    "objectID": "data-sources.html#standard-grid",
+    "href": "data-sources.html#standard-grid",
+    "title": "3  Data Sources",
+    "section": "3.4 Standard Grid",
+    "text": "3.4 Standard Grid\nAll datasets are aligned to a standard 0.05° × 0.05° latitude-longitude grid covering US waters within BOEM Program Areas. At mid-latitudes, each cell represents approximately 4 × 4 km (16 km²). The grid is stored as a reference raster with unique cell_id values, enabling efficient joins between spatial data and tabular attributes in DuckDB.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Data Sources</span>"
+    ]
+  },
+  {
+    "objectID": "data-sources.html#sec-primary-productivity",
+    "href": "data-sources.html#sec-primary-productivity",
+    "title": "3  Data Sources",
+    "section": "3.5 Primary Productivity",
+    "text": "3.5 Primary Productivity\nPrimary productivity is specified in the explicit mandate for BOEM’s management, per the Outer Continental Shelf Lands Act (OCSLA), Section 18(a)(2) of the OCSLA Amendments of 1978 specifying 8 factors the USDOI must consider in the timing and location of OCS oil and gas activities, including “the relative environmental sensitivity and marine productivity of different areas of the OCS.”\nWe use satellite-derived net primary productivity (NPP) from the Vertically Generalized Production Model (VGPM) product from Oregon State’s Ocean Productivity Lab, based on VIIRS satellite data for 2014–2023. Values are converted to metric tons C km-2 yr-1 and averaged across the time period.\n\n\n\n\n\n\nFigure 3.1: Primary productivity throughout the continental United States averaged across months of 2021, as measured by Oregon State’s Vertically Generalized Production Model (VGPM). Expansion is anticipated across the entire US EEZ and for more recent years.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Data Sources</span>"
+    ]
+  },
+  {
+    "objectID": "taxonomy.html",
+    "href": "taxonomy.html",
+    "title": "4  Taxonomy",
     "section": "",
-    "text": "4.1 Species\nReceptors are the species and habitats that are potentially impacted by the human activity.",
+    "text": "4.1 Taxonomic Authorities\nIntegrating species distribution data from 7 source datasets requires resolving taxonomic identities across multiple naming systems. The MST uses a multi-authority matching pipeline to ensure each species is uniquely identified, enabling accurate merging of models from different data providers.\nThe following authorities are loaded into a reference database (spp.duckdb) for taxonomic reconciliation:",
     "crumbs": [
       "Science",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Receptors</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Taxonomy</span>"
     ]
   },
   {
-    "objectID": "receptors.html#species",
-    "href": "receptors.html#species",
-    "title": "4  Receptors",
+    "objectID": "taxonomy.html#taxonomic-authorities",
+    "href": "taxonomy.html#taxonomic-authorities",
+    "title": "4  Taxonomy",
     "section": "",
-    "text": "4.1.1 Corals\n\n\n4.1.2 Invertebrates\n\n\n4.1.3 Fish\n\n\n4.1.4 Marine Mammals\n\n\n4.1.5 Seabirds\n\n\n4.1.6 Sea Turtles",
+    "text": "Table 4.1: Taxonomic authorities used in the MST for species name resolution.\n\n\n\n\n\nAuthority\nDescription\nKey Identifier\n\n\n\n\nWoRMS\nWorld Register of Marine Species — authoritative list for marine taxa\nworms_id (AphiaID)\n\n\nGBIF\nGlobal Biodiversity Information Facility Backbone Taxonomy (~6.3M taxa)\ngbif_id\n\n\nITIS\nIntegrated Taxonomic Information System — US federal standard\nitis_tsn\n\n\nIUCN Red List\nInternational Union for Conservation of Nature — conservation assessments\niucn_id\n\n\nBirdLife BOTW\nBirds of the World — authoritative for seabird taxonomy\nbotw_id",
     "crumbs": [
       "Science",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Receptors</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Taxonomy</span>"
     ]
   },
   {
-    "objectID": "receptors.html#habitats",
-    "href": "receptors.html#habitats",
-    "title": "4  Receptors",
-    "section": "4.2 Habitats",
-    "text": "4.2 Habitats\n\n4.2.1 Coral Reefs\n\n\n4.2.2 Hydrothermal Vents\n\n\n4.2.3 Kelp Forests\n\n\n4.2.4 Mangrove Forests\n\n\n4.2.5 Seamounts",
+    "objectID": "taxonomy.html#id-resolution-cascade",
+    "href": "taxonomy.html#id-resolution-cascade",
+    "title": "4  Taxonomy",
+    "section": "4.2 ID Resolution Cascade",
+    "text": "4.2 ID Resolution Cascade\nSpecies identifiers are resolved through a cascading lookup process:\n\nITIS TSN match: if the source dataset provides an ITIS Taxonomic Serial Number, use the ITIS-to-WoRMS crosswalk for direct matching\nWoRMS crosswalk: look up accepted WoRMS AphiaID via the GBIF backbone, which integrates WoRMS as the marine taxonomy source\nScientific name match: for records without matching identifiers, attempt exact scientific name matching against WoRMS accepted names\nAPI lookup: for remaining unresolved names, query the WoRMS REST API (wm_records_name()) for fuzzy matching\n\nAt each stage, deprecated names are resolved to their accepted synonyms, and the taxonomicStatus field is used to determine the preferred name.",
     "crumbs": [
       "Science",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Receptors</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Taxonomy</span>"
     ]
   },
   {
-    "objectID": "receptors.html#primary-productivity",
-    "href": "receptors.html#primary-productivity",
-    "title": "4  Receptors",
-    "section": "4.3 Primary Productivity",
-    "text": "4.3 Primary Productivity\nPrimary productivity is specified in the explicit mandate for BOEM’s management, per the Outer Continental Shelf Lands Act (OCSLA), Section 18(a)(2) of the OCSLA Amendments of 1978 specifying 8 factors the USDOI must consider in the timing and location of OCS oil and gas activities, including “the relative environmental sensitivity and marine productivity of different areas of the OCS.” (Balcom et al. 2011)\nWe processed the Vertically Generalized Production Model (VGPM) product from Oregon State’s Ocean Productivity Lab (using the script vg.R) (Figure 4.1).\n\n\n\n\n\n\nFigure 4.1: Primary productivity throughout the continental United States averaged across months of 2021, as measured by Oregon State’s Vertically Generalized Production Model (VGPM). Expansion is anticipated across the entire US EEZ and for more recent years.\n\n\n\n\n\n\n\nBalcom, Brian J., Douglas C. Biggs, Chuanmin Hu, Paul Montagna, and Dean A. Stockwell. 2011. “A Comparison of Marine Productivity Among Outer Continental Shelf Planning Areas. Final Report.”",
+    "objectID": "taxonomy.html#species-categories",
+    "href": "taxonomy.html#species-categories",
+    "title": "4  Taxonomy",
+    "section": "4.3 Species Categories",
+    "text": "4.3 Species Categories\nValid species are classified into 7 categories based on their taxonomic position:\n\n\n\nTable 4.2: Species categories used in the MST for scoring and visualization.\n\n\n\n\n\n\n\n\n\n\nCategory\nDescription\nExamples\n\n\n\n\nbird\nSeabirds and shorebirds\nalbatross, petrel, tern, pelican\n\n\ncoral\nReef-building and deep-sea corals\nstony coral, soft coral, black coral\n\n\nfish\nBony and cartilaginous fishes\ngrouper, shark, ray, tuna\n\n\ninvertebrate\nNon-coral marine invertebrates\ncrab, lobster, sea urchin, squid\n\n\nmammal\nMarine mammals\nwhale, dolphin, seal, manatee\n\n\nreptile\nSea turtles\nloggerhead, green, leatherback\n\n\nother\nUncategorized marine organisms\nalgae, seagrass",
     "crumbs": [
       "Science",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Receptors</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Taxonomy</span>"
     ]
   },
   {
-    "objectID": "exposure.html",
-    "href": "exposure.html",
-    "title": "5  Exposure",
+    "objectID": "taxonomy.html#data-quality",
+    "href": "taxonomy.html#data-quality",
+    "title": "4  Taxonomy",
+    "section": "4.4 Data Quality",
+    "text": "4.4 Data Quality\n\n4.4.1 Duplicate Resolution\nMultiple source datasets may provide models for the same species. The taxonomic matching step identifies duplicates by resolving all source names to canonical WoRMS or BirdLife identifiers. When a species appears in multiple datasets, the model merging pipeline (see Chapter 6) takes the MAX value across all sources rather than treating them as separate species.\n\n\n4.4.2 Synonym Handling\nTaxonomic names change over time as species are reclassified. The pipeline handles this by:\n\nresolving all names through acceptedNameUsageID in each authority\ntracking the original source name alongside the accepted name\nflagging deprecated WoRMS IDs and updating them to current accepted IDs\n\n\n\n4.4.3 Valid Species Filter (is_ok)\nNot all taxa in the database are included in the final analysis. A species is flagged as valid (is_ok = TRUE) when it meets all of the following criteria:\n\nhas a merged model (i.e., at least one source dataset provides cell values)\nis classified as marine (based on WoRMS isMarine flag, or BirdLife seabird classification)\nis not extinct (WoRMS isExtinct or IUCN Red List EX status)\nhas cells overlapping at least one BOEM Program Area\n\nThis filter yields 9,819 valid species from approximately 17,333 total taxa across all datasets.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Taxonomy</span>"
+    ]
+  },
+  {
+    "objectID": "taxonomy.html#key-function",
+    "href": "taxonomy.html#key-function",
+    "title": "4  Taxonomy",
+    "section": "4.5 Key Function",
+    "text": "4.5 Key Function\nThe taxonomic matching is implemented in msens::match_taxa(), which orchestrates the ID resolution cascade and returns a unified taxon table with cross-referenced identifiers from all authorities.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Taxonomy</span>"
+    ]
+  },
+  {
+    "objectID": "extinction-risk.html",
+    "href": "extinction-risk.html",
+    "title": "5  Extinction Risk",
     "section": "",
-    "text": "Cumulative exposure (Figure 3.1) is important for understanding impacts to a population.",
+    "text": "5.1 Regulatory Framework\nExtinction risk scoring translates a species’ conservation status into a numeric weight that reflects its vulnerability to population-level impacts. The MST integrates protections from three US federal regulatory frameworks and the international IUCN Red List to assign each species a score from 1 to 100.",
     "crumbs": [
       "Science",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exposure</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Extinction Risk</span>"
+    ]
+  },
+  {
+    "objectID": "extinction-risk.html#regulatory-framework",
+    "href": "extinction-risk.html#regulatory-framework",
+    "title": "5  Extinction Risk",
+    "section": "",
+    "text": "5.1.1 Endangered Species Act (ESA)\nThe Endangered Species Act (1973) provides protections for species listed as Endangered (EN) or Threatened (TN) by either NMFS (for marine species) or FWS (for terrestrial/coastal species).\n\nEndangered (EN): species in danger of extinction throughout all or a significant portion of its range\nThreatened (TN): species likely to become endangered within the foreseeable future\n\nESA listings are the primary driver of extinction risk scores for US-listed species, with Endangered receiving the maximum score (100) and Threatened receiving a score of 50.\n\n\n5.1.2 Marine Mammal Protection Act (MMPA)\nThe Marine Mammal Protection Act (1972) protects all marine mammals in US waters regardless of their ESA status. This includes whales, dolphins, porpoises, seals, sea lions, walruses, sea otters, polar bears, and manatees.\nBecause MMPA provides blanket protection, all marine mammals receive a minimum spatial floor score of 20 in cells where they are present — even species classified as Least Concern under IUCN. This ensures that the legal protection afforded to marine mammals is reflected in the sensitivity analysis.\n\n\n5.1.3 Migratory Bird Treaty Act (MBTA)\nThe Migratory Bird Treaty Act (1918) protects migratory birds, which includes most seabird species. Similar to MMPA, all migratory birds receive a minimum spatial floor score of 10 in cells where they are present.\n\n\n5.1.4 IUCN Red List\nThe IUCN Red List of Threatened Species provides internationally recognized conservation status assessments used for species not listed under US federal laws:\n\n\n\nTable 5.1: IUCN Red List categories used in extinction risk scoring.\n\n\n\n\n\n\n\n\n\n\nCategory\nAbbreviation\nDescription\n\n\n\n\nCritically Endangered\nCR\nextremely high risk of extinction in the wild\n\n\nEndangered\nEN\nvery high risk of extinction in the wild\n\n\nVulnerable\nVU\nhigh risk of extinction in the wild\n\n\nNear Threatened\nNT\nclose to qualifying for a threatened category\n\n\nLeast Concern\nLC\nwidespread and abundant\n\n\nData Deficient\nDD\ninadequate information to assess",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Extinction Risk</span>"
+    ]
+  },
+  {
+    "objectID": "extinction-risk.html#scoring-methodology",
+    "href": "extinction-risk.html#scoring-methodology",
+    "title": "5  Extinction Risk",
+    "section": "5.2 Scoring Methodology",
+    "text": "5.2 Scoring Methodology\nExtinction risk scores are computed by msens::compute_er_score(), which implements a two-track scoring system depending on whether the species is listed under US federal law.\n\n5.2.1 US-listed Species\nFor species with NMFS or FWS ESA listings, the score is the maximum across three components:\n\\[\n\\text{er\\_score} = \\max(\\text{ESA base}, \\text{MMPA floor}, \\text{MBTA floor})\n\\tag{5.1}\\]\n\n\n\nTable 5.2: US-listed species scoring components. The final score is the MAX across applicable components.\n\n\n\n\n\nComponent\nScore\n\n\n\n\nESA Endangered (EN)\n100\n\n\nESA Threatened (TN)\n50\n\n\nESA not listed (LC)\n1\n\n\nMMPA protected\n20\n\n\nMBTA protected\n10\n\n\n\n\n\n\nExamples:\n\nESA Endangered whale (MMPA): max(100, 20) = 100\nESA Threatened seabird (MMPA + MBTA): max(50, 20, 10) = 50\nNon-ESA marine mammal (MMPA only): max(1, 20) = 20\nNon-ESA migratory bird (MBTA only): max(1, 10) = 10\n\n\n\n5.2.2 Non-US Species (IUCN)\nSpecies not listed under US federal law receive a score based solely on their IUCN Red List category:\n\n\n\nTable 5.3: IUCN-based extinction risk scores for non-US species.\n\n\n\n\n\nIUCN Category\nScore\n\n\n\n\nCritically Endangered (CR)\n50\n\n\nEndangered (EN)\n25\n\n\nVulnerable (VU)\n5\n\n\nNear Threatened (NT)\n2\n\n\nLeast Concern / Data Deficient / other\n1\n\n\n\n\n\n\nSpecies with no matching extinction risk code (i.e., unmatched taxa) receive a default score of 1.\n\n\n5.2.3 Scale Note\nScores range from 1 to 100, representing a percentage scale (1–100%). Integer storage is used for computational efficiency; conceptually the scale represents a 0–1 probability-like weight where 100 = 1.0 (maximum extinction risk) and 1 = 0.01 (minimum baseline).",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Extinction Risk</span>"
+    ]
+  },
+  {
+    "objectID": "extinction-risk.html#implementation",
+    "href": "extinction-risk.html#implementation",
+    "title": "5  Extinction Risk",
+    "section": "5.3 Implementation",
+    "text": "5.3 Implementation\nThe scoring function is implemented in the msens R package:\nmsens::compute_er_score(\n  extrisk_code,          # e.g., \"NMFS:EN\", \"FWS:TN\", \"IUCN:CR\"\n  is_mmpa = FALSE,       # MMPA protection flag\n  is_mbta = FALSE        # MBTA protection flag\n)\nThe extrisk_code field follows the format AUTHORITY:STATUS where:\n\nAuthority: NMFS, FWS, or IUCN\nStatus: ESA codes (EN, TN, LC) or IUCN codes (CR, EN, VU, NT, LC, DD)",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Extinction Risk</span>"
+    ]
+  },
+  {
+    "objectID": "model-merging.html",
+    "href": "model-merging.html",
+    "title": "6  Model Merging",
+    "section": "",
+    "text": "6.1 Pipeline Overview\nEach species may have distribution data in multiple source datasets (see Chapter 3). The model merging pipeline combines these into a single merged model per species, applying spatial masking and minimum floor values to reflect regulatory protections.\nThe merge pipeline processes each of the 9,819 valid species through the following steps:\nFigure 6.1: Model merging pipeline for a single species.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Model Merging</span>"
+    ]
+  },
+  {
+    "objectID": "model-merging.html#pipeline-overview",
+    "href": "model-merging.html#pipeline-overview",
+    "title": "6  Model Merging",
+    "section": "",
+    "text": "6.1.1 Step 1: Gather Source Models\nFor each species (identified by taxa_id), the pipeline queries all available models across the 7 source datasets. A species may have:\n\nan AquaMaps SDM (continuous suitability)\none or more regulatory range/habitat designations (NMFS, FWS)\na BirdLife or IUCN range map\n\n\n\n6.1.2 Step 2: MAX Across Datasets\nFor each grid cell, the merged value is the maximum suitability across all source datasets:\n\\[\nv_{merged,c} = \\max(v_{am,c},\\; v_{ca,c},\\; v_{ch,c},\\; v_{rng,c},\\; v_{bl,c},\\; v_{iucn,c})\n\\tag{6.1}\\]\nThis ensures that the most informative (highest confidence) prediction is used. For example, if AquaMaps predicts 30% suitability but NMFS has designated the cell as critical habitat for an endangered species (100%), the merged value is 100%.\n\n\n6.1.3 Step 3: Spatial Masking\nWhen an IUCN range map, NMFS Critical Habitat, or FWS Critical Habitat exists for a species, the merged model is constrained to the spatial extent of these mask datasets. The mask is formed as the union of all available is_mask = TRUE datasets for that species.\nThis prevents the AquaMaps SDM (which often has broad environmental envelope predictions) from extending species presence far beyond their known range. Cells outside the mask are set to zero (species absent).\n\n\n6.1.4 Step 4: MMPA Spatial Floor\nFor species protected under the Marine Mammal Protection Act (all marine mammals), a spatial minimum floor is applied:\n\\[\nv_{c} = \\max(v_{merged,c},\\; 20)\n\\tag{6.2}\\]\nThis ensures that every cell where a marine mammal is present has a minimum value of 20%, reflecting the legal protection that MMPA affords regardless of ESA status.\n\n\n6.1.5 Step 5: MBTA Spatial Floor\nSimilarly, for species protected under the Migratory Bird Treaty Act (most seabirds), a spatial minimum floor of 10% is applied:\n\\[\nv_{c} = \\max(v_{merged,c},\\; 10)\n\\tag{6.3}\\]\n\n\n6.1.6 Step 6: Persist Results\nThe final merged model is stored in the DuckDB database as:\n\nmodel table: one row per species with metadata (dataset key ms_merge, taxa reference, model sequence)\nmodel_cell table: one row per species × cell combination with the merged suitability value",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Model Merging</span>"
+    ]
+  },
+  {
+    "objectID": "model-merging.html#valid-species-filter",
+    "href": "model-merging.html#valid-species-filter",
+    "title": "6  Model Merging",
+    "section": "6.2 Valid Species Filter",
+    "text": "6.2 Valid Species Filter\nAfter merging, species are flagged as valid (is_ok = TRUE) based on the criteria described in Chapter 4. The filtering rules differ slightly between birds and other taxa:\nBirds (from BirdLife BOTW):\n\nhas a botw_id (BirdLife identifier)\nIUCN Red List code is not “EX” (Extinct)\nif also in WoRMS: must be marine and not extinct\nhas cells overlapping at least one BOEM Program Area\n\nOther marine taxa (from WoRMS):\n\nhas a taxa_id and a merged model (mdl_seq)\nIUCN Red List code is not “EX”\nWoRMS isMarine = TRUE and isExtinct != TRUE\nspecies category is not “reptile” (except sea turtles, which are reclassified as category “reptile”)\nhas cells overlapping at least one BOEM Program Area\n\nThis filtering yields 9,819 valid species that contribute to the final sensitivity scores.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Model Merging</span>"
     ]
   },
   {
     "objectID": "scoring.html",
     "href": "scoring.html",
-    "title": "6  Scoring",
+    "title": "7  Scoring",
     "section": "",
-    "text": "6.1 Visualization\nWe are in process with sorting the scoring methodology informed by visualization approaches.",
+    "text": "7.1 Cell-Level Scoring\nThe scoring methodology translates merged species distribution models and extinction risk weights into cell-level sensitivity metrics, which are then rescaled and aggregated to management zones for decision support.\nFor each grid cell, sensitivity is computed as the extinction risk weighted sum of species presence within each species category (Equation 7.1):\n\\[\n\\text{score}_{c,g} = \\sum_{s=1}^{S_g} \\frac{\\text{er\\_score}_s \\times v_{s,c}}{100}\n\\tag{7.1}\\]\nwhere:\nDivision by 100 converts the product from a 0–10,000 range back to a 0–100 scale.",
     "crumbs": [
       "Science",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Scoring</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#cell-level-scoring",
+    "href": "scoring.html#cell-level-scoring",
+    "title": "7  Scoring",
+    "section": "",
+    "text": "\\(\\text{score}_{c,g}\\) = sensitivity score for cell \\(c\\) and species category \\(g\\)\n\\(\\text{er\\_score}_s\\) = extinction risk score for species \\(s\\) (1–100; see Chapter 5)\n\\(v_{s,c}\\) = merged model value for species \\(s\\) in cell \\(c\\) (0–100%; see Chapter 6)\n\\(S_g\\) = number of valid species in category \\(g\\)",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#metric-keys",
+    "href": "scoring.html#metric-keys",
+    "title": "7  Scoring",
+    "section": "7.2 Metric Keys",
+    "text": "7.2 Metric Keys\nCell-level scores are stored as named metrics in the DuckDB database:\n\n\n\nTable 7.1: Cell-level metric keys stored in the MST database.\n\n\n\n\n\n\n\n\n\nMetric Key\nDescription\n\n\n\n\nextrisk_bird\nextinction risk score for birds\n\n\nextrisk_coral\nextinction risk score for corals\n\n\nextrisk_fish\nextinction risk score for fishes\n\n\nextrisk_invertebrate\nextinction risk score for invertebrates\n\n\nextrisk_mammal\nextinction risk score for marine mammals\n\n\nextrisk_reptile\nextinction risk score for reptiles/turtles\n\n\nextrisk_other\nextinction risk score for other marine organisms\n\n\nprimprod\nprimary productivity (VGPM, metric tons C km-2 yr-1)",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#ecoregional-rescaling",
+    "href": "scoring.html#ecoregional-rescaling",
+    "title": "7  Scoring",
+    "section": "7.3 Ecoregional Rescaling",
+    "text": "7.3 Ecoregional Rescaling\nRaw cell scores vary naturally across ecoregions due to differences in species richness, oceanographic conditions, and biogeographic patterns. To enable meaningful cross-region comparison, each metric is rescaled to a [0–100] range within each BOEM ecoregion:\n\\[\n\\text{score}'_{c} = \\frac{\\text{score}_{c} - \\text{score}_{min}}{\\text{score}_{max} - \\text{score}_{min}} \\times 100\n\\tag{7.2}\\]\nwhere \\(\\text{score}_{min}\\) and \\(\\text{score}_{max}\\) are the minimum and maximum cell values for that metric within the ecoregion. This ensures that a score of 100 represents the most sensitive cell within each ecoregion, not globally.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#primary-productivity-scoring",
+    "href": "scoring.html#primary-productivity-scoring",
+    "title": "7  Scoring",
+    "section": "7.4 Primary Productivity Scoring",
+    "text": "7.4 Primary Productivity Scoring\nNet primary productivity (NPP) from the VGPM satellite model is included as a separate metric (primprod) that does not undergo extinction risk weighting. Instead, the raw NPP values (metric tons C km-2 yr-1) are directly rescaled within each ecoregion using the same [0–100] normalization.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#zone-aggregation",
+    "href": "scoring.html#zone-aggregation",
+    "title": "7  Scoring",
+    "section": "7.5 Zone Aggregation",
+    "text": "7.5 Zone Aggregation\nRescaled cell scores are aggregated to three spatial levels using area-weighted averaging:\n\nProgram Areas: the 20 BOEM planning regions used for offshore energy management\nSubregions: intermediate spatial groupings (e.g., Atlantic, Gulf of Mexico, Pacific, Alaska)\nEcoregions: BOEM-defined ecological regions used as the rescaling baseline\n\nFor each zone, the aggregated score is:\n\\[\n\\text{score}_{zone} = \\frac{\\sum_{c \\in zone} \\text{score}'_c \\times A_c}{\\sum_{c \\in zone} A_c}\n\\tag{7.3}\\]\nwhere \\(A_c\\) is the area of cell \\(c\\) (accounting for latitude-dependent cell size in the 0.05° grid).",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Scoring</span>"
     ]
   },
   {
     "objectID": "scoring.html#visualization",
     "href": "scoring.html#visualization",
-    "title": "6  Scoring",
-    "section": "",
-    "text": "6.1.1 Treemap\n\n\nAudience: scientists\nShow contribution of each element to a given pixel or area of interest\nElements can be hierarchical across Sensitivity metrics and/or taxonomy\nInteractively zoom, e.g.: 4. Critically Endangered &gt; Animalia &gt; Mammalia\n\n\n\n\n6.1.2 Flower Plot\n\nPetal Length\n“One question was about the meaning of the numbers on the pedal plot. I explained that a higher sensitivity score indicates an area that could be susceptible to minor perturbations, while a lower score suggests an area that is more robust to minor changes.” - TW\n\nOHI\nIn the original Ocean Health Index (Halpern et al. 2012), the length of the petal reflected the percent towards maximum sustainability of the given goal. The framework is also based on a reference point, either spatially or temporally (Samhouri et al. 2012).\n\nRESA ’25\nIt makes sense to make the most vulnerable the highest score, so a low score is preferable (versus a preferred high score for sustainability of an OHI goal). We’ll need to determine what the “highest” score means as a reference point and consider SMART criteria. (Specific, Measurable, Assignable, Realistic, Time-related). Will the reference point be the same globally or vary based on some regional maximum?\n\nPetal Width (and possiblyvarying weights)\n“Another question was about how we manage the weights. I mentioned that we are not currently applying weights, but someone seemed concerned about it. We can discuss this further if needed.” - TW\n\nOHI\nFor the OHI flower plot, the width of the petal represents its weight contributing to the weighted average score in the center of the flower. The varying importance of each goal is based on societally held values with potentially different value sets, such as preservationist vs extractive:\n\nRESA ’25\nFor the RESA ’25, when looking at Species, Habitats and Primary Productivity, how shall they be weighted to factor into a final score? Shall species groups be simply weighted based on the number of species within, total biomass, extinction risk, commercial value, etc? And then Species versus less numerous Benthic Habitats and a singular value for Primary Productivity? I will conduct a literature survey to assign sensible value sets, but an App could also apply a user-defined value set to assign weights. That gets messy, but if transparent and easy ideally would lead to scientific consensus with a workshop and/or survey.\n\n\n\n\n\n\n\nHalpern, Benjamin S., Catherine Longo, Darren Hardy, Karen L. McLeod, Jameal F. Samhouri, Steven K. Katona, Kristin Kleisner, et al. 2012. “An Index to Assess the Health and Benefits of the Global Ocean.” Nature. https://doi.org/10.1038/nature11397.\n\n\nSamhouri, Jameal F., Sarah E. Lester, Elizabeth R. Selig, Benjamin S. Halpern, Michael J. Fogarty, Catherine Longo, and Karen L. McLeod. 2012. “Sea Sick? Setting Targets to Assess Ocean Health and Ecosystem Services.” Ecosphere 3 (5): 1–18. https://doi.org/10.1890/es11-00366.1.",
+    "title": "7  Scoring",
+    "section": "7.6 Visualization",
+    "text": "7.6 Visualization\n\n7.6.1 Flower Plot\nThe flower plot provides an intuitive summary of sensitivity scores by species category, inspired by the Ocean Health Index (Halpern et al. 2012) visualization approach:\n\nPetal length represents the rescaled sensitivity score (0–100) for each species category — longer petals indicate higher sensitivity\nPetal width represents the weight of each category contributing to the overall score — wider petals have more influence on the center score\nCenter value shows the weighted mean across all categories\n\nFigure 7.1 shows flower plots for all 20 BOEM Program Areas, generated from the v3 scoring run. Each flower summarizes the sensitivity profile of one program area with petals for Bird, Coral, Fish, Invertebrate, Mammal, Other, Turtle, and Primary Production. Alaska program areas (e.g., HOP, COK, GOA) show dominant Fish and Mammal petals, while Gulf areas (GAB, CEC, MAT) show stronger Invertebrate and Coral contributions.\n\n\n\n\n\n\nFigure 7.1: Flower plots for all 20 BOEM Program Areas showing ecoregionally rescaled sensitivity scores by species category. Petal length reflects the category score; petal width reflects its weight. Center values are the weighted mean across categories.\n\n\n\nThe flower plot is implemented as an interactive ggiraph visualization using polar coordinates in R (ggplot2 + coord_polar()), with tooltips showing detailed score breakdowns on hover. The plot_flower() function in calc_scores.qmd generates static versions for reports, while the mapgl web application implements an interactive JavaScript version for responsive rendering (see Figure A.2).\n\n\n7.6.2 Treemap\nThe treemap provides a detailed, hierarchical view of species contributions to sensitivity scores (Figure 7.2):\n\nAudience: scientists and analysts\nShows the contribution of each species to the overall score within a pixel or management zone\nElements are hierarchical: first by extinction risk category, then by taxonomic classification\nInteractive zooming allows drilling down to individual species contributions\n\n\n\n\n\n\n\nFigure 7.2: Treemap visualization showing species contributions to extinction risk scores, hierarchically organized by risk category and taxonomy.\n\n\n\nZooming into a specific category reveals individual species contributions:\n\n\n\n\n\n\nFigure 7.3: Zoomed treemap showing individual species within a specific risk category and taxonomic group.\n\n\n\n\n\n7.6.3 Interactive Maps\nThe primary visualization tools are two Shiny web applications:\n\nmapgl: general sensitivity mapping app showing composite scores by program area with flower plots and treemaps (see Appendix: mapgl)\nmapsp: species distribution viewer showing individual and merged models with regulatory status information (see Appendix: mapsp)\n\n\n\n\n\nHalpern, Benjamin S., Catherine Longo, Darren Hardy, Karen L. McLeod, Jameal F. Samhouri, Steven K. Katona, Kristin Kleisner, et al. 2012. “An Index to Assess the Health and Benefits of the Global Ocean.” Nature. https://doi.org/10.1038/nature11397.",
     "crumbs": [
       "Science",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Scoring</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "stressors.html",
+    "href": "stressors.html",
+    "title": "8  Stressors",
+    "section": "",
+    "text": "8.1 Offshore Wind Energy\nThe stressor component of the vulnerability framework (see Chapter 2) addresses the human activities that may impact marine ecosystems. This section is a placeholder for future phases of the MST, which will incorporate stressor-receptor interaction matrices to complete the full vulnerability assessment.\nEvaluation of stressors from the offshore wind industry needs to be evaluated based on human activities given the phase of development, whether pre-construction, construction, operation or decommissioning (Figure 8.1).",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Stressors</span>"
+    ]
+  },
+  {
+    "objectID": "stressors.html#offshore-wind-energy",
+    "href": "stressors.html#offshore-wind-energy",
+    "title": "8  Stressors",
+    "section": "",
+    "text": "Figure 8.1: Cumulative adverse effects of offshore wind energy development on wildlife (Goodale and Milman 2016).",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Stressors</span>"
+    ]
+  },
+  {
+    "objectID": "stressors.html#oil-gas",
+    "href": "stressors.html#oil-gas",
+    "title": "8  Stressors",
+    "section": "8.2 Oil & Gas",
+    "text": "8.2 Oil & Gas\n\n\n\n\nGoodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse Effects of Offshore Wind Energy Development on Wildlife.” Journal of Environmental Planning and Management 0 (0): 1–21. https://doi.org/10.1080/09640568.2014.973483.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Stressors</span>"
     ]
   },
   {
     "objectID": "software.html",
     "href": "software.html",
-    "title": "7  Software",
+    "title": "9  Software",
     "section": "",
-    "text": "The Marine Sensitivity Toolkit (MST) is a stack of software components for reproducibly, interactively and hierarchically generating environmental vulnerability maps and scores. Tabular data is collated across studies evaluating sensitivity of species to oil & gas and offshore wind energy development. The best available species and benthic habitat distributions are being mosaicked across the US EEZ. Scores will be summarized according to subgroups within Species, Benthic Habitats and Primary Productivity. These scores will be averaged into an overall score and visualized as a flower plot, applicable to various levels of BOEM relevancy: regional, ecoregions, protraction diagrams, blocks and aliquots. The software components for achieving this interactively are: 1) server — a Docker configuration to spin up all the software; 2) database — a spatially enabled database (PostgreSQL with PostGIS extension); 3) workflows — scripts (as Quarto notebooks) to explore, ingest and update the database and output files; 4) APIs — application programming interfaces for rendering vector (using pg_tileserv) or raster (using TiTiler) tile services for interactive mapping as well as a custom API (using R plumber); 5) libraries — re-usable documented functions as an R package for import, analysis and visualization using the APIs; 6) applications — interactive apps using the R Shiny framework for rendering vulnerability maps; and 7) documentation — as a Quarto notebook with figures, tables, glossary and references in interactive html or static docx/pdf output formats. This toolbox is intended to primarily serve BOEM needs internally, but by being open-source and fully reproducible the hope is to enlist buy-in and even contributions from external partners, whether from other government agencies, academia, NGOs or industry.\nWe ascribe to the philosophy of sharing all code for the sake of reproducibility, transparency and efficiency (Maitner et al. 2024; Lowndes et al. 2017); i.e. the FAIR principles of Findability, Accessibility, Interoperability, and Reusability (Wilkinson et al. 2016).\n\n7.0.1 Interactive Applications\nWe have developed a series of interactive applications to explore the data and results of the MST project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the shiny package in R (Chang et al. 2024), which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.\n\n\n7.0.2 Overcoming Challenges with Large Spatial Data\nThe MS project incorporates many large spatial datasets that are problematic to render in a typical interactive application. For instance, the most common interactive mapping R package leaflet has a 4MB limitation for displaying rasters (see “Large Raster Warning” in Raster Images • leaflet). Vectors (i.e., points, lines and polygons) get smoothed when containing many vertices, but contiguity gets lost between polygons and rendering degrades to non-usable depending on the internet speed of the user’s connection.\nTo work around these limitations, we have implemented “cloud native” web services and formats (see also Cloud-Optimized Geospatial Formats Guide). Our implementations effectively reduce the size of any given spatial object based on the zoom level of the user’s browser. For rasters, we use cloud-optimized GeoTIFFs (COGs) and for vectors, we use Mapbox Vector Tiles (MVT). These formats are designed to be fast and efficient for web mapping applications, and they allow us to display large spatial datasets in an interactive web application without sacrificing performance or usability. Let’s take a closer look at implementation of each.\n\n7.0.2.1 Raster: Cloud-Optimized GeoTIFFs (COGs) and Titiler\nHistorically, to read a raster, such as a GeoTIFF, from the web, the client software would have to read the entire file before rendering. Cloud Optimized GeoTIFFs (COGs) take advantage of HTTP GET range requests to read only the part of the file needed for rendering. So a COG stores quadtree simplifications of the original raster at multiple zoom levels and metadata for accessing their byte ranges in the file in the metadata header. This allows the client software to request only the parts of the file needed for rendering, which can greatly reduce the amount of data transferred and speed up rendering. This is for accessing the raw data in pixel values, e.g., for a raster of species distribution then the abundance of a species in each cell. We would want to also apply a color ramp to visualize the data. The open-source (TiTiler software is a lightweight web service that serves up these color ramped tiles on the fly. So COGs can be stored on a simple file server (like Amazon S3 or Azure Blob Storage) and served up as interactive web maps with TiTiler as an intermediary between the COG files and the client accessing the interactive Shiny mapping app (Figure 7.1).\n\n\n\n\n\n\nsequenceDiagram\n  autonumber\n  Client      -&gt;&gt; ShinyServer: request Shiny map app with a raster layer\n  ShinyServer -&gt;&gt; Client:      return JavaScript (JS) with URL specification for raster tiles\n  loop for every tile in the current view (based on zoom level and bounding box)\n    Client     -&gt;&gt; TiTiler:    request specific raster tile ({z}/{x}/{y})\n    TiTiler    -&gt;&gt; FileServer: read metadata from COG file and request byte range for tile ({z}/{x}/{y})\n    FileServer -&gt;&gt; TiTiler:    send byte range for tile\n    TiTiler    -&gt;&gt; Client:     apply color ramp to tile and return PNG\n  end\n%% mmdc -i diagrams/raster.mmd --theme default --backgroundColor transparent --scale 8 -o diagrams/raster.png\n\n\n\n\nFigure 7.1: Sequence diagram implementing large raster interactive display using Cloud-Optimized GeoTIFFs (COGs) and Titiler in a Shiny mapping app.\n\n\n\n\n\n\n\n7.0.2.2 Vector: Mapbox Vector Tiles (MVTs) and pg_tileserv\nAlthough “cloud native” vector formats exist for simple file storage (see Cloud-Optimized Geospatial Formats Guide), none of these allow for flexible filtering and manipulation. Instead, we use PostgreSQL with the spatial extension (PostGIS) to store the vector data and serve it as Mapbox Vector Tiles (MVTs) using the pg_tileserv web service written in the language Go, which is very fast. This means that we don’t have to pre-render the MVTs (such as you might do with tippecanoe), but can instead serve the raw vector data directly from the database and let pg_tileserv handle the rendering on the fly. Filters (in the form of CQL) can be applied to the request. Symbology is rendered client-side via JavaScript, which allows for interactive hover and click events on vector objects (e.g., BOEM aliquot). Some speed-up is enabled by implementing a Varnish cache service in between. We can even write our own database functions for customized rendering, such as H3 hexagonal summaries. This allows us to serve vector data as web maps with minimal configuration and setup, and it provides a fast and efficient way to display large vector datasets in an interactive web application (Figure 7.2).\n\n\n\n\n\n\nsequenceDiagram\n  autonumber\n  Client        -&gt;&gt; ShinyServer: request Shiny map app with a vector layer\n  ShinyServer   -&gt;&gt; Client: return JavaScript (JS) with URL specification for vector tiles\n  loop for every tile in the current view (based on zoom level and bounding box)\n    Client      -&gt;&gt; VarnishCache: request specific vector tile ({z}/{x}/{y})\n    alt cache hit\n      VarnishCache -&gt;&gt; Client: return vector tile\n    else cache miss\n      VarnishCache -&gt;&gt; pg_tileserv:  request specific vector tile ({z}/{x}/{y})\n      pg_tileserv  -&gt;&gt; pgDB:         run query to create vector tile in PostGIS database\n      pgDB         -&gt;&gt; pg_tileserv:  return vector tile in compressed Protobuf format (*.pbf)\n      pg_tileserv  -&gt;&gt; VarnishCache: store vector tile\n      VarnishCache -&gt;&gt; Client:       return vector tile\n    end\n  end\n%% mmdc -i diagrams/vector.mmd --theme default --backgroundColor transparent --scale 8 -o diagrams/vector.png\n\n\n\n\nFigure 7.2: Sequence diagram implementing large vector interactive display using Mapbox Vector Tiles (MVTs) and pg_tileserv in a Shiny mapping app.\n\n\n\n\n\n\n\n\n7.0.3 Github Repositories\n\n\n\n\n\nrepo\ndescription\n\n\n\n\napi\napplication programming interface (API) using R Plumber package\n\n\napps\nShiny applications\n\n\ndocs\ndocumentation for BOEM’s offshore environmental sensitivity index products\n\n\nmanuscripts\nManuscripts with review of sensitivities by industry and receptors (species, habitats, human uses)\n\n\nMarineSensitivity.github.io\ndefault website\n\n\nmsens\nR library of functions for mapping marine sensitivities, sponsored by BOEM\n\n\nobjectives\nrepository for issues spanning multiple repositories and doing big picture roadmapping\n\n\nserver\nserver setup for R Shiny apps, RStudio IDE, R Plumber API, PostGIS database, pg_tileserv\n\n\nworkflows\nscripts for testing data analytics and visualization as well as production workflows\n\n\n\n\n\n\n\n7.0.4 Software Components\n\n\n\n\n\n\n\n\n\n\nAPIs\n\n\napplication programming interfaces (APIs)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApps\n\n\ninteractive applications using Shiny\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDatabase\n\n\nPostgreSQL database extended spatially with PostGIS\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDocs\n\n\ntechnical documentation\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLibraries\n\n\ndocumented functions as an R package\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nServer\n\n\nserver software configuration using Docker\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorkflows\n\n\nscripts for exploring plus production workflows\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items\n\n\n\n\n\n\n\nChang, Winston, Joe Cheng, JJ Allaire, Carson Sievert, Barret Schloerke, Yihui Xie, Jeff Allen, Jonathan McPherson, Alan Dipert, and Barbara Borges. 2024. “Shiny: Web Application Framework for r.” https://CRAN.R-project.org/package=shiny.\n\n\nLowndes, Julia S. Stewart, Benjamin D. Best, Courtney Scarborough, Jamie C. Afflerbach, Melanie R. Frazier, Casey C. O’Hara, Ning Jiang, and Benjamin S. Halpern. 2017. “Our Path to Better Science in Less Time Using Open Data Science Tools.” Nature Ecology & Evolution 1 (6): 0160. https://doi.org/10.1038/s41559-017-0160.\n\n\nMaitner, Brian, Paul Efren Santos Andrade, Luna Lei, Jamie Kass, Hannah L. Owens, George C. G. Barbosa, Brad Boyle, et al. 2024. “Code Sharing in Ecology and Evolution Increases Citation Rates but Remains Uncommon.” Ecology and Evolution 14 (8): e70030. https://doi.org/10.1002/ece3.70030.\n\n\nWilkinson, Mark D., Michel Dumontier, IJsbrand Jan Aalbersberg, Gabrielle Appleton, Myles Axton, Arie Baak, Niklas Blomberg, et al. 2016. “The FAIR Guiding Principles for Scientific Data Management and Stewardship.” Scientific Data 3 (1): 160018. https://doi.org/10.1038/sdata.2016.18.",
+    "text": "The Marine Sensitivity Toolkit (MST) is a stack of software components for reproducibly, interactively and hierarchically generating environmental vulnerability maps and scores. Tabular data is collated across studies evaluating sensitivity of species to oil & gas and offshore wind energy development. The best available species and benthic habitat distributions are being mosaicked across the US EEZ. Scores will be summarized according to subgroups within Species, Benthic Habitats and Primary Productivity. These scores will be averaged into an overall score and visualized as a flower plot, applicable to various levels of BOEM relevancy: regional, ecoregions, protraction diagrams, blocks and aliquots. The software components for achieving this interactively are: 1) server — a Docker configuration to spin up all the software; 2) database — a spatially enabled database (PostgreSQL with PostGIS extension); 3) workflows — scripts (as Quarto notebooks) to explore, ingest and update the database and output files; 4) APIs — application programming interfaces for rendering vector (using pg_tileserv) or raster (using TiTiler) tile services for interactive mapping as well as a custom API (using R plumber); 5) libraries — re-usable documented functions as an R package for import, analysis and visualization using the APIs; 6) applications — interactive apps using the R Shiny framework for rendering vulnerability maps; and 7) documentation — as a Quarto notebook with figures, tables, glossary and references in interactive html or static docx/pdf output formats. This toolbox is intended to primarily serve BOEM needs internally, but by being open-source and fully reproducible the hope is to enlist buy-in and even contributions from external partners, whether from other government agencies, academia, NGOs or industry.\nWe ascribe to the philosophy of sharing all code for the sake of reproducibility, transparency and efficiency (Maitner et al. 2024; Lowndes et al. 2017); i.e. the FAIR principles of Findability, Accessibility, Interoperability, and Reusability (Wilkinson et al. 2016).\n\n9.0.1 Interactive Applications\nWe have developed a series of interactive applications to explore the data and results of the MST project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the shiny package in R (Chang et al. 2024), which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.\n\n\n9.0.2 Overcoming Challenges with Large Spatial Data\nThe MS project incorporates many large spatial datasets that are problematic to render in a typical interactive application. For instance, the most common interactive mapping R package leaflet has a 4MB limitation for displaying rasters (see “Large Raster Warning” in Raster Images • leaflet). Vectors (i.e., points, lines and polygons) get smoothed when containing many vertices, but contiguity gets lost between polygons and rendering degrades to non-usable depending on the internet speed of the user’s connection.\nTo work around these limitations, we have implemented “cloud native” web services and formats (see also Cloud-Optimized Geospatial Formats Guide). Our implementations effectively reduce the size of any given spatial object based on the zoom level of the user’s browser. For rasters, we use cloud-optimized GeoTIFFs (COGs) and for vectors, we use Mapbox Vector Tiles (MVT). These formats are designed to be fast and efficient for web mapping applications, and they allow us to display large spatial datasets in an interactive web application without sacrificing performance or usability. Let’s take a closer look at implementation of each.\n\n9.0.2.1 Raster: Cloud-Optimized GeoTIFFs (COGs) and Titiler\nHistorically, to read a raster, such as a GeoTIFF, from the web, the client software would have to read the entire file before rendering. Cloud Optimized GeoTIFFs (COGs) take advantage of HTTP GET range requests to read only the part of the file needed for rendering. So a COG stores quadtree simplifications of the original raster at multiple zoom levels and metadata for accessing their byte ranges in the file in the metadata header. This allows the client software to request only the parts of the file needed for rendering, which can greatly reduce the amount of data transferred and speed up rendering. This is for accessing the raw data in pixel values, e.g., for a raster of species distribution then the abundance of a species in each cell. We would want to also apply a color ramp to visualize the data. The open-source (TiTiler software is a lightweight web service that serves up these color ramped tiles on the fly. So COGs can be stored on a simple file server (like Amazon S3 or Azure Blob Storage) and served up as interactive web maps with TiTiler as an intermediary between the COG files and the client accessing the interactive Shiny mapping app (Figure 9.1).\n\n\n\n\n\n\n\n\n\n\nFigure 9.1: Sequence diagram implementing large raster interactive display using Cloud-Optimized GeoTIFFs (COGs) and Titiler in a Shiny mapping app.\n\n\n\n\n\n\n\n9.0.2.2 Vector: Mapbox Vector Tiles (MVTs) and pg_tileserv\nAlthough “cloud native” vector formats exist for simple file storage (see Cloud-Optimized Geospatial Formats Guide), none of these allow for flexible filtering and manipulation. Instead, we use PostgreSQL with the spatial extension (PostGIS) to store the vector data and serve it as Mapbox Vector Tiles (MVTs) using the pg_tileserv web service written in the language Go, which is very fast. This means that we don’t have to pre-render the MVTs (such as you might do with tippecanoe), but can instead serve the raw vector data directly from the database and let pg_tileserv handle the rendering on the fly. Filters (in the form of CQL) can be applied to the request. Symbology is rendered client-side via JavaScript, which allows for interactive hover and click events on vector objects (e.g., BOEM aliquot). Some speed-up is enabled by implementing a Varnish cache service in between. We can even write our own database functions for customized rendering, such as H3 hexagonal summaries. This allows us to serve vector data as web maps with minimal configuration and setup, and it provides a fast and efficient way to display large vector datasets in an interactive web application (Figure 9.2).\n\n\n\n\n\n\n\n\n\n\nFigure 9.2: Sequence diagram implementing large vector interactive display using Mapbox Vector Tiles (MVTs) and pg_tileserv in a Shiny mapping app.\n\n\n\n\n\n\n\n\n9.0.3 Github Repositories\n\n\n\n\n\nrepo\ndescription\n\n\n\n\n.github\norganization README\n\n\napi\napplication programming interface (API) using R Plumber package\n\n\napps\nShiny applications\n\n\ndocs\ndocumentation for BOEM’s offshore environmental sensitivity index products\n\n\nmanuscripts\nManuscripts with review of sensitivities by industry and receptors (species, habitats, human uses)\n\n\nMarineSensitivity.github.io\ndefault website\n\n\nmsens\nR library of functions for mapping marine sensitivities, sponsored by BOEM\n\n\nobjectives\nrepository for issues spanning multiple repositories and doing big picture roadmapping\n\n\nserver\nserver setup for R Shiny apps, RStudio IDE, R Plumber API, PostGIS database, pg_tileserv\n\n\nworkflows\nscripts for testing data analytics and visualization as well as production workflows\n\n\n\n\n\n\n\n9.0.4 Software Components\n\n\n\n\n\n\n\n\n\n\nAPIs\n\n\napplication programming interfaces (APIs)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApps\n\n\ninteractive applications using Shiny\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDatabase\n\n\nPostgreSQL database extended spatially with PostGIS\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDocs\n\n\ntechnical documentation\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLibraries\n\n\ndocumented functions as an R package\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nServer\n\n\nserver software configuration using Docker\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorkflows\n\n\nscripts for exploring plus production workflows\n\n\n\n\n\n\n\n\n\n\nNo matching items\n\n\n\n\n\n\nChang, Winston, Joe Cheng, JJ Allaire, Carson Sievert, Barret Schloerke, Yihui Xie, Jeff Allen, Jonathan McPherson, Alan Dipert, and Barbara Borges. 2024. “Shiny: Web Application Framework for r.” https://CRAN.R-project.org/package=shiny.\n\n\nLowndes, Julia S. Stewart, Benjamin D. Best, Courtney Scarborough, Jamie C. Afflerbach, Melanie R. Frazier, Casey C. O’Hara, Ning Jiang, and Benjamin S. Halpern. 2017. “Our Path to Better Science in Less Time Using Open Data Science Tools.” Nature Ecology & Evolution 1 (6): 0160. https://doi.org/10.1038/s41559-017-0160.\n\n\nMaitner, Brian, Paul Efren Santos Andrade, Luna Lei, Jamie Kass, Hannah L. Owens, George C. G. Barbosa, Brad Boyle, et al. 2024. “Code Sharing in Ecology and Evolution Increases Citation Rates but Remains Uncommon.” Ecology and Evolution 14 (8): e70030. https://doi.org/10.1002/ece3.70030.\n\n\nWilkinson, Mark D., Michel Dumontier, IJsbrand Jan Aalbersberg, Gabrielle Appleton, Myles Axton, Arie Baak, Niklas Blomberg, et al. 2016. “The FAIR Guiding Principles for Scientific Data Management and Stewardship.” Scientific Data 3 (1): 160018. https://doi.org/10.1038/sdata.2016.18.",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Software</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Software</span>"
     ]
   },
   {
     "objectID": "server.html",
     "href": "server.html",
-    "title": "8  Server",
+    "title": "10  Server",
     "section": "",
-    "text": "8.1 Setup\nThe server is for serving up any web services outside those of Github (e.g., website, docs and R package msens) using Docker (see the docker-compose.yml; with reverse proxying from subdomains to ports by Caddy).\nFor the latest instructions on launching an Amazon instance and installing the server software, see Server Setup · MarineSensitivity/server Wiki, which is pasted below for convenience…\non AWS as EC2 instance using Docker",
+    "text": "10.1 Setup\nThe server is for serving up any web services outside those of Github (e.g., website, docs and R package msens) using Docker (see the docker-compose.yml; with reverse proxying from subdomains to ports by Caddy).\nFor the latest instructions on launching an Amazon instance and installing the server software, see Server Setup · MarineSensitivity/server Wiki, which is pasted below for convenience…\non AWS as EC2 instance using Docker",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Server</span>"
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Server</span>"
     ]
   },
   {
     "objectID": "server.html#setup",
     "href": "server.html#setup",
-    "title": "8  Server",
+    "title": "10  Server",
     "section": "",
-    "text": "8.1.1 launch instance\nname: msens1:\n\nSoftware Image (AMI)\nCanonical, Ubuntu, 22.04 LTS, amd64 jammy image build on 2023-09-19 ami-0fc5d935ebf8bc3bc\nVirtual server type (instance type)\nt2.xlarge (4 vCPU, 16 GB memory)\n\nFirewall (security group)\nNew security group\nStorage (volumes)\n2 volume(s)\n\n20 GB\n/ server software, disposable\n60 GB\n/share for all data, persistent and to be backed up\n\n\n\n8.1.1.1 allocate IP address\n\nElastic IP addresses | EC2 | us-east-1 for persistent IP address\nAllocated IPv4 address: 100.25.173.0\nAssociate Elastic IP address\n\n\n\n\n8.1.2 ssh to server\npem='/Users/bbest/My Drive/private/msens_key_pair.pem'\nssh -i $pem ubuntu@msens1.marinesensitivity.org\n\n8.1.2.1 set hostname\n\nChange the hostname of your Amazon Linux instance - Amazon Elastic Compute Cloud\n\nsudo vi /etc/cloud/cloud.cfg\n# preserve_hostname: true\nsudo hostnamectl set-hostname msens1.marinesensitivity.org\nsudo reboot\n\n\n8.1.2.2 mount volume\nThe extra volume (60 GB for /share) was added during EC2 launch instance wizard, but needs to be mounted before available for use.\n\nMake an Amazon EBS volume available for use on Linux - Amazon Elastic Compute Cloud\n\ndf -H\nFilesystem      Size  Used Avail Use% Mounted on\n/dev/root        21G  2.3G   19G  11% /\ntmpfs           8.4G     0  8.4G   0% /dev/shm\ntmpfs           3.4G  898k  3.4G   1% /run\ntmpfs           5.3M     0  5.3M   0% /run/lock\n/dev/xvda15     110M  6.4M  104M   6% /boot/efi\ntmpfs           1.7G  4.1k  1.7G   1% /run/user/1000\nlsblk\nNAME     MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS\nloop0      7:0    0  24.6M  1 loop /snap/amazon-ssm-agent/7528\nloop1      7:1    0  55.7M  1 loop /snap/core18/2790\nloop2      7:2    0  63.5M  1 loop /snap/core20/2015\nloop3      7:3    0 111.9M  1 loop /snap/lxd/24322\nloop4      7:4    0  40.8M  1 loop /snap/snapd/20092\nxvda     202:0    0    20G  0 disk \n├─xvda1  202:1    0  19.9G  0 part /\n├─xvda14 202:14   0     4M  0 part \n└─xvda15 202:15   0   106M  0 part /boot/efi\nxvdb     202:16   0    60G  0 disk\nsudo file -s /dev/xvdb\n# /dev/xvdb: data\nSo no file system on /dev/xvdb yet.\nsudo mkfs -t xfs /dev/xvdb\nsudo mkdir /share\nsudo mount /dev/xvdb /share\nsudo cp /etc/fstab /etc/fstab.orig\nsudo blkid\n# /dev/xvdb: UUID=\"bc766dfb-1c42-49cf-9320-2242a2d48a2e\" BLOCK_SIZE=\"512\" TYPE=\"xfs\"\nsudo vim /etc/fstab\n# UUID=bc766dfb-1c42-49cf-9320-2242a2d48a2e  /share  xfs  defaults,nofail  0  2\n\ndf -h\nsudo umount /share ; df -h\nsudo mount -a      ; df -h\n\n\n\n8.1.3 install docker\nFollowing:\n\nStep-by-Step Guide to Install Docker on Ubuntu in AWS | by Srija Anaparthy | Medium\n\nsudo apt-get update\n#OLD: sudo apt-get install docker.io -y\nNEW: [[Migrate to docker compose]]\nsudo systemctl start docker\nsudo docker run hello-world\nsudo systemctl enable docker\ndocker --version\n# Docker version 24.0.6, build ed223bc\nsudo usermod -a -G docker $(whoami)\n\n8.1.3.1 run docker compose\n\n/Users/bbest/My Drive/private/msens_server_env-password.txt\n\nsudo chown -R ubuntu:ubuntu /share\nmkdir -p /share/github/MarineSensitivity\ncd /share/github/MarineSensitivity\n# clone server repo\ngit clone https://github.com/MarineSensitivity/server.git\ncd server\n\n# add password, used as $PASSWORD in docker-compose.yml\necho 'PASSWORD=******' &gt; .env\n\n# launch docker instances\nsudo docker-compose up -d\n\n\n\n8.1.4 Backup /share with snapshots\nPer Automate snapshot lifecycles - Amazon Elastic Compute Cloud, created two policies:\n\nbkup_msens-share_daily every 24 hrs at 09:00 UTC, max of 7\nbkup_msens-share_weekly every Monday 09:00 UTC, max of 8",
+    "text": "10.1.1 launch instance\nname: msens1:\n\nSoftware Image (AMI)\nCanonical, Ubuntu, 22.04 LTS, amd64 jammy image build on 2023-09-19 ami-0fc5d935ebf8bc3bc\nVirtual server type (instance type)\nt2.xlarge (4 vCPU, 16 GB memory)\n\nFirewall (security group)\nNew security group\nStorage (volumes)\n2 volume(s)\n\n20 GB\n/ server software, disposable\n60 GB\n/share for all data, persistent and to be backed up\n\n\n\n10.1.1.1 allocate IP address\n\nElastic IP addresses | EC2 | us-east-1 for persistent IP address\nAllocated IPv4 address: 100.25.173.0\nAssociate Elastic IP address\n\n\n\n\n10.1.2 ssh to server\npem='/Users/bbest/My Drive/private/msens_key_pair.pem'\nssh -i $pem ubuntu@msens1.marinesensitivity.org\n\n10.1.2.1 set hostname\n\nChange the hostname of your Amazon Linux instance - Amazon Elastic Compute Cloud\n\nsudo vi /etc/cloud/cloud.cfg\n# preserve_hostname: true\nsudo hostnamectl set-hostname msens1.marinesensitivity.org\nsudo reboot\n\n\n10.1.2.2 mount volume\nThe extra volume (60 GB for /share) was added during EC2 launch instance wizard, but needs to be mounted before available for use.\n\nMake an Amazon EBS volume available for use on Linux - Amazon Elastic Compute Cloud\n\ndf -H\nFilesystem      Size  Used Avail Use% Mounted on\n/dev/root        21G  2.3G   19G  11% /\ntmpfs           8.4G     0  8.4G   0% /dev/shm\ntmpfs           3.4G  898k  3.4G   1% /run\ntmpfs           5.3M     0  5.3M   0% /run/lock\n/dev/xvda15     110M  6.4M  104M   6% /boot/efi\ntmpfs           1.7G  4.1k  1.7G   1% /run/user/1000\nlsblk\nNAME     MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS\nloop0      7:0    0  24.6M  1 loop /snap/amazon-ssm-agent/7528\nloop1      7:1    0  55.7M  1 loop /snap/core18/2790\nloop2      7:2    0  63.5M  1 loop /snap/core20/2015\nloop3      7:3    0 111.9M  1 loop /snap/lxd/24322\nloop4      7:4    0  40.8M  1 loop /snap/snapd/20092\nxvda     202:0    0    20G  0 disk \n├─xvda1  202:1    0  19.9G  0 part /\n├─xvda14 202:14   0     4M  0 part \n└─xvda15 202:15   0   106M  0 part /boot/efi\nxvdb     202:16   0    60G  0 disk\nsudo file -s /dev/xvdb\n# /dev/xvdb: data\nSo no file system on /dev/xvdb yet.\nsudo mkfs -t xfs /dev/xvdb\nsudo mkdir /share\nsudo mount /dev/xvdb /share\nsudo cp /etc/fstab /etc/fstab.orig\nsudo blkid\n# /dev/xvdb: UUID=\"bc766dfb-1c42-49cf-9320-2242a2d48a2e\" BLOCK_SIZE=\"512\" TYPE=\"xfs\"\nsudo vim /etc/fstab\n# UUID=bc766dfb-1c42-49cf-9320-2242a2d48a2e  /share  xfs  defaults,nofail  0  2\n\ndf -h\nsudo umount /share ; df -h\nsudo mount -a      ; df -h\n\n\n\n10.1.3 install docker\nFollowing:\n\nStep-by-Step Guide to Install Docker on Ubuntu in AWS | by Srija Anaparthy | Medium\n\nsudo apt-get update\n#OLD: sudo apt-get install docker.io -y\nNEW: [[Migrate to docker compose]]\nsudo systemctl start docker\nsudo docker run hello-world\nsudo systemctl enable docker\ndocker --version\n# Docker version 24.0.6, build ed223bc\nsudo usermod -a -G docker $(whoami)\n\n10.1.3.1 run docker compose\n\n/Users/bbest/My Drive/private/msens_server_env-password.txt\n\nsudo chown -R ubuntu:ubuntu /share\nmkdir -p /share/github/MarineSensitivity\ncd /share/github/MarineSensitivity\n# clone server repo\ngit clone https://github.com/MarineSensitivity/server.git\ncd server\n\n# add password, used as $PASSWORD in docker-compose.yml\necho 'PASSWORD=******' &gt; .env\n\n# launch docker instances\nsudo docker-compose up -d\n\n\n\n10.1.4 Backup /share with snapshots\nPer Automate snapshot lifecycles - Amazon Elastic Compute Cloud, created two policies:\n\nbkup_msens-share_daily every 24 hrs at 09:00 UTC, max of 7\nbkup_msens-share_weekly every Monday 09:00 UTC, max of 8",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Server</span>"
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Server</span>"
     ]
   },
   {
     "objectID": "server.html#docker-compose",
     "href": "server.html#docker-compose",
-    "title": "8  Server",
-    "section": "8.2 Docker compose",
-    "text": "8.2 Docker compose\nThe Docker compose file is used to define and run multi-container Docker applications. Here is the docker-compose.yml file for the server pasted for convenience …\nversion: \"3.9\"\n\nservices:\n  caddy:\n    container_name: caddy\n    image: caddy:latest\n    ports:\n      - 80:80\n      - 443:443\n    restart: unless-stopped\n    volumes:\n      - ./caddy/Caddyfile:/etc/caddy/Caddyfile\n      - /share:/share\n      - /share/caddy/data:/data\n      - /share/caddy/config:/config\n\n  rstudio:\n    container_name: rstudio\n    build: ./rstudio\n    environment:\n      ROOT: 'true'\n      USER: admin\n      PASSWORD: ${PASSWORD}\n      ADD: shiny\n    ports:\n      - 8787:8787  # rstudio\n      - 3838:3838  # shiny\n    restart: unless-stopped\n    volumes:\n      - /share:/share\n      - /share/shiny_apps:/srv/shiny-server\n\n  plumber:\n    container_name: plumber\n    build: ./plumber\n    ports:\n      - 8888:8888  # api\n    restart: unless-stopped\n    volumes:\n      - /share:/share\n    depends_on:\n      - postgis\n\n  postgis:\n    container_name: postgis\n    image: postgis/postgis:latest\n    environment:\n      POSTGRES_DB: msens\n      POSTGRES_USER: admin\n      POSTGRES_PASSWORD: ${PASSWORD}\n      ANON_PASSWORD: ${ANON_PASSWORD}\n      PGDATA: /share/postgis/data\n    volumes:\n      # all files in /docker-entrypoint-initdb.dare automatically executed\n      #  in alphabetical order on container creation\n      - ./postgis/init.sh:/docker-entrypoint-initdb.d/init.sh  # add user anon\n      - /share:/share\n      - /share/postgis:/var/lib/postgresql\n    restart: unless-stopped\n    healthcheck:\n      test: 'exit 0'\n    ports:\n      - 5432:5432\n\n  pgadmin:\n    container_name: pgadmin\n    image: dpage/pgadmin4:8.14\n    restart: always\n    environment:\n      PGADMIN_DEFAULT_EMAIL: ben@ecoquants.com\n      PGADMIN_DEFAULT_PASSWORD: ${PASSWORD}\n      PGADMIN_LISTEN_PORT: 8088\n      # PGADMIN_CONFIG_CONFIG_DATABASE_URI: \"'postgresql://admin:$PASSWORD@postgis:5432/msens'\"\n    ports:\n      - 8088:8088\n    volumes:\n      - /share/pgadmin:/var/lib/pgadmin\n    depends_on:\n      - postgis\n\n  pgbkups:\n    container_name: pgbkups\n    image: prodrigestivill/postgres-backup-local\n    restart: always\n    user: postgres:postgres # Optional: see below\n    volumes:\n      - /share/postgis_backups:/backups\n      # sudo mkdir /share/postgis_backups; sudo chown -R 999:999 /share/postgis_backups\n    links:\n      - postgis\n    depends_on:\n      - postgis\n    environment:\n      - POSTGRES_HOST=postgis\n      - POSTGRES_DB=msens\n      - POSTGRES_USER=admin\n      - POSTGRES_PASSWORD=${PASSWORD}\n      - POSTGRES_EXTRA_OPTS=-Z6 --blobs\n      - SCHEDULE=@daily\n      - BACKUP_KEEP_DAYS=7\n      - BACKUP_KEEP_WEEKS=4\n      - BACKUP_KEEP_MONTHS=6\n      - HEALTHCHECK_PORT=8088\n\n  tile:\n    container_name: tile\n    environment:\n      DATABASE_URL: 'postgresql://admin:${PASSWORD}@postgis:5432/msens'\n    image: pramsey/pg_tileserv:latest\n    depends_on:\n      - postgis\n    ports:\n      - 7800:7800\n\n  tilecache:\n    container_name: tilecache\n    image: varnish:latest # 7.4.2  # last updated: 2023-12-26\n    volumes:\n      - /share:/share\n      # - \"./varnish/default.vcl:/etc/varnish/default.vcl\"\n    ports:\n      - 6081:6081\n    environment:\n      # VARNISH_SIZE: '2G'\n      VARNISH_BACKEND_HOST: tile # .marinesensitivity.org\n      VARNISH_BACKEND_PORT: 7800\n      VARNISH_HTTP_PORT: 6081  # VARNISH_PROXY_PORT: '6081'\n    #command: \"-p default_keep=43200\" # 60*60*12 = 43200 sec = 12 hrs\n    restart: always\n    depends_on:\n      - \"tile\"\n\n  rest:\n    container_name: rest\n    environment:\n      PGRST_DB_URI: 'postgresql://anon:${ANON_PASSWORD}@postgis:5432/msens'\n      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000\n      PGRST_DB_ANON_ROLE: anon  # db-anon-role\n    image: postgrest/postgrest\n    depends_on:\n      - postgis\n    ports:\n      - \"3000:3000\"\n\n  swagger:\n    container_name: swagger\n    image: swaggerapi/swagger-ui\n    depends_on:\n      - rest\n    ports:\n      - \"8080:8080\"\n    expose:\n      - \"8080\"\n    environment:\n      API_URL: https://rest.MarineSensitivity.org/\n\n  titiler:\n    container_name: titiler\n    image: ghcr.io/developmentseed/titiler:latest\n    environment:\n      PORT: 8000\n      # WORKERS_PER_CORE: 1\n    ports:\n      - \"8000:8000\"",
+    "title": "10  Server",
+    "section": "10.2 Docker compose",
+    "text": "10.2 Docker compose\nThe Docker compose file is used to define and run multi-container Docker applications. Here is the docker-compose.yml file for the server pasted for convenience …\nversion: \"3.9\"\n\nservices:\n  caddy:\n    container_name: caddy\n    image: caddy:latest\n    ports:\n      - 80:80\n      - 443:443\n    restart: unless-stopped\n    volumes:\n      - ./caddy/Caddyfile:/etc/caddy/Caddyfile\n      - /share:/share\n      - /share/caddy/data:/data\n      - /share/caddy/config:/config\n\n  rstudio:\n    container_name: rstudio\n    build: ./rstudio\n    environment:\n      ROOT: 'true'\n      USER: admin\n      PASSWORD: ${PASSWORD}\n      ADD: shiny\n    ports:\n      - 8787:8787  # rstudio\n      - 3838:3838  # shiny\n    restart: unless-stopped\n    volumes:\n      - /share:/share\n      - /share/shiny_apps:/srv/shiny-server\n\n  plumber:\n    container_name: plumber\n    build: ./plumber\n    ports:\n      - 8888:8888  # api\n    restart: unless-stopped\n    volumes:\n      - /share:/share\n    depends_on:\n      - postgis\n\n  postgis:\n    container_name: postgis\n    image: postgis/postgis:latest\n    environment:\n      POSTGRES_DB: msens\n      POSTGRES_USER: admin\n      POSTGRES_PASSWORD: ${PASSWORD}\n      ANON_PASSWORD: ${ANON_PASSWORD}\n      PGDATA: /share/postgis/data\n    volumes:\n      # all files in /docker-entrypoint-initdb.dare automatically executed\n      #  in alphabetical order on container creation\n      - ./postgis/init.sh:/docker-entrypoint-initdb.d/init.sh  # add user anon\n      - /share:/share\n      - /share/postgis:/var/lib/postgresql\n    restart: unless-stopped\n    healthcheck:\n      test: 'exit 0'\n    ports:\n      - 5432:5432\n\n  pgadmin:\n    container_name: pgadmin\n    image: dpage/pgadmin4:8.14\n    restart: always\n    environment:\n      PGADMIN_DEFAULT_EMAIL: ben@ecoquants.com\n      PGADMIN_DEFAULT_PASSWORD: ${PASSWORD}\n      PGADMIN_LISTEN_PORT: 8088\n      # PGADMIN_CONFIG_CONFIG_DATABASE_URI: \"'postgresql://admin:$PASSWORD@postgis:5432/msens'\"\n    ports:\n      - 8088:8088\n    volumes:\n      - /share/pgadmin:/var/lib/pgadmin\n    depends_on:\n      - postgis\n\n  pgbkups:\n    container_name: pgbkups\n    image: prodrigestivill/postgres-backup-local\n    restart: always\n    user: postgres:postgres # Optional: see below\n    volumes:\n      - /share/postgis_backups:/backups\n      # sudo mkdir /share/postgis_backups; sudo chown -R 999:999 /share/postgis_backups\n    links:\n      - postgis\n    depends_on:\n      - postgis\n    environment:\n      - POSTGRES_HOST=postgis\n      - POSTGRES_DB=msens\n      - POSTGRES_USER=admin\n      - POSTGRES_PASSWORD=${PASSWORD}\n      - POSTGRES_EXTRA_OPTS=-Z6 --blobs\n      - SCHEDULE=@daily\n      - HEALTHCHECK_PORT=8088\n      - BACKUP_KEEP_DAYS=2\n      - BACKUP_KEEP_WEEKS=2\n      - BACKUP_KEEP_MONTHS=4\n\n  tile:\n    container_name: tile\n    environment:\n      DATABASE_URL: 'postgresql://admin:${PASSWORD}@postgis:5432/msens'\n    image: pramsey/pg_tileserv:latest\n    depends_on:\n      - postgis\n    ports:\n      - 7800:7800\n\n  tilecache:\n    container_name: tilecache\n    image: varnish:latest # 7.4.2  # last updated: 2023-12-26\n    volumes:\n      - /share:/share\n      # - \"./varnish/default.vcl:/etc/varnish/default.vcl\"\n    ports:\n      - 6081:6081\n    environment:\n      # VARNISH_SIZE: '2G'\n      VARNISH_BACKEND_HOST: tile # .marinesensitivity.org\n      VARNISH_BACKEND_PORT: 7800\n      VARNISH_HTTP_PORT: 6081  # VARNISH_PROXY_PORT: '6081'\n    #command: \"-p default_keep=43200\" # 60*60*12 = 43200 sec = 12 hrs\n    restart: always\n    depends_on:\n      - \"tile\"\n\n  # rest:\n  #   container_name: rest\n  #   environment:\n  #     PGRST_DB_URI: 'postgresql://anon:${ANON_PASSWORD}@postgis:5432/msens'\n  #     PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000\n  #     PGRST_DB_ANON_ROLE: anon  # db-anon-role\n  #   image: postgrest/postgrest\n  #   depends_on:\n  #     - postgis\n  #   ports:\n  #     - \"3000:3000\"\n\n  # swagger:\n  #   container_name: swagger\n  #   image: swaggerapi/swagger-ui\n  #   depends_on:\n  #     - rest\n  #   ports:\n  #     - \"8080:8080\"\n  #   expose:\n  #     - \"8080\"\n  #   environment:\n  #     API_URL: https://rest.MarineSensitivity.org/\n\n  titiler:\n    container_name: titiler\n    image: ghcr.io/developmentseed/titiler:latest\n    environment:\n      PORT: 8000\n      # WORKERS_PER_CORE: 1\n    ports:\n      - \"8000:8000\"\n\n  titilecache:\n    container_name: titilecache\n    image: varnish:latest # 7.4.2  # last updated: 2023-12-26\n    volumes:\n      - /share:/share\n      # - \"./varnish/default.vcl:/etc/varnish/default.vcl\"\n    ports:\n      - 6082:6082 # which ports?\n    environment:\n      # VARNISH_SIZE: '2G'\n      VARNISH_BACKEND_HOST: titiler # .marinesensitivity.org\n      VARNISH_BACKEND_PORT: 8000\n      VARNISH_HTTP_PORT: 6082  # VARNISH_PROXY_PORT: '6081'\n    #command: \"-p default_keep=43200\" # 60*60*12 = 43200 sec = 12 hrs\n    restart: always\n    depends_on:\n      - \"titiler\"",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Server</span>"
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Server</span>"
     ]
   },
   {
     "objectID": "server.html#dns",
     "href": "server.html#dns",
-    "title": "8  Server",
-    "section": "8.3 DNS",
-    "text": "8.3 DNS\nThe domain name server (DNS) records are managed by SquareSpace. The subdomains point to the server on Amazon at 100.25.173.0, whereas the main website is hosted by Github servers, per Managing a custom domain for your GitHub Pages site - GitHub Docs.\n\n\n\nHost\nType\nData\n\n\n\n\n@\nA\n185.199.111.153\n\n\n@\nA\n185.199.110.153\n\n\n@\nA\n185.199.109.153\n\n\n@\nA\n185.199.108.153\n\n\napi\nA\n100.25.173.0\n\n\nfile\nA\n100.25.173.0\n\n\nmsens1\nA\n100.25.173.0\n\n\npgadmin\nA\n100.25.173.0\n\n\nrest\nA\n100.25.173.0\n\n\nrstudio\nA\n100.25.173.0\n\n\nshiny\nA\n100.25.173.0\n\n\nswagger\nA\n100.25.173.0\n\n\ntile\nA\n100.25.173.0\n\n\ntilecache\nA\n100.25.173.0\n\n\ntitiler\nA\n100.25.173.0\n\n\nwww\nCNAME\nmarinesensitivity.org",
+    "title": "10  Server",
+    "section": "10.3 DNS",
+    "text": "10.3 DNS\nThe domain name server (DNS) records are managed by SquareSpace. The subdomains point to the server on Amazon at 100.25.173.0, whereas the main website is hosted by Github servers, per Managing a custom domain for your GitHub Pages site - GitHub Docs.\n\n\n\nHost\nType\nData\n\n\n\n\n@\nA\n185.199.111.153\n\n\n@\nA\n185.199.110.153\n\n\n@\nA\n185.199.109.153\n\n\n@\nA\n185.199.108.153\n\n\napi\nA\n100.25.173.0\n\n\nfile\nA\n100.25.173.0\n\n\nmsens1\nA\n100.25.173.0\n\n\npgadmin\nA\n100.25.173.0\n\n\nrest\nA\n100.25.173.0\n\n\nrstudio\nA\n100.25.173.0\n\n\nshiny\nA\n100.25.173.0\n\n\nswagger\nA\n100.25.173.0\n\n\ntile\nA\n100.25.173.0\n\n\ntilecache\nA\n100.25.173.0\n\n\ntitiler\nA\n100.25.173.0\n\n\nwww\nCNAME\nmarinesensitivity.org",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Server</span>"
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Server</span>"
     ]
   },
   {
     "objectID": "server.html#caddyfile",
     "href": "server.html#caddyfile",
-    "title": "8  Server",
-    "section": "8.4 Caddyfile",
-    "text": "8.4 Caddyfile\nThe Caddyfile parameterizes the reverse proxying between the external subdomains and the Docker’s internal ports. Here is the Caddyfile pasted for convenience …\napi.marinesensitivity.org {\n  reverse_proxy plumber:8888\n}\n\nfile.marinesensitivity.org {\n  root * /share/public\n  file_server browse {\n    # serve *.zst, *.br or *.gz if file exists and client supports precompressed files\n    precompressed zstd br gzip\n  }\n}\n\npgadmin.marinesensitivity.org {\n  reverse_proxy pgadmin:8088\n}\n\nrest.marinesensitivity.org {\n  reverse_proxy rest:3000\n}\n\nrstudio.marinesensitivity.org {\n  reverse_proxy rstudio:8787\n}\n\nshiny.marinesensitivity.org {\n  reverse_proxy rstudio:3838\n}\n\nswagger.marinesensitivity.org {\n  reverse_proxy swagger:8080\n}\n\ntile.marinesensitivity.org {\n  reverse_proxy tile:7800\n}\n\ntilecache.marinesensitivity.org {\n  reverse_proxy tilecache:6081\n}\n\ntitiler.marinesensitivity.org {\n  reverse_proxy titiler:8000\n}",
+    "title": "10  Server",
+    "section": "10.4 Caddyfile",
+    "text": "10.4 Caddyfile\nThe Caddyfile parameterizes the reverse proxying between the external subdomains and the Docker’s internal ports. Here is the Caddyfile pasted for convenience …\n(cors) {\n    @origin header Origin *\n    header @origin {\n        Access-Control-Allow-Origin \"*\"\n        Access-Control-Request-Method GET\n    }\n}\n\napi.marinesensitivity.org {\n  reverse_proxy plumber:8888\n}\n\nfile.marinesensitivity.org {\n  import cors\n  root * /share/public\n  file_server browse {\n    # serve *.zst, *.br or *.gz if file exists and client supports precompressed files\n    precompressed zstd br gzip\n  }\n}\n\npgadmin.marinesensitivity.org {\n  reverse_proxy pgadmin:8088\n}\n\n# rest.marinesensitivity.org {\n#   reverse_proxy rest:3000\n# }\n\nrstudio.marinesensitivity.org {\n  reverse_proxy rstudio:8787\n}\n\nshiny.marinesensitivity.org {\n  reverse_proxy rstudio:3838\n}\n\napp.marinesensitivity.org {\n  reverse_proxy rstudio:3838\n}\n\n\nshiny.oceanmetrics.io {\n  reverse_proxy rstudio:3838\n}\n\n# swagger.marinesensitivity.org {\n#   reverse_proxy swagger:8080\n# }\n\ntile.marinesensitivity.org {\n  reverse_proxy tile:7800\n}\n\ntilecache.marinesensitivity.org {\n  reverse_proxy tilecache:6081\n}\n\ntitiler.marinesensitivity.org {\n  reverse_proxy titiler:8000\n}\n\ntitilecache.marinesensitivity.org {\n  reverse_proxy titilecache:6082\n}",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Server</span>"
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Server</span>"
     ]
   },
   {
     "objectID": "server.html#services",
     "href": "server.html#services",
-    "title": "8  Server",
-    "section": "8.5 Services",
-    "text": "8.5 Services\nThe server is running the following services:\n\n\nRStudio\nintegrated development environment (IDE) to code and debug directly on the server\n\nMore info..\nShiny\ninteractive applications\ne.g., shiny.marinesensitivity.org/map\n\nMore info..\nPGadmin\nPostGreSQL database administration interface\n\nMore info..\napi\ncustom API: using R plumber\n\nMore info..\nswagger\ngeneric database API: using PostGREST\n\nMore info..\ntile\nspatial database API: using pg_tileserv for serving vector tiles\n\nMore info..",
+    "title": "10  Server",
+    "section": "10.5 Services",
+    "text": "10.5 Services\nThe server is running the following services:\n\n\nRStudio\nintegrated development environment (IDE) to code and debug directly on the server\n\nMore info..\nShiny\ninteractive applications\ne.g., shiny.marinesensitivity.org/map\n\nMore info..\nPGadmin\nPostGreSQL database administration interface\n\nMore info..\napi\ncustom API: using R plumber\n\nMore info..\nswagger\ngeneric database API: using PostGREST\n\nMore info..\ntile\nspatial database API: using pg_tileserv for serving vector tiles\n\nMore info..",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Server</span>"
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Server</span>"
     ]
   },
   {
     "objectID": "db.html",
     "href": "db.html",
-    "title": "9  Database",
+    "title": "11  Database",
     "section": "",
-    "text": "9.1 Table and Column Naming Conventions",
+    "text": "11.1 Table and Column Naming Conventions",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Database</span>"
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Database</span>"
     ]
   },
   {
     "objectID": "db.html#table-and-column-naming-conventions",
     "href": "db.html#table-and-column-naming-conventions",
-    "title": "9  Database",
+    "title": "11  Database",
     "section": "",
     "text": "Table names are plural and use all lower case.\nUnique identifiers are suffixed with:\n\n*_id for unique integer keys;\n*_key for unique string keys;\n*_seq for auto-incrementing sequence integer keys.\n\nColumn names are singular and use snake_case.\nForeign keys are named with the singular form of the table they reference, followed by _id.\nPrimary keys are named id.",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Database</span>"
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Database</span>"
     ]
   },
   {
     "objectID": "db.html#species-distribution-models",
     "href": "db.html#species-distribution-models",
-    "title": "9  Database",
-    "section": "9.2 Species Distribution Models",
-    "text": "9.2 Species Distribution Models\nSee entity relationship diagram (ERD) for the species distribution models (SDM) database tables in this workflow:\n\nCreate SDM Tables\n\nAnd example of ingesting SDM outputs into the database in this workflow:\n\nIngest GoMex cetacean & sea turtle SDMs",
+    "title": "11  Database",
+    "section": "11.2 Species Distribution Models",
+    "text": "11.2 Species Distribution Models\nSee entity relationship diagram (ERD) for the species distribution models (SDM) database tables in this workflow:\n\nCreate SDM Tables\n\nAnd example of ingesting SDM outputs into the database in this workflow:\n\nIngest GoMex cetacean & sea turtle SDMs",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Database</span>"
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Database</span>"
     ]
   },
   {
     "objectID": "workflows.html",
     "href": "workflows.html",
-    "title": "10  Workflows",
+    "title": "12  Workflows",
     "section": "",
     "text": "Workflows are scripts for testing data analytics and visualization as well as production workflows for ingesting data. See:\n\nmarinesensitivity.org/workflows\nrendered html pages from the scripts (as Quarto notebooks)\ngithub.com/MarineSensitivity/workflows\nsource code in the Github repository",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Workflows</span>"
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Workflows</span>"
     ]
   },
   {
     "objectID": "apis.html",
     "href": "apis.html",
-    "title": "11  APIs",
+    "title": "13  APIs",
     "section": "",
     "text": "There three APIs, each used for different purposes:\n\napi\ncustom API: using R plumber\nsource: MarineSensitivity/api\n\n\nswagger\ngeneric database API: using PostGREST\nsource: Postgres database, non-spatial\n\n\ntile\nspatial database API: using pg_tileserv for serving vector tiles\nsource: Postgres database, spatial",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>11</span>  <span class='chapter-title'>APIs</span>"
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>APIs</span>"
     ]
   },
   {
     "objectID": "libraries.html",
     "href": "libraries.html",
-    "title": "12  Libraries",
+    "title": "14  Libraries",
     "section": "",
     "text": "By creating an R package, we can document functions and make them easily available to other users.\n\nmsens\nR library of functions for mapping marine sensitivities, sponsored by BOEM\n\nFunctions can read data from the one APIs (which communicate with the Database), analyze the data, visualize the results and store some smaller data.",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Libraries</span>"
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Libraries</span>"
     ]
   },
   {
     "objectID": "apps.html",
     "href": "apps.html",
-    "title": "13  Apps",
+    "title": "15  Apps",
     "section": "",
-    "text": "Areas of Interest\n\n\n\nareas\n\n\nvector\n\n\n\nMap high resolution Areas of Interest (using vector tiles) for visualization (and later summarization).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBird Hotspots\n\n\n\ndistributions\n\n\nhotspots\n\n\n\nBird hotspots application showing hotspot probability for species present given drawn Area of Interest.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDistributions, Raster\n\n\n\ndistributions\n\n\nraster\n\n\n\nShow species distributions with high resolution rasters as cloud-optimized GeoTIFFs (COGs).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDistributions, Vector\n\n\n\ndistributions\n\n\nvector\n\n\n\nShow species distributions with high resolution vectors (as vector tiles).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRegional Map\n\n\n\nareas\n\n\n\nBasic interactive map of BOEM regions.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nScores Explorer\n\n\n\ndistributions\n\n\nvulnerabilities\n\n\nvector\n\n\n\nCalculate scores based on sensitivity metric – for now, extinction risk across taxonomic groups.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVulnerability Mapper\n\n\n\ndistributions\n\n\nvulnerabilities\n\n\nraster\n\n\n\nCombine species distribution models (raster) and vulnerability metrics (tables) to identify areas of high conservation concern.\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items\n\n\nSee also details of individual applications in the Appendix.",
+    "text": "15.1 Current Applications\nThe MST provides two primary interactive web applications for exploring sensitivity data, plus several legacy applications from earlier development phases.",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Apps</span>"
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Apps</span>"
+    ]
+  },
+  {
+    "objectID": "apps.html#current-applications",
+    "href": "apps.html#current-applications",
+    "title": "15  Apps",
+    "section": "",
+    "text": "15.1.1 mapgl — Sensitivity Map\nThe mapgl application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:\n\nMulti-resolution viewing: toggle between cell-level (0.05° grid) and program area aggregations\nStudy area selection: focus on specific program areas or subregions\nLayer selection: view individual species category scores or composite metrics\nFlower plot: interactive summary showing scores by species category with weighted center value\nSpecies table: sortable table of species present in selected area with extinction risk details\nTreemap: hierarchical view of species contributions to sensitivity\nCSV export: download data for selected area or species\n\nSee Appendix: mapgl for details.\n\n\n15.1.2 mapsp — Species Distribution Viewer\nThe mapsp application enables exploration of individual species distribution models. Key features include:\n\nSpecies selection: search by common or scientific name, filter by species category\nModel display: view merged models or individual source dataset layers\nIUCN masking toggle: compare masked vs. unmasked distributions\nSpecies info panel: ESA listing, IUCN Red List category, MMPA/MBTA protection flags, extinction risk score\nDeep-linking: URL parameters support direct links to specific species\n\nSee Appendix: mapsp for details.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Apps</span>"
+    ]
+  },
+  {
+    "objectID": "apps.html#legacy-applications",
+    "href": "apps.html#legacy-applications",
+    "title": "15  Apps",
+    "section": "15.2 Legacy Applications",
+    "text": "15.2 Legacy Applications\nEarlier versions of the MST included several prototype applications developed during the research phase. These are documented in the Appendix under Applications (Legacy) for reference.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Apps</span>"
     ]
   },
   {
     "objectID": "docs.html",
     "href": "docs.html",
-    "title": "14  Docs",
+    "title": "16  Docs",
     "section": "",
     "text": "Technical documentation is principally in this book:\n\nmarinesensitivity.org/docs\nthe main documentation site\ngithub.com/MarineSensitivity/docs\nsource code in the Github repository\n\nBut there are also some other self-documenting resources:\n\nmarinesensitivity.org/msens\ndocumented R functions",
     "crumbs": [
       "Software",
-      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Docs</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Docs</span>"
     ]
   },
   {
     "objectID": "summary.html",
     "href": "summary.html",
-    "title": "15  Summary",
+    "title": "17  Summary",
     "section": "",
-    "text": "…",
+    "text": "17.1 Key Findings\nThe Marine Sensitivity Toolkit (MST) provides a comprehensive, reproducible system for assessing the sensitivity of marine ecosystems to offshore energy development across US waters.",
     "crumbs": [
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Summary</span>"
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Summary</span>"
+    ]
+  },
+  {
+    "objectID": "summary.html#key-findings",
+    "href": "summary.html#key-findings",
+    "title": "17  Summary",
+    "section": "",
+    "text": "9,819 valid marine species mapped at 0.05° resolution (~4 km cells) across 20 BOEM Program Areas, integrating data from 7 source datasets including AquaMaps SDMs, NMFS and FWS regulatory designations, BirdLife seabird ranges, and IUCN range maps\nExtinction risk scoring (1–100 scale) incorporates protections under the Endangered Species Act (ESA), Marine Mammal Protection Act (MMPA), and Migratory Bird Treaty Act (MBTA), ensuring that federally protected species are properly weighted in the sensitivity analysis\nModel merging combines multiple distribution datasets per species using a MAX-value approach, constrained by spatial masks from IUCN/Critical Habitat ranges and enhanced with MMPA (floor=20) and MBTA (floor=10) spatial minimums\nEcoregional rescaling normalizes sensitivity scores to a [0–100%] range within each BOEM ecoregion, enabling meaningful cross-region comparison despite natural differences in species richness between tropical and polar waters\nInteractive tools (mapgl and mapsp applications) provide decision makers and scientists with accessible interfaces for exploring sensitivity patterns, individual species distributions, and score breakdowns at multiple spatial scales",
+    "crumbs": [
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Summary</span>"
+    ]
+  },
+  {
+    "objectID": "summary.html#future-directions",
+    "href": "summary.html#future-directions",
+    "title": "17  Summary",
+    "section": "17.2 Future Directions",
+    "text": "17.2 Future Directions\nSeveral enhancements are planned for future phases of the MST:\n\nOBIS/GBIF validation: refine species distributions using occurrence data from the Ocean Biodiversity Information System and Global Biodiversity Information Facility with temporal filters\nH3 hexagonal grid: explore Uber’s H3 hierarchical hexagonal indexing system for multi-resolution spatial analysis, replacing the current latitude-longitude grid\nCloud-Optimized GeoTIFFs (COGs) and STAC catalogs: export raster data as COGs with SpatioTemporal Asset Catalog metadata for interoperability with geospatial platforms\nDAG pipeline: implement a formal directed acyclic graph (DAG) workflow using the targets R package for automated, reproducible data processing\nStressor-receptor matrices: expand from sensitivity-only assessment to full vulnerability analysis by integrating exposure data for offshore wind, oil & gas, and other marine activities (see Chapter 8)\nEnhanced applications: arbitrary area selection tools, taxonomic tree browsing, automatic high-quality static figure generation, and story-map/scrollytelling explainer interfaces\nInfrastructure transfer: support transition of data and applications to BOEM server infrastructure for long-term operational deployment",
+    "crumbs": [
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Summary</span>"
     ]
   },
   {
@@ -320,7 +614,7 @@
     "href": "references.html",
     "title": "References",
     "section": "",
-    "text": "Balcom, Brian J., Douglas C. Biggs, Chuanmin Hu, Paul Montagna, and Dean\nA. Stockwell. 2011. “A Comparison of Marine Productivity Among\nOuter Continental Shelf Planning Areas. Final Report.”\n\n\nChang, Winston, Joe Cheng, JJ Allaire, Carson Sievert, Barret Schloerke,\nYihui Xie, Jeff Allen, Jonathan McPherson, Alan Dipert, and Barbara\nBorges. 2024. “Shiny: Web Application Framework for r.” https://CRAN.R-project.org/package=shiny.\n\n\nGoodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse\nEffects of Offshore Wind Energy Development on Wildlife.”\nJournal of Environmental Planning and Management 0 (0): 1–21.\nhttps://doi.org/10.1080/09640568.2014.973483.\n\n\nHalpern, Benjamin S., Catherine Longo, Darren Hardy, Karen L. McLeod,\nJameal F. Samhouri, Steven K. Katona, Kristin Kleisner, et al. 2012.\n“An Index to Assess the Health and Benefits of the Global\nOcean.” Nature. https://doi.org/10.1038/nature11397.\n\n\nLowndes, Julia S. Stewart, Benjamin D. Best, Courtney Scarborough, Jamie\nC. Afflerbach, Melanie R. Frazier, Casey C. O’Hara, Ning Jiang, and\nBenjamin S. Halpern. 2017. “Our Path to Better Science in Less\nTime Using Open Data Science Tools.” Nature Ecology &\nEvolution 1 (6): 0160. https://doi.org/10.1038/s41559-017-0160.\n\n\nMaitner, Brian, Paul Efren Santos Andrade, Luna Lei, Jamie Kass, Hannah\nL. Owens, George C. G. Barbosa, Brad Boyle, et al. 2024. “Code\nSharing in Ecology and Evolution Increases Citation Rates but Remains\nUncommon.” Ecology and Evolution 14 (8): e70030. https://doi.org/10.1002/ece3.70030.\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, Tracy D. Ainsworth,\nJennifer M. Donelson, Shawna A. Foo, Pat Hutchings, Vengatesen\nThiyagarajan, and Laura M. Parker. 2023. “Surviving the\nAnthropocene: The Resilience of Marine Animals to Climate\nChange.” In. CRC Press.\n\n\nSamhouri, Jameal F., Sarah E. Lester, Elizabeth R. Selig, Benjamin S.\nHalpern, Michael J. Fogarty, Catherine Longo, and Karen L. McLeod. 2012.\n“Sea Sick? Setting Targets to Assess Ocean Health and Ecosystem\nServices.” Ecosphere 3 (5): 1–18. https://doi.org/10.1890/es11-00366.1.\n\n\nWilkinson, Mark D., Michel Dumontier, IJsbrand Jan Aalbersberg,\nGabrielle Appleton, Myles Axton, Arie Baak, Niklas Blomberg, et al.\n2016. “The FAIR Guiding Principles for Scientific Data Management\nand Stewardship.” Scientific Data 3 (1): 160018. https://doi.org/10.1038/sdata.2016.18.",
+    "text": "Chang, Winston, Joe Cheng, JJ Allaire, Carson Sievert, Barret Schloerke,\nYihui Xie, Jeff Allen, Jonathan McPherson, Alan Dipert, and Barbara\nBorges. 2024. “Shiny: Web Application Framework for r.” https://CRAN.R-project.org/package=shiny.\n\n\nGoodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse\nEffects of Offshore Wind Energy Development on Wildlife.”\nJournal of Environmental Planning and Management 0 (0): 1–21.\nhttps://doi.org/10.1080/09640568.2014.973483.\n\n\nHalpern, Benjamin S., Catherine Longo, Darren Hardy, Karen L. McLeod,\nJameal F. Samhouri, Steven K. Katona, Kristin Kleisner, et al. 2012.\n“An Index to Assess the Health and Benefits of the Global\nOcean.” Nature. https://doi.org/10.1038/nature11397.\n\n\nLowndes, Julia S. Stewart, Benjamin D. Best, Courtney Scarborough, Jamie\nC. Afflerbach, Melanie R. Frazier, Casey C. O’Hara, Ning Jiang, and\nBenjamin S. Halpern. 2017. “Our Path to Better Science in Less\nTime Using Open Data Science Tools.” Nature Ecology &\nEvolution 1 (6): 0160. https://doi.org/10.1038/s41559-017-0160.\n\n\nMaitner, Brian, Paul Efren Santos Andrade, Luna Lei, Jamie Kass, Hannah\nL. Owens, George C. G. Barbosa, Brad Boyle, et al. 2024. “Code\nSharing in Ecology and Evolution Increases Citation Rates but Remains\nUncommon.” Ecology and Evolution 14 (8): e70030. https://doi.org/10.1002/ece3.70030.\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, Tracy D. Ainsworth,\nJennifer M. Donelson, Shawna A. Foo, Pat Hutchings, Vengatesen\nThiyagarajan, and Laura M. Parker. 2023. “Surviving the\nAnthropocene: The Resilience of Marine Animals to Climate\nChange.” In. CRC Press.\n\n\nWilkinson, Mark D., Michel Dumontier, IJsbrand Jan Aalbersberg,\nGabrielle Appleton, Myles Axton, Arie Baak, Niklas Blomberg, et al.\n2016. “The FAIR Guiding Principles for Scientific Data Management\nand Stewardship.” Scientific Data 3 (1): 160018. https://doi.org/10.1038/sdata.2016.18.",
     "crumbs": [
       "References"
     ]
@@ -330,10 +624,130 @@
     "href": "glossary.html",
     "title": "Glossary",
     "section": "",
-    "text": "acclimatisation\n\nthe adjustment of an organism to environmental conditions in the field or environment rather than the laboratory without an adjustment in their genetics. Acclimatisation has been used to describe phenotypically plastic responses in natural conditions. Source: Ross et al. (2023).\n\nadaptation\n\nthe evolutionary mechanism where natural selection of traits is genetically passed on, typically over many generations, to create an organism suited to the environment. Source: [rossRoss et al. (2023)\n\nadaptive capacity\n\nthe capacity of the ecosystem or organism to improve and reorganise in response to stress such as climate change through phenotypic plasticity (acclimation, acclimatisation) or adaptation, distributional shifts, and rapid evolution of traits suited to new conditions. Source: Ross et al. (2023).\n\nepigenetics\n\nthe modification of phenotype plasticity of an organism through altered gene expression without an alteration to the DNA sequence. ‘Epi’ means above the DNA and includes DNA methylation, modification of histones, and non-coding RNA. Source: Ross et al. (2023).\n\nexposure\n\nthe magnitude of the change in the environment\n\nfecundity\n\nthe maximum physiological potential reproductive output of an organism to produce offspring (reproductive output). This differs from fertility, which is the number of offspring born. Source: Ross et al. (2023)\n\nMBON\n\nMarine Biodiversity Observation Network; see MarineBON.org\n\nresilience\n\nthe capacity of an ecosystem, society, or organism to absorb disturbance and reorganise while undergoing change so as to retain essentially the same function, structure, identity, and feedbacks. Resilience reflects the degree to which a complex adaptive system is determined by its capacity to reorganise and adapt in order to avoid being disturbed again. Source: Ross et al. (2023).\n\nsensitivity\n\nthe magnitude of response to the change\n\nstressor\n\nthe stimulus that causes stress to an organism\n\nvulnerability\n\ncombination of exposure and sensitivity\n\n\n\n\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, Tracy D. Ainsworth, Jennifer M. Donelson, Shawna A. Foo, Pat Hutchings, Vengatesen Thiyagarajan, and Laura M. Parker. 2023. “Surviving the Anthropocene: The Resilience of Marine Animals to Climate Change.” In. CRC Press.",
+    "text": "acclimatisation\n\nthe adjustment of an organism to environmental conditions in the field or environment rather than the laboratory without an adjustment in their genetics. Acclimatisation has been used to describe phenotypically plastic responses in natural conditions. Source: Ross et al. (2023).\n\nadaptation\n\nthe evolutionary mechanism where natural selection of traits is genetically passed on, typically over many generations, to create an organism suited to the environment. Source: [rossRoss et al. (2023)\n\nadaptive capacity\n\nthe capacity of the ecosystem or organism to improve and reorganise in response to stress such as climate change through phenotypic plasticity (acclimation, acclimatisation) or adaptation, distributional shifts, and rapid evolution of traits suited to new conditions. Source: Ross et al. (2023).\n\nBOEM\n\nBureau of Ocean Energy Management — US federal agency responsible for managing offshore energy and mineral resources on the Outer Continental Shelf.\n\nCOG\n\nCloud-Optimized GeoTIFF — a raster file format optimized for efficient access over HTTP, enabling range requests for partial reads.\n\nDuckDB\n\nan embedded analytical database engine used for storing and querying species distribution models, extinction risk scores, and sensitivity metrics.\n\necoregion\n\na BOEM-defined ecological region used as the spatial unit for rescaling sensitivity scores to enable meaningful cross-region comparison.\n\nepigenetics\n\nthe modification of phenotype plasticity of an organism through altered gene expression without an alteration to the DNA sequence. ‘Epi’ means above the DNA and includes DNA methylation, modification of histones, and non-coding RNA. Source: Ross et al. (2023).\n\nESA\n\nEndangered Species Act (1973) — US federal law providing protections for species listed as Endangered or Threatened by NMFS or FWS.\n\nexposure\n\nthe magnitude of the change in the environment\n\nfecundity\n\nthe maximum physiological potential reproductive output of an organism to produce offspring (reproductive output). This differs from fertility, which is the number of offspring born. Source: Ross et al. (2023)\n\nMBON\n\nMarine Biodiversity Observation Network; see MarineBON.org\n\nMBTA\n\nMigratory Bird Treaty Act (1918) — US federal law protecting migratory birds, including most seabird species. MBTA-protected species receive a minimum spatial floor score of 10.\n\nMMPA\n\nMarine Mammal Protection Act (1972) — US federal law protecting all marine mammals in US waters. MMPA-protected species receive a minimum spatial floor score of 20.\n\nMST\n\nMarine Sensitivity Toolkit — the cloud-native system developed for BOEM to assess marine ecosystem sensitivity to offshore energy development.\n\nOCSLA\n\nOuter Continental Shelf Lands Act — US federal law governing the management of offshore resources, including the mandate to consider environmental sensitivity and marine productivity.\n\nresilience\n\nthe capacity of an ecosystem, society, or organism to absorb disturbance and reorganise while undergoing change so as to retain essentially the same function, structure, identity, and feedbacks. Resilience reflects the degree to which a complex adaptive system is determined by its capacity to reorganise and adapt in order to avoid being disturbed again. Source: Ross et al. (2023).\n\nSDM\n\nSpecies Distribution Model — a statistical or environmental envelope model predicting the spatial distribution of a species based on environmental variables.\n\nsensitivity\n\nthe magnitude of response to the change\n\nstressor\n\nthe stimulus that causes stress to an organism\n\nvulnerability\n\ncombination of exposure and sensitivity\n\n\n\n\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, Tracy D. Ainsworth, Jennifer M. Donelson, Shawna A. Foo, Pat Hutchings, Vengatesen Thiyagarajan, and Laura M. Parker. 2023. “Surviving the Anthropocene: The Resilience of Marine Animals to Climate Change.” In. CRC Press.",
     "crumbs": [
       "Appendices",
       "Glossary"
+    ]
+  },
+  {
+    "objectID": "apps/mapgl.html",
+    "href": "apps/mapgl.html",
+    "title": "Appendix A — mapgl — Sensitivity Map",
+    "section": "",
+    "text": "A.1 Overview\nThe mapgl application (shiny.marinesensitivity.org/mapgl) is the primary interactive tool for exploring composite marine sensitivity scores across BOEM Program Areas. It enables users to visualize extinction risk weighted species presence at multiple spatial resolutions, with integrated flower plot and treemap summaries.\nFigure A.1 shows the global view of cell-level sensitivity scores across all US waters. The sidebar provides controls for study area, spatial units (raster cells or program areas), and layer selection.\nFigure A.2 shows the flower plot panel that appears when a program area is selected. Here, the Southern California program area displays a weighted mean score of 29, with petals representing species categories (bird, coral, fish, invertebrate, mammal, other, turtle) and primary productivity.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>mapgl — Sensitivity Map</span>"
+    ]
+  },
+  {
+    "objectID": "apps/mapgl.html#overview",
+    "href": "apps/mapgl.html#overview",
+    "title": "Appendix A — mapgl — Sensitivity Map",
+    "section": "",
+    "text": "Figure A.1: The mapgl application displaying cell-level sensitivity scores across US waters. The sidebar provides controls for study area selection, spatial resolution (raster cells vs. program areas), and layer choice. The globe view shows scores from 0 (blue) to 89 (red) with MapBox basemap.\n\n\n\n\n\n\n\n\n\n\nFigure A.2: The mapgl application showing the flower plot panel for Southern California. Petal length represents each category’s rescaled sensitivity score; petal width represents its weight. The center value (29) is the weighted mean across all categories.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>mapgl — Sensitivity Map</span>"
+    ]
+  },
+  {
+    "objectID": "apps/mapgl.html#features",
+    "href": "apps/mapgl.html#features",
+    "title": "Appendix A — mapgl — Sensitivity Map",
+    "section": "A.2 Features",
+    "text": "A.2 Features\n\nA.2.1 Map Display\n\nCell-level view: 0.05° grid cells colored by sensitivity score for the selected metric\nProgram area view: aggregated scores by BOEM Program Area, with boundaries overlaid\nBase maps: multiple MapBox base layers (satellite, streets, light, dark)\nStudy area selection: click a program area to focus the view and update summary panels\n\n\n\nA.2.2 Sensitivity Metrics\nThe map can display any of the following layers:\n\nComposite extinction risk (weighted sum across all species categories)\nIndividual category scores: bird, coral, fish, invertebrate, mammal, reptile/turtle\nPrimary productivity\n\nAll scores are ecoregionally rescaled to [0–100] for meaningful cross-region comparison (see Chapter 7).\n\n\nA.2.3 Flower Plot\nSelecting a program area displays a flower plot summarizing the sensitivity profile:\n\nEach petal represents a species category\nPetal length = rescaled sensitivity score (0–100)\nPetal width = category weight\nCenter value = weighted mean across categories\n\n\n\nA.2.4 Species Table\nA sortable table of all valid species present in the selected area, showing:\n\nScientific and common name\nSpecies category\nESA listing, IUCN Red List status\nMMPA/MBTA protection flags\nExtinction risk score\n\n\n\nA.2.5 Data Export\nUsers can download CSV files of scores and species lists for the selected program area or custom area of interest.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>mapgl — Sensitivity Map</span>"
+    ]
+  },
+  {
+    "objectID": "apps/mapgl.html#generating-screenshots",
+    "href": "apps/mapgl.html#generating-screenshots",
+    "title": "Appendix A — mapgl — Sensitivity Map",
+    "section": "A.3 Generating Screenshots",
+    "text": "A.3 Generating Screenshots",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>mapgl — Sensitivity Map</span>"
+    ]
+  },
+  {
+    "objectID": "apps/mapgl.html#source-code",
+    "href": "apps/mapgl.html#source-code",
+    "title": "Appendix A — mapgl — Sensitivity Map",
+    "section": "A.4 Source Code",
+    "text": "A.4 Source Code\nThe application source code is at: apps/mapgl/app.R",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>mapgl — Sensitivity Map</span>"
+    ]
+  },
+  {
+    "objectID": "apps/mapsp.html",
+    "href": "apps/mapsp.html",
+    "title": "Appendix B — mapsp — Species Distribution Viewer",
+    "section": "",
+    "text": "B.1 Overview\nThe mapsp application (shiny.marinesensitivity.org/mapsp) enables exploration of individual species distribution models within the MST database. Users can view merged and source-level models, compare masked vs. unmasked distributions, and access detailed species regulatory status information.\nFigure B.1 shows the merged distribution model for the blue whale (Balaenoptera musculus). The map displays cell values from 1 (low suitability, blue) to 100 (high suitability, red) across all US program areas where the species occurs.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>mapsp — Species Distribution Viewer</span>"
+    ]
+  },
+  {
+    "objectID": "apps/mapsp.html#overview",
+    "href": "apps/mapsp.html#overview",
+    "title": "Appendix B — mapsp — Species Distribution Viewer",
+    "section": "",
+    "text": "Figure B.1: The mapsp application showing the merged distribution model for blue whale (Balaenoptera musculus). Cell values range from 1 (low suitability) to 100 (high suitability). The species selector dropdown allows searching by common or scientific name with category prefix.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>mapsp — Species Distribution Viewer</span>"
+    ]
+  },
+  {
+    "objectID": "apps/mapsp.html#features",
+    "href": "apps/mapsp.html#features",
+    "title": "Appendix B — mapsp — Species Distribution Viewer",
+    "section": "B.2 Features",
+    "text": "B.2 Features\n\nB.2.1 Species Selection\n\nSearch: find species by common name or scientific name\nCategory filter: narrow results by species category (bird, coral, fish, invertebrate, mammal, reptile/turtle)\nAlphabetical browsing: scroll through species lists within each category\n\n\n\nB.2.2 Model Display\n\nMerged model: the final merged distribution showing MAX values across all source datasets, with masking and spatial floors applied\nSource datasets: toggle individual source layers (AquaMaps, NMFS CH, FWS CH, FWS Range, BirdLife, IUCN Range) to see each dataset’s contribution\nIUCN masking toggle: compare the unmasked AquaMaps SDM with the masked merged model to visualize the effect of range constraints\n\n\n\nB.2.3 Species Info Panel\nDetailed information for the selected species:\n\nScientific name and common name\nSpecies category (bird, fish, mammal, etc.)\nESA listing status (Endangered, Threatened, or not listed)\nIUCN Red List category\nMMPA protection flag\nMBTA protection flag\nComputed extinction risk score (1–100)\nNumber of source datasets contributing to the merged model\n\n\n\nB.2.4 Deep-Linking\nThe application supports URL parameters for direct linking to specific species, enabling bookmarking and sharing of specific views:\nhttps://shiny.marinesensitivity.org/mapsp/?species=Balaenoptera+musculus",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>mapsp — Species Distribution Viewer</span>"
+    ]
+  },
+  {
+    "objectID": "apps/mapsp.html#generating-screenshots",
+    "href": "apps/mapsp.html#generating-screenshots",
+    "title": "Appendix B — mapsp — Species Distribution Viewer",
+    "section": "B.3 Generating Screenshots",
+    "text": "B.3 Generating Screenshots",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>mapsp — Species Distribution Viewer</span>"
+    ]
+  },
+  {
+    "objectID": "apps/mapsp.html#source-code",
+    "href": "apps/mapsp.html#source-code",
+    "title": "Appendix B — mapsp — Species Distribution Viewer",
+    "section": "B.4 Source Code",
+    "text": "B.4 Source Code\nThe application source code is at: apps/mapsp/app.R",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>mapsp — Species Distribution Viewer</span>"
     ]
   },
   {
@@ -344,7 +758,7 @@
     "text": "Map high resolution Areas of Interest (using vector tiles) for visualization (and later summarization).\n\n website\n code",
     "crumbs": [
       "Appendices",
-      "Applications",
+      "Applications (Legacy)",
       "Areas of Interest"
     ]
   },
@@ -356,7 +770,7 @@
     "text": "Bird hotspots application showing hotspot probability for species present given drawn Area of Interest.\n\n website\n code",
     "crumbs": [
       "Appendices",
-      "Applications",
+      "Applications (Legacy)",
       "Bird Hotspots"
     ]
   },
@@ -368,7 +782,7 @@
     "text": "Basic interactive map of BOEM regions.\n\n website\n code",
     "crumbs": [
       "Appendices",
-      "Applications",
+      "Applications (Legacy)",
       "Regional Map"
     ]
   },
@@ -380,7 +794,7 @@
     "text": "Calculate scores based on sensitivity metric – for now, extinction risk across taxonomic groups.\n\n website\n code",
     "crumbs": [
       "Appendices",
-      "Applications",
+      "Applications (Legacy)",
       "Scores Explorer"
     ]
   },
@@ -392,7 +806,7 @@
     "text": "Show species distributions with high resolution vectors (as vector tiles).\n\n website\n code",
     "crumbs": [
       "Appendices",
-      "Applications",
+      "Applications (Legacy)",
       "Distributions, Vector"
     ]
   },
@@ -404,7 +818,7 @@
     "text": "Show species distributions with high resolution rasters as cloud-optimized GeoTIFFs (COGs).\n\n website\n code",
     "crumbs": [
       "Appendices",
-      "Applications",
+      "Applications (Legacy)",
       "Distributions, Raster"
     ]
   },
@@ -416,7 +830,7 @@
     "text": "Combine species distribution models (raster) and vulnerability metrics (tables) to identify areas of high conservation concern.\n\n website\n code",
     "crumbs": [
       "Appendices",
-      "Applications",
+      "Applications (Legacy)",
       "Vulnerability Mapper"
     ]
   }

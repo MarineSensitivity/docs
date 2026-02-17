@@ -10,17 +10,5 @@
       "/server.html",
       "/workflows.html"
     ]
-  },
-  {
-    "listing": "/apps.html",
-    "items": [
-      "/apps/aoi.html",
-      "/apps/bird_hotspots.html",
-      "/apps/sdm-cog.html",
-      "/apps/sdm.html",
-      "/apps/map.html",
-      "/apps/scores.html",
-      "/apps/vmap.html"
-    ]
   }
 ]
