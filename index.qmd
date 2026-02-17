@@ -4,6 +4,11 @@ The **Marine Sensitivity Toolkit** (MST) is a cloud-native system developed for 
 
 ![Overview of the MST methodology: species distribution models from 7 source datasets are merged, weighted by extinction risk scores (incorporating ESA, MMPA, MBTA, and IUCN protections), rescaled by ecoregion, and aggregated to management zones for visualization.](figures/overview-methods.svg){#fig-overview-preface}
 
+### Interactive Apps
+
+- [**Composite Scores**](https://app.marinesensitivity.org/mapgl/) — explore sensitivity scores across BOEM Program Areas with flower plot summaries
+- [**Species Distribution**](https://app.marinesensitivity.org/mapsp/) — view individual species distribution models and habitat suitability maps
+
 This book documents the scientific methodology, software infrastructure, and interactive applications that comprise the MST. It is organized in two parts:
 
 - **Science** (@sec-science) — data sources, taxonomic integration, extinction risk scoring, model merging, and sensitivity scoring methodology
