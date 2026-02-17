@@ -37,10 +37,12 @@ book:
     - part: Science
       chapters:
         - science.qmd
-        - stressors.qmd
-        - receptors.qmd
-        - exposure.qmd
+        - data-sources.qmd
+        - taxonomy.qmd
+        - extinction-risk.qmd
+        - model-merging.qmd
         - scoring.qmd
+        - stressors.qmd
     - part: Software
       chapters:
         - software.qmd
@@ -55,8 +57,11 @@ book:
     - references.qmd
   appendices:
     - glossary.qmd
-    # - notes.qmd
-    - part: Applications
+    - part: Applications (Current)
+      chapters:
+        - apps/mapgl.qmd
+        - apps/mapsp.qmd
+    - part: Applications (Legacy)
       chapters:
         - apps/aoi.qmd
         - apps/bird_hotspots.qmd
@@ -75,6 +80,7 @@ glossary:  # https://debruine.github.io/quarto-glossary/
 
 format:
   html:
+    mermaid-format: png
     theme: cosmo
     echo: false
   docx:
@@ -85,3 +91,5 @@ format:
     keep-md: true  # see libs/cleanup.R
   pdf:
     documentclass: scrreprt
+
+lightbox: true

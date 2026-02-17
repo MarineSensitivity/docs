@@ -20,3 +20,23 @@ stressor: |
   the stimulus that causes stress to an organism
 vulnerability: |
   combination of exposure and sensitivity
+BOEM: |
+  Bureau of Ocean Energy Management — US federal agency responsible for managing offshore energy and mineral resources on the Outer Continental Shelf.
+COG: |
+  Cloud-Optimized GeoTIFF — a raster file format optimized for efficient access over HTTP, enabling range requests for partial reads.
+DuckDB: |
+  an embedded analytical database engine used for storing and querying species distribution models, extinction risk scores, and sensitivity metrics.
+ecoregion: |
+  a BOEM-defined ecological region used as the spatial unit for rescaling sensitivity scores to enable meaningful cross-region comparison.
+ESA: |
+  Endangered Species Act (1973) — US federal law providing protections for species listed as Endangered or Threatened by NMFS or FWS.
+MBTA: |
+  Migratory Bird Treaty Act (1918) — US federal law protecting migratory birds, including most seabird species. MBTA-protected species receive a minimum spatial floor score of 10.
+MMPA: |
+  Marine Mammal Protection Act (1972) — US federal law protecting all marine mammals in US waters. MMPA-protected species receive a minimum spatial floor score of 20.
+MST: |
+  Marine Sensitivity Toolkit — the cloud-native system developed for BOEM to assess marine ecosystem sensitivity to offshore energy development.
+OCSLA: |
+  Outer Continental Shelf Lands Act — US federal law governing the management of offshore resources, including the mandate to consider environmental sensitivity and marine productivity.
+SDM: |
+  Species Distribution Model — a statistical or environmental envelope model predicting the spatial distribution of a species based on environmental variables.

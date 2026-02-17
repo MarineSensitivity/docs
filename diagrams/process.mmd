@@ -1,36 +1,38 @@
 flowchart LR
 
   %% nodes
-  ta[("<a href='https://docs.ropensci.org/taxize/articles/datasources.html'>taxonomic<br>authority</a>")]:::in
-  sd("species<br><b>distributions</b><br>(vector|raster)"):::in
-  sdm("species<br><b>distributions</b><br>(+taxaid)"):::out
-  sdmt("species<br><b>distributions</b><br>(aligned rasters)"):::out
-  sdmte("species<br><b>vulnerability</b><br>raster"):::out
-  ct("<b>topology</b><br>to share<br>"):::in
-  st[["species<br><b>sensitivities</b><br>(tables)"]]:::in
-  stm[["species<br><b>sensitivities</b><br>(+ taxaid)"]]:::out
-  stmc[["species<br><b>sensitivities</b><br>(equation ready)"]]:::out
-  eq[["<b>equation</b><br>of sensitivities per species"]]:::in
-  m[/"<b>match</b><br>taxa"/]:::fxn
-  t[/"<b>transform</b><br>to rasters"/]:::fxn
-  c[/"<b>clean</b><br>tables"/]:::fxn
-  e[/"<b>evaluate</b><br>rescale(&sum;eq<sub>sp</sub>)"/]:::fxn
+  ds["7 Source Datasets<br>(AquaMaps, NMFS Core,<br>NMFS CH, FWS CH,<br>FWS Range, BirdLife,<br>IUCN Range)"]:::in
+  ta[("Taxonomic<br>Authorities<br>(WoRMS, GBIF,<br>ITIS, IUCN,<br>BirdLife)")]:::in
+  er[["Extinction Risk<br>Scores<br>(ESA, MMPA,<br>MBTA, IUCN)"]]:::in
+  pp[["Primary<br>Productivity<br>(VGPM)"]]:::in
+
+  m[/"Match<br>Taxa"/]:::fxn
+  mg[/"Merge<br>Models<br>(MAX + mask<br>+ spatial floors)"/]:::fxn
+  sc[/"Score<br>Cells<br>(ER × presence<br>by category)"/]:::fxn
+  rs[/"Rescale<br>Ecoregional<br>[0-100%]"/]:::fxn
+  za[/"Aggregate<br>Zones"/]:::fxn
+
+  tx("9,819 Valid<br>Species<br>(is_ok=TRUE)"):::out
+  mm("Merged<br>Models<br>(0.05° grid)"):::out
+  cm("Cell<br>Metrics"):::out
+  zm("Zone<br>Scores<br>(program areas,<br>subregions,<br>ecoregions)"):::out
+  viz("Visualization<br>(Flower Plot,<br>Treemap,<br>Interactive Maps)"):::out
 
   %% edges
+  ds   --> m
   ta   --> m
-  sd   --> m
-  st   --> m
-  m    --> sdm
-  m    --> stm
-  sdm  --> t
-  ct   --> t
-  t    --> sdmt
-  stm  --> c
-  c    --> stmc
-  eq   --> e
-  sdmt --> e
-  stmc --> e
-  e    --> sdmte
+  m    --> tx
+  tx   --> mg
+  ds   --> mg
+  mg   --> mm
+  mm   --> sc
+  er   --> sc
+  pp   --> sc
+  sc   --> cm
+  cm   --> rs
+  rs   --> za
+  za   --> zm
+  zm   --> viz
 
   %% Legend
   in(input):::in

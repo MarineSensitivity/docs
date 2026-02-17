@@ -1,0 +1,96 @@
+# Model Merging {#sec-model-merging}
+
+Each species may have distribution data in multiple source datasets (see @sec-data-sources). The model merging pipeline combines these into a single merged model per species, applying spatial masking and minimum floor values to reflect regulatory protections.
+
+## Pipeline Overview
+
+The merge pipeline processes each of the 9,819 valid species through the following steps:
+
+```{mermaid}
+%%| label: fig-merge-pipeline
+%%| fig-cap: "Model merging pipeline for a single species."
+%%| fig-width: 6
+flowchart TD
+  A["Gather all models<br>for species across<br>7 source datasets"] --> B["Take MAX value<br>per cell across<br>all datasets"]
+  B --> C{"IUCN/CH range<br>map exists?"}
+  C -->|Yes| D["Apply spatial mask<br>(constrain to<br>range extent)"]
+  C -->|No| E["Keep unmasked<br>distribution"]
+  D --> F{"MMPA<br>protected?"}
+  E --> F
+  F -->|Yes| G["Apply floor:<br>pmax(value, 20)"]
+  F -->|No| H{"MBTA<br>protected?"}
+  G --> I["Persist to<br>model + model_cell<br>tables"]
+  H -->|Yes| J["Apply floor:<br>pmax(value, 10)"]
+  H -->|No| I
+  J --> I
+```
+
+### Step 1: Gather Source Models
+
+For each species (identified by `taxa_id`), the pipeline queries all available models across the 7 source datasets. A species may have:
+
+- an AquaMaps SDM (continuous suitability)
+- one or more regulatory range/habitat designations (NMFS, FWS)
+- a BirdLife or IUCN range map
+
+### Step 2: MAX Across Datasets
+
+For each grid cell, the merged value is the **maximum** suitability across all source datasets:
+
+$$
+v_{merged,c} = \max(v_{am,c},\; v_{ca,c},\; v_{ch,c},\; v_{rng,c},\; v_{bl,c},\; v_{iucn,c})
+$$ {#eq-merge-max}
+
+This ensures that the most informative (highest confidence) prediction is used. For example, if AquaMaps predicts 30% suitability but NMFS has designated the cell as critical habitat for an endangered species (100%), the merged value is 100%.
+
+### Step 3: Spatial Masking
+
+When an IUCN range map, NMFS Critical Habitat, or FWS Critical Habitat exists for a species, the merged model is **constrained to the spatial extent** of these mask datasets. The mask is formed as the union of all available `is_mask = TRUE` datasets for that species.
+
+This prevents the AquaMaps SDM (which often has broad environmental envelope predictions) from extending species presence far beyond their known range. Cells outside the mask are set to zero (species absent).
+
+### Step 4: MMPA Spatial Floor
+
+For species protected under the Marine Mammal Protection Act (all marine mammals), a spatial minimum floor is applied:
+
+$$
+v_{c} = \max(v_{merged,c},\; 20)
+$$ {#eq-mmpa-floor}
+
+This ensures that every cell where a marine mammal is present has a minimum value of 20%, reflecting the legal protection that MMPA affords regardless of ESA status.
+
+### Step 5: MBTA Spatial Floor
+
+Similarly, for species protected under the Migratory Bird Treaty Act (most seabirds), a spatial minimum floor of 10% is applied:
+
+$$
+v_{c} = \max(v_{merged,c},\; 10)
+$$ {#eq-mbta-floor}
+
+### Step 6: Persist Results
+
+The final merged model is stored in the DuckDB database as:
+
+- **`model` table**: one row per species with metadata (dataset key `ms_merge`, taxa reference, model sequence)
+- **`model_cell` table**: one row per species × cell combination with the merged suitability value
+
+## Valid Species Filter
+
+After merging, species are flagged as valid (`is_ok = TRUE`) based on the criteria described in @sec-taxonomy. The filtering rules differ slightly between birds and other taxa:
+
+**Birds** (from BirdLife BOTW):
+
+- has a `botw_id` (BirdLife identifier)
+- IUCN Red List code is not "EX" (Extinct)
+- if also in WoRMS: must be marine and not extinct
+- has cells overlapping at least one BOEM Program Area
+
+**Other marine taxa** (from WoRMS):
+
+- has a `taxa_id` and a merged model (`mdl_seq`)
+- IUCN Red List code is not "EX"
+- WoRMS `isMarine = TRUE` and `isExtinct != TRUE`
+- species category is not "reptile" (except sea turtles, which are reclassified as category "reptile")
+- has cells overlapping at least one BOEM Program Area
+
+This filtering yields **9,819 valid species** that contribute to the final sensitivity scores.

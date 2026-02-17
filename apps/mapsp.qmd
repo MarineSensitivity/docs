@@ -1,0 +1,67 @@
+---
+title: "mapsp — Species Distribution Viewer"
+description: "individual species distribution mapping application"
+categories: [current]
+---
+
+## Overview
+
+The **mapsp** application ([shiny.marinesensitivity.org/mapsp](https://shiny.marinesensitivity.org/mapsp/)) enables exploration of individual species distribution models within the MST database. Users can view merged and source-level models, compare masked vs. unmasked distributions, and access detailed species regulatory status information.
+
+@fig-mapsp-blue-whale shows the merged distribution model for the blue whale (*Balaenoptera musculus*). The map displays cell values from 1 (low suitability, blue) to 100 (high suitability, red) across all US program areas where the species occurs.
+
+![The mapsp application showing the merged distribution model for blue whale (*Balaenoptera musculus*). Cell values range from 1 (low suitability) to 100 (high suitability). The species selector dropdown allows searching by common or scientific name with category prefix.](/figures/apps/mapsp-blue-whale.png){#fig-mapsp-blue-whale}
+
+## Features
+
+### Species Selection
+
+- **Search**: find species by common name or scientific name
+- **Category filter**: narrow results by species category (bird, coral, fish, invertebrate, mammal, reptile/turtle)
+- **Alphabetical browsing**: scroll through species lists within each category
+
+### Model Display
+
+- **Merged model**: the final merged distribution showing MAX values across all source datasets, with masking and spatial floors applied
+- **Source datasets**: toggle individual source layers (AquaMaps, NMFS CH, FWS CH, FWS Range, BirdLife, IUCN Range) to see each dataset's contribution
+- **IUCN masking toggle**: compare the unmasked AquaMaps SDM with the masked merged model to visualize the effect of range constraints
+
+### Species Info Panel
+
+Detailed information for the selected species:
+
+- Scientific name and common name
+- Species category (bird, fish, mammal, etc.)
+- ESA listing status (Endangered, Threatened, or not listed)
+- IUCN Red List category
+- MMPA protection flag
+- MBTA protection flag
+- Computed extinction risk score (1--100)
+- Number of source datasets contributing to the merged model
+
+### Deep-Linking
+
+The application supports URL parameters for direct linking to specific species, enabling bookmarking and sharing of specific views:
+
+```
+https://shiny.marinesensitivity.org/mapsp/?species=Balaenoptera+musculus
+```
+
+## Generating Screenshots
+
+```{r}
+#| label: mapsp-webshot
+#| eval: false
+
+# capture screenshot (requires app running at URL)
+webshot2::webshot(
+  url     = "https://shiny.marinesensitivity.org/mapsp/",
+  file    = here::here("docs/figures/apps/mapsp-blue-whale.png"),
+  delay   = 5,
+  vwidth  = 1200,
+  vheight = 800)
+```
+
+## Source Code
+
+The application source code is at: [`apps/mapsp/app.R`](https://github.com/MarineSensitivity/apps/tree/main/mapsp)

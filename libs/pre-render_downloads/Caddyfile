@@ -1,8 +1,17 @@
+(cors) {
+	@origin header Origin *
+	header @origin {
+		Access-Control-Allow-Origin "*"
+		Access-Control-Request-Method GET
+	}
+}
+
 api.marinesensitivity.org {
   reverse_proxy plumber:8888
 }
 
 file.marinesensitivity.org {
+  import cors
   root * /share/public
   file_server browse {
     # serve *.zst, *.br or *.gz if file exists and client supports precompressed files
@@ -14,9 +23,9 @@ pgadmin.marinesensitivity.org {
   reverse_proxy pgadmin:8088
 }
 
-rest.marinesensitivity.org {
-  reverse_proxy rest:3000
-}
+# rest.marinesensitivity.org {
+#   reverse_proxy rest:3000
+# }
 
 rstudio.marinesensitivity.org {
   reverse_proxy rstudio:8787
@@ -26,9 +35,18 @@ shiny.marinesensitivity.org {
   reverse_proxy rstudio:3838
 }
 
-swagger.marinesensitivity.org {
-  reverse_proxy swagger:8080
+app.marinesensitivity.org {
+  reverse_proxy rstudio:3838
 }
+
+
+shiny.oceanmetrics.io {
+  reverse_proxy rstudio:3838
+}
+
+# swagger.marinesensitivity.org {
+#   reverse_proxy swagger:8080
+# }
 
 tile.marinesensitivity.org {
   reverse_proxy tile:7800
@@ -40,4 +58,8 @@ tilecache.marinesensitivity.org {
 
 titiler.marinesensitivity.org {
   reverse_proxy titiler:8000
+}
+
+titilecache.marinesensitivity.org {
+  reverse_proxy titilecache:6082
 }

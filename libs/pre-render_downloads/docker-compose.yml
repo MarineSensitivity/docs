@@ -97,10 +97,10 @@ services:
       - POSTGRES_PASSWORD=${PASSWORD}
       - POSTGRES_EXTRA_OPTS=-Z6 --blobs
       - SCHEDULE=@daily
-      - BACKUP_KEEP_DAYS=7
-      - BACKUP_KEEP_WEEKS=4
-      - BACKUP_KEEP_MONTHS=6
       - HEALTHCHECK_PORT=8088
+      - BACKUP_KEEP_DAYS=2
+      - BACKUP_KEEP_WEEKS=2
+      - BACKUP_KEEP_MONTHS=4
 
   tile:
     container_name: tile
@@ -130,29 +130,29 @@ services:
     depends_on:
       - "tile"
 
-  rest:
-    container_name: rest
-    environment:
-      PGRST_DB_URI: 'postgresql://anon:${ANON_PASSWORD}@postgis:5432/msens'
-      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
-      PGRST_DB_ANON_ROLE: anon  # db-anon-role
-    image: postgrest/postgrest
-    depends_on:
-      - postgis
-    ports:
-      - "3000:3000"
+  # rest:
+  #   container_name: rest
+  #   environment:
+  #     PGRST_DB_URI: 'postgresql://anon:${ANON_PASSWORD}@postgis:5432/msens'
+  #     PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
+  #     PGRST_DB_ANON_ROLE: anon  # db-anon-role
+  #   image: postgrest/postgrest
+  #   depends_on:
+  #     - postgis
+  #   ports:
+  #     - "3000:3000"
 
-  swagger:
-    container_name: swagger
-    image: swaggerapi/swagger-ui
-    depends_on:
-      - rest
-    ports:
-      - "8080:8080"
-    expose:
-      - "8080"
-    environment:
-      API_URL: https://rest.MarineSensitivity.org/
+  # swagger:
+  #   container_name: swagger
+  #   image: swaggerapi/swagger-ui
+  #   depends_on:
+  #     - rest
+  #   ports:
+  #     - "8080:8080"
+  #   expose:
+  #     - "8080"
+  #   environment:
+  #     API_URL: https://rest.MarineSensitivity.org/
 
   titiler:
     container_name: titiler
@@ -163,3 +163,20 @@ services:
     ports:
       - "8000:8000"
 
+  titilecache:
+    container_name: titilecache
+    image: varnish:latest # 7.4.2  # last updated: 2023-12-26
+    volumes:
+      - /share:/share
+      # - "./varnish/default.vcl:/etc/varnish/default.vcl"
+    ports:
+      - 6082:6082 # which ports?
+    environment:
+      # VARNISH_SIZE: '2G'
+      VARNISH_BACKEND_HOST: titiler # .marinesensitivity.org
+      VARNISH_BACKEND_PORT: 8000
+      VARNISH_HTTP_PORT: 6082  # VARNISH_PROXY_PORT: '6081'
+    #command: "-p default_keep=43200" # 60*60*12 = 43200 sec = 12 hrs
+    restart: always
+    depends_on:
+      - "titiler"

@@ -1,46 +1,105 @@
----
-title: "Scoring"
-editor: visual
-bibliography: references.bib
----
+# Scoring {#sec-scoring}
+
+The scoring methodology translates merged species distribution models and extinction risk weights into cell-level sensitivity metrics, which are then rescaled and aggregated to management zones for decision support.
+
+## Cell-Level Scoring
+
+For each grid cell, sensitivity is computed as the extinction risk weighted sum of species presence within each species category (@eq-cell-score):
+
+$$
+\text{score}_{c,g} = \sum_{s=1}^{S_g} \frac{\text{er\_score}_s \times v_{s,c}}{100}
+$$ {#eq-cell-score}
+
+where:
+
+- $\text{score}_{c,g}$ = sensitivity score for cell $c$ and species category $g$
+- $\text{er\_score}_s$ = extinction risk score for species $s$ (1--100; see @sec-extinction-risk)
+- $v_{s,c}$ = merged model value for species $s$ in cell $c$ (0--100%; see @sec-model-merging)
+- $S_g$ = number of valid species in category $g$
+
+Division by 100 converts the product from a 0--10,000 range back to a 0--100 scale.
+
+## Metric Keys
+
+Cell-level scores are stored as named metrics in the DuckDB database:
+
+| Metric Key | Description |
+|:-----------|:------------|
+| `extrisk_bird` | extinction risk score for birds |
+| `extrisk_coral` | extinction risk score for corals |
+| `extrisk_fish` | extinction risk score for fishes |
+| `extrisk_invertebrate` | extinction risk score for invertebrates |
+| `extrisk_mammal` | extinction risk score for marine mammals |
+| `extrisk_reptile` | extinction risk score for reptiles/turtles |
+| `extrisk_other` | extinction risk score for other marine organisms |
+| `primprod` | primary productivity (VGPM, metric tons C km^-2^ yr^-1^) |
+
+: Cell-level metric keys stored in the MST database. {#tbl-metrics}
+
+## Ecoregional Rescaling
+
+Raw cell scores vary naturally across ecoregions due to differences in species richness, oceanographic conditions, and biogeographic patterns. To enable meaningful cross-region comparison, each metric is rescaled to a [0--100] range within each BOEM ecoregion:
+
+$$
+\text{score}'_{c} = \frac{\text{score}_{c} - \text{score}_{min}}{\text{score}_{max} - \text{score}_{min}} \times 100
+$$ {#eq-ecoregion-rescale}
+
+where $\text{score}_{min}$ and $\text{score}_{max}$ are the minimum and maximum cell values for that metric within the ecoregion. This ensures that a score of 100 represents the most sensitive cell within each ecoregion, not globally.
+
+## Primary Productivity Scoring
+
+Net primary productivity (NPP) from the VGPM satellite model is included as a separate metric (`primprod`) that does not undergo extinction risk weighting. Instead, the raw NPP values (metric tons C km^-2^ yr^-1^) are directly rescaled within each ecoregion using the same [0--100] normalization.
+
+## Zone Aggregation
+
+Rescaled cell scores are aggregated to three spatial levels using area-weighted averaging:
+
+1. **Program Areas**: the 20 BOEM planning regions used for offshore energy management
+2. **Subregions**: intermediate spatial groupings (e.g., Atlantic, Gulf of Mexico, Pacific, Alaska)
+3. **Ecoregions**: BOEM-defined ecological regions used as the rescaling baseline
+
+For each zone, the aggregated score is:
+
+$$
+\text{score}_{zone} = \frac{\sum_{c \in zone} \text{score}'_c \times A_c}{\sum_{c \in zone} A_c}
+$$ {#eq-zone-agg}
+
+where $A_c$ is the area of cell $c$ (accounting for latitude-dependent cell size in the 0.05° grid).
 
 ## Visualization
 
-We are in process with sorting the scoring methodology informed by visualization approaches.
-
-```{=html}
-<!--
-source: [2024-09-19 RESA '25 Revamp - BOEM AMIS.pptx](https://docs.google.com/presentation/d/1Hzjh2_OJfi0cfrWQMb1DmxmXIYX3pjr1?rtpof=true&usp=drive_fs)
--->
-```
-### Treemap
-
-![](figures/treeamap_extrisk-taxa.png)
-
--   Audience: scientists
--   Show contribution of each element to a given pixel or area of interest
--   Elements can be hierarchical across Sensitivity metrics and/or taxonomy
--   Interactively zoom, e.g.: 4. Critically Endangered \> Animalia \> Mammalia\
-    ![](figures/treeamap_extrisk-taxa_zoom.png)
-
 ### Flower Plot
 
--   **Petal Length**\
-    "One question was about the meaning of the numbers on the pedal plot. I explained that a higher sensitivity score indicates an area that could be susceptible to minor perturbations, while a lower score suggests an area that is more robust to minor changes." - TW
+The flower plot provides an intuitive summary of sensitivity scores by species category, inspired by the Ocean Health Index [@halpern2012] visualization approach:
 
-    -   **OHI\
-        **In the original Ocean Health Index [@halpern2012], the length of the petal reflected the percent towards maximum sustainability of the given goal. The framework is also based on a reference point, either spatially or temporally [@samhouri2012].\
+- **Petal length** represents the rescaled sensitivity score (0--100) for each species category — longer petals indicate higher sensitivity
+- **Petal width** represents the weight of each category contributing to the overall score — wider petals have more influence on the center score
+- **Center value** shows the weighted mean across all categories
 
-    -   **RESA '25\
-        **It makes sense to make the most vulnerable the highest score, so a low score is preferable (versus a preferred high score for sustainability of an OHI goal). We'll need to determine what the "highest" score means as a reference point and consider [SMART criteria](https://en.wikipedia.org/wiki/SMART_criteria). (Specific, Measurable, Assignable, Realistic, Time-related). Will the reference point be the same globally or vary based on some regional maximum?
+@fig-flower-programareas shows flower plots for all 20 BOEM Program Areas, generated from the v3 scoring run. Each flower summarizes the sensitivity profile of one program area with petals for Bird, Coral, Fish, Invertebrate, Mammal, Other, Turtle, and Primary Production. Alaska program areas (e.g., HOP, COK, GOA) show dominant Fish and Mammal petals, while Gulf areas (GAB, CEC, MAT) show stronger Invertebrate and Coral contributions.
 
--   **Petal Width** (and possiblyvarying weights)\
-    "Another question was about how we manage the weights. I mentioned that we are not currently applying weights, but someone seemed concerned about it. We can discuss this further if needed." - TW
+![Flower plots for all 20 BOEM Program Areas showing ecoregionally rescaled sensitivity scores by species category. Petal length reflects the category score; petal width reflects its weight. Center values are the weighted mean across categories.](figures/flower-plot_programareas.png){#fig-flower-programareas}
 
-    -   **OHI\
-        **For the OHI flower plot, the width of the petal represents its weight contributing to the weighted average score in the center of the flower. The varying importance of each goal is based on societally held values with potentially different value sets, such as preservationist vs extractive:\
-        ![](figures/flower-value-sets_halpern-2012.png)
+The flower plot is implemented as an interactive `ggiraph` visualization using polar coordinates in R (`ggplot2 + coord_polar()`), with tooltips showing detailed score breakdowns on hover. The `plot_flower()` function in `calc_scores.qmd` generates static versions for reports, while the mapgl web application implements an interactive JavaScript version for responsive rendering (see @fig-mapgl-flower).
 
-    -   **RESA '25**\
-        For the RESA '25, when looking at Species, Habitats and Primary Productivity, how shall they be weighted to factor into a final score? Shall species groups be simply weighted based on the number of species within, total biomass, extinction risk, commercial value, etc? And then Species versus less numerous Benthic Habitats and a singular value for Primary Productivity? I will conduct a literature survey to assign sensible value sets, but an App could also apply a user-defined value set to assign weights. That gets messy, but if transparent and easy ideally would lead to scientific consensus with a workshop and/or survey.\
-        ![](figures/flower-mockup_resa25.png)
+### Treemap
+
+The treemap provides a detailed, hierarchical view of species contributions to sensitivity scores (@fig-treemap):
+
+- Audience: scientists and analysts
+- Shows the contribution of each species to the overall score within a pixel or management zone
+- Elements are hierarchical: first by extinction risk category, then by taxonomic classification
+- Interactive zooming allows drilling down to individual species contributions
+
+![Treemap visualization showing species contributions to extinction risk scores, hierarchically organized by risk category and taxonomy.](figures/treeamap_extrisk-taxa.png){#fig-treemap}
+
+Zooming into a specific category reveals individual species contributions:
+
+![Zoomed treemap showing individual species within a specific risk category and taxonomic group.](figures/treeamap_extrisk-taxa_zoom.png){#fig-treemap-zoom}
+
+### Interactive Maps
+
+The primary visualization tools are two Shiny web applications:
+
+- **[mapgl](https://shiny.marinesensitivity.org/mapgl/)**: general sensitivity mapping app showing composite scores by program area with flower plots and treemaps (see [Appendix: mapgl](apps/mapgl.qmd))
+- **[mapsp](https://shiny.marinesensitivity.org/mapsp/)**: species distribution viewer showing individual and merged models with regulatory status information (see [Appendix: mapsp](apps/mapsp.qmd))

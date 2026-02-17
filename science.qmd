@@ -1,8 +1,10 @@
-# Science
+# Science {#sec-science}
 
 ```{r}
 # need this chunk to use inline (`r ...`) glossary terms for non-html output with `g()` defined in libs/functions.R
 ```
+
+## Conceptual Framework
 
 The term `r g("vulnerability")` {{< glossary vulnerability >}} ($V$) is a function of `r g("exposure")` {{< glossary exposure >}} ($E$), `r g("sensitivity")` {{< glossary sensitivity >}} ($S$) and `r g("adaptive capacity")` {{< glossary "adaptive capacity" >}} ($A$) (@eq-v).
 
@@ -10,17 +12,39 @@ $$
 V = f(E, S, A)
 $$ {#eq-v}
 
-![Overview of process.](figures/gdraw_spp-sens_rast-tbl-aoi.svg){#fig-spp-sens_rast-tbl-aoi}
+The MST currently focuses on the **sensitivity** component, quantifying the intrinsic biological sensitivity of marine ecosystems based on the species present and their conservation status. Exposure and adaptive capacity components are planned for future phases (see @sec-stressors).
 
-<!--
-* edit drawing: 
-  [gdraw_spp-sens_rast-tbl-aoi - Google Drawings](https://docs.google.com/drawings/d/16vr4BpARl9qWMsXeNkasorGwfMM69662OywMN2AsLT4/edit)
-- updated locally:
-  libs/pre-render.R
--->
+## Cell Vulnerability
+
+For a given cell $c$, the vulnerability score for a species group $g$ is the sum across all $S_g$ species of the product of species presence probability $p_{sc}$ and extinction risk weight $w_s$ (@eq-cells-v):
 
 $$
-cell_{V} = \sum_{spp}{p * w}
+v_c = \sum_{s=1}^{S_g} p_{sc} \cdot w_s
 $$ {#eq-cells-v}
 
-The raster of vulnerability ($V$) contains cells representing a sum across species ($spp$) of presence ($p$) multiplied by the sensitivity weight ($w$) (@eq-cells-v).
+where:
+
+- $v_c$ = vulnerability score of cell $c$ for species group $g$
+- $p_{sc}$ = probability of species $s$ presence in cell $c$ (0--1 scale, from merged species distribution models)
+- $w_s$ = extinction risk weight for species $s$ (0--1 scale, derived from ESA/MMPA/MBTA/IUCN status; see @sec-extinction-risk)
+- $S_g$ = total number of species in taxonomic group $g$ (e.g., bird, fish, mammal, coral, invertebrate, reptile/turtle)
+
+## Sensitivity Components
+
+The MST assesses sensitivity through three components:
+
+1. **Species** — by taxonomic category (bird, coral, fish, invertebrate, mammal, reptile/turtle): extinction risk weighted species distribution models across 9,819 valid species (see @sec-data-sources, @sec-extinction-risk)
+2. **Habitats** — benthic habitats such as coral reefs, seamounts, and hydrothermal vents (planned for future phases)
+3. **Primary Productivity** — satellite-derived net primary productivity from the Vertically Generalized Production Model (VGPM), measured as metric tons C km^-2^ yr^-1^ (see @sec-data-sources)
+
+## Ecoregional Rescaling
+
+Raw cell scores vary naturally across regions due to differences in species richness and oceanographic conditions. To enable meaningful cross-region comparison, scores are rescaled to a [0--100%] range within each BOEM ecoregion (@eq-rescale):
+
+$$
+v'_c = \frac{v_c - v_{min}}{v_{max} - v_{min}} \times 100
+$$ {#eq-rescale}
+
+where $v_{min}$ and $v_{max}$ are the minimum and maximum cell scores within the ecoregion. This accounts for the natural gradient from species-rich tropical waters to less diverse polar regions, ensuring that a "high sensitivity" score has consistent meaning across all program areas.
+
+See subsequent chapters for detailed descriptions of: data sources (@sec-data-sources), taxonomic integration (@sec-taxonomy), extinction risk scoring (@sec-extinction-risk), model merging (@sec-model-merging), and scoring methodology (@sec-scoring).

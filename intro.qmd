@@ -1,13 +1,30 @@
 # Introduction
 
-This Marine Sensitivity (MS) project of [BOEM](https://boem.gov) seeks to assess the sensitivity of marine species to offshore energy development, whether oil & gas or wind. By combining the best available species distributions with known species sensitivities we can map out areas of the ocean that are most vulnerable to human activities. This information can be used to inform decisions about where to place energy infrastructure and/or implement mitigations to minimize impacts on the marine environment.
+The Marine Sensitivity Toolkit (MST) is a cloud-native system developed for [BOEM](https://boem.gov) (Bureau of Ocean Energy Management) to assess the sensitivity of marine species to offshore energy development, whether oil & gas or wind. The Outer Continental Shelf Lands Act (OCSLA), Section 18(a)(2)(G), mandates that BOEM consider "the relative environmental sensitivity and marine productivity of different areas of the OCS" when planning the timing and location of offshore energy activities. The MST operationalizes this mandate by combining the best available species distribution data with extinction risk assessments to map areas of the ocean that are most sensitive to human activities.
 
-This is a process, not a product. Information is imperfect, especially given the large expanse of US waters. Distributions and abundance of species change, modified increasingly by climate change and human activities. Knowledge on species sensitivities continues to expand with more research. And finally the methods for both modeling and distributing all this information continue to improve. We aim to provide a transparent and reproducible process that can be regularly updated as new data and methods become available.
+The current system integrates **9,819 valid marine species** across 7 source datasets, mapped at **0.05° resolution** (~4 km cells) across **20 BOEM Program Areas** spanning US waters. Species distributions are weighted by extinction risk scores that incorporate protections under the Endangered Species Act (ESA), Marine Mammal Protection Act (MMPA), and Migratory Bird Treaty Act (MBTA), as well as IUCN Red List assessments.
+
+This is a process, not a product. Information is imperfect, especially given the large expanse of US waters. Distributions and abundance of species change, modified increasingly by climate change and human activities. Knowledge on species sensitivities continues to expand with more research. Methods for both modeling and distributing this information continue to improve. In alignment with [Executive Order 14303](https://www.whitehouse.gov/presidential-actions/2025/01/restoring-gold-standard-science-in-the-federal-government/), we aim to provide a transparent and reproducible process that can be regularly updated as new data and methods become available.
+
+## Overview
+
+The MST analytical pipeline proceeds through the following stages (@fig-process):
+
+1. **Data Sources**: 7 source datasets of species distributions (AquaMaps SDM, NMFS Core Area, NMFS Critical Habitat, FWS Critical Habitat, FWS Range, BirdLife Range, IUCN Range)
+2. **Taxonomy Matching**: species names reconciled across WoRMS, GBIF, ITIS, IUCN, and BirdLife taxonomic authorities
+3. **Model Merging**: per-species models merged by taking the MAX suitability across datasets, constrained by IUCN/Critical Habitat spatial masks, with MMPA/MBTA spatial floors
+4. **Cell Scoring**: extinction risk weighted by species presence, summed by species category (bird, coral, fish, invertebrate, mammal, reptile/turtle)
+5. **Ecoregional Rescaling**: scores normalized to [0--100%] within each BOEM ecoregion for meaningful cross-region comparison
+6. **Zone Aggregation**: area-weighted averages to program areas, subregions, and ecoregions
+7. **Visualization**: interactive flower plots, treemaps, and map applications
 
 ```{mermaid}
 %%| label: fig-process
-%%| fig-cap: "Flowchart of process for incorporating marine species sensitivities with distributions and generating a holistic vulnerability map."
+%%| fig-cap: "Flowchart of the MST analytical pipeline: from source datasets and taxonomic matching through model merging, scoring, and visualization."
 %%| file: diagrams/process.mmd
 %%| fig-width: 6
 ```
 
+@fig-overview illustrates the full methodology at a glance. On the left, species distribution data flows in from 7 source datasets and 5 taxonomic authorities. In the center, models are merged per species and weighted by extinction risk scores derived from ESA, MMPA, MBTA, and IUCN regulatory frameworks. On the right, cell-level scores are rescaled within BOEM ecoregions and aggregated to program areas for visualization in the interactive mapping applications.
+
+![Overview of the Marine Sensitivity Toolkit methodology showing the integration of species distribution models, extinction risk scoring, ecoregional rescaling, and spatial aggregation into interactive visualizations.](figures/overview-methods.svg){#fig-overview}

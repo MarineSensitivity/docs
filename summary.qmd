@@ -1,3 +1,33 @@
 # Summary
 
-...
+The Marine Sensitivity Toolkit (MST) provides a comprehensive, reproducible system for assessing the sensitivity of marine ecosystems to offshore energy development across US waters.
+
+## Key Findings
+
+- **9,819 valid marine species** mapped at 0.05° resolution (~4 km cells) across **20 BOEM Program Areas**, integrating data from 7 source datasets including AquaMaps SDMs, NMFS and FWS regulatory designations, BirdLife seabird ranges, and IUCN range maps
+
+- **Extinction risk scoring** (1--100 scale) incorporates protections under the Endangered Species Act (ESA), Marine Mammal Protection Act (MMPA), and Migratory Bird Treaty Act (MBTA), ensuring that federally protected species are properly weighted in the sensitivity analysis
+
+- **Model merging** combines multiple distribution datasets per species using a MAX-value approach, constrained by spatial masks from IUCN/Critical Habitat ranges and enhanced with MMPA (floor=20) and MBTA (floor=10) spatial minimums
+
+- **Ecoregional rescaling** normalizes sensitivity scores to a [0--100%] range within each BOEM ecoregion, enabling meaningful cross-region comparison despite natural differences in species richness between tropical and polar waters
+
+- **Interactive tools** (mapgl and mapsp applications) provide decision makers and scientists with accessible interfaces for exploring sensitivity patterns, individual species distributions, and score breakdowns at multiple spatial scales
+
+## Future Directions
+
+Several enhancements are planned for future phases of the MST:
+
+- **OBIS/GBIF validation**: refine species distributions using occurrence data from the Ocean Biodiversity Information System and Global Biodiversity Information Facility with temporal filters
+
+- **H3 hexagonal grid**: explore Uber's H3 hierarchical hexagonal indexing system for multi-resolution spatial analysis, replacing the current latitude-longitude grid
+
+- **Cloud-Optimized GeoTIFFs (COGs) and STAC catalogs**: export raster data as COGs with SpatioTemporal Asset Catalog metadata for interoperability with geospatial platforms
+
+- **DAG pipeline**: implement a formal directed acyclic graph (DAG) workflow using the `targets` R package for automated, reproducible data processing
+
+- **Stressor-receptor matrices**: expand from sensitivity-only assessment to full vulnerability analysis by integrating exposure data for offshore wind, oil & gas, and other marine activities (see @sec-stressors)
+
+- **Enhanced applications**: arbitrary area selection tools, taxonomic tree browsing, automatic high-quality static figure generation, and story-map/scrollytelling explainer interfaces
+
+- **Infrastructure transfer**: support transition of data and applications to BOEM server infrastructure for long-term operational deployment

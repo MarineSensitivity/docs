@@ -2,26 +2,42 @@
 description: "interactive applications using Shiny"
 image: /figures/components/apps.png
 output: html_document
-editor_options: 
+editor_options:
   chunk_output_type: console
-listing: 
-  id: list-apps
-  contents: 
-   - "/apps/*.qmd"
-  type: grid
-  categories: true
-  image-height: 100px
 ---
 
 # Apps
 
-::: {#list-apps}
-:::
+The MST provides two primary interactive web applications for exploring sensitivity data, plus several legacy applications from earlier development phases.
 
-```{r}
-# initiate for inline r code
-```
+## Current Applications
 
-`{r} I(g("![](figures/listing-apps.png)"))`
+### mapgl — Sensitivity Map
 
-See also details of individual applications in the Appendix.
+The [mapgl](https://shiny.marinesensitivity.org/mapgl/) application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:
+
+- **Multi-resolution viewing**: toggle between cell-level (0.05° grid) and program area aggregations
+- **Study area selection**: focus on specific program areas or subregions
+- **Layer selection**: view individual species category scores or composite metrics
+- **Flower plot**: interactive summary showing scores by species category with weighted center value
+- **Species table**: sortable table of species present in selected area with extinction risk details
+- **Treemap**: hierarchical view of species contributions to sensitivity
+- **CSV export**: download data for selected area or species
+
+See [Appendix: mapgl](apps/mapgl.qmd) for details.
+
+### mapsp — Species Distribution Viewer
+
+The [mapsp](https://shiny.marinesensitivity.org/mapsp/) application enables exploration of individual species distribution models. Key features include:
+
+- **Species selection**: search by common or scientific name, filter by species category
+- **Model display**: view merged models or individual source dataset layers
+- **IUCN masking toggle**: compare masked vs. unmasked distributions
+- **Species info panel**: ESA listing, IUCN Red List category, MMPA/MBTA protection flags, extinction risk score
+- **Deep-linking**: URL parameters support direct links to specific species
+
+See [Appendix: mapsp](apps/mapsp.qmd) for details.
+
+## Legacy Applications
+
+Earlier versions of the MST included several prototype applications developed during the research phase. These are documented in the Appendix under [Applications (Legacy)](apps/aoi.qmd) for reference.

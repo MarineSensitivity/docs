@@ -1,0 +1,73 @@
+# Taxonomy {#sec-taxonomy}
+
+Integrating species distribution data from 7 source datasets requires resolving taxonomic identities across multiple naming systems. The MST uses a multi-authority matching pipeline to ensure each species is uniquely identified, enabling accurate merging of models from different data providers.
+
+## Taxonomic Authorities
+
+The following authorities are loaded into a reference database (`spp.duckdb`) for taxonomic reconciliation:
+
+| Authority | Description | Key Identifier |
+|:----------|:------------|:---------------|
+| [WoRMS](https://www.marinespecies.org) | World Register of Marine Species — authoritative list for marine taxa | `worms_id` (AphiaID) |
+| [GBIF](https://www.gbif.org) | Global Biodiversity Information Facility Backbone Taxonomy (~6.3M taxa) | `gbif_id` |
+| [ITIS](https://www.itis.gov) | Integrated Taxonomic Information System — US federal standard | `itis_tsn` |
+| [IUCN Red List](https://www.iucnredlist.org) | International Union for Conservation of Nature — conservation assessments | `iucn_id` |
+| [BirdLife BOTW](https://www.birdlife.org) | Birds of the World — authoritative for seabird taxonomy | `botw_id` |
+
+: Taxonomic authorities used in the MST for species name resolution. {#tbl-tax-authorities}
+
+## ID Resolution Cascade
+
+Species identifiers are resolved through a cascading lookup process:
+
+1. **ITIS TSN match**: if the source dataset provides an ITIS Taxonomic Serial Number, use the ITIS-to-WoRMS crosswalk for direct matching
+2. **WoRMS crosswalk**: look up accepted WoRMS AphiaID via the GBIF backbone, which integrates WoRMS as the marine taxonomy source
+3. **Scientific name match**: for records without matching identifiers, attempt exact scientific name matching against WoRMS accepted names
+4. **API lookup**: for remaining unresolved names, query the WoRMS REST API (`wm_records_name()`) for fuzzy matching
+
+At each stage, deprecated names are resolved to their accepted synonyms, and the `taxonomicStatus` field is used to determine the preferred name.
+
+## Species Categories
+
+Valid species are classified into 7 categories based on their taxonomic position:
+
+| Category | Description | Examples |
+|:---------|:------------|:--------|
+| bird | Seabirds and shorebirds | albatross, petrel, tern, pelican |
+| coral | Reef-building and deep-sea corals | stony coral, soft coral, black coral |
+| fish | Bony and cartilaginous fishes | grouper, shark, ray, tuna |
+| invertebrate | Non-coral marine invertebrates | crab, lobster, sea urchin, squid |
+| mammal | Marine mammals | whale, dolphin, seal, manatee |
+| reptile | Sea turtles | loggerhead, green, leatherback |
+| other | Uncategorized marine organisms | algae, seagrass |
+
+: Species categories used in the MST for scoring and visualization. {#tbl-species-categories}
+
+## Data Quality
+
+### Duplicate Resolution
+
+Multiple source datasets may provide models for the same species. The taxonomic matching step identifies duplicates by resolving all source names to canonical WoRMS or BirdLife identifiers. When a species appears in multiple datasets, the model merging pipeline (see @sec-model-merging) takes the MAX value across all sources rather than treating them as separate species.
+
+### Synonym Handling
+
+Taxonomic names change over time as species are reclassified. The pipeline handles this by:
+
+- resolving all names through `acceptedNameUsageID` in each authority
+- tracking the original source name alongside the accepted name
+- flagging deprecated WoRMS IDs and updating them to current accepted IDs
+
+### Valid Species Filter (`is_ok`)
+
+Not all taxa in the database are included in the final analysis. A species is flagged as valid (`is_ok = TRUE`) when it meets all of the following criteria:
+
+- has a merged model (i.e., at least one source dataset provides cell values)
+- is classified as marine (based on WoRMS `isMarine` flag, or BirdLife seabird classification)
+- is not extinct (WoRMS `isExtinct` or IUCN Red List `EX` status)
+- has cells overlapping at least one BOEM Program Area
+
+This filter yields **9,819 valid species** from approximately 17,333 total taxa across all datasets.
+
+## Key Function
+
+The taxonomic matching is implemented in `msens::match_taxa()`, which orchestrates the ID resolution cascade and returns a unified taxon table with cross-referenced identifiers from all authorities.

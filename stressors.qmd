@@ -1,4 +1,6 @@
-# Stressors
+# Stressors {#sec-stressors}
+
+The stressor component of the vulnerability framework (see @sec-science) addresses the human activities that may impact marine ecosystems. This section is a placeholder for future phases of the MST, which will incorporate stressor-receptor interaction matrices to complete the full vulnerability assessment.
 
 ## Offshore Wind Energy
 

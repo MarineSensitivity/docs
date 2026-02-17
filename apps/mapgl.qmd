@@ -1,0 +1,78 @@
+---
+title: "mapgl — Sensitivity Map"
+description: "general sensitivity mapping application"
+categories: [current]
+---
+
+## Overview
+
+The **mapgl** application ([shiny.marinesensitivity.org/mapgl](https://shiny.marinesensitivity.org/mapgl/)) is the primary interactive tool for exploring composite marine sensitivity scores across BOEM Program Areas. It enables users to visualize extinction risk weighted species presence at multiple spatial resolutions, with integrated flower plot and treemap summaries.
+
+@fig-mapgl-map shows the global view of cell-level sensitivity scores across all US waters. The sidebar provides controls for study area, spatial units (raster cells or program areas), and layer selection.
+
+![The mapgl application displaying cell-level sensitivity scores across US waters. The sidebar provides controls for study area selection, spatial resolution (raster cells vs. program areas), and layer choice. The globe view shows scores from 0 (blue) to 89 (red) with MapBox basemap.](/figures/apps/mapgl-map.png){#fig-mapgl-map}
+
+@fig-mapgl-flower shows the flower plot panel that appears when a program area is selected. Here, the Southern California program area displays a weighted mean score of 29, with petals representing species categories (bird, coral, fish, invertebrate, mammal, other, turtle) and primary productivity.
+
+![The mapgl application showing the flower plot panel for Southern California. Petal length represents each category's rescaled sensitivity score; petal width represents its weight. The center value (29) is the weighted mean across all categories.](/figures/apps/mapgl-flower.png){#fig-mapgl-flower}
+
+## Features
+
+### Map Display
+
+- **Cell-level view**: 0.05° grid cells colored by sensitivity score for the selected metric
+- **Program area view**: aggregated scores by BOEM Program Area, with boundaries overlaid
+- **Base maps**: multiple MapBox base layers (satellite, streets, light, dark)
+- **Study area selection**: click a program area to focus the view and update summary panels
+
+### Sensitivity Metrics
+
+The map can display any of the following layers:
+
+- Composite extinction risk (weighted sum across all species categories)
+- Individual category scores: bird, coral, fish, invertebrate, mammal, reptile/turtle
+- Primary productivity
+
+All scores are ecoregionally rescaled to [0--100] for meaningful cross-region comparison (see @sec-scoring).
+
+### Flower Plot
+
+Selecting a program area displays a flower plot summarizing the sensitivity profile:
+
+- Each petal represents a species category
+- Petal length = rescaled sensitivity score (0--100)
+- Petal width = category weight
+- Center value = weighted mean across categories
+
+### Species Table
+
+A sortable table of all valid species present in the selected area, showing:
+
+- Scientific and common name
+- Species category
+- ESA listing, IUCN Red List status
+- MMPA/MBTA protection flags
+- Extinction risk score
+
+### Data Export
+
+Users can download CSV files of scores and species lists for the selected program area or custom area of interest.
+
+## Generating Screenshots
+
+```{r}
+#| label: mapgl-webshot
+#| eval: false
+
+# capture screenshots (requires app running at URL)
+webshot2::webshot(
+  url     = "https://shiny.marinesensitivity.org/mapgl/",
+  file    = here::here("docs/figures/apps/mapgl-map.png"),
+  delay   = 5,
+  vwidth  = 1200,
+  vheight = 800)
+```
+
+## Source Code
+
+The application source code is at: [`apps/mapgl/app.R`](https://github.com/MarineSensitivity/apps/tree/main/mapgl)
