@@ -39,7 +39,7 @@ Valid species are classified into 7 categories based on their taxonomic position
 | invertebrate | Non-coral marine invertebrates | crab, lobster, sea urchin, squid |
 | mammal | Marine mammals | whale, dolphin, seal, manatee |
 | reptile | Sea turtles | loggerhead, green, leatherback |
-| other | Uncategorized marine organisms | algae, seagrass |
+| other | Uncategorized marine organisms | worms, tunicates, and bryozoans |
 
 : Species categories used in the MST for scoring and visualization. {#tbl-species-categories}
 
