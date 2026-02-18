@@ -458,7 +458,7 @@ window.Quarto = {
   <li><a href="#scoring-methodology" id="toc-scoring-methodology" class="nav-link" data-scroll-target="#scoring-methodology"><span class="header-section-number">5.2</span> Scoring Methodology</a>
   <ul class="collapse">
   <li><a href="#us-listed-species" id="toc-us-listed-species" class="nav-link" data-scroll-target="#us-listed-species"><span class="header-section-number">5.2.1</span> US-listed Species</a></li>
-  <li><a href="#non-us-species-iucn" id="toc-non-us-species-iucn" class="nav-link" data-scroll-target="#non-us-species-iucn"><span class="header-section-number">5.2.2</span> Non-US Species (IUCN)</a></li>
+  <li><a href="#species-not-federally-listed-iucn" id="toc-species-not-federally-listed-iucn" class="nav-link" data-scroll-target="#species-not-federally-listed-iucn"><span class="header-section-number">5.2.2</span> Species not federally listed (IUCN)</a></li>
   <li><a href="#scale-note" id="toc-scale-note" class="nav-link" data-scroll-target="#scale-note"><span class="header-section-number">5.2.3</span> Scale Note</a></li>
   </ul></li>
   <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"><span class="header-section-number">5.3</span> Implementation</a></li>
@@ -503,6 +503,7 @@ window.Quarto = {
 <h3 data-number="5.1.2" class="anchored" data-anchor-id="marine-mammal-protection-act-mmpa"><span class="header-section-number">5.1.2</span> Marine Mammal Protection Act (MMPA)</h3>
 <p>The <a href="https://www.fisheries.noaa.gov/topic/laws-policies#marine-mammal-protection-act">Marine Mammal Protection Act</a> (1972) protects <strong>all marine mammals</strong> in US waters regardless of their ESA status. This includes whales, dolphins, porpoises, seals, sea lions, walruses, sea otters, polar bears, and manatees.</p>
 <p>Because MMPA provides blanket protection, all marine mammals receive a <strong>minimum spatial floor score of 20</strong> in cells where they are present — even species classified as Least Concern under IUCN. This ensures that the legal protection afforded to marine mammals is reflected in the sensitivity analysis.</p>
+<p>The MMPA floor is intentionally higher than the MBTA floor because the MMPA imposes a stronger statutory standard: it affirmatively requires that all marine mammal populations be maintained at Optimum Sustainable Population levels and mandates active population recovery, whereas the MBTA is primarily a prohibitive take statute. Marine mammals also tend to have lower reproductive rates and longer recovery times than most seabirds, making them intrinsically more sensitive to disturbance.</p>
 </section>
 <section id="migratory-bird-treaty-act-mbta" class="level3" data-number="5.1.3">
 <h3 data-number="5.1.3" class="anchored" data-anchor-id="migratory-bird-treaty-act-mbta"><span class="header-section-number">5.1.3</span> Migratory Bird Treaty Act (MBTA)</h3>
@@ -624,16 +625,11 @@ Table&nbsp;5.2: US-listed species scoring components. The final score is the MAX
 <li>Non-ESA migratory bird (MBTA only): max(1, 10) = <strong>10</strong></li>
 </ul>
 </section>
-<section id="non-us-species-iucn" class="level3" data-number="5.2.2">
-<h3 data-number="5.2.2" class="anchored" data-anchor-id="non-us-species-iucn"><span class="header-section-number">5.2.2</span> Non-US Species (IUCN)</h3>
-<p>Species not listed under US federal law receive a score based solely on their IUCN Red List category:</p>
-<div id="tbl-er-iucn" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-er-iucn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;5.3: IUCN-based extinction risk scores for non-US species.
-</figcaption>
-<div aria-describedby="tbl-er-iucn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<section id="species-not-federally-listed-iucn" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2" class="anchored" data-anchor-id="species-not-federally-listed-iucn"><span class="header-section-number">5.2.2</span> Species not federally listed (IUCN)</h3>
+<p>Species not federally listed or mentioned by NMFS (<a href="https://www.fisheries.noaa.gov/species-directory">Species Directory | NOAA Fisheries</a> ) or FWS (<a href="https://www.fws.gov/species">Species | U.S. Fish &amp; Wildlife Service</a> ) fall back to an extinction risk score based on their IUCN Red List category:</p>
 <table class="caption-top table">
+<caption>IUCN-based extinction risk scores for US species not listed or mentioned by NMFS or FWS</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">IUCN Category</th>
@@ -663,9 +659,6 @@ Table&nbsp;5.3: IUCN-based extinction risk scores for non-US species.
 </tr>
 </tbody>
 </table>
-</div>
-</figure>
-</div>
 <p>Species with no matching extinction risk code (i.e., unmatched taxa) receive a default score of <strong>1</strong>.</p>
 </section>
 <section id="scale-note" class="level3" data-number="5.2.3">

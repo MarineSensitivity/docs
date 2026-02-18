@@ -491,7 +491,7 @@ v_{merged,c} = \max(v_{am,c},\; v_{ca,c},\; v_{ch,c},\; v_{rng,c},\; v_{bl,c},\;
 <section id="step-3-spatial-masking" class="level3" data-number="6.1.3">
 <h3 data-number="6.1.3" class="anchored" data-anchor-id="step-3-spatial-masking"><span class="header-section-number">6.1.3</span> Step 3: Spatial Masking</h3>
 <p>When an IUCN range map, NMFS Critical Habitat, or FWS Critical Habitat exists for a species, the merged model is <strong>constrained to the spatial extent</strong> of these mask datasets. The mask is formed as the union of all available <code>is_mask = TRUE</code> datasets for that species.</p>
-<p>This prevents the AquaMaps SDM (which often has broad environmental envelope predictions) from extending species presence far beyond their known range. Cells outside the mask are set to zero (species absent).</p>
+<p>This prevents the AquaMaps SDM (which often has broad environmental envelope predictions) from extending species presence far beyond their known range. Cells outside the mask are set to zero (species absent). This ensures that suitable habitat is not included outside known ranges, so that model predictions align with expert knowledge of where species actually occur.</p>
 </section>
 <section id="step-4-mmpa-spatial-floor" class="level3" data-number="6.1.4">
 <h3 data-number="6.1.4" class="anchored" data-anchor-id="step-4-mmpa-spatial-floor"><span class="header-section-number">6.1.4</span> Step 4: MMPA Spatial Floor</h3>
