@@ -19,6 +19,8 @@ where:
 
 Division by 100 converts the product from a 0--10,000 range back to a 0--100 scale.
 
+In plain terms, for each cell in the ocean the MST adds up the sensitivity contributions of all species found there. If a cell has many species that are both likely to be present and at high risk of extinction, it gets a higher sensitivity score. This helps identify places where rare or threatened species are concentrated.
+
 ## Metric Keys
 
 Cell-level scores are stored as named metrics in the DuckDB database:
@@ -79,6 +81,8 @@ The flower plot provides an intuitive summary of sensitivity scores by species c
 @fig-flower-programareas shows flower plots for all 20 BOEM Program Areas, generated from the v3 scoring run. Each flower summarizes the sensitivity profile of one program area with petals for Bird, Coral, Fish, Invertebrate, Mammal, Other, Turtle, and Primary Production. Alaska program areas (e.g., HOP, COK, GOA) show dominant Fish and Mammal petals, while Gulf areas (GAB, CEC, MAT) show stronger Invertebrate and Coral contributions.
 
 ![Flower plots for all 20 BOEM Program Areas showing ecoregionally rescaled sensitivity scores by species category. Petal length reflects the category score; petal width reflects its weight. Center values are the weighted mean across categories.](figures/flower-plot_programareas.png){#fig-flower-programareas}
+
+The flower plot lets decision-makers quickly spot which ecological elements drive sensitivity in an area, aiding better planning and impact assessment.
 
 The flower plot is implemented as an interactive `ggiraph` visualization using polar coordinates in R (`ggplot2 + coord_polar()`), with tooltips showing detailed score breakdowns on hover. The `plot_flower()` function in `calc_scores.qmd` generates static versions for reports, while the mapgl web application implements an interactive JavaScript version for responsive rendering (see @fig-mapgl-flower).
 

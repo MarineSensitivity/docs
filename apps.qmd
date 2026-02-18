@@ -10,6 +10,8 @@ editor_options:
 
 The MST provides two primary interactive web applications for exploring sensitivity data, plus several legacy applications from earlier development phases.
 
+These tools allow stakeholders, scientists, and decision-makers to understand the underlying components contributing to an area's sensitivity to offshore energy development, supporting better planning and impact assessment.
+
 ## Current Applications
 
 ### mapgl — Sensitivity Map

@@ -19,6 +19,8 @@ The [Marine Mammal Protection Act](https://www.fisheries.noaa.gov/topic/laws-pol
 
 Because MMPA provides blanket protection, all marine mammals receive a **minimum spatial floor score of 20** in cells where they are present — even species classified as Least Concern under IUCN. This ensures that the legal protection afforded to marine mammals is reflected in the sensitivity analysis.
 
+The MMPA floor is intentionally higher than the MBTA floor because the MMPA imposes a stronger statutory standard: it affirmatively requires that all marine mammal populations be maintained at Optimum Sustainable Population levels and mandates active population recovery, whereas the MBTA is primarily a prohibitive take statute. Marine mammals also tend to have lower reproductive rates and longer recovery times than most seabirds, making them intrinsically more sensitive to disturbance.
+
 ### Migratory Bird Treaty Act (MBTA)
 
 The [Migratory Bird Treaty Act](https://www.fws.gov/law/migratory-bird-treaty-act-1918) (1918) protects migratory birds, which includes most seabird species. Similar to MMPA, all migratory birds receive a **minimum spatial floor score of 10** in cells where they are present.
@@ -67,9 +69,11 @@ $$ {#eq-er-us}
 - Non-ESA marine mammal (MMPA only): max(1, 20) = **20**
 - Non-ESA migratory bird (MBTA only): max(1, 10) = **10**
 
-### Non-US Species (IUCN)
+### Species not federally listed (IUCN)
 
-Species not listed under US federal law receive a score based solely on their IUCN Red List category:
+Species not federally listed or mentioned by NMFS ([Species Directory | NOAA Fisheries](https://www.fisheries.noaa.gov/species-directory)
+) or FWS ([Species | U.S. Fish & Wildlife Service](https://www.fws.gov/species)
+) fall back to an extinction risk score based on their IUCN Red List category:
 
 | IUCN Category | Score |
 |:--------------|------:|
@@ -79,7 +83,7 @@ Species not listed under US federal law receive a score based solely on their IU
 | Near Threatened (NT) | 2 |
 | Least Concern / Data Deficient / other | 1 |
 
-: IUCN-based extinction risk scores for non-US species. {#tbl-er-iucn}
+: IUCN-based extinction risk scores for US species not listed or mentioned by NMFS or FWS
 
 Species with no matching extinction risk code (i.e., unmatched taxa) receive a default score of **1**.
 

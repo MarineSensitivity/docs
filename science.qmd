@@ -12,7 +12,7 @@ $$
 V = f(E, S, A)
 $$ {#eq-v}
 
-The MST currently focuses on the **sensitivity** component, quantifying the intrinsic biological sensitivity of marine ecosystems based on the species present and their conservation status. Exposure and adaptive capacity components are planned for future phases (see @sec-stressors).
+The more exposed and sensitive an area is—and the less able it is to recover—the more vulnerable it is to impacts from offshore human activities. The MST currently focuses on the **sensitivity** component, quantifying the intrinsic biological sensitivity of marine ecosystems based on the species present and their conservation status. Exposure and adaptive capacity components are planned for future phases (see @sec-stressors).
 
 ## Cell Vulnerability
 
@@ -28,6 +28,8 @@ where:
 - $p_{sc}$ = probability of species $s$ presence in cell $c$ (0--1 scale, from merged species distribution models)
 - $w_s$ = extinction risk weight for species $s$ (0--1 scale, derived from ESA/MMPA/MBTA/IUCN status; see @sec-extinction-risk)
 - $S_g$ = total number of species in taxonomic group $g$ (e.g., bird, fish, mammal, coral, invertebrate, reptile/turtle)
+
+In other words, if a cell has many species that are both likely to be present and at high risk of extinction, it gets a higher sensitivity score. This helps identify places where rare or threatened species are concentrated.
 
 ## Sensitivity Components
 
@@ -46,5 +48,7 @@ v'_c = \frac{v_c - v_{min}}{v_{max} - v_{min}} \times 100
 $$ {#eq-rescale}
 
 where $v_{min}$ and $v_{max}$ are the minimum and maximum cell scores within the ecoregion. This accounts for the natural gradient from species-rich tropical waters to less diverse polar regions, ensuring that a "high sensitivity" score has consistent meaning across all program areas.
+
+Ecoregional rescaling makes it easy to compare areas within the same region, and Program Area aggregation gives an overall sensitivity score for each area, considering both the sensitivity of each part and how big each part is.
 
 See subsequent chapters for detailed descriptions of: data sources (@sec-data-sources), taxonomic integration (@sec-taxonomy), extinction risk scoring (@sec-extinction-risk), model merging (@sec-model-merging), and scoring methodology (@sec-scoring).

@@ -47,7 +47,7 @@ This ensures that the most informative (highest confidence) prediction is used. 
 
 When an IUCN range map, NMFS Critical Habitat, or FWS Critical Habitat exists for a species, the merged model is **constrained to the spatial extent** of these mask datasets. The mask is formed as the union of all available `is_mask = TRUE` datasets for that species.
 
-This prevents the AquaMaps SDM (which often has broad environmental envelope predictions) from extending species presence far beyond their known range. Cells outside the mask are set to zero (species absent).
+This prevents the AquaMaps SDM (which often has broad environmental envelope predictions) from extending species presence far beyond their known range. Cells outside the mask are set to zero (species absent). This ensures that suitable habitat is not included outside known ranges, so that model predictions align with expert knowledge of where species actually occur.
 
 ### Step 4: MMPA Spatial Floor
 
