@@ -93,6 +93,28 @@ div.csl-indent {
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/maplibre-gl-5.15.0/maplibre-gl.css" rel="stylesheet">
+<script src="site_libs/maplibre-gl-5.15.0/maplibre-gl.js"></script>
+<link href="site_libs/mapbox-gl-draw-1.5.0/mapbox-gl-draw.css" rel="stylesheet">
+<script src="site_libs/mapbox-gl-draw-1.5.0/mapbox-gl-draw.js"></script>
+<script src="site_libs/freehand-mode-1.0.0/freehand-mode.js"></script>
+<script src="site_libs/rectangle-mode-1.0.0/rectangle-mode.js"></script>
+<script src="site_libs/radius-mode-1.0.0/radius-mode.js"></script>
+<link href="site_libs/maplibre-gl-geocoder-1.5.0/maplibre-gl-geocoder.css" rel="stylesheet">
+<script src="site_libs/maplibre-gl-geocoder-1.5.0/maplibre-gl-geocoder.min.js"></script>
+<script src="site_libs/mapbox-gl-globe-minimap-1.2.1/bundle.js"></script>
+<script src="site_libs/pmtiles-4.3.0/pmtiles.js"></script>
+<script src="site_libs/h3j-h3t-0.9.2/h3j_h3t.js"></script>
+<link href="site_libs/maptiler-geocoding-control-2.1.7/style.css" rel="stylesheet">
+<script src="site_libs/maptiler-geocoding-control-2.1.7/maplibregl.umd.js"></script>
+<script src="site_libs/turf-7.3.0/turf.min.js"></script>
+<script src="site_libs/turf-operations-1.0.0/turf-operations.js"></script>
+<script src="site_libs/html2canvas-1.4.1/html2canvas.min.js"></script>
+<link href="site_libs/legend-interactivity-1.0.0/legend-interactivity.css" rel="stylesheet">
+<script src="site_libs/legend-interactivity-1.0.0/legend-interactivity.js"></script>
+<script src="site_libs/maplibregl-binding-0.4.4/maplibregl.js"></script>
+<link href="site_libs/layers-control-1.0.0/layers-control.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -438,7 +460,11 @@ window.Quarto = {
   <ul>
   <li><a href="#cell-level-scoring" id="toc-cell-level-scoring" class="nav-link active" data-scroll-target="#cell-level-scoring"><span class="header-section-number">7.1</span> Cell-Level Scoring</a></li>
   <li><a href="#metric-keys" id="toc-metric-keys" class="nav-link" data-scroll-target="#metric-keys"><span class="header-section-number">7.2</span> Metric Keys</a></li>
-  <li><a href="#ecoregional-rescaling" id="toc-ecoregional-rescaling" class="nav-link" data-scroll-target="#ecoregional-rescaling"><span class="header-section-number">7.3</span> Ecoregional Rescaling</a></li>
+  <li><a href="#ecoregional-rescaling" id="toc-ecoregional-rescaling" class="nav-link" data-scroll-target="#ecoregional-rescaling"><span class="header-section-number">7.3</span> Ecoregional Rescaling</a>
+  <ul class="collapse">
+  <li><a href="#geographic-scope" id="toc-geographic-scope" class="nav-link" data-scroll-target="#geographic-scope"><span class="header-section-number">7.3.1</span> Geographic Scope</a></li>
+  <li><a href="#cross-ecoregion-program-areas" id="toc-cross-ecoregion-program-areas" class="nav-link" data-scroll-target="#cross-ecoregion-program-areas"><span class="header-section-number">7.3.2</span> Cross-Ecoregion Program Areas</a></li>
+  </ul></li>
   <li><a href="#primary-productivity-scoring" id="toc-primary-productivity-scoring" class="nav-link" data-scroll-target="#primary-productivity-scoring"><span class="header-section-number">7.4</span> Primary Productivity Scoring</a></li>
   <li><a href="#zone-aggregation" id="toc-zone-aggregation" class="nav-link" data-scroll-target="#zone-aggregation"><span class="header-section-number">7.5</span> Zone Aggregation</a></li>
   <li><a href="#visualization" id="toc-visualization" class="nav-link" data-scroll-target="#visualization"><span class="header-section-number">7.6</span> Visualization</a>
@@ -550,11 +576,34 @@ Table&nbsp;7.1: Cell-level metric keys stored in the MST database.
 </section>
 <section id="ecoregional-rescaling" class="level2" data-number="7.3">
 <h2 data-number="7.3" class="anchored" data-anchor-id="ecoregional-rescaling"><span class="header-section-number">7.3</span> Ecoregional Rescaling</h2>
-<p>Raw cell scores vary naturally across ecoregions due to differences in species richness, oceanographic conditions, and biogeographic patterns. To enable meaningful cross-region comparison, each metric is rescaled to a [0–100] range within each BOEM ecoregion:</p>
+<p>Raw cell scores vary naturally across ecoregions due to differences in species richness, oceanographic conditions, and biogeographic patterns. To enable meaningful comparison, each metric is rescaled to a [0–100] range within each BOEM Ecoregion:</p>
 <p><span id="eq-ecoregion-rescale"><span class="math display">\[
 \text{score}'_{c} = \frac{\text{score}_{c} - \text{score}_{min}}{\text{score}_{max} - \text{score}_{min}} \times 100
 \tag{7.2}\]</span></span></p>
-<p>where <span class="math inline">\(\text{score}_{min}\)</span> and <span class="math inline">\(\text{score}_{max}\)</span> are the minimum and maximum cell values for that metric within the ecoregion. This ensures that a score of 100 represents the most sensitive cell within each ecoregion, not globally.</p>
+<p>where <span class="math inline">\(\text{score}_{min}\)</span> and <span class="math inline">\(\text{score}_{max}\)</span> are the minimum and maximum cell values for that metric within the Ecoregion.</p>
+<p><strong>Scores are relative within Ecoregions, not absolute.</strong> A score of 100 represents the most sensitive 0.05° cell for a given metric within a given BOEM Ecoregion—not globally. The final score is an equally weighted average of these ecoregionally rescaled metrics. This means that a score of 30 in Alaska reflects a different ecological context than a score of 30 in the Pacific.</p>
+<p><strong>Why rescale by Ecoregion?</strong> Without this step, areas with naturally higher numbers of species (like upwelling zones in the Pacific) would almost always receive the highest scores, simply because they have more species. While more species may indicate greater ecological importance, it could also be argued that the fewer species in an ecosystem, the more important each is to its function and resilience. Rescaling by Ecoregion prevents scores from being overwhelmed by species-rich areas. However, comparing <em>across</em> Ecoregions would require developing a mathematical relationship between these competing arguments for sensitivity—one that is still a source of earnest academic debate. For this reason, <strong>scores are directly comparable among Program Areas within the same Ecoregion, but should not be compared across Ecoregions</strong>.</p>
+<section id="geographic-scope" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="geographic-scope"><span class="header-section-number">7.3.1</span> Geographic Scope</h3>
+<p>The current analysis covers 20 BOEM Program Areas from the 11th National Draft Proposed Program (2025) spanning Alaska, the Pacific, and the Gulf of America (<a href="#fig-map-ecoregions-scoring" class="quarto-xref">Figure&nbsp;<span>7.1</span></a>). The Atlantic OCS region is not included in this program cycle, so ecoregions without Program Areas (e.g., Northeast Continental Shelf, Southeast Continental Shelf, Washington/Oregon) are excluded from the analysis. Species whose distributions do not overlap with any Program Area will not appear in the interactive mapping applications.</p>
+</section>
+<section id="cross-ecoregion-program-areas" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="cross-ecoregion-program-areas"><span class="header-section-number">7.3.2</span> Cross-Ecoregion Program Areas</h3>
+<p>The Gulf of America Program Areas—GOA Program Area A (GAA) and GOA Program Area B (GAB)—span parts of two Ecoregions: Western and Central Gulf of America (WCGOA) and Eastern Gulf of America (EGOA). Because cell scores are rescaled within each Ecoregion before aggregation, cells in GAA that fall within the WCGOA Ecoregion are rescaled relative to WCGOA min/max values, while cells within EGOA use EGOA min/max values. The aggregated Program Area score is then the area-weighted average across all constituent cells, regardless of which Ecoregion they belong to. This approach ensures that the rescaling reflects local ecological context even when a Program Area spans Ecoregion boundaries. See <code>calc_scores.qmd</code> for implementation details.</p>
+<div class="cell">
+<div id="fig-map-ecoregions-scoring" class="cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-map-ecoregions-scoring-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="htmlwidget-6358a46d1399716e8228" style="width:100%;height:480px;" class="maplibregl html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6358a46d1399716e8228">{"x":{"style":"https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json","center":[0,0],"zoom":0,"bearing":0,"pitch":0,"projection":"globe","additional_params":{"bounds":[[-190,15],[-60,75]]},"sources":[{"id":"eco_src","type":"vector","url":"pmtiles://https://file.marinesensitivity.org/pmtiles/ply_ecoregions_2025.pmtiles","promoteId":"ecoregion_key"},{"id":"pra_src","type":"vector","url":"pmtiles://https://file.marinesensitivity.org/pmtiles/ply_programareas_2026_v3.pmtiles"}],"layers":[{"id":"eco_fill","type":"fill","source":"eco_src","source_layer":"ply_ecoregions_2025","paint":{"fill-antialias":true,"fill-color":["match",["get","ecoregion_key"],"CAC","#3288BD","CBS","#FEE08B","EBS","#D53E4F","EGOA","#FC8D59","GOA","#99D594","HAR","#E6F598","WCGOA","#FFFFBF","#cccccc"],"fill-opacity":0.6,"fill-translate-anchor":"map"},"layout":{"visibility":"visible"},"slot":null,"minzoom":null,"maxzoom":null,"popup":["concat","<strong>",["get","ecoregion_name"],"<\/strong><br>","Key: ",["get","ecoregion_key"],"<br>","Region: ",["get","region_name"]],"tooltip":["concat",["get","ecoregion_name"]," (",["get","ecoregion_key"],")"],"hover_options":{"fill_opacity":0.9},"before_id":null,"filter":["in","ecoregion_key","CAC","CBS","EBS","EGOA","GOA","HAR","WCGOA"]},{"id":"eco_ln","type":"line","source":"eco_src","source_layer":"ply_ecoregions_2025","paint":{"line-color":"black","line-opacity":1,"line-translate-anchor":"map","line-width":3},"layout":{"visibility":"visible"},"slot":null,"minzoom":null,"maxzoom":null,"popup":null,"tooltip":null,"hover_options":null,"before_id":null,"filter":["in","ecoregion_key","CAC","CBS","EBS","EGOA","GOA","HAR","WCGOA"]},{"id":"pra_ln","type":"line","source":"pra_src","source_layer":"ply_programareas_2026_v3","paint":{"line-color":"white","line-opacity":1,"line-translate-anchor":"map","line-width":1},"layout":{"visibility":"visible"},"slot":null,"minzoom":null,"maxzoom":null,"popup":null,"tooltip":null,"hover_options":null,"before_id":null,"filter":null},{"id":"eco_lbl","type":"symbol","source":"eco_src","source_layer":"ply_ecoregions_2025","paint":{"text-color":"black","text-halo-color":"white","text-halo-width":2},"layout":{"text-allow-overlap":false,"text-field":["get","ecoregion_key"],"text-font":["Open Sans Bold"],"text-size":14,"visibility":"visible"},"slot":null,"minzoom":null,"maxzoom":null,"popup":null,"tooltip":null,"hover_options":null,"before_id":null,"filter":["in","ecoregion_key","CAC","CBS","EBS","EGOA","GOA","HAR","WCGOA"]},{"id":"pra_lbl","type":"symbol","source":"pra_src","source_layer":"ply_programareas_2026_v3","paint":{"text-color":"#333333","text-halo-color":"white","text-halo-width":1.5},"layout":{"text-allow-overlap":false,"text-field":["get","programarea_key"],"text-font":["Open Sans Semibold"],"text-size":11,"visibility":"visible"},"slot":null,"minzoom":null,"maxzoom":null,"popup":null,"tooltip":null,"hover_options":null,"before_id":null,"filter":null}],"layers_control":{"control_id":"layers-control-7ef47","position":"top-left","layers":{"Ecoregion fills":"eco_fill","Ecoregion outlines":"eco_ln","Ecoregion labels":"eco_lbl","Program Area outlines":"pra_ln","Program Area labels":"pra_lbl"},"layers_config":[{"label":"Ecoregion fills","ids":"eco_fill","type":"single"},{"label":"Ecoregion outlines","ids":"eco_ln","type":"single"},{"label":"Ecoregion labels","ids":"eco_lbl","type":"single"},{"label":"Program Area outlines","ids":"pra_ln","type":"single"},{"label":"Program Area labels","ids":"pra_lbl","type":"single"}],"collapsible":true,"use_icon":true,"custom_colors":null,"margin_top":null,"margin_right":null,"margin_bottom":null,"margin_left":null},"fullscreen_control":{"enabled":true,"position":"top-right"},"legend_html":"<div id=\"legend-9a831\" class=\"mapboxgl-legend bottom-left\"><h2>BOEM Ecoregions<\/h2><div class=\"legend-item\"><div class=\"legend-patch-container\" style=\"width:20px; height:20px;\"><span class=\"legend-color legend-shape-square\" style=\"background-color:#3288BD; width: 20px; height: 20px;\"><\/span><\/div><span class=\"legend-text\">California Current<\/span><\/div><div class=\"legend-item\"><div class=\"legend-patch-container\" style=\"width:20px; height:20px;\"><span class=\"legend-color legend-shape-square\" style=\"background-color:#FEE08B; width: 20px; height: 20px;\"><\/span><\/div><span class=\"legend-text\">Chukchi and Beaufort Seas<\/span><\/div><div class=\"legend-item\"><div class=\"legend-patch-container\" style=\"width:20px; height:20px;\"><span class=\"legend-color legend-shape-square\" style=\"background-color:#D53E4F; width: 20px; height: 20px;\"><\/span><\/div><span class=\"legend-text\">East Bering Sea<\/span><\/div><div class=\"legend-item\"><div class=\"legend-patch-container\" style=\"width:20px; height:20px;\"><span class=\"legend-color legend-shape-square\" style=\"background-color:#FC8D59; width: 20px; height: 20px;\"><\/span><\/div><span class=\"legend-text\">Eastern Gulf of America<\/span><\/div><div class=\"legend-item\"><div class=\"legend-patch-container\" style=\"width:20px; height:20px;\"><span class=\"legend-color legend-shape-square\" style=\"background-color:#99D594; width: 20px; height: 20px;\"><\/span><\/div><span class=\"legend-text\">Gulf of Alaska<\/span><\/div><div class=\"legend-item\"><div class=\"legend-patch-container\" style=\"width:20px; height:20px;\"><span class=\"legend-color legend-shape-square\" style=\"background-color:#E6F598; width: 20px; height: 20px;\"><\/span><\/div><span class=\"legend-text\">High Arctic<\/span><\/div><div class=\"legend-item\"><div class=\"legend-patch-container\" style=\"width:20px; height:20px;\"><span class=\"legend-color legend-shape-square\" style=\"background-color:#FFFFBF; width: 20px; height: 20px;\"><\/span><\/div><span class=\"legend-text\">Western and Central Gulf of America<\/span><\/div><\/div>","legend_css":"\n    @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');\n    #legend-9a831 h2 {\n      font-size: 14px;\n      font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n      line-height: 20px;\n      margin-bottom: 10px;\n      margin-top: 0px;\n      white-space: nowrap;\n      max-width: 100%;\n      overflow: hidden;\n      text-overflow: ellipsis;\n    }\n    #legend-9a831 {\n      position: absolute;\n      border-radius: 10px;\n      margin: 10px;\n      max-width: 250px;\n      background-color: #ffffff80;\n      padding: 10px 20px;\n      z-index: 1002;\n    }\n    #legend-9a831.top-left {\n      top: 10px;\n      left: 10px;\n    }\n    #legend-9a831.bottom-left {\n      bottom: 10px;\n      left: 10px;\n    }\n    #legend-9a831.top-right {\n      top: 10px;\n      right: 10px;\n    }\n    #legend-9a831.bottom-right {\n      bottom: 10px;\n      right: 10px;\n    }\n    #legend-9a831 .legend-item {\n      display: flex;\n      align-items: center;\n      margin-bottom: 5px;\n      font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n      white-space: nowrap;\n      max-width: 100%;\n      overflow: hidden;\n    }\n    #legend-9a831 .legend-patch-container {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      margin-right: 5px;\n    }\n    #legend-9a831 .legend-color {\n      display: inline-block;\n      flex-shrink: 0;\n    }\n    #legend-9a831 .legend-shape-line {\n      align-self: center;\n      image-rendering: pixelated;\n      image-rendering: -moz-crisp-edges;\n      image-rendering: crisp-edges;\n      transform: translateZ(0);\n      -webkit-transform: translateZ(0);\n    }\n    #legend-9a831 .legend-shape-hexagon {\n      display: block;\n    }\n    #legend-9a831 .legend-shape-custom {\n      display: block;\n    }\n    #legend-9a831 .legend-text {\n      flex-grow: 1;\n      text-overflow: ellipsis;\n      overflow: hidden;\n    }\n  "},"evals":[],"jsHooks":[]}</script>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-map-ecoregions-scoring-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.1: BOEM Ecoregions (colored) and Program Area outlines. <strong>Ecoregion keys</strong>: CAC = California Current; CBS = Chukchi and Beaufort Seas; EBS = East Bering Sea; EGOA = Eastern Gulf of America; GOA = Gulf of Alaska; HAR = High Arctic; WCGOA = Western and Central Gulf of America. <strong>Program Area keys</strong>: ALA = Aleutian Arc; ALB = Aleutian Basin; BFT = Beaufort Sea; BOW = Bowers Basin; CEC = Central California; CHU = Chukchi Sea; COK = Cook Inlet; GAA = GOA Program Area A; GAB = GOA Program Area B; GEO = St.&nbsp;George Basin; GOA = Gulf of Alaska; HAR = High Arctic; HOP = Hope Basin; KOD = Kodiak; MAT = St.&nbsp;Matthew-Hall; NAV = Navarin Basin; NOC = Northern California; NOR = Norton Basin; SHU = Shumagin; SOC = Southern California.
+</figcaption>
+</figure>
+</div>
+</div>
+</section>
 </section>
 <section id="primary-productivity-scoring" class="level2" data-number="7.4">
 <h2 data-number="7.4" class="anchored" data-anchor-id="primary-productivity-scoring"><span class="header-section-number">7.4</span> Primary Productivity Scoring</h2>
@@ -565,7 +614,7 @@ Table&nbsp;7.1: Cell-level metric keys stored in the MST database.
 <p>Rescaled cell scores are aggregated to three spatial levels using area-weighted averaging:</p>
 <ol type="1">
 <li><strong>Program Areas</strong>: the 20 BOEM planning regions used for offshore energy management</li>
-<li><strong>Subregions</strong>: intermediate spatial groupings (e.g., Atlantic, Gulf of Mexico, Pacific, Alaska)</li>
+<li><strong>Subregions</strong>: intermediate spatial groupings (e.g., Atlantic, Gulf of America, Pacific, Alaska)</li>
 <li><strong>Ecoregions</strong>: BOEM-defined ecological regions used as the rescaling baseline</li>
 </ol>
 <p>For each zone, the aggregated score is:</p>
@@ -584,14 +633,14 @@ Table&nbsp;7.1: Cell-level metric keys stored in the MST database.
 <li><strong>Petal width</strong> represents the weight of each category contributing to the overall score — wider petals have more influence on the center score</li>
 <li><strong>Center value</strong> shows the weighted mean across all categories</li>
 </ul>
-<p><a href="#fig-flower-programareas" class="quarto-xref">Figure&nbsp;<span>7.1</span></a> shows flower plots for all 20 BOEM Program Areas, generated from the v3 scoring run. Each flower summarizes the sensitivity profile of one program area with petals for Bird, Coral, Fish, Invertebrate, Mammal, Other, Turtle, and Primary Production. Alaska program areas (e.g., HOP, COK, GOA) show dominant Fish and Mammal petals, while Gulf areas (GAB, CEC, MAT) show stronger Invertebrate and Coral contributions.</p>
+<p><a href="#fig-flower-programareas" class="quarto-xref">Figure&nbsp;<span>7.2</span></a> shows flower plots for all 20 BOEM Program Areas, generated from the v3 scoring run. Each flower summarizes the sensitivity profile of one program area with petals for Bird, Coral, Fish, Invertebrate, Mammal, Other, Turtle, and Primary Production. Alaska program areas (e.g., HOP, COK, GOA) show dominant Fish and Mammal petals, while Gulf areas (GAB, CEC, MAT) show stronger Invertebrate and Coral contributions.</p>
 <div id="fig-flower-programareas" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-flower-programareas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="figures/flower-plot_programareas.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;7.1: Flower plots for all 20 BOEM Program Areas showing ecoregionally rescaled sensitivity scores by species category. Petal length reflects the category score; petal width reflects its weight. Center values are the weighted mean across categories."><img src="figures/flower-plot_programareas.png" class="img-fluid figure-img"></a>
+<a href="figures/flower-plot_programareas.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;7.2: Flower plots for all 20 BOEM Program Areas showing ecoregionally rescaled sensitivity scores by species category. Petal length reflects the category score; petal width reflects its weight. Center values are the weighted mean across categories."><img src="figures/flower-plot_programareas.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-flower-programareas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.1: Flower plots for all 20 BOEM Program Areas showing ecoregionally rescaled sensitivity scores by species category. Petal length reflects the category score; petal width reflects its weight. Center values are the weighted mean across categories.
+Figure&nbsp;7.2: Flower plots for all 20 BOEM Program Areas showing ecoregionally rescaled sensitivity scores by species category. Petal length reflects the category score; petal width reflects its weight. Center values are the weighted mean across categories.
 </figcaption>
 </figure>
 </div>
@@ -600,7 +649,7 @@ Figure&nbsp;7.1: Flower plots for all 20 BOEM Program Areas showing ecoregionall
 </section>
 <section id="treemap" class="level3" data-number="7.6.2">
 <h3 data-number="7.6.2" class="anchored" data-anchor-id="treemap"><span class="header-section-number">7.6.2</span> Treemap</h3>
-<p>The treemap provides a detailed, hierarchical view of species contributions to sensitivity scores (<a href="#fig-treemap" class="quarto-xref">Figure&nbsp;<span>7.2</span></a>):</p>
+<p>The treemap provides a detailed, hierarchical view of species contributions to sensitivity scores (<a href="#fig-treemap" class="quarto-xref">Figure&nbsp;<span>7.3</span></a>):</p>
 <ul>
 <li>Audience: scientists and analysts</li>
 <li>Shows the contribution of each species to the overall score within a pixel or management zone</li>
@@ -610,10 +659,10 @@ Figure&nbsp;7.1: Flower plots for all 20 BOEM Program Areas showing ecoregionall
 <div id="fig-treemap" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-treemap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="figures/treeamap_extrisk-taxa.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;7.2: Treemap visualization showing species contributions to extinction risk scores, hierarchically organized by risk category and taxonomy."><img src="figures/treeamap_extrisk-taxa.png" class="img-fluid figure-img"></a>
+<a href="figures/treeamap_extrisk-taxa.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;7.3: Treemap visualization showing species contributions to extinction risk scores, hierarchically organized by risk category and taxonomy."><img src="figures/treeamap_extrisk-taxa.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-treemap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.2: Treemap visualization showing species contributions to extinction risk scores, hierarchically organized by risk category and taxonomy.
+Figure&nbsp;7.3: Treemap visualization showing species contributions to extinction risk scores, hierarchically organized by risk category and taxonomy.
 </figcaption>
 </figure>
 </div>
@@ -621,10 +670,10 @@ Figure&nbsp;7.2: Treemap visualization showing species contributions to extincti
 <div id="fig-treemap-zoom" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-treemap-zoom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="figures/treeamap_extrisk-taxa_zoom.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;7.3: Zoomed treemap showing individual species within a specific risk category and taxonomic group."><img src="figures/treeamap_extrisk-taxa_zoom.png" class="img-fluid figure-img"></a>
+<a href="figures/treeamap_extrisk-taxa_zoom.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;7.4: Zoomed treemap showing individual species within a specific risk category and taxonomic group."><img src="figures/treeamap_extrisk-taxa_zoom.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-treemap-zoom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.3: Zoomed treemap showing individual species within a specific risk category and taxonomic group.
+Figure&nbsp;7.4: Zoomed treemap showing individual species within a specific risk category and taxonomic group.
 </figcaption>
 </figure>
 </div>

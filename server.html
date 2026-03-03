@@ -606,7 +606,7 @@ xvdb     202:16   0    60G  0 disk</code></pre>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">services</span><span class="kw">:</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">caddy</span><span class="kw">:</span></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> caddy</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> caddy:latest</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./caddy</span></span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 80:80</span></span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 443:443</span></span>
@@ -882,7 +882,13 @@ xvdb     202:16   0    60G  0 disk</code></pre>
 <section id="caddyfile" class="level2" data-number="10.4">
 <h2 data-number="10.4" class="anchored" data-anchor-id="caddyfile"><span class="header-section-number">10.4</span> Caddyfile</h2>
 <p>The Caddyfile parameterizes the reverse proxying between the external subdomains and the Docker’s internal ports. Here is the <a href="https://github.com/MarineSensitivity/server/blob/main/caddy/Caddyfile"><code>Caddyfile</code></a> pasted for convenience …</p>
-<pre class="caddyfile"><code>(cors) {
+<pre class="caddyfile"><code># docker exec caddy caddy reload --config /etc/caddy/Caddyfile
+
+{
+  order pmtiles_proxy before file_server
+}
+
+(cors) {
     @origin header Origin *
     header @origin {
         Access-Control-Allow-Origin "*"
@@ -896,10 +902,18 @@ api.marinesensitivity.org {
 
 file.marinesensitivity.org {
   import cors
-  root * /share/public
-  file_server browse {
-    # serve *.zst, *.br or *.gz if file exists and client supports precompressed files
-    precompressed zstd br gzip
+
+  # raw pmtiles for client-side PMTiles protocol (add_pmtiles_source)
+  handle_path /pmtiles/* {
+    root * /share/data/derived/v3/pmtiles
+    file_server browse
+  }
+
+  handle {
+    root * /share/public
+    file_server browse {
+      precompressed zstd br gzip
+    }
   }
 }
 
@@ -946,6 +960,19 @@ titiler.marinesensitivity.org {
 
 titilecache.marinesensitivity.org {
   reverse_proxy titilecache:6082
+}
+
+pmtiles.marinesensitivity.org {
+  import cors
+
+  # server-side tile decoding: ZXY + TileJSON (for QGIS, leaflet, etc.)
+  handle_path /tiles/* {
+    pmtiles_proxy {
+      bucket file:///share/data/derived/v3/pmtiles
+      cache_size 256
+      public_url https://pmtiles.marinesensitivity.org/tiles
+    }
+  }
 }
 </code></pre>
 </section>
