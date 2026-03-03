@@ -27,13 +27,21 @@ map_ecoregions <- function(ver="v3") {
   # ver="v3"
 
   # read ecoregion and program area polygons from gpkg
-  dir_data <- ifelse(
-    Sys.info()[["sysname"]] == "Linux",
-    "/share/data",
-    "~/My Drive/projects/msens/data")
-  dir_v    <- glue::glue("{dir_data}/derived/{ver}")
-  er_gpkg  <- glue::glue("{dir_v}/ply_ecoregions_2025.gpkg")
-  pra_gpkg <- glue::glue("{dir_v}/ply_programareas_2026_{ver}.gpkg")
+  # prefer local data/ folder (for GitHub Actions), fall back to shared drives
+  er_local  <- here::here("data/ply_ecoregions_2025.gpkg")
+  pra_local <- here::here(glue::glue("data/ply_programareas_2026_{ver}.gpkg"))
+  if (file.exists(er_local) && file.exists(pra_local)) {
+    er_gpkg  <- er_local
+    pra_gpkg <- pra_local
+  } else {
+    dir_data <- ifelse(
+      Sys.info()[["sysname"]] == "Linux",
+      "/share/data",
+      "~/My Drive/projects/msens/data")
+    dir_v    <- glue::glue("{dir_data}/derived/{ver}")
+    er_gpkg  <- glue::glue("{dir_v}/ply_ecoregions_2025.gpkg")
+    pra_gpkg <- glue::glue("{dir_v}/ply_programareas_2026_{ver}.gpkg")
+  }
 
   er  <- sf::read_sf(er_gpkg)
   pra <- sf::read_sf(pra_gpkg)
