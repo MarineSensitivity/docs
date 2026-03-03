@@ -51,4 +51,10 @@ where $v_{min}$ and $v_{max}$ are the minimum and maximum cell scores within the
 
 Ecoregional rescaling makes it easy to compare areas within the same region, and Program Area aggregation gives an overall sensitivity score for each area, considering both the sensitivity of each part and how big each part is.
 
+```{r}
+#| label: fig-map-ecoregions-science
+#| fig-cap: !expr caption_ecoregions()
+map_ecoregions()
+```
+
 See subsequent chapters for detailed descriptions of: data sources (@sec-data-sources), taxonomic integration (@sec-taxonomy), extinction risk scoring (@sec-extinction-risk), model merging (@sec-model-merging), and scoring methodology (@sec-scoring).

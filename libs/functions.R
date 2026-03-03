@@ -7,3 +7,190 @@ g <- function(x){
     return("")
   x
 }
+
+map_ecoregions <- function(ver="v3") {
+  # interactive map of BOEM ecoregions and program areas
+
+  # librarian::shelf(
+  #   dplyr,
+  #   gh,
+  #   glue,
+  #   here,
+  #   knitr,
+  #   librarian,
+  #   mapgl,
+  #   quarto,
+  #   RColorBrewer,
+  #   stringr,
+  #   tidyjson,
+  #   yaml)
+  # ver="v3"
+
+  # read ecoregion and program area polygons from gpkg
+  dir_data <- ifelse(
+    Sys.info()[["sysname"]] == "Linux",
+    "/share/data",
+    "~/My Drive/projects/msens/data")
+  dir_v    <- glue::glue("{dir_data}/derived/{ver}")
+  er_gpkg  <- glue::glue("{dir_v}/ply_ecoregions_2025.gpkg")
+  pra_gpkg <- glue::glue("{dir_v}/ply_programareas_2026_{ver}.gpkg")
+
+  er  <- sf::read_sf(er_gpkg)
+  pra <- sf::read_sf(pra_gpkg)
+
+  # find ecoregions that intersect with program areas
+  sf::sf_use_s2(FALSE)
+  n_intersects <- lengths(sf::st_intersects(er, pra))
+  sf::sf_use_s2(TRUE)
+
+  er_pra <- er |>
+    sf::st_drop_geometry() |>
+    dplyr::filter(n_intersects > 0) |>
+    dplyr::select(ecoregion_key, ecoregion_name) |>
+    dplyr::arrange(ecoregion_key)
+
+  eco_keys  <- er_pra$ecoregion_key
+  eco_names <- er_pra$ecoregion_name
+
+  # spectral palette matched to number of intersecting ecoregions
+  n_eco <- length(eco_keys)
+  set.seed(42)
+  eco_colors <- sample(
+    rev(RColorBrewer::brewer.pal(
+      max(n_eco, 3), "Spectral"))[seq_len(n_eco)])
+
+  # pmtiles urls
+  url_eco <- "https://file.marinesensitivity.org/pmtiles/ply_ecoregions_2025.pmtiles"
+  url_pra <- "https://file.marinesensitivity.org/pmtiles/ply_programareas_2026_v3.pmtiles"
+  lyr_eco <- "ply_ecoregions_2025"
+  lyr_pra <- "ply_programareas_2026_v3"
+
+  # filter to only known ecoregion keys (those intersecting program areas)
+  eco_filter <- c("in", "ecoregion_key", eco_keys)
+
+  # build the map widget
+  m <- mapgl::maplibre(
+    style = mapgl::carto_style("voyager"),
+    bounds = list(c(-190, 15), c(-60, 75))) |>
+    mapgl::add_pmtiles_source(
+      id         = "eco_src",
+      url        = url_eco,
+      promote_id = "ecoregion_key") |>
+    mapgl::add_pmtiles_source(
+      id  = "pra_src",
+      url = url_pra) |>
+    mapgl::add_fill_layer(
+      id           = "eco_fill",
+      source       = "eco_src",
+      source_layer = lyr_eco,
+      fill_color   = mapgl::match_expr(
+        column  = "ecoregion_key",
+        values  = eco_keys,
+        stops   = eco_colors,
+        default = "#cccccc"),
+      fill_opacity = 0.6,
+      tooltip = mapgl::concat(
+        mapgl::get_column("ecoregion_name"),
+        " (", mapgl::get_column("ecoregion_key"), ")"),
+      popup = mapgl::concat(
+        "<strong>", mapgl::get_column("ecoregion_name"), "</strong><br>",
+        "Key: ",    mapgl::get_column("ecoregion_key"), "<br>",
+        "Region: ", mapgl::get_column("region_name")),
+      hover_options = list(
+        fill_opacity = 0.9),
+      filter = eco_filter) |>
+    # ecoregion outlines: thick black (like apps)
+    mapgl::add_line_layer(
+      id           = "eco_ln",
+      source       = "eco_src",
+      source_layer = lyr_eco,
+      line_color   = "black",
+      line_opacity = 1,
+      line_width   = 3,
+      filter       = eco_filter) |>
+    # program area outlines: thin white (like apps)
+    mapgl::add_line_layer(
+      id           = "pra_ln",
+      source       = "pra_src",
+      source_layer = lyr_pra,
+      line_color   = "white",
+      line_opacity = 1,
+      line_width   = 1) |>
+    # ecoregion labels: bigger bold black text
+    mapgl::add_symbol_layer(
+      id           = "eco_lbl",
+      source       = "eco_src",
+      source_layer = lyr_eco,
+      text_field   = mapgl::get_column("ecoregion_key"),
+      text_size    = 14,
+      text_font    = list("Open Sans Bold"),
+      text_color   = "black",
+      text_halo_color = "white",
+      text_halo_width = 2,
+      text_allow_overlap = FALSE,
+      filter       = eco_filter) |>
+    # program area labels: smaller text
+    mapgl::add_symbol_layer(
+      id           = "pra_lbl",
+      source       = "pra_src",
+      source_layer = lyr_pra,
+      text_field   = mapgl::get_column("programarea_key"),
+      text_size    = 11,
+      text_font    = list("Open Sans Semibold"),
+      text_color   = "#333333",
+      text_halo_color = "white",
+      text_halo_width = 1.5,
+      text_allow_overlap = FALSE) |>
+    mapgl::add_layers_control(
+      layers = list(
+        "Ecoregion fills"       = "eco_fill",
+        "Ecoregion outlines"    = "eco_ln",
+        "Ecoregion labels"      = "eco_lbl",
+        "Program Area outlines" = "pra_ln",
+        "Program Area labels"   = "pra_lbl")) |>
+    mapgl::add_fullscreen_control() |>
+    mapgl::add_categorical_legend(
+      legend_title = "BOEM Ecoregions",
+      values       = eco_names,
+      colors       = eco_colors,
+      position     = "bottom-left")
+
+  # build caption with key-to-name lookup
+  eco_lookup <- paste(
+    eco_keys, "=", eco_names, collapse = "; ")
+  pra_info <- pra |>
+    sf::st_drop_geometry() |>
+    dplyr::select(programarea_key, programarea_name) |>
+    dplyr::arrange(programarea_key)
+  pra_lookup <- paste(
+    pra_info$programarea_key, "=", pra_info$programarea_name,
+    collapse = "; ")
+
+  # store caption for retrieval by caption_ecoregions()
+  .ecoregions_caption <<- list(
+    eco = eco_lookup,
+    pra = pra_lookup)
+
+  # html output: return interactive widget
+  if (knitr::is_html_output())
+    return(m)
+
+  # non-html output: generate static png via webshot2 if missing, then include
+  img <- here::here("figures/map-ecoregions-static.png")
+  if (!file.exists(img)) {
+    tmp_html <- tempfile(fileext = ".html")
+    htmlwidgets::saveWidget(m, tmp_html, selfcontained = TRUE)
+    webshot2::webshot(tmp_html, img, vwidth = 1200, vheight = 700, delay = 15)
+    unlink(tmp_html)
+  }
+  knitr::include_graphics(img)
+}
+
+caption_ecoregions <- function() {
+  # build caption after map_ecoregions() has been called
+  cap <- .ecoregions_caption
+  paste0(
+    "BOEM Ecoregions (colored) and Program Area outlines. ",
+    "**Ecoregion keys**: ", cap$eco, ". ",
+    "**Program Area keys**: ", cap$pra, ".")
+}

@@ -1,3 +1,9 @@
+# docker exec caddy caddy reload --config /etc/caddy/Caddyfile
+
+{
+  order pmtiles_proxy before file_server
+}
+
 (cors) {
 	@origin header Origin *
 	header @origin {
@@ -12,10 +18,18 @@ api.marinesensitivity.org {
 
 file.marinesensitivity.org {
   import cors
-  root * /share/public
-  file_server browse {
-    # serve *.zst, *.br or *.gz if file exists and client supports precompressed files
-    precompressed zstd br gzip
+
+  # raw pmtiles for client-side PMTiles protocol (add_pmtiles_source)
+  handle_path /pmtiles/* {
+    root * /share/data/derived/v3/pmtiles
+    file_server browse
+  }
+
+  handle {
+    root * /share/public
+    file_server browse {
+      precompressed zstd br gzip
+    }
   }
 }
 
@@ -62,4 +76,17 @@ titiler.marinesensitivity.org {
 
 titilecache.marinesensitivity.org {
   reverse_proxy titilecache:6082
+}
+
+pmtiles.marinesensitivity.org {
+  import cors
+
+  # server-side tile decoding: ZXY + TileJSON (for QGIS, leaflet, etc.)
+  handle_path /tiles/* {
+    pmtiles_proxy {
+      bucket file:///share/data/derived/v3/pmtiles
+      cache_size 256
+      public_url https://pmtiles.marinesensitivity.org/tiles
+    }
+  }
 }

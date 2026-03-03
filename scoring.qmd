@@ -48,6 +48,12 @@ $$ {#eq-ecoregion-rescale}
 
 where $\text{score}_{min}$ and $\text{score}_{max}$ are the minimum and maximum cell values for that metric within the ecoregion. This ensures that a score of 100 represents the most sensitive cell within each ecoregion, not globally.
 
+```{r}
+#| label: fig-map-ecoregions-scoring
+#| fig-cap: !expr caption_ecoregions()
+map_ecoregions()
+```
+
 ## Primary Productivity Scoring
 
 Net primary productivity (NPP) from the VGPM satellite model is included as a separate metric (`primprod`) that does not undergo extinction risk weighting. Instead, the raw NPP values (metric tons C km^-2^ yr^-1^) are directly rescaled within each ecoregion using the same [0--100] normalization.
