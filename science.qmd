@@ -41,15 +41,23 @@ The MST assesses sensitivity through three components:
 
 ## Ecoregional Rescaling
 
-Raw cell scores vary naturally across regions due to differences in species richness and oceanographic conditions. To enable meaningful cross-region comparison, scores are rescaled to a [0--100%] range within each BOEM ecoregion (@eq-rescale):
+Raw cell scores vary naturally across regions due to differences in species richness and oceanographic conditions. To enable meaningful comparison, scores are rescaled to a [0--100] range within each BOEM Ecoregion using min-max normalization (@eq-rescale):
 
 $$
 v'_c = \frac{v_c - v_{min}}{v_{max} - v_{min}} \times 100
 $$ {#eq-rescale}
 
-where $v_{min}$ and $v_{max}$ are the minimum and maximum cell scores within the ecoregion. This accounts for the natural gradient from species-rich tropical waters to less diverse polar regions, ensuring that a "high sensitivity" score has consistent meaning across all program areas.
+where $v_{min}$ and $v_{max}$ are the minimum and maximum cell scores for a given component within the Ecoregion.
 
-Ecoregional rescaling makes it easy to compare areas within the same region, and Program Area aggregation gives an overall sensitivity score for each area, considering both the sensitivity of each part and how big each part is.
+**Scores are relative within Ecoregions, not absolute.** A score of 100 represents the most sensitive 0.05° cell for a given component (e.g., fish, marine mammals, or primary productivity) within a given BOEM Ecoregion---not globally. The final score is an equally weighted average of these ecoregionally rescaled components. This means that a score of 30 in Alaska reflects a different ecological context than a score of 30 in the Pacific.
+
+**Why rescale by Ecoregion?** Without this step, areas with naturally higher numbers of species (like upwelling zones in the Pacific) would almost always get the highest scores, simply because they have more species. While more species may indicate greater ecological importance, it could also be argued that the fewer species in an ecosystem, the more important each is to its function and resilience. Rescaling by Ecoregion prevents scores from being overwhelmed by species-rich areas. However, comparing *across* Ecoregions would require developing a mathematical relationship between these competing arguments for sensitivity---one that is still a source of earnest academic debate. For this reason, **scores are directly comparable among Program Areas within the same Ecoregion, but should not be compared across Ecoregions**.
+
+### Geographic Scope
+
+The current analysis covers 20 BOEM Program Areas from the 11th National Draft Proposed Program (2025) spanning Alaska, the Pacific, and the Gulf of America (@fig-map-ecoregions-science). The Atlantic OCS region is not included in this program cycle, so ecoregions without Program Areas (e.g., Northeast Continental Shelf, Southeast Continental Shelf, Washington/Oregon) are excluded from the analysis. Species whose distributions do not overlap with any Program Area will not appear in the interactive mapping applications.
+
+The Gulf of America Program Areas---GOA Program Area A (GAA) and GOA Program Area B (GAB)---were derived from the larger Gulf of America Planning Areas and span parts of two Ecoregions: Western and Central Gulf of America (WCGOA) and Eastern Gulf of America (EGOA). Because cell scores are rescaled within each Ecoregion before aggregation, cells in GAA that fall within the WCGOA Ecoregion are rescaled relative to WCGOA min/max values, while cells within EGOA use EGOA min/max values. The aggregated Program Area score is then the area-weighted average across all constituent cells, regardless of which Ecoregion they belong to. This approach ensures that the rescaling reflects local ecological context even when a Program Area spans Ecoregion boundaries. See @sec-scoring for implementation details.
 
 ```{r}
 #| label: fig-map-ecoregions-science

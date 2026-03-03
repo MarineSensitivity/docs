@@ -40,13 +40,25 @@ Cell-level scores are stored as named metrics in the DuckDB database:
 
 ## Ecoregional Rescaling
 
-Raw cell scores vary naturally across ecoregions due to differences in species richness, oceanographic conditions, and biogeographic patterns. To enable meaningful cross-region comparison, each metric is rescaled to a [0--100] range within each BOEM ecoregion:
+Raw cell scores vary naturally across ecoregions due to differences in species richness, oceanographic conditions, and biogeographic patterns. To enable meaningful comparison, each metric is rescaled to a [0--100] range within each BOEM Ecoregion:
 
 $$
 \text{score}'_{c} = \frac{\text{score}_{c} - \text{score}_{min}}{\text{score}_{max} - \text{score}_{min}} \times 100
 $$ {#eq-ecoregion-rescale}
 
-where $\text{score}_{min}$ and $\text{score}_{max}$ are the minimum and maximum cell values for that metric within the ecoregion. This ensures that a score of 100 represents the most sensitive cell within each ecoregion, not globally.
+where $\text{score}_{min}$ and $\text{score}_{max}$ are the minimum and maximum cell values for that metric within the Ecoregion.
+
+**Scores are relative within Ecoregions, not absolute.** A score of 100 represents the most sensitive 0.05° cell for a given metric within a given BOEM Ecoregion---not globally. The final score is an equally weighted average of these ecoregionally rescaled metrics. This means that a score of 30 in Alaska reflects a different ecological context than a score of 30 in the Pacific.
+
+**Why rescale by Ecoregion?** Without this step, areas with naturally higher numbers of species (like upwelling zones in the Pacific) would almost always receive the highest scores, simply because they have more species. While more species may indicate greater ecological importance, it could also be argued that the fewer species in an ecosystem, the more important each is to its function and resilience. Rescaling by Ecoregion prevents scores from being overwhelmed by species-rich areas. However, comparing *across* Ecoregions would require developing a mathematical relationship between these competing arguments for sensitivity---one that is still a source of earnest academic debate. For this reason, **scores are directly comparable among Program Areas within the same Ecoregion, but should not be compared across Ecoregions**.
+
+### Geographic Scope
+
+The current analysis covers 20 BOEM Program Areas from the 11th National Draft Proposed Program (2025) spanning Alaska, the Pacific, and the Gulf of America (@fig-map-ecoregions-scoring). The Atlantic OCS region is not included in this program cycle, so ecoregions without Program Areas (e.g., Northeast Continental Shelf, Southeast Continental Shelf, Washington/Oregon) are excluded from the analysis. Species whose distributions do not overlap with any Program Area will not appear in the interactive mapping applications.
+
+### Cross-Ecoregion Program Areas
+
+The Gulf of America Program Areas---GOA Program Area A (GAA) and GOA Program Area B (GAB)---span parts of two Ecoregions: Western and Central Gulf of America (WCGOA) and Eastern Gulf of America (EGOA). Because cell scores are rescaled within each Ecoregion before aggregation, cells in GAA that fall within the WCGOA Ecoregion are rescaled relative to WCGOA min/max values, while cells within EGOA use EGOA min/max values. The aggregated Program Area score is then the area-weighted average across all constituent cells, regardless of which Ecoregion they belong to. This approach ensures that the rescaling reflects local ecological context even when a Program Area spans Ecoregion boundaries. See `calc_scores.qmd` for implementation details.
 
 ```{r}
 #| label: fig-map-ecoregions-scoring
@@ -63,7 +75,7 @@ Net primary productivity (NPP) from the VGPM satellite model is included as a se
 Rescaled cell scores are aggregated to three spatial levels using area-weighted averaging:
 
 1. **Program Areas**: the 20 BOEM planning regions used for offshore energy management
-2. **Subregions**: intermediate spatial groupings (e.g., Atlantic, Gulf of Mexico, Pacific, Alaska)
+2. **Subregions**: intermediate spatial groupings (e.g., Atlantic, Gulf of America, Pacific, Alaska)
 3. **Ecoregions**: BOEM-defined ecological regions used as the rescaling baseline
 
 For each zone, the aggregated score is:
