@@ -1,6 +1,8 @@
 # helper functions
 # initiated by .Rprofile
 
+ver <- "v4"
+
 g <- function(x){
   # glossary term
   if (knitr::is_html_output())
@@ -8,7 +10,7 @@ g <- function(x){
   x
 }
 
-map_ecoregions <- function(ver="v3") {
+map_ecoregions <- function(ver="v4") {
   # interactive map of BOEM ecoregions and program areas
 
   # librarian::shelf(
@@ -24,7 +26,7 @@ map_ecoregions <- function(ver="v3") {
   #   stringr,
   #   tidyjson,
   #   yaml)
-  # ver="v3"
+  # ver="v4"
 
   # read ecoregion and program area polygons from gpkg
   # prefer local data/ folder (for GitHub Actions), fall back to shared drives
@@ -68,10 +70,10 @@ map_ecoregions <- function(ver="v3") {
       max(n_eco, 3), "Spectral"))[seq_len(n_eco)])
 
   # pmtiles urls
-  url_eco <- "https://file.marinesensitivity.org/pmtiles/ply_ecoregions_2025.pmtiles"
-  url_pra <- "https://file.marinesensitivity.org/pmtiles/ply_programareas_2026_v3.pmtiles"
+  url_eco <- glue::glue("https://file.marinesensitivity.org/pmtiles/{ver}/ply_ecoregions_2025.pmtiles")
+  url_pra <- glue::glue("https://file.marinesensitivity.org/pmtiles/{ver}/ply_programareas_2026_{ver}.pmtiles")
   lyr_eco <- "ply_ecoregions_2025"
-  lyr_pra <- "ply_programareas_2026_v3"
+  lyr_pra <- glue::glue("ply_programareas_2026_{ver}")
 
   # filter to only known ecoregion keys (those intersecting program areas)
   eco_filter <- c("in", "ecoregion_key", eco_keys)

@@ -96,7 +96,7 @@ The flower plot provides an intuitive summary of sensitivity scores by species c
 - **Petal width** represents the weight of each category contributing to the overall score — wider petals have more influence on the center score
 - **Center value** shows the weighted mean across all categories
 
-@fig-flower-programareas shows flower plots for all 20 BOEM Program Areas, generated from the v3 scoring run. Each flower summarizes the sensitivity profile of one program area with petals for Bird, Coral, Fish, Invertebrate, Mammal, Other, Turtle, and Primary Production. Alaska program areas (e.g., HOP, COK, GOA) show dominant Fish and Mammal petals, while Gulf areas (GAB, CEC, MAT) show stronger Invertebrate and Coral contributions.
+@fig-flower-programareas shows flower plots for all 20 BOEM Program Areas. Each flower summarizes the sensitivity profile of one program area with petals for Bird, Coral, Fish, Invertebrate, Mammal, Other, Turtle, and Primary Production. Alaska program areas (e.g., HOP, COK, GOA) show dominant Fish and Mammal petals, while Gulf areas (GAB, CEC, MAT) show stronger Invertebrate and Coral contributions.
 
 ![Flower plots for all 20 BOEM Program Areas showing ecoregionally rescaled sensitivity scores by species category. Petal length reflects the category score; petal width reflects its weight. Center values are the weighted mean across categories.](figures/flower-plot_programareas.png){#fig-flower-programareas}
 
