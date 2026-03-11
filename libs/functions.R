@@ -29,7 +29,7 @@ map_ecoregions <- function(ver="v4") {
   # ver="v4"
 
   # read ecoregion and program area polygons from gpkg
-  # prefer local data/ folder (for GitHub Actions), fall back to shared drives
+  # use local data/ folder (for GitHub Actions) vs shared drives
   er_local  <- here::here("data/ply_ecoregions_2025.gpkg")
   pra_local <- here::here(glue::glue("data/ply_programareas_2026_{ver}.gpkg"))
   if (file.exists(er_local) && file.exists(pra_local)) {
