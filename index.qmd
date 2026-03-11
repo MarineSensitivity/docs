@@ -11,8 +11,8 @@ The **Marine Sensitivity Toolkit** (MST) is a cloud-native system developed for 
 
 This book documents the scientific methodology, software infrastructure, and interactive applications that comprise the MST. It is organized in two parts:
 
-- **Science** (@sec-science) — data sources, taxonomic integration, extinction risk scoring, model merging, and sensitivity scoring methodology
-- **Software** — server architecture, databases, workflows, APIs, R libraries, and interactive applications
+- **@sec-science** — data sources, taxonomic integration, extinction risk scoring, model merging, and sensitivity scoring methodology
+- **@sec-software** — server architecture, databases, workflows, APIs, R libraries, and interactive applications
 
 ### How to Cite
 
