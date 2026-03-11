@@ -467,10 +467,13 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#interactive-applications" id="toc-interactive-applications" class="nav-link active" data-scroll-target="#interactive-applications"><span class="header-section-number">9.0.1</span> Interactive Applications</a></li>
-  <li><a href="#overcoming-challenges-with-large-spatial-data" id="toc-overcoming-challenges-with-large-spatial-data" class="nav-link" data-scroll-target="#overcoming-challenges-with-large-spatial-data"><span class="header-section-number">9.0.2</span> Overcoming Challenges with Large Spatial Data</a></li>
-  <li><a href="#github-repositories" id="toc-github-repositories" class="nav-link" data-scroll-target="#github-repositories"><span class="header-section-number">9.0.3</span> Github Repositories</a></li>
-  <li><a href="#software-components" id="toc-software-components" class="nav-link" data-scroll-target="#software-components"><span class="header-section-number">9.0.4</span> Software Components</a></li>
+  <li><a href="#software-overview" id="toc-software-overview" class="nav-link active" data-scroll-target="#software-overview"><span class="header-section-number">9.1</span> Software Overview</a>
+  <ul class="collapse">
+  <li><a href="#interactive-applications" id="toc-interactive-applications" class="nav-link" data-scroll-target="#interactive-applications"><span class="header-section-number">9.1.1</span> Interactive Applications</a></li>
+  <li><a href="#overcoming-challenges-with-large-spatial-data" id="toc-overcoming-challenges-with-large-spatial-data" class="nav-link" data-scroll-target="#overcoming-challenges-with-large-spatial-data"><span class="header-section-number">9.1.2</span> Overcoming Challenges with Large Spatial Data</a></li>
+  <li><a href="#github-repositories" id="toc-github-repositories" class="nav-link" data-scroll-target="#github-repositories"><span class="header-section-number">9.1.3</span> Github Repositories</a></li>
+  <li><a href="#software-components" id="toc-software-components" class="nav-link" data-scroll-target="#software-components"><span class="header-section-number">9.1.4</span> Software Components</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/software.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -479,7 +482,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./software.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Software</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Software</span></h1>
+<h1 class="title"><span id="sec-software" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Software</span></span></h1>
 </div>
 
 
@@ -496,18 +499,20 @@ window.Quarto = {
 </header>
 
 
+<section id="software-overview" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="software-overview"><span class="header-section-number">9.1</span> Software Overview</h2>
 <p>The <strong>Marine Sensitivity Toolkit</strong> (MST) is a stack of software components for reproducibly, interactively and hierarchically generating environmental vulnerability maps and scores. Tabular data is collated across studies evaluating sensitivity of species to oil &amp; gas and offshore wind energy development. The best available species and benthic habitat distributions are being mosaicked across the US EEZ. Scores will be summarized according to subgroups within Species, Benthic Habitats and Primary Productivity. These scores will be averaged into an overall score and visualized as a flower plot, applicable to various levels of BOEM relevancy: regional, ecoregions, protraction diagrams, blocks and aliquots. The software components for achieving this interactively are: 1) server — a Docker configuration to spin up all the software; 2) database — a spatially enabled database (PostgreSQL with PostGIS extension); 3) workflows — scripts (as Quarto notebooks) to explore, ingest and update the database and output files; 4) APIs — application programming interfaces for rendering vector (using pg_tileserv) or raster (using TiTiler) tile services for interactive mapping as well as a custom API (using R plumber); 5) libraries — re-usable documented functions as an R package for import, analysis and visualization using the APIs; 6) applications — interactive apps using the R Shiny framework for rendering vulnerability maps; and 7) documentation — as a Quarto notebook with figures, tables, glossary and references in interactive html or static docx/pdf output formats. This toolbox is intended to primarily serve BOEM needs internally, but by being open-source and fully reproducible the hope is to enlist buy-in and even contributions from external partners, whether from other government agencies, academia, NGOs or industry.</p>
 <p>We ascribe to the philosophy of sharing all code for the sake of reproducibility, transparency and efficiency <span class="citation" data-cites="maitner2024 lowndes2017">(<a href="references.html#ref-maitner2024" role="doc-biblioref">Maitner et al. 2024</a>; <a href="references.html#ref-lowndes2017" role="doc-biblioref">Lowndes et al. 2017</a>)</span>; i.e.&nbsp;the FAIR principles of Findability, Accessibility, Interoperability, and Reusability <span class="citation" data-cites="wilkinson2016">(<a href="references.html#ref-wilkinson2016" role="doc-biblioref">Wilkinson et al. 2016</a>)</span>.</p>
-<section id="interactive-applications" class="level3" data-number="9.0.1">
-<h3 data-number="9.0.1" class="anchored" data-anchor-id="interactive-applications"><span class="header-section-number">9.0.1</span> Interactive Applications</h3>
+<section id="interactive-applications" class="level3" data-number="9.1.1">
+<h3 data-number="9.1.1" class="anchored" data-anchor-id="interactive-applications"><span class="header-section-number">9.1.1</span> Interactive Applications</h3>
 <p>We have developed a series of interactive applications to explore the data and results of the MST project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the <a href="https://shiny.posit.co"><code>shiny</code></a> package in R <span class="citation" data-cites="shiny">(<a href="references.html#ref-shiny" role="doc-biblioref">Chang et al. 2024</a>)</span>, which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.</p>
 </section>
-<section id="overcoming-challenges-with-large-spatial-data" class="level3" data-number="9.0.2">
-<h3 data-number="9.0.2" class="anchored" data-anchor-id="overcoming-challenges-with-large-spatial-data"><span class="header-section-number">9.0.2</span> Overcoming Challenges with Large Spatial Data</h3>
+<section id="overcoming-challenges-with-large-spatial-data" class="level3" data-number="9.1.2">
+<h3 data-number="9.1.2" class="anchored" data-anchor-id="overcoming-challenges-with-large-spatial-data"><span class="header-section-number">9.1.2</span> Overcoming Challenges with Large Spatial Data</h3>
 <p>The MS project incorporates many large spatial datasets that are problematic to render in a typical interactive application. For instance, the most common interactive mapping R package <code>leaflet</code> has a 4MB limitation for displaying rasters (see “Large Raster Warning” in <a href="https://rstudio.github.io/leaflet/articles/raster.html#large-raster-warning">Raster Images • leaflet</a>). Vectors (i.e., points, lines and polygons) get smoothed when containing many vertices, but contiguity gets lost between polygons and rendering degrades to non-usable depending on the internet speed of the user’s connection.</p>
 <p>To work around these limitations, we have implemented “cloud native” web services and formats (see also <a href="https://guide.cloudnativegeo.org/">Cloud-Optimized Geospatial Formats Guide</a>). Our implementations effectively reduce the size of any given spatial object based on the zoom level of the user’s browser. For rasters, we use cloud-optimized GeoTIFFs (COGs) and for vectors, we use Mapbox Vector Tiles (MVT). These formats are designed to be fast and efficient for web mapping applications, and they allow us to display large spatial datasets in an interactive web application without sacrificing performance or usability. Let’s take a closer look at implementation of each.</p>
-<section id="raster-cloud-optimized-geotiffs-cogs-and-titiler" class="level4" data-number="9.0.2.1">
-<h4 data-number="9.0.2.1" class="anchored" data-anchor-id="raster-cloud-optimized-geotiffs-cogs-and-titiler"><span class="header-section-number">9.0.2.1</span> Raster: Cloud-Optimized GeoTIFFs (<strong>COGs</strong>) and <strong>Titiler</strong></h4>
+<section id="raster-cloud-optimized-geotiffs-cogs-and-titiler" class="level4" data-number="9.1.2.1">
+<h4 data-number="9.1.2.1" class="anchored" data-anchor-id="raster-cloud-optimized-geotiffs-cogs-and-titiler"><span class="header-section-number">9.1.2.1</span> Raster: Cloud-Optimized GeoTIFFs (<strong>COGs</strong>) and <strong>Titiler</strong></h4>
 <p>Historically, to read a raster, such as a GeoTIFF, from the web, the client software would have to read the entire file before rendering. Cloud Optimized GeoTIFFs (<a href="https://www.cogeo.org">COGs</a>) take advantage of <a href="https://tools.ietf.org/html/rfc7233">HTTP GET range requests</a> to read only the part of the file needed for rendering. So a COG stores quadtree simplifications of the original raster at multiple zoom levels and metadata for accessing their byte ranges in the file in the metadata header. This allows the client software to request only the parts of the file needed for rendering, which can greatly reduce the amount of data transferred and speed up rendering. This is for accessing the raw data in pixel values, e.g., for a raster of species distribution then the abundance of a species in each cell. We would want to also apply a color ramp to visualize the data. The open-source (<a href="https://developmentseed.org/titiler/">TiTiler</a> software is a lightweight web service that serves up these color ramped tiles on the fly. So COGs can be stored on a simple file server (like Amazon S3 or Azure Blob Storage) and served up as interactive web maps with TiTiler as an intermediary between the COG files and the client accessing the interactive Shiny mapping app (<a href="#fig-raster" class="quarto-xref">Figure&nbsp;<span>9.1</span></a>).</p>
 <div class="cell" data-file="diagrams/raster.mmd" data-layout-align="default">
 <div class="cell-output-display">
@@ -526,8 +531,8 @@ Figure&nbsp;9.1: Sequence diagram implementing large raster interactive display 
 </div>
 </div>
 </section>
-<section id="vector-mapbox-vector-tiles-mvts-and-pg_tileserv" class="level4" data-number="9.0.2.2">
-<h4 data-number="9.0.2.2" class="anchored" data-anchor-id="vector-mapbox-vector-tiles-mvts-and-pg_tileserv"><span class="header-section-number">9.0.2.2</span> Vector: Mapbox Vector Tiles (<strong>MVTs</strong>) and <strong>pg_tileserv</strong></h4>
+<section id="vector-mapbox-vector-tiles-mvts-and-pg_tileserv" class="level4" data-number="9.1.2.2">
+<h4 data-number="9.1.2.2" class="anchored" data-anchor-id="vector-mapbox-vector-tiles-mvts-and-pg_tileserv"><span class="header-section-number">9.1.2.2</span> Vector: Mapbox Vector Tiles (<strong>MVTs</strong>) and <strong>pg_tileserv</strong></h4>
 <p>Although “cloud native” vector formats exist for simple file storage (see <a href="https://guide.cloudnativegeo.org/">Cloud-Optimized Geospatial Formats Guide</a>), none of these allow for flexible filtering and manipulation. Instead, we use PostgreSQL with the spatial extension (<a href="https://postgis.net">PostGIS</a>) to store the vector data and serve it as Mapbox Vector Tiles (<a href="https://docs.mapbox.com/vector-tiles/specification/">MVTs</a>) using the <a href="https://github.com/CrunchyData/pg_tileserv"><strong>pg_tileserv</strong></a> web service written in the language Go, which is very fast. This means that we don’t have to pre-render the MVTs (such as you might do with <a href="https://github.com/mapbox/tippecanoe">tippecanoe</a>), but can instead serve the raw vector data directly from the database and let <strong>pg_tileserv</strong> handle the rendering on the fly. Filters (in the form of <a href="https://github.com/CrunchyData/pg_tileserv/blob/master/hugo/content/usage/cql.md">CQL</a>) can be applied to the request. Symbology is rendered client-side via JavaScript, which allows for interactive hover and click events on vector objects (e.g., BOEM aliquot). Some speed-up is enabled by implementing a <a href="https://varnish-cache.org">Varnish</a> cache service in between. We can even write our own database functions for customized rendering, such as H3 hexagonal summaries. This allows us to serve vector data as web maps with minimal configuration and setup, and it provides a fast and efficient way to display large vector datasets in an interactive web application (<a href="#fig-vector" class="quarto-xref">Figure&nbsp;<span>9.2</span></a>).</p>
 <div class="cell" data-file="diagrams/vector.mmd" data-layout-align="default">
 <div class="cell-output-display">
@@ -547,8 +552,8 @@ Figure&nbsp;9.2: Sequence diagram implementing large vector interactive display 
 </div>
 </section>
 </section>
-<section id="github-repositories" class="level3" data-number="9.0.3">
-<h3 data-number="9.0.3" class="anchored" data-anchor-id="github-repositories"><span class="header-section-number">9.0.3</span> Github Repositories</h3>
+<section id="github-repositories" class="level3" data-number="9.1.3">
+<h3 data-number="9.1.3" class="anchored" data-anchor-id="github-repositories"><span class="header-section-number">9.1.3</span> Github Repositories</h3>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -604,11 +609,11 @@ Figure&nbsp;9.2: Sequence diagram implementing large vector interactive display 
 </div>
 </div>
 </section>
-<section id="software-components" class="level3" data-number="9.0.4">
-<h3 data-number="9.0.4" class="anchored" data-anchor-id="software-components"><span class="header-section-number">9.0.4</span> Software Components</h3>
+<section id="software-components" class="level3" data-number="9.1.4">
+<h3 data-number="9.1.4" class="anchored" data-anchor-id="software-components"><span class="header-section-number">9.1.4</span> Software Components</h3>
 <div id="listing-list-components" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1773237267138" data-listing-reading-time-sort="1" data-listing-word-count-sort="55">
+<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1773238097657" data-listing-reading-time-sort="1" data-listing-word-count-sort="55">
 <a href="./apis.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -629,7 +634,7 @@ APIs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1773237267139" data-listing-reading-time-sort="2" data-listing-word-count-sort="250">
+<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1773238097657" data-listing-reading-time-sort="2" data-listing-word-count-sort="250">
 <a href="./apps.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -650,7 +655,7 @@ Apps
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1773237267288" data-listing-reading-time-sort="1" data-listing-word-count-sort="104">
+<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1773238097747" data-listing-reading-time-sort="1" data-listing-word-count-sort="104">
 <a href="./db.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -671,7 +676,7 @@ Database
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1773237267302" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
+<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1773238097756" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
 <a href="./docs.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -692,7 +697,7 @@ Docs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1773237267451" data-listing-reading-time-sort="1" data-listing-word-count-sort="54">
+<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1773238097871" data-listing-reading-time-sort="1" data-listing-word-count-sort="54">
 <a href="./libraries.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -713,7 +718,7 @@ Libraries
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1773237267453" data-listing-reading-time-sort="4" data-listing-word-count-sort="764">
+<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1773238097873" data-listing-reading-time-sort="4" data-listing-word-count-sort="764">
 <a href="./server.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -734,7 +739,7 @@ Server
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1773237267454" data-listing-reading-time-sort="1" data-listing-word-count-sort="38">
+<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1773238097874" data-listing-reading-time-sort="1" data-listing-word-count-sort="38">
 <a href="./workflows.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -775,6 +780,7 @@ Maitner, Brian, Paul Efren Santos Andrade, Luna Lei, Jamie Kass, Hannah L. Owens
 Wilkinson, Mark D., Michel Dumontier, IJsbrand Jan Aalbersberg, Gabrielle Appleton, Myles Axton, Arie Baak, Niklas Blomberg, et al. 2016. <span>“The FAIR Guiding Principles for Scientific Data Management and Stewardship.”</span> <em>Scientific Data</em> 3 (1): 160018. <a href="https://doi.org/10.1038/sdata.2016.18">https://doi.org/10.1038/sdata.2016.18</a>.
 </div>
 </div>
+</section>
 </section>
 
 </main> <!-- /main -->
