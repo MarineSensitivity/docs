@@ -883,9 +883,8 @@ xvdb     202:16   0    60G  0 disk</code></pre>
 <h2 data-number="10.4" class="anchored" data-anchor-id="caddyfile"><span class="header-section-number">10.4</span> Caddyfile</h2>
 <p>The Caddyfile parameterizes the reverse proxying between the external subdomains and the Docker’s internal ports. Here is the <a href="https://github.com/MarineSensitivity/server/blob/main/caddy/Caddyfile"><code>Caddyfile</code></a> pasted for convenience …</p>
 <pre class="caddyfile"><code># docker exec caddy caddy reload --config /etc/caddy/Caddyfile
-
 {
-  order pmtiles_proxy before file_server
+    order pmtiles_proxy before file_server
 }
 
 (cors) {
@@ -897,28 +896,32 @@ xvdb     202:16   0    60G  0 disk</code></pre>
 }
 
 api.marinesensitivity.org {
-  reverse_proxy plumber:8888
+    reverse_proxy plumber:8888
 }
 
 file.marinesensitivity.org {
-  import cors
+    import cors
 
-  # raw pmtiles for client-side PMTiles protocol (add_pmtiles_source)
-  handle_path /pmtiles/* {
-    root * /share/data/derived/v3/pmtiles
-    file_server browse
-  }
-
-  handle {
-    root * /share/public
-    file_server browse {
-      precompressed zstd br gzip
+    # raw pmtiles for client-side PMTiles protocol (add_pmtiles_source)
+    handle_path /pmtiles/v4/* {
+        root * /share/data/derived/v4/pmtiles
+        file_server browse
     }
-  }
+    handle_path /pmtiles/v3/* {
+        root * /share/data/derived/v3/pmtiles
+        file_server browse
+    }
+
+    handle {
+        root * /share/public
+        file_server browse {
+            precompressed zstd br gzip
+        }
+    }
 }
 
 pgadmin.marinesensitivity.org {
-  reverse_proxy pgadmin:8088
+    reverse_proxy pgadmin:8088
 }
 
 # rest.marinesensitivity.org {
@@ -926,20 +929,19 @@ pgadmin.marinesensitivity.org {
 # }
 
 rstudio.marinesensitivity.org {
-  reverse_proxy rstudio:8787
+    reverse_proxy rstudio:8787
 }
 
 shiny.marinesensitivity.org {
-  reverse_proxy rstudio:3838
+    reverse_proxy rstudio:3838
 }
 
 app.marinesensitivity.org {
-  reverse_proxy rstudio:3838
+    reverse_proxy rstudio:3838
 }
 
-
 shiny.oceanmetrics.io {
-  reverse_proxy rstudio:3838
+    reverse_proxy rstudio:3838
 }
 
 # swagger.marinesensitivity.org {
@@ -947,32 +949,33 @@ shiny.oceanmetrics.io {
 # }
 
 tile.marinesensitivity.org {
-  reverse_proxy tile:7800
+    reverse_proxy tile:7800
 }
 
 tilecache.marinesensitivity.org {
-  reverse_proxy tilecache:6081
+    reverse_proxy tilecache:6081
 }
 
 titiler.marinesensitivity.org {
-  reverse_proxy titiler:8000
+    reverse_proxy titiler:8000
 }
 
 titilecache.marinesensitivity.org {
-  reverse_proxy titilecache:6082
+    reverse_proxy titilecache:6082
 }
 
 pmtiles.marinesensitivity.org {
-  import cors
+    import cors
 
-  # server-side tile decoding: ZXY + TileJSON (for QGIS, leaflet, etc.)
-  handle_path /tiles/* {
-    pmtiles_proxy {
-      bucket file:///share/data/derived/v3/pmtiles
-      cache_size 256
-      public_url https://pmtiles.marinesensitivity.org/tiles
+    # server-side tile decoding: ZXY + TileJSON (for QGIS, leaflet, etc.)
+    handle_path /tiles/* {
+        pmtiles_proxy {
+            bucket file:///share/data/derived/v4/pmtiles
+            # note: v3 pmtiles also available at /share/data/derived/v3/pmtiles
+            cache_size 256
+            public_url https://pmtiles.marinesensitivity.org/tiles
+        }
     }
-  }
 }
 </code></pre>
 </section>
