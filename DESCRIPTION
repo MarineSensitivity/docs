@@ -17,8 +17,11 @@ Imports:
     knitr,
     librarian,
     mapgl,
+    msens,
     quarto,
     RColorBrewer,
     stringr,
     tidyjson,
     yaml
+Remotes:
+    MarineSensitivity/msens
