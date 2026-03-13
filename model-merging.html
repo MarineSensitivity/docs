@@ -454,14 +454,14 @@ window.Quarto = {
 <p>Each species may have distribution data in multiple source datasets (see <a href="data-sources.html" class="quarto-xref"><span>Chapter 3</span></a>). The model merging pipeline combines these into a single merged model per species, applying spatial masking and minimum floor values to reflect regulatory protections.</p>
 <section id="pipeline-overview" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="pipeline-overview"><span class="header-section-number">6.1</span> Pipeline Overview</h2>
-<p>The merge pipeline processes each of the 9,819 valid species through the following steps:</p>
+<p>The merge pipeline processes each valid species through the following steps:</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div id="fig-merge-pipeline" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-merge-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
-<p><a href="model-merging_files/figure-html/mermaid-figure-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;6.1: Model merging pipeline for a single species."><img src="model-merging_files/figure-html/mermaid-figure-1.png" style="width:6in;height:18.62in" class="figure-img"></a></p>
+<p><a href="model-merging_files/figure-html/mermaid-figure-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;6.1: Model merging pipeline for a single species."><img src="model-merging_files/figure-html/mermaid-figure-1.png" style="width:6in;height:19.29in" class="figure-img"></a></p>
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-merge-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -473,11 +473,12 @@ Figure&nbsp;6.1: Model merging pipeline for a single species.
 </div>
 <section id="step-1-gather-source-models" class="level3" data-number="6.1.1">
 <h3 data-number="6.1.1" class="anchored" data-anchor-id="step-1-gather-source-models"><span class="header-section-number">6.1.1</span> Step 1: Gather Source Models</h3>
-<p>For each species (identified by <code>taxa_id</code>), the pipeline queries all available models across the 7 source datasets. A species may have:</p>
+<p>For each species (identified by <code>taxa_id</code>), the pipeline queries all available models across the 8 source datasets. A species may have:</p>
 <ul>
 <li>an AquaMaps SDM (continuous suitability)</li>
 <li>one or more regulatory range/habitat designations (NMFS, FWS)</li>
 <li>a BirdLife or IUCN range map</li>
+<li>a SWOT+DPS range map (sea turtles only)</li>
 </ul>
 </section>
 <section id="step-2-max-across-datasets" class="level3" data-number="6.1.2">
@@ -490,7 +491,8 @@ v_{merged,c} = \max(v_{am,c},\; v_{ca,c},\; v_{ch,c},\; v_{rng,c},\; v_{bl,c},\;
 </section>
 <section id="step-3-spatial-masking" class="level3" data-number="6.1.3">
 <h3 data-number="6.1.3" class="anchored" data-anchor-id="step-3-spatial-masking"><span class="header-section-number">6.1.3</span> Step 3: Spatial Masking</h3>
-<p>When an IUCN range map, NMFS Critical Habitat, or FWS Critical Habitat exists for a species, the merged model is <strong>constrained to the spatial extent</strong> of these mask datasets. The mask is formed as the union of all available <code>is_mask = TRUE</code> datasets for that species.</p>
+<p>When a range map or designated habitat exists for a species, the merged model is <strong>constrained to the spatial extent</strong> of these mask datasets. The mask is formed as the union of all available <code>is_mask = TRUE</code> datasets for that species.</p>
+<p>For most taxa, the IUCN range map serves as the global mask. For <strong>sea turtles</strong>, the SWOT+DPS dataset (<code>rng_turtle_swot_dps</code>; see <a href="data-sources.html#sec-swot-dps" class="quarto-xref"><span>Section 3.2.8</span></a>) replaces the IUCN range as the global mask, providing more realistic distributions based on expert-reviewed SWOT polygons with ESA-based DPS status encoding. NMFS Critical Habitat and FWS Critical Habitat also contribute to the mask when designated.</p>
 <p>This prevents the AquaMaps SDM (which often has broad environmental envelope predictions) from extending species presence far beyond their known range. Cells outside the mask are set to zero (species absent). This ensures that suitable habitat is not included outside known ranges, so that model predictions align with expert knowledge of where species actually occur.</p>
 </section>
 <section id="step-4-mmpa-spatial-floor" class="level3" data-number="6.1.4">

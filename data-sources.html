@@ -20,7 +20,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -397,6 +417,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#sec-fws-range" id="toc-sec-fws-range" class="nav-link" data-scroll-target="#sec-fws-range"><span class="header-section-number">3.2.5</span> FWS Range (<code>rng_fws</code>)</a></li>
   <li><a href="#sec-birdlife" id="toc-sec-birdlife" class="nav-link" data-scroll-target="#sec-birdlife"><span class="header-section-number">3.2.6</span> BirdLife Range (<code>bl</code>)</a></li>
   <li><a href="#sec-iucn-range" id="toc-sec-iucn-range" class="nav-link" data-scroll-target="#sec-iucn-range"><span class="header-section-number">3.2.7</span> IUCN Range (<code>rng_iucn</code>)</a></li>
+  <li><a href="#sec-swot-dps" id="toc-sec-swot-dps" class="nav-link" data-scroll-target="#sec-swot-dps"><span class="header-section-number">3.2.8</span> SWOT+DPS Turtle Range (<code>rng_turtle_swot_dps</code>)</a></li>
   </ul></li>
   <li><a href="#merged-model-ms_merge" id="toc-merged-model-ms_merge" class="nav-link" data-scroll-target="#merged-model-ms_merge"><span class="header-section-number">3.3</span> Merged Model (<code>ms_merge</code>)</a></li>
   <li><a href="#standard-grid" id="toc-standard-grid" class="nav-link" data-scroll-target="#standard-grid"><span class="header-section-number">3.4</span> Standard Grid</a></li>
@@ -426,14 +447,14 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>The MST integrates species distribution data from 7 source datasets plus 1 derived merged dataset, all stored in a DuckDB database at 0.05° resolution (~4 km cells). Each dataset provides spatial predictions of species occurrence, ranging from continuous suitability models (AquaMaps) to binary range maps (NMFS, FWS, BirdLife, IUCN).</p>
+<p>The MST integrates species distribution data from 8 source datasets plus 1 derived merged dataset, all stored in a DuckDB database at 0.05° resolution (~4 km cells). Each dataset provides spatial predictions of species occurrence, ranging from continuous suitability models (AquaMaps) to habitats associated with a core area, critical habitat or distinct population segment (NMFS, FWS, SWOT+DPS) to those based on simple range maps (BirdLife, IUCN, FWS).</p>
 <section id="dataset-overview" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="dataset-overview"><span class="header-section-number">3.1</span> Dataset Overview</h2>
-<p><a href="#tbl-datasets" class="quarto-xref">Table&nbsp;<span>3.1</span></a> summarizes all 8 datasets in the MST database.</p>
+<p><a href="#tbl-datasets" class="quarto-xref">Table&nbsp;<span>3.1</span></a> summarizes all 9 datasets in the MST database.</p>
 <div id="tbl-datasets" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-datasets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;3.1: Summary of the 8 datasets in the MST database. Cell values represent species presence probability or suitability as a percentage (1–100%). Datasets marked <code>Is Mask = Yes</code> can also serve as spatial masks during model merging.
+Table&nbsp;3.1: Summary of the 9 datasets in the MST database. Cell values represent species presence probability or suitability as a percentage (1–100%). Datasets marked <code>Is Mask = Yes</code> can also serve as spatial masks during model merging.
 </figcaption>
 <div aria-describedby="tbl-datasets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
@@ -504,6 +525,13 @@ Table&nbsp;3.1: Summary of the 8 datasets in the MST database. Cell values repre
 <td style="text-align: right;">7</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;"><code>rng_turtle_swot_dps</code></td>
+<td style="text-align: left;">SWOT+DPS Turtle Range</td>
+<td style="text-align: left;">EN: 100%, TN: 50%</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;"><code>ms_merge</code></td>
 <td style="text-align: left;">Merged Model</td>
 <td style="text-align: left;">MAX across source datasets</td>
@@ -521,7 +549,7 @@ Table&nbsp;3.1: Summary of the 8 datasets in the MST database. Cell values repre
 <h2 data-number="3.2" class="anchored" data-anchor-id="source-datasets"><span class="header-section-number">3.2</span> Source Datasets</h2>
 <section id="sec-aquamaps" class="level3" data-number="3.2.1">
 <h3 data-number="3.2.1" class="anchored" data-anchor-id="sec-aquamaps"><span class="header-section-number">3.2.1</span> AquaMaps SDM (<code>am_0.05</code>)</h3>
-<p><a href="https://www.aquamaps.org">AquaMaps</a> provides standardized species distribution models (SDMs) for over 17,000 marine species based on environmental envelope models. Each species model defines habitat suitability as a function of depth, temperature, salinity, primary productivity, ice concentration, and distance from land.</p>
+<p><a href="https://www.aquamaps.org">AquaMaps</a> provides standardized species distribution models (SDMs) for over 17,000 marine species based on environmental envelope models <span class="citation" data-cites="kaschner2019">(<a href="references.html#ref-kaschner2019" role="doc-biblioref">Kaschner et al. 2019</a>)</span>. Each species model defines habitat suitability as a function of depth, temperature, salinity, primary productivity, ice concentration, and distance from land.</p>
 <ul>
 <li><strong>Species count</strong>: ~17,550 models</li>
 <li><strong>Native resolution</strong>: 0.5° (c-squares), downscaled to 0.05° using bilinear interpolation</li>
@@ -532,7 +560,7 @@ Table&nbsp;3.1: Summary of the 8 datasets in the MST database. Cell values repre
 </section>
 <section id="sec-nmfs-core" class="level3" data-number="3.2.2">
 <h3 data-number="3.2.2" class="anchored" data-anchor-id="sec-nmfs-core"><span class="header-section-number">3.2.2</span> NMFS Core Area (<code>ca_nmfs</code>)</h3>
-<p>Core areas delineated by the National Marine Fisheries Service (NMFS) identify regions of concentrated use for species under NMFS jurisdiction.</p>
+<p>Core areas delineated by the National Marine Fisheries Service [NMFS; <span class="citation" data-cites="nmfs_core2019">National Marine Fisheries Service (<a href="references.html#ref-nmfs_core2019" role="doc-biblioref">2019</a>)</span>] identify regions of concentrated use for species under NMFS jurisdiction.</p>
 <ul>
 <li><strong>Species count</strong>: limited to species with designated core areas</li>
 <li><strong>Cell values</strong>: 100% within core area boundaries</li>
@@ -541,7 +569,7 @@ Table&nbsp;3.1: Summary of the 8 datasets in the MST database. Cell values repre
 </section>
 <section id="sec-nmfs-ch" class="level3" data-number="3.2.3">
 <h3 data-number="3.2.3" class="anchored" data-anchor-id="sec-nmfs-ch"><span class="header-section-number">3.2.3</span> NMFS Critical Habitat (<code>ch_nmfs</code>)</h3>
-<p>Critical habitat designated under the Endangered Species Act (ESA) by NMFS for marine species.</p>
+<p>Critical habitat designated under the Endangered Species Act (ESA) by NMFS for marine species <span class="citation" data-cites="nmfs_ch2025">(<a href="references.html#ref-nmfs_ch2025" role="doc-biblioref">National Marine Fisheries Service 2025</a>)</span>.</p>
 <ul>
 <li><strong>Species count</strong>: 34 species</li>
 <li><strong>Cell values</strong>: Endangered species = 100%, Threatened species = 50%</li>
@@ -550,7 +578,7 @@ Table&nbsp;3.1: Summary of the 8 datasets in the MST database. Cell values repre
 </section>
 <section id="sec-fws-ch" class="level3" data-number="3.2.4">
 <h3 data-number="3.2.4" class="anchored" data-anchor-id="sec-fws-ch"><span class="header-section-number">3.2.4</span> FWS Critical Habitat (<code>ch_fws</code>)</h3>
-<p>Critical habitat designated under the ESA by the U.S. Fish and Wildlife Service (FWS) for marine and coastal species.</p>
+<p>Critical habitat designated under the ESA by the U.S. Fish and Wildlife Service [FWS; <span class="citation" data-cites="fws_ch2025">U.S. Fish and Wildlife Service (<a href="references.html#ref-fws_ch2025" role="doc-biblioref">2025b</a>)</span>] for marine and coastal species.</p>
 <ul>
 <li><strong>Species count</strong>: 29 species</li>
 <li><strong>Cell values</strong>: Endangered species = 100%, Threatened species = 50%</li>
@@ -559,7 +587,7 @@ Table&nbsp;3.1: Summary of the 8 datasets in the MST database. Cell values repre
 </section>
 <section id="sec-fws-range" class="level3" data-number="3.2.5">
 <h3 data-number="3.2.5" class="anchored" data-anchor-id="sec-fws-range"><span class="header-section-number">3.2.5</span> FWS Range (<code>rng_fws</code>)</h3>
-<p>Current range maps maintained by FWS for ESA-listed marine and coastal species.</p>
+<p>Current range maps maintained by FWS for ESA-listed marine and coastal species <span class="citation" data-cites="fws_range2025">(<a href="references.html#ref-fws_range2025" role="doc-biblioref">U.S. Fish and Wildlife Service 2025a</a>)</span>.</p>
 <ul>
 <li><strong>Species count</strong>: 106 species</li>
 <li><strong>Cell values</strong>: Endangered = 100%, Threatened = 50%, Least Concern = 1%</li>
@@ -568,7 +596,7 @@ Table&nbsp;3.1: Summary of the 8 datasets in the MST database. Cell values repre
 </section>
 <section id="sec-birdlife" class="level3" data-number="3.2.6">
 <h3 data-number="3.2.6" class="anchored" data-anchor-id="sec-birdlife"><span class="header-section-number">3.2.6</span> BirdLife Range (<code>bl</code>)</h3>
-<p>Expert-reviewed range maps from <a href="https://www.birdlife.org">BirdLife International’s Birds of the World</a> (BOTW) dataset, representing the most authoritative global seabird distribution data.</p>
+<p>Expert-reviewed range maps from <a href="https://www.birdlife.org">BirdLife International’s Birds of the World</a> [BOTW; <span class="citation" data-cites="birdlife2024">BirdLife International (<a href="references.html#ref-birdlife2024" role="doc-biblioref">2024</a>)</span>] dataset, representing the most authoritative global seabird distribution data.</p>
 <ul>
 <li><strong>Species count</strong>: 573 seabird species</li>
 <li><strong>Cell values</strong>: scaled by IUCN Red List category — CR: 50%, EN: 25%, VU: 5%, NT: 2%, LC: 1%</li>
@@ -578,10 +606,25 @@ Table&nbsp;3.1: Summary of the 8 datasets in the MST database. Cell values repre
 </section>
 <section id="sec-iucn-range" class="level3" data-number="3.2.7">
 <h3 data-number="3.2.7" class="anchored" data-anchor-id="sec-iucn-range"><span class="header-section-number">3.2.7</span> IUCN Range (<code>rng_iucn</code>)</h3>
-<p>Range maps from the <a href="https://www.iucnredlist.org">IUCN Red List of Threatened Species</a> spatial data, covering a broad array of marine taxa.</p>
+<p>Range maps from the <a href="https://www.iucnredlist.org">IUCN Red List of Threatened Species</a> spatial data <span class="citation" data-cites="iucn2025">(<a href="references.html#ref-iucn2025" role="doc-biblioref">IUCN 2025</a>)</span>, covering a broad array of marine taxa.</p>
 <ul>
 <li><strong>Cell values</strong>: scaled by IUCN Red List category — CR: 50%, EN: 25%, VU: 5%, NT: 2%, LC: 1%</li>
 <li><strong>Role</strong>: mask dataset, providing spatial extent for species with IUCN range data</li>
+</ul>
+</section>
+<section id="sec-swot-dps" class="level3" data-number="3.2.8">
+<h3 data-number="3.2.8" class="anchored" data-anchor-id="sec-swot-dps"><span class="header-section-number">3.2.8</span> SWOT+DPS Turtle Range (<code>rng_turtle_swot_dps</code>)</h3>
+<p>Sea turtle distributions from the original AquaMaps and IUCN range maps were overly broad, extending well beyond where species actually occur. Furthermore, several sea turtle species have differential ESA protection across their range according to NOAA Fisheries Distinct Population Segments (DPS).</p>
+<p>This dataset replaces the IUCN range map as the <strong>global spatial mask</strong> for all 6 sea turtle species. It combines two data sources:</p>
+<ul>
+<li><strong>SWOT Global Distributions</strong> from the <a href="https://www.seaturtlestatus.org/online-map-data">State of the World’s Sea Turtles</a> <span class="citation" data-cites="wallace2023">(<a href="references.html#ref-wallace2023" role="doc-biblioref">Wallace et al. 2023</a>)</span>, which define more realistic species range polygons.</li>
+<li><strong>NMFS Distinct Population Segments</strong> (DPS) from NOAA Fisheries ArcGIS Feature Services, which identify sub-populations listed as Endangered under the ESA.</li>
+</ul>
+<p>For species with DPS data (Loggerhead CC, Green CM, Olive Ridley LO): Endangered DPS areas are coded at 100%, and the remainder of the SWOT range is coded as Threatened at 50%. For purely Endangered species (Leatherback DC, Hawksbill EI, Kemp’s Ridley LK): the entire SWOT range is coded at 100%.</p>
+<ul>
+<li><strong>Species count</strong>: 6 sea turtle species</li>
+<li><strong>Cell values</strong>: Endangered = 100%, Threatened = 50%</li>
+<li><strong>Role</strong>: mask dataset — replaces <code>rng_iucn</code> as the global mask for turtles, producing more restrictive distributions dominated by ESA risk values See workflow: <a href="https://marinesensitivity.org/workflows/ingest_turtles-swot-dps.html">ingest_turtles-swot-dps</a>.</li>
 </ul>
 </section>
 </section>
@@ -601,7 +644,7 @@ Table&nbsp;3.1: Summary of the 8 datasets in the MST database. Cell values repre
 <section id="sec-primary-productivity" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="sec-primary-productivity"><span class="header-section-number">3.5</span> Primary Productivity</h2>
 <p>Primary productivity is specified in the explicit mandate for BOEM’s management, per the Outer Continental Shelf Lands Act (OCSLA), Section 18(a)(2) of the OCSLA Amendments of 1978 specifying 8 factors the USDOI must consider in the timing and location of OCS oil and gas activities, including “the relative environmental sensitivity and marine productivity of different areas of the OCS.”</p>
-<p>We use satellite-derived net primary productivity (NPP) from the Vertically Generalized Production Model (VGPM) product from <a href="http://sites.science.oregonstate.edu/ocean.productivity">Oregon State’s Ocean Productivity Lab</a>, based on VIIRS satellite data for 2014–2023. Values are converted to metric tons C km<sup>-2</sup> yr<sup>-1</sup> and averaged across the time period.</p>
+<p>We use satellite-derived net primary productivity (NPP) from the Vertically Generalized Production Model [VGPM; <span class="citation" data-cites="behrenfeld1997">Behrenfeld and Falkowski (<a href="references.html#ref-behrenfeld1997" role="doc-biblioref">1997</a>)</span>] product from <a href="http://sites.science.oregonstate.edu/ocean.productivity">Oregon State’s Ocean Productivity Lab</a>, based on VIIRS satellite data for 2014–2023. Values are converted to metric tons C km<sup>-2</sup> yr<sup>-1</sup> and averaged across the time period.</p>
 <div id="fig-vgpm" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-vgpm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -614,6 +657,35 @@ Figure&nbsp;3.1: Primary productivity throughout the continental United States a
 </div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-behrenfeld1997" class="csl-entry" role="listitem">
+Behrenfeld, Michael J., and Paul G. Falkowski. 1997. <span>“Photosynthetic Rates Derived from Satellite-Based Chlorophyll Concentration.”</span> <em>Limnology and Oceanography</em> 42 (1): 1–20. <a href="https://doi.org/10.4319/lo.1997.42.1.0001">https://doi.org/10.4319/lo.1997.42.1.0001</a>.
+</div>
+<div id="ref-birdlife2024" class="csl-entry" role="listitem">
+BirdLife International. 2024. <span>“<span class="nocase">BirdLife International and Handbook of the Birds of the World</span>.”</span> <a href="http://datazone.birdlife.org/species/requestdis">http://datazone.birdlife.org/species/requestdis</a>.
+</div>
+<div id="ref-iucn2025" class="csl-entry" role="listitem">
+IUCN. 2025. <span>“Digital Distribution Maps on the <span>IUCN</span> <span>Red List</span> of Threatened Species.”</span> <a href="https://www.iucnredlist.org/resources/spatial-data-download">https://www.iucnredlist.org/resources/spatial-data-download</a>.
+</div>
+<div id="ref-kaschner2019" class="csl-entry" role="listitem">
+Kaschner, K., K. Kesner-Reyes, C. Garilao, J. Segschneider, J. Rius-Barile, T. Rees, and R. Froese. 2019. <span>“<span>AquaMaps</span>: Predicted Range Maps for Aquatic Species.”</span> <a href="https://www.aquamaps.org">https://www.aquamaps.org</a>.
+</div>
+<div id="ref-nmfs_core2019" class="csl-entry" role="listitem">
+National Marine Fisheries Service. 2019. <span>“<span class="nocase">Rice’s Whale Core Distribution Area Map GIS Data</span>.”</span> <a href="https://www.fisheries.noaa.gov/resource/map/rices-whale-core-distribution-area-map-gis-data">https://www.fisheries.noaa.gov/resource/map/rices-whale-core-distribution-area-map-gis-data</a>.
+</div>
+<div id="ref-nmfs_ch2025" class="csl-entry" role="listitem">
+———. 2025. <span>“<span>National ESA Critical Habitat Geodatabase</span>.”</span> <a href="https://www.fisheries.noaa.gov/resource/map/national-esa-critical-habitat-mapper">https://www.fisheries.noaa.gov/resource/map/national-esa-critical-habitat-mapper</a>.
+</div>
+<div id="ref-fws_range2025" class="csl-entry" role="listitem">
+U.S. Fish and Wildlife Service. 2025a. <span>“<span>USFWS Complete Current Range Maps</span>.”</span> <a href="https://ecos.fws.gov/ecp/report/current-range-all">https://ecos.fws.gov/ecp/report/current-range-all</a>.
+</div>
+<div id="ref-fws_ch2025" class="csl-entry" role="listitem">
+———. 2025b. <span>“<span class="nocase">USFWS Threatened and Endangered Species Active Critical Habitat Report</span>.”</span> <a href="https://ecos.fws.gov/ecp/report/table/critical-habitat.html">https://ecos.fws.gov/ecp/report/table/critical-habitat.html</a>.
+</div>
+<div id="ref-wallace2023" class="csl-entry" role="listitem">
+Wallace, Bryan P., Zachary A. Posnik, Bryan J. Hurley, Andrew D. DiMatteo, Allan Bandimere, Cristian J. Rodriguez-Zarate, Jessica E. Light, Roderic B. Mast, and Karen A. Bjorndal. 2023. <span>“Marine Turtle Regional Management Units 2.0.”</span> <em>Endangered Species Research</em> 52: 209–23. <a href="https://doi.org/10.3354/esr01243">https://doi.org/10.3354/esr01243</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
