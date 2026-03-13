@@ -4,15 +4,15 @@ Each species may have distribution data in multiple source datasets (see @sec-da
 
 ## Pipeline Overview
 
-The merge pipeline processes each of the 9,819 valid species through the following steps:
+The merge pipeline processes each valid species through the following steps:
 
 ```{mermaid}
 %%| label: fig-merge-pipeline
 %%| fig-cap: "Model merging pipeline for a single species."
 %%| fig-width: 6
 flowchart TD
-  A["Gather all models<br>for species across<br>7 source datasets"] --> B["Take MAX value<br>per cell across<br>all datasets"]
-  B --> C{"IUCN/CH range<br>map exists?"}
+  A["Gather all models<br>for species across<br>8 source datasets"] --> B["Take MAX value<br>per cell across<br>all datasets"]
+  B --> C{"Range mask exists?<br>(IUCN, SWOT+DPS,<br>or CH)"}
   C -->|Yes| D["Apply spatial mask<br>(constrain to<br>range extent)"]
   C -->|No| E["Keep unmasked<br>distribution"]
   D --> F{"MMPA<br>protected?"}
@@ -27,11 +27,12 @@ flowchart TD
 
 ### Step 1: Gather Source Models
 
-For each species (identified by `taxa_id`), the pipeline queries all available models across the 7 source datasets. A species may have:
+For each species (identified by `taxa_id`), the pipeline queries all available models across the 8 source datasets. A species may have:
 
 - an AquaMaps SDM (continuous suitability)
 - one or more regulatory range/habitat designations (NMFS, FWS)
 - a BirdLife or IUCN range map
+- a SWOT+DPS range map (sea turtles only)
 
 ### Step 2: MAX Across Datasets
 
@@ -45,7 +46,9 @@ This ensures that the most informative (highest confidence) prediction is used. 
 
 ### Step 3: Spatial Masking
 
-When an IUCN range map, NMFS Critical Habitat, or FWS Critical Habitat exists for a species, the merged model is **constrained to the spatial extent** of these mask datasets. The mask is formed as the union of all available `is_mask = TRUE` datasets for that species.
+When a range map or designated habitat exists for a species, the merged model is **constrained to the spatial extent** of these mask datasets. The mask is formed as the union of all available `is_mask = TRUE` datasets for that species.
+
+For most taxa, the IUCN range map serves as the global mask. For **sea turtles**, the SWOT+DPS dataset (`rng_turtle_swot_dps`; see @sec-swot-dps) replaces the IUCN range as the global mask, providing more realistic distributions based on expert-reviewed SWOT polygons with ESA-based DPS status encoding. NMFS Critical Habitat and FWS Critical Habitat also contribute to the mask when designated.
 
 This prevents the AquaMaps SDM (which often has broad environmental envelope predictions) from extending species presence far beyond their known range. Cells outside the mask are set to zero (species absent). This ensures that suitable habitat is not included outside known ranges, so that model predictions align with expert knowledge of where species actually occur.
 

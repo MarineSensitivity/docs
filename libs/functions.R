@@ -69,67 +69,46 @@ map_ecoregions <- function(ver="v4") {
     rev(RColorBrewer::brewer.pal(
       max(n_eco, 3), "Spectral"))[seq_len(n_eco)])
 
-  # pmtiles urls
+  # pmtiles urls (unversioned — scores joined at render time)
   url_eco <- glue::glue("https://file.marinesensitivity.org/pmtiles/{ver}/ply_ecoregions_2025.pmtiles")
-  url_pra <- glue::glue("https://file.marinesensitivity.org/pmtiles/{ver}/ply_programareas_2026_{ver}.pmtiles")
+  url_pra <- glue::glue("https://file.marinesensitivity.org/pmtiles/{ver}/ply_programareas_2026.pmtiles")
   lyr_eco <- "ply_ecoregions_2025"
-  lyr_pra <- glue::glue("ply_programareas_2026_{ver}")
+  lyr_pra <- "ply_programareas_2026"
 
-  # filter to only known ecoregion keys (those intersecting program areas)
+  # base map
+  base <- mapgl::maplibre(
+    style  = mapgl::carto_style("voyager"),
+    bounds = list(c(-190, 15), c(-60, 75)))
+
   eco_filter <- c("in", "ecoregion_key", eco_keys)
 
-  # build the map widget
-  m <- mapgl::maplibre(
-    style = mapgl::carto_style("voyager"),
-    bounds = list(c(-190, 15), c(-60, 75))) |>
-    mapgl::add_pmtiles_source(
-      id         = "eco_src",
-      url        = url_eco,
-      promote_id = "ecoregion_key") |>
-    mapgl::add_pmtiles_source(
-      id  = "pra_src",
-      url = url_pra) |>
-    mapgl::add_fill_layer(
-      id           = "eco_fill",
-      source       = "eco_src",
-      source_layer = lyr_eco,
-      fill_color   = mapgl::match_expr(
-        column  = "ecoregion_key",
-        values  = eco_keys,
-        stops   = eco_colors,
-        default = "#cccccc"),
-      fill_opacity = 0.6,
-      tooltip = mapgl::concat(
+  # build the map using composable helpers
+  m <- base |>
+    msens::add_pmfill(
+      url           = url_eco,
+      source_layer  = lyr_eco,
+      col_key       = "ecoregion_key",
+      colors        = stats::setNames(eco_colors, eco_keys),
+      filter_keys   = eco_keys,
+      fill_opacity  = 0.6,
+      outline_color = "black",
+      outline_width = 3,
+      tooltip       = mapgl::concat(
         mapgl::get_column("ecoregion_name"),
         " (", mapgl::get_column("ecoregion_key"), ")"),
-      popup = mapgl::concat(
+      popup         = mapgl::concat(
         "<strong>", mapgl::get_column("ecoregion_name"), "</strong><br>",
         "Key: ",    mapgl::get_column("ecoregion_key"), "<br>",
         "Region: ", mapgl::get_column("region_name")),
-      hover_options = list(
-        fill_opacity = 0.9),
-      filter = eco_filter) |>
-    # ecoregion outlines: thick black (like apps)
-    mapgl::add_line_layer(
-      id           = "eco_ln",
-      source       = "eco_src",
-      source_layer = lyr_eco,
-      line_color   = "black",
-      line_opacity = 1,
-      line_width   = 3,
-      filter       = eco_filter) |>
-    # program area outlines: thin white (like apps)
-    mapgl::add_line_layer(
-      id           = "pra_ln",
-      source       = "pra_src",
-      source_layer = lyr_pra,
-      line_color   = "white",
-      line_opacity = 1,
-      line_width   = 1) |>
-    # ecoregion labels: bigger bold black text
+      hover_options = list(fill_opacity = 0.9)) |>
+    msens::add_pmline(list(
+      list(url = url_pra, source_layer = lyr_pra,
+           id = "pra_ln", source_id = "pra_src",
+           line_color = "white", line_width = 1))) |>
+    # ecoregion labels from PMTile features (bold black)
     mapgl::add_symbol_layer(
       id           = "eco_lbl",
-      source       = "eco_src",
+      source       = "main_src",
       source_layer = lyr_eco,
       text_field   = mapgl::get_column("ecoregion_key"),
       text_size    = 14,
@@ -139,7 +118,7 @@ map_ecoregions <- function(ver="v4") {
       text_halo_width = 2,
       text_allow_overlap = FALSE,
       filter       = eco_filter) |>
-    # program area labels: smaller text
+    # program area labels from PMTile features
     mapgl::add_symbol_layer(
       id           = "pra_lbl",
       source       = "pra_src",
@@ -153,8 +132,8 @@ map_ecoregions <- function(ver="v4") {
       text_allow_overlap = FALSE) |>
     mapgl::add_layers_control(
       layers = list(
-        "Ecoregion fills"       = "eco_fill",
-        "Ecoregion outlines"    = "eco_ln",
+        "Ecoregion fills"       = "main_fill",
+        "Ecoregion outlines"    = "main_ln",
         "Ecoregion labels"      = "eco_lbl",
         "Program Area outlines" = "pra_ln",
         "Program Area labels"   = "pra_lbl")) |>
