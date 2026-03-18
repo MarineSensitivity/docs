@@ -90,7 +90,7 @@ Sea turtle distributions from the original AquaMaps and IUCN range maps were ove
 This dataset replaces the IUCN range map as the **global spatial mask** for all 6 sea turtle species. It combines two data sources:
 
 - **SWOT Global Distributions** from the [State of the World's Sea Turtles](https://www.seaturtlestatus.org/online-map-data) [@wallace2023], which define more realistic species range polygons.
-- **NMFS Distinct Population Segments** (DPS) from NOAA Fisheries ArcGIS Feature Services, which identify sub-populations listed as Endangered under the ESA.
+- **NMFS Distinct Population Segments** (DPS) from the NOAA Fisheries ESA Species Range Geodatabase [@noaafisheries2025dps], which identify sub-populations listed as Endangered under the ESA.
 
 For species with DPS data (Loggerhead CC, Green CM, Olive Ridley LO): Endangered DPS areas are coded at 100%, and the remainder of the SWOT range is coded as Threatened at 50%. For purely Endangered species (Leatherback DC, Hawksbill EI, Kemp's Ridley LK): the entire SWOT range is coded at 100%.
 
