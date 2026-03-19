@@ -12,5 +12,5 @@ This interactive walkthrough demonstrates how the Marine Sensitivity Toolkit cal
 For the underlying methodology, see [Scoring](scoring.qmd) and [Model Merging](model-merging.qmd). For source code, see the [merge_models](https://marinesensitivity.org/workflows/merge_models.html) and [calc_scores](https://marinesensitivity.org/workflows/calc_scores.html) workflows.
 
 ```{=html}
-<iframe src="scoring-walkthrough.html" width="100%" height="800px" style="border: 1px solid #ccc; border-radius: 8px;" allowfullscreen></iframe>
+<iframe src="scoring-walkthrough-app.html" width="100%" height="800px" style="border: 1px solid #ccc; border-radius: 8px;" allowfullscreen></iframe>
 ```

@@ -3,7 +3,7 @@ project:
   output-dir: _book
   resources:
   - "/.nojekyll"
-  - "scoring-walkthrough.html"
+  - "scoring-walkthrough-app.html"
   pre-render:
     - libs/pre-render.R
   post-render:
