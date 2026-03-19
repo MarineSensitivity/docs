@@ -158,8 +158,30 @@ function App() {
   var step = stepState[0], setStep = stepState[1];
   var animState = useState(0);
   var anim = animState[0], setAnim = animState[1];
+  var fsState = useState(false);
+  var isFS = fsState[0], setIsFS = fsState[1];
+  var rootRef = useRef(null);
   var data = useMemo(genData, []);
   var cs = 30;
+
+  var toggleFS = function() {
+    var el = rootRef.current || document.getElementById("mst-walkthrough-root");
+    if (!document.fullscreenElement) {
+      (el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen).call(el);
+    } else {
+      (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen).call(document);
+    }
+  };
+
+  useEffect(function() {
+    var handler = function() { setIsFS(!!document.fullscreenElement); };
+    document.addEventListener("fullscreenchange", handler);
+    document.addEventListener("webkitfullscreenchange", handler);
+    return function() {
+      document.removeEventListener("fullscreenchange", handler);
+      document.removeEventListener("webkitfullscreenchange", handler);
+    };
+  }, []);
 
   var prev = function() { setStep(function(s){return Math.max(0,s-1);}); setAnim(0); };
   var next = function() { setStep(function(s){return Math.min(STEPS.length-1,s+1);}); setAnim(0); };
@@ -197,10 +219,13 @@ function App() {
     if (sid==="final") { var vals=data.avg.filter(function(v){return v!==null;}); var mean=Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length); return e("div",null,e("h3",{style:{color:C.text,fontSize:18,fontWeight:700,marginBottom:8}},"Step 8: Final Score & Aggregation"),e("p",{style:{color:C.textDim,fontSize:13,lineHeight:1.6,marginBottom:12}},"Cell-level scores are aggregated to Program Areas, Subregions, and Ecoregions using area-weighted averaging (0.05\u00B0 resolution)."),e(Formula,{tex:"score(zone) = \u03A3[ score'(c) \u00D7 A(c) ] / \u03A3[ A(c) ]",note:"Where A(c) = cell area; aggregated over all cells c within the zone"}),e("div",{style:{textAlign:"center",marginTop:20}},e(PixelGrid,{data:data.avg,cols:data.C,cellSize:cs,colorScale:spectral,label:"Cell-Level Final Scores"}),e("div",{style:{marginTop:16,display:"inline-block",padding:"16px 32px",background:"linear-gradient(135deg, "+C.panelLight+", #1a2744)",borderRadius:12,border:"2px solid "+C.accent}},e("div",{style:{fontSize:11,color:C.textDim,marginBottom:4}},"Area-Weighted Mean \u2192 Program Area Score"),e("div",{style:{fontSize:40,fontWeight:700,color:C.accent}},e(AnimNum,{value:mean})),e("div",{style:{fontSize:11,color:C.textDim}},"out of 100"))),e("div",{style:{marginTop:20,display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}},[{l:"Program Areas",d:"20 BOEM planning regions",i:"\uD83D\uDDFA\uFE0F"},{l:"Subregions",d:"Alaska, Pacific, Gulf, USA",i:"\uD83C\uDFD4\uFE0F"},{l:"Ecoregions",d:"12 BOEM ecological zones",i:"\uD83C\uDF0A"}].map(function(z){return e("div",{key:z.l,style:{background:C.panelLight,borderRadius:8,padding:12,border:"1px solid "+C.border,textAlign:"center"}},e("div",{style:{fontSize:20}},z.i),e("div",{style:{fontSize:12,color:C.text,fontWeight:600,marginTop:4}},z.l),e("div",{style:{fontSize:10,color:C.textDim}},z.d));}))); }
   }
 
-  return e("div",{style:{background:C.bg,color:C.text,fontFamily:"'Inter',system-ui,sans-serif",minHeight:600}},
+  return e("div",{ref:rootRef,style:{background:C.bg,color:C.text,fontFamily:"'Inter',system-ui,sans-serif",minHeight:isFS?"100vh":600,overflow:isFS?"auto":"visible"}},
     e("div",{style:{background:"linear-gradient(90deg,"+C.panel+",#0f1d35)",borderBottom:"1px solid "+C.border,padding:"12px 20px",display:"flex",alignItems:"center",justifyContent:"space-between"}},
       e("div",{style:{display:"flex",alignItems:"center",gap:12}},e("div",{style:{fontSize:20}},"\uD83C\uDF0A"),e("div",null,e("div",{style:{fontSize:15,fontWeight:700,color:C.text}},"Marine Sensitivity Toolkit"),e("div",{style:{fontSize:11,color:C.textDim}},"Scoring Pipeline Walkthrough"))),
-      e("div",{style:{fontSize:11,color:C.textDim}},"Step "+(step+1)+" of "+STEPS.length)
+      e("div",{style:{display:"flex",alignItems:"center",gap:12}},
+        e("div",{style:{fontSize:11,color:C.textDim}},"Step "+(step+1)+" of "+STEPS.length),
+        e("button",{onClick:toggleFS,title:isFS?"Exit fullscreen":"Fullscreen",style:{background:"transparent",border:"1px solid "+C.border,borderRadius:6,color:C.textDim,padding:"4px 8px",cursor:"pointer",fontSize:16,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",transition:"all 0.2s"},onMouseEnter:function(ev){ev.target.style.color=C.accent;ev.target.style.borderColor=C.accent;},onMouseLeave:function(ev){ev.target.style.color=C.textDim;ev.target.style.borderColor=C.border;}},isFS?"\u2716":"\u26F6")
+      )
     ),
     e("div",{style:{display:"flex",overflowX:"auto",background:C.panel,borderBottom:"1px solid "+C.border,padding:"0 8px"}},
       STEPS.map(function(s,i){return e("button",{key:s.id,onClick:function(){setStep(i);setAnim(0);},style:{background:i===step?C.accentDim:"transparent",border:"none",borderBottom:i===step?"2px solid "+C.accent:"2px solid transparent",color:i===step?C.accent:i<step?C.green:C.textMuted,padding:"8px 12px",fontSize:11,fontWeight:i===step?700:500,cursor:"pointer",whiteSpace:"nowrap",transition:"all 0.2s",display:"flex",alignItems:"center",gap:"4px"}},e("span",{style:{fontSize:13}},s.icon),e("span",null,s.title));})
