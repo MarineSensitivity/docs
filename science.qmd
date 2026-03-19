@@ -4,6 +4,12 @@
 # need this chunk to use inline (`r ...`) glossary terms for non-html output with `g()` defined in libs/functions.R
 ```
 
+::: {.callout-tip}
+## Interactive Walkthrough
+
+New to the MST scoring pipeline? The [Scoring Walkthrough](scoring-walkthrough.qmd) provides a step-by-step interactive visualization of how input rasters are merged, rescaled by ecoregion, and averaged into final sensitivity scores.
+:::
+
 ## Conceptual Framework
 
 The term `r g("vulnerability")` {{< glossary vulnerability >}} ($V$) is a function of `r g("exposure")` {{< glossary exposure >}} ($E$), `r g("sensitivity")` {{< glossary sensitivity >}} ($S$) and `r g("adaptive capacity")` {{< glossary "adaptive capacity" >}} ($A$) (@eq-v).

@@ -8,6 +8,7 @@ The **Marine Sensitivity Toolkit** (MST) is a cloud-native system developed for 
 
 - [**Composite Scores**](https://app.marinesensitivity.org/mapgl/) — explore sensitivity scores across BOEM Program Areas with flower plot summaries
 - [**Species Distribution**](https://app.marinesensitivity.org/mapsp/) — view individual species distribution models and habitat suitability maps
+- [**Scoring Walkthrough**](scoring-walkthrough.qmd) — step through the scoring pipeline interactively, from input rasters to final scores
 
 ### Documentation
 

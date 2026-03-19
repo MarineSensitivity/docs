@@ -2,6 +2,12 @@
 
 Extinction risk scoring translates a species' conservation status into a numeric weight that reflects its vulnerability to population-level impacts. The MST integrates protections from three US federal regulatory frameworks and the international IUCN Red List to assign each species a score from 1 to 100.
 
+::: {.callout-tip}
+## Interactive Walkthrough
+
+The [Scoring Walkthrough](scoring-walkthrough.qmd) includes a visual comparison of ESA vs. IUCN scoring frameworks and shows how extinction risk weights are applied to species suitability values.
+:::
+
 ## Regulatory Framework
 
 ### Endangered Species Act (ESA)

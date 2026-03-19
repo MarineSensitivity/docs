@@ -2,6 +2,12 @@
 
 Each species may have distribution data in multiple source datasets (see @sec-data-sources). The model merging pipeline combines these into a single merged model per species, applying spatial masking and minimum floor values to reflect regulatory protections.
 
+::: {.callout-tip}
+## Interactive Walkthrough
+
+The [Scoring Walkthrough](scoring-walkthrough.qmd) visualizes the merge process interactively — see how MAX merge, spatial masking, and regulatory floors transform input rasters step by step.
+:::
+
 ## Pipeline Overview
 
 The merge pipeline processes each valid species through the following steps:

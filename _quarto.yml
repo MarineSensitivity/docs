@@ -3,6 +3,7 @@ project:
   output-dir: _book
   resources:
   - "/.nojekyll"
+  - "scoring-walkthrough.html"
   pre-render:
     - libs/pre-render.R
   post-render:
@@ -42,6 +43,7 @@ book:
         - extinction-risk.qmd
         - model-merging.qmd
         - scoring.qmd
+        - scoring-walkthrough.qmd
         - stressors.qmd
     - part: Software
       chapters:

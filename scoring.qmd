@@ -2,6 +2,12 @@
 
 The scoring methodology translates merged species distribution models and extinction risk weights into cell-level sensitivity metrics, which are then rescaled and aggregated to management zones for decision support.
 
+::: {.callout-tip}
+## Interactive Walkthrough
+
+See the [Scoring Walkthrough](scoring-walkthrough.qmd) for an animated, step-by-step visualization of this pipeline — from input rasters through MAX merge, ecoregional rescaling, and component averaging.
+:::
+
 ## Cell-Level Scoring
 
 For each grid cell, sensitivity is computed as the extinction risk weighted sum of species presence within each species category (@eq-cell-score):
