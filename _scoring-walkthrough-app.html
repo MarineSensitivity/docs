@@ -1,0 +1,218 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<div id="mst-walkthrough-root" style="border-radius:8px; overflow:hidden; border:1px solid #1e3a5f;"></div>
+<script>
+"use strict";
+var e = React.createElement;
+var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef, useMemo = React.useMemo;
+
+var C = {
+  bg:"#0a1628", panel:"#111d33", panelLight:"#18283f", border:"#1e3a5f",
+  accent:"#3b82f6", accentDim:"#2563eb44", text:"#e2e8f0", textDim:"#94a3b8",
+  textMuted:"#475569", green:"#10b981", amber:"#f59e0b", red:"#ef4444",
+  cyan:"#06b6d4", purple:"#8b5cf6", pink:"#ec4899", orange:"#f97316", lime:"#84cc16"
+};
+var SP_COLORS = {
+  bird:"#f59e0b", coral:"#ec4899", fish:"#3b82f6", invertebrate:"#8b5cf6",
+  mammal:"#10b981", other:"#94a3b8", turtle:"#06b6d4", primprod:"#84cc16"
+};
+
+function makeCS(lo, hi, loC, hiC) {
+  var p = function(h){return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];};
+  var a = p(loC), b = p(hiC);
+  return function(v) {
+    var t = Math.max(0, Math.min(1, (v - lo) / (hi - lo || 1)));
+    return "rgb("+Math.round(a[0]+t*(b[0]-a[0]))+","+Math.round(a[1]+t*(b[1]-a[1]))+","+Math.round(a[2]+t*(b[2]-a[2]))+")";
+  };
+}
+function spectral(val) {
+  var t = Math.max(0, Math.min(1, val / 100));
+  var stops = [[0,.05,[49,54,149]],[.05,.2,[69,117,180]],[.2,.35,[116,173,209]],
+    [.35,.5,[171,217,233]],[.5,.6,[254,224,144]],[.6,.75,[253,174,97]],
+    [.75,.9,[244,109,67]],[.9,1,[215,48,39]]];
+  for (var i=0;i<stops.length;i++) { if (t <= stops[i][1]) return "rgb("+stops[i][2][0]+","+stops[i][2][1]+","+stops[i][2][2]+")"; }
+  return "rgb(215,48,39)";
+}
+function sRng(seed) { var s=seed; return function(){ s=(s*16807)%2147483647; return(s-1)/2147483646; }; }
+
+function PixelGrid(props) {
+  var data=props.data, cols=props.cols, cellSize=props.cellSize||28, colorScale=props.colorScale, label=props.label, highlight=props.highlight, showValues=props.showValues;
+  return e("div", {style:{textAlign:"center"}},
+    label && e("div", {style:{fontSize:11, color:C.textDim, marginBottom:4, fontWeight:600, letterSpacing:"0.05em", textTransform:"uppercase"}}, label),
+    e("div", {style:{display:"inline-grid", gridTemplateColumns:"repeat("+cols+", "+cellSize+"px)", gap:1}},
+      data.map(function(val, i) {
+        var isHL = highlight && highlight.indexOf(i) >= 0;
+        return e("div", {key:i, style:{
+          width:cellSize, height:cellSize,
+          backgroundColor: val===null ? "#1a1a2e" : colorScale(val),
+          borderRadius:3, display:"flex", alignItems:"center", justifyContent:"center",
+          fontSize: cellSize<26?8:10, fontWeight:600,
+          color: val!==null && val>60 ? "#000" : C.text,
+          opacity: highlight && !isHL ? 0.3 : 1,
+          border: isHL ? "2px solid "+C.accent : "1px solid #0004",
+          transition:"all 0.4s ease", cursor:"default"
+        }}, showValues!==false && val!==null ? Math.round(val) : "");
+      })
+    )
+  );
+}
+
+function EcoOverlay(props) {
+  var data=props.data, cols=props.cols, cellSize=props.cellSize||28;
+  return e("div", {style:{position:"absolute", top:0, left:0, pointerEvents:"none"}},
+    e("div", {style:{display:"grid", gridTemplateColumns:"repeat("+cols+", "+cellSize+"px)", gap:1}},
+      data.map(function(eco, i) { return e("div", {key:i, style:{
+        width:cellSize, height:cellSize,
+        border: eco==="A" ? "2px solid #f59e0b55" : "2px solid #3b82f655",
+        borderRadius:3
+      }}); })
+    )
+  );
+}
+
+function Formula(props) {
+  return e("div", {style:{background:"#0d1520", border:"1px solid "+C.border, borderRadius:8, padding:"12px 16px", margin:"12px 0", fontFamily:"monospace", fontSize:13, color:C.cyan, lineHeight:1.7}},
+    e("div", null, props.tex),
+    props.note && e("div", {style:{color:C.textDim, fontSize:11, marginTop:4, fontFamily:"system-ui"}}, props.note)
+  );
+}
+
+function AnimNum(props) {
+  var value = props.value, duration = props.duration || 600;
+  var state = useState(value);
+  var display = state[0], setDisplay = state[1];
+  var ref = useRef(null);
+  useEffect(function() {
+    var start = display, diff = value - start, t0 = performance.now();
+    var animate = function(t) {
+      var p = Math.min(1, (t-t0)/duration);
+      setDisplay(Math.round(start + diff*(1-Math.pow(1-p,3))));
+      if (p < 1) ref.current = requestAnimationFrame(animate);
+    };
+    ref.current = requestAnimationFrame(animate);
+    return function() { cancelAnimationFrame(ref.current); };
+  }, [value]);
+  return e("span", null, display);
+}
+
+function genData() {
+  var rng = sRng(42), R = 6, CC = 8;
+  var aquamaps = Array.from({length:R*CC}, function(_,i) {
+    var row=Math.floor(i/CC), col=i%CC;
+    var d = Math.sqrt(Math.pow(col-2.5,2)+Math.pow(row-2.5,2));
+    return Math.min(100, Math.max(1, Math.round(90 - d*18 + rng()*15)));
+  });
+  var critHab = Array.from({length:R*CC}, function(_,i) {
+    var row=Math.floor(i/CC), col=i%CC;
+    if(row>=1&&row<=3&&col>=1&&col<=3) return 100;
+    if(row>=2&&row<=4&&col>=4&&col<=5) return 50;
+    return null;
+  });
+  var fwsRange = Array.from({length:R*CC}, function(_,i) {
+    var row=Math.floor(i/CC), col=i%CC;
+    return (col<=5&&row<=4) ? 1 : null;
+  });
+  var merged = Array.from({length:R*CC}, function(_,i) {
+    var v = [aquamaps[i],critHab[i],fwsRange[i]].filter(function(x){return x!==null;});
+    return v.length ? Math.max.apply(null,v) : null;
+  });
+  var maskExt = Array.from({length:R*CC}, function(_,i) { return critHab[i]!==null||fwsRange[i]!==null; });
+  var masked = merged.map(function(v,i) { return maskExt[i] ? v : null; });
+  var eco = Array.from({length:R*CC}, function(_,i) { return (i%CC)<4 ? "A" : "B"; });
+  var mkRaw = function(seed) { var r=sRng(seed); return Array.from({length:R*CC}, function(_,i){
+    var row=Math.floor(i/CC), col=i%CC;
+    return Math.round(Math.min(100, Math.max(0, 20+r()*60+row*3+col*4)));
+  }); };
+  var rawB=mkRaw(100), rawM=mkRaw(200), rawF=mkRaw(300);
+  var gmm = function(arr,el) { var v=arr.filter(function(_,i){return eco[i]===el;}); return {min:Math.min.apply(null,v),max:Math.max.apply(null,v)}; };
+  var rsc = function(arr) { return arr.map(function(v,i) {
+    var mm=gmm(arr,eco[i]);
+    return Math.round(mm.max>mm.min ? (v-mm.min)/(mm.max-mm.min)*100 : 50);
+  }); };
+  var rB=rsc(rawB), rM=rsc(rawM), rF=rsc(rawF);
+  var avg = Array.from({length:R*CC}, function(_,i) { return Math.round((rB[i]+rM[i]+rF[i])/3); });
+  return { R:R, C:CC, aquamaps:aquamaps, critHab:critHab, fwsRange:fwsRange, merged:merged, masked:masked, maskExt:maskExt, eco:eco,
+    rawB:rawB, rawM:rawM, rawF:rawF, rB:rB, rM:rM, rF:rF, avg:avg,
+    bMM:{A:gmm(rawB,"A"),B:gmm(rawB,"B")},
+    mMM:{A:gmm(rawM,"A"),B:gmm(rawM,"B")},
+    fMM:{A:gmm(rawF,"A"),B:gmm(rawF,"B")}
+  };
+}
+
+var STEPS = [
+  {id:"intro",title:"Overview",icon:"\uD83D\uDDFA\uFE0F"},
+  {id:"inputs",title:"Input Rasters",icon:"\uD83D\uDCCA"},
+  {id:"maxmerge",title:"MAX Merge",icon:"\u2B06\uFE0F"},
+  {id:"masking",title:"Spatial Masking",icon:"\u2702\uFE0F"},
+  {id:"floors",title:"Regulatory Floors",icon:"\uD83D\uDEE1\uFE0F"},
+  {id:"erweight",title:"Extinction Risk Weighting",icon:"\u2696\uFE0F"},
+  {id:"ecorescale",title:"Ecoregional Rescaling",icon:"\uD83C\uDF0A"},
+  {id:"component",title:"Component Averaging",icon:"\uD83D\uDCD0"},
+  {id:"final",title:"Final Score",icon:"\uD83C\uDFC1"}
+];
+
+function App() {
+  var stepState = useState(0);
+  var step = stepState[0], setStep = stepState[1];
+  var animState = useState(0);
+  var anim = animState[0], setAnim = animState[1];
+  var data = useMemo(genData, []);
+  var cs = 30;
+
+  var prev = function() { setStep(function(s){return Math.max(0,s-1);}); setAnim(0); };
+  var next = function() { setStep(function(s){return Math.min(STEPS.length-1,s+1);}); setAnim(0); };
+
+  useEffect(function() {
+    if (STEPS[step].id==="maxmerge" && anim<2) {
+      var t = setTimeout(function(){setAnim(function(p){return p+1;});}, 1200);
+      return function(){clearTimeout(t);};
+    }
+  }, [step, anim]);
+
+  useEffect(function() {
+    var handler = function(ev) {
+      if (ev.key === "ArrowRight" || ev.key === " ") { ev.preventDefault(); next(); }
+      if (ev.key === "ArrowLeft") { ev.preventDefault(); prev(); }
+    };
+    window.addEventListener("keydown", handler);
+    return function() { window.removeEventListener("keydown", handler); };
+  });
+
+  var suitSc = makeCS(0,100,"#1a1a3e","#22d3ee");
+  var critSc = function(v) { return v>=100?"#ef4444":v>=50?"#f59e0b":"#1a1a2e"; };
+  var rngSc = function(v) { return v>=1?"#374151":"#1a1a2e"; };
+
+  function renderStep() {
+    var sid = STEPS[step].id;
+    if (sid==="intro") { var items=[{label:"Species Models",desc:"8 datasets merged per species",color:C.cyan},{label:"MAX Merge",desc:"Highest value wins per pixel",color:C.green},{label:"Spatial Masking",desc:"Constrain to known ranges",color:C.amber},{label:"Regulatory Floors",desc:"MMPA (20) & MBTA (10) minimums",color:C.purple},{label:"Extinction Risk",desc:"Weight by conservation status",color:C.red},{label:"Ecoregional Rescaling",desc:"Normalize within ecoregions",color:C.orange},{label:"Component Averaging",desc:"8 categories, equal weights",color:C.pink},{label:"Final Score",desc:"Aggregate to Program Areas",color:C.accent}]; return e("div",{style:{maxWidth:700,margin:"0 auto"}},e("h2",{style:{color:C.text,fontSize:22,fontWeight:700,marginBottom:16}},"Marine Sensitivity Toolkit: Scoring Pipeline"),e("p",{style:{color:C.textDim,lineHeight:1.7,marginBottom:16}},"This walkthrough shows how the Marine Sensitivity Toolkit calculates sensitivity scores for offshore energy planning. The pipeline transforms species distribution models from 8 datasets into a single composite score per 0.05\u00B0 grid cell."),e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginTop:20}},items.map(function(it,i){return e("div",{key:i,onClick:function(){setStep(i+1);setAnim(0);},style:{background:C.panelLight,border:"1px solid "+C.border,borderRadius:8,padding:"10px 14px",cursor:"pointer",borderLeft:"3px solid "+it.color}},e("div",{style:{color:it.color,fontWeight:600,fontSize:13}},it.label),e("div",{style:{color:C.textDim,fontSize:11,marginTop:2}},it.desc));})),e("div",{style:{marginTop:24,padding:16,background:"#0d1520",borderRadius:8,border:"1px solid "+C.border}},e("div",{style:{color:C.textDim,fontSize:12,lineHeight:1.7}},e("strong",{style:{color:C.text}},"Pipeline summary: "),"Species Models \u2192 MAX Merge \u2192 Spatial Masking \u2192 Regulatory Floors \u2192 Extinction Risk Weighting \u2192 Ecoregional Rescaling \u2192 Component Averaging \u2192 Final Score"))); }
+    if (sid==="inputs") { return e("div",null,e("h3",{style:{color:C.text,fontSize:18,fontWeight:700,marginBottom:8}},"Step 1: Input Rasters"),e("p",{style:{color:C.textDim,fontSize:13,lineHeight:1.6,marginBottom:16}},"For each species, up to 8 source datasets provide spatial data. Values encode both presence and conservation status. Here we show 3 key inputs for one species on a 6\u00D78 grid."),e("div",{style:{display:"flex",gap:24,justifyContent:"center",flexWrap:"wrap"}},e("div",null,e(PixelGrid,{data:data.aquamaps,cols:data.C,cellSize:cs,colorScale:suitSc,label:"AquaMaps SDM [1\u2013100]"}),e("div",{style:{fontSize:10,color:C.cyan,marginTop:4,textAlign:"center"}},"Continuous suitability")),e("div",null,e(PixelGrid,{data:data.critHab,cols:data.C,cellSize:cs,colorScale:critSc,label:"NMFS Critical Habitat"}),e("div",{style:{display:"flex",gap:8,justifyContent:"center",marginTop:4,fontSize:10}},e("span",{style:{color:"#ef4444"}},"\u25A0 EN: 100"),e("span",{style:{color:"#f59e0b"}},"\u25A0 TN: 50"))),e("div",null,e(PixelGrid,{data:data.fwsRange,cols:data.C,cellSize:cs,colorScale:rngSc,label:"FWS Range [LC: 1]"}),e("div",{style:{fontSize:10,color:C.textDim,marginTop:4,textAlign:"center"}},"Binary mask with status code"))),e("div",{style:{marginTop:16,padding:12,background:"#0d1520",borderRadius:8,border:"1px solid "+C.border}},e("div",{style:{fontSize:12,color:C.textDim,lineHeight:1.6}},e("strong",{style:{color:C.amber}},"All 8 datasets: "),"AquaMaps SDM, NMFS Core Area, NMFS Critical Habitat, FWS Critical Habitat, FWS Range, BirdLife Range, IUCN Range, SWOT+DPS Turtle Range. Each encodes status: ESA Endangered \u2192 100, Threatened \u2192 50, LC \u2192 1, etc."))); }
+    if (sid==="maxmerge") { var oc=data.critHab.map(function(ch,i){return ch!==null&&ch>data.aquamaps[i]?i:-1;}).filter(function(i){return i>=0;}); return e("div",null,e("h3",{style:{color:C.text,fontSize:18,fontWeight:700,marginBottom:8}},"Step 2: MAX Merge Per Pixel"),e("p",{style:{color:C.textDim,fontSize:13,lineHeight:1.6,marginBottom:12}},"For each cell, the maximum value across all datasets is taken. If AquaMaps predicts 30% suitability but critical habitat assigns 100, the cell gets 100."),e(Formula,{tex:"v_merged(c) = max( v_aquamaps, v_critHab, v_fwsRange, ... )",note:"Per-cell maximum across all available datasets for this species"}),e("div",{style:{display:"flex",gap:16,justifyContent:"center",alignItems:"center",flexWrap:"wrap"}},e(PixelGrid,{data:data.aquamaps,cols:data.C,cellSize:cs-2,colorScale:suitSc,label:"AquaMaps",highlight:anim>=1?oc:null}),e("div",{style:{fontSize:24,color:C.textDim}},"+"),e(PixelGrid,{data:data.critHab,cols:data.C,cellSize:cs-2,colorScale:critSc,label:"Critical Habitat",highlight:anim>=1?oc:null}),e("div",{style:{fontSize:24,color:C.textDim}},"\u2192"),e("div",{style:{opacity:anim>=2?1:0.2,transition:"opacity 0.8s"}},e(PixelGrid,{data:data.merged,cols:data.C,cellSize:cs-2,colorScale:suitSc,label:"Merged (MAX)",highlight:anim>=2?oc:null}))),anim>=2?e("div",{style:{marginTop:12,padding:10,background:C.panelLight,borderRadius:6,textAlign:"center",fontSize:12,color:C.green}},"Highlighted cells: Critical Habitat values (100 or 50) override lower AquaMaps suitability"):null); }
+    if (sid==="masking") { return e("div",null,e("h3",{style:{color:C.text,fontSize:18,fontWeight:700,marginBottom:8}},"Step 3: Spatial Masking"),e("p",{style:{color:C.textDim,fontSize:13,lineHeight:1.6,marginBottom:12}},"Range maps constrain where AquaMaps predictions are valid. Cells outside that range are zeroed out \u2014 preventing AquaMaps from predicting presence beyond known distributions."),e("div",{style:{display:"flex",gap:24,justifyContent:"center",alignItems:"center",flexWrap:"wrap"}},e(PixelGrid,{data:data.merged,cols:data.C,cellSize:cs,colorScale:suitSc,label:"Before Masking"}),e("div",{style:{textAlign:"center"}},e("div",{style:{fontSize:32,marginBottom:4}},"\u2192"),e("div",{style:{fontSize:10,color:C.textDim}},"Apply mask")),e(PixelGrid,{data:data.masked,cols:data.C,cellSize:cs,colorScale:suitSc,label:"After Masking"})),e("div",{style:{marginTop:16,padding:12,background:"#0d1520",borderRadius:8,border:"1px solid "+C.border}},e("div",{style:{fontSize:12,color:C.textDim,lineHeight:1.6}},e("strong",{style:{color:C.amber}},"Mask priority: "),"SWOT+DPS (turtles) \u2192 BirdLife \u2192 IUCN. Cells outside the mask become null (species absent)."))); }
+    if (sid==="floors") { var boosted=data.masked.map(function(v){return v===null?null:(v<20?20:v);}); var fc=data.masked.map(function(v,i){return v!==null&&v<20?i:-1;}).filter(function(i){return i>=0;}); return e("div",null,e("h3",{style:{color:C.text,fontSize:18,fontWeight:700,marginBottom:8}},"Step 4: Regulatory Floors"),e("p",{style:{color:C.textDim,fontSize:13,lineHeight:1.6,marginBottom:12}},"Federal protections set minimum cell values. Marine mammals cannot drop below 20 (MMPA). Migratory birds: floor 10 (MBTA)."),e("div",{style:{display:"flex",gap:20,justifyContent:"center",marginBottom:16}},e("div",{style:{padding:"8px 16px",background:C.panelLight,borderRadius:8,border:"1px solid "+C.border,textAlign:"center"}},e("div",{style:{fontSize:11,color:C.textDim,marginBottom:4}},"MMPA (Marine Mammals)"),e("div",{style:{fontSize:24,fontWeight:700,color:C.purple}},"Floor: 20")),e("div",{style:{padding:"8px 16px",background:C.panelLight,borderRadius:8,border:"1px solid "+C.border,textAlign:"center"}},e("div",{style:{fontSize:11,color:C.textDim,marginBottom:4}},"MBTA (Migratory Birds)"),e("div",{style:{fontSize:24,fontWeight:700,color:C.amber}},"Floor: 10"))),e(Formula,{tex:"v(c) = max( v_merged(c), floor )",note:"MMPA floor=20 > MBTA floor=10; mammals have stronger recovery requirements"}),e("div",{style:{display:"flex",gap:24,justifyContent:"center",alignItems:"center"}},e(PixelGrid,{data:data.masked,cols:data.C,cellSize:cs,colorScale:suitSc,label:"Before Floor",highlight:fc}),e("div",{style:{fontSize:32,color:C.textDim}},"\u2192"),e(PixelGrid,{data:boosted,cols:data.C,cellSize:cs,colorScale:suitSc,label:"After MMPA Floor (20)",highlight:fc})),fc.length>0?e("div",{style:{marginTop:10,textAlign:"center",fontSize:11,color:C.purple}},fc.length+" cells boosted to minimum of 20"):null); }
+    if (sid==="erweight") { var mkBar=function(items){return items.map(function(it){return e("div",{key:it[0],style:{display:"flex",justifyContent:"space-between",marginBottom:4}},e("span",{style:{fontSize:11,color:C.textDim}},it[0]),e("div",{style:{display:"flex",alignItems:"center",gap:6}},e("div",{style:{width:it[1]*0.8,height:8,background:it[2],borderRadius:4}}),e("span",{style:{fontSize:11,color:it[2],fontWeight:600,width:24}},it[1])));})}; return e("div",null,e("h3",{style:{color:C.text,fontSize:18,fontWeight:700,marginBottom:8}},"Step 5: Extinction Risk Weighting"),e("p",{style:{color:C.textDim,fontSize:13,lineHeight:1.6,marginBottom:12}},"Each species\u2019 merged suitability is weighted by its extinction risk score. An Endangered species (ER=100) contributes its full suitability value. All species within a category are summed per cell."),e(Formula,{tex:"score(c, category) = \u03A3 [ er_score(s) \u00D7 v(s,c) / 100 ]",note:"Summed over all species s in category, per cell c"}),e("div",{style:{marginTop:16}},e("div",{style:{fontSize:13,color:C.text,fontWeight:600,marginBottom:12}},"Extinction Risk Score Framework:"),e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}},e("div",{style:{background:C.panelLight,borderRadius:8,padding:12,border:"1px solid "+C.border}},e("div",{style:{fontSize:11,color:C.red,fontWeight:600,marginBottom:8}},"US Federal (ESA)"),mkBar([["Endangered",100,"#ef4444"],["Threatened",50,"#f59e0b"],["MMPA only",20,"#8b5cf6"],["MBTA only",10,"#a78bfa"],["Default/LC",1,"#475569"]])),e("div",{style:{background:C.panelLight,borderRadius:8,padding:12,border:"1px solid "+C.border}},e("div",{style:{fontSize:11,color:C.orange,fontWeight:600,marginBottom:8}},"IUCN Red List"),mkBar([["Critically Endangered",50,"#ef4444"],["Endangered",25,"#f97316"],["Vulnerable",5,"#f59e0b"],["Near Threatened",2,"#84cc16"],["Least Concern",1,"#475569"]])))),e("div",{style:{marginTop:16,padding:12,background:"#0d1520",borderRadius:8,border:"1px solid "+C.border,fontSize:12,color:C.textDim,lineHeight:1.6}},e("strong",{style:{color:C.cyan}},"Example: "),"Blue Whale (ER=100, suit.=50%) + Humpback (ER=100, suit.=30%) \u2192 (100\u00D750 + 100\u00D730)/100 = ",e("strong",{style:{color:C.green}},"80"))); }
+    if (sid==="ecorescale") { return e("div",null,e("h3",{style:{color:C.text,fontSize:18,fontWeight:700,marginBottom:8}},"Step 6: Ecoregional Rescaling"),e("p",{style:{color:C.textDim,fontSize:13,lineHeight:1.6,marginBottom:12}},"Raw scores are rescaled to 0\u2013100 within each BOEM Ecoregion. This prevents species-rich upwelling zones from dominating globally."),e(Formula,{tex:"score'(c) = [ score(c) \u2212 min_eco ] / [ max_eco \u2212 min_eco ] \u00D7 100",note:"min_eco and max_eco are the min and max raw scores within that ecoregion"}),e("div",{style:{display:"flex",gap:8,justifyContent:"center",marginBottom:12}},e("span",{style:{fontSize:11,padding:"3px 10px",background:"#f59e0b22",border:"1px solid #f59e0b44",borderRadius:12,color:"#f59e0b"}},"Ecoregion A (left)"),e("span",{style:{fontSize:11,padding:"3px 10px",background:"#3b82f622",border:"1px solid #3b82f644",borderRadius:12,color:"#3b82f6"}},"Ecoregion B (right)")),e("div",{style:{fontSize:12,color:C.amber,fontWeight:600,marginBottom:6,marginTop:8}},"Bird extinction risk (example):"),e("div",{style:{display:"flex",gap:16,justifyContent:"center",alignItems:"center",flexWrap:"wrap"}},e("div",{style:{position:"relative"}},e(PixelGrid,{data:data.rawB,cols:data.C,cellSize:cs,colorScale:spectral,label:"Raw Score"}),e(EcoOverlay,{data:data.eco,cols:data.C,cellSize:cs})),e("div",{style:{textAlign:"center"}},e("div",{style:{fontSize:10,color:C.textDim,marginBottom:4}},"Min/Max per Ecoregion"),e("div",{style:{fontSize:10,padding:"4px 8px",background:"#f59e0b11",borderRadius:4,marginBottom:4}},e("span",{style:{color:"#f59e0b"}},"A: "+data.bMM.A.min+"\u2013"+data.bMM.A.max)),e("div",{style:{fontSize:10,padding:"4px 8px",background:"#3b82f611",borderRadius:4}},e("span",{style:{color:"#3b82f6"}},"B: "+data.bMM.B.min+"\u2013"+data.bMM.B.max)),e("div",{style:{fontSize:28,color:C.textDim,marginTop:4}},"\u2192")),e("div",{style:{position:"relative"}},e(PixelGrid,{data:data.rB,cols:data.C,cellSize:cs,colorScale:spectral,label:"Rescaled [0\u2013100]"}),e(EcoOverlay,{data:data.eco,cols:data.C,cellSize:cs}))),e("div",{style:{marginTop:12,padding:10,background:"#0d1520",borderRadius:8,border:"1px solid "+C.border,fontSize:11,color:C.textDim,lineHeight:1.6}},e("strong",{style:{color:C.text}},"Key insight: "),"A score of 100 = the most sensitive cell ",e("em",null,"within that ecoregion"),", not globally. For boundary cells, values are area-weighted by ecoregion fraction.")); }
+    if (sid==="component") { return e("div",null,e("h3",{style:{color:C.text,fontSize:18,fontWeight:700,marginBottom:8}},"Step 7: Component Averaging"),e("p",{style:{color:C.textDim,fontSize:13,lineHeight:1.6,marginBottom:12}},"The 8 rescaled components (7 species categories + primary productivity) are averaged with equal weights."),e(Formula,{tex:"score(cell) = AVG( bird', coral', fish', invert', mammal', other', turtle', primprod' )",note:"Each component already rescaled [0-100] within its ecoregion"}),e("div",{style:{display:"flex",gap:12,justifyContent:"center",alignItems:"center",flexWrap:"wrap",marginTop:8}},e(PixelGrid,{data:data.rB,cols:data.C,cellSize:24,colorScale:spectral,label:"Bird"}),e("div",{style:{fontSize:18,color:C.textDim}},"+"),e(PixelGrid,{data:data.rM,cols:data.C,cellSize:24,colorScale:spectral,label:"Mammal"}),e("div",{style:{fontSize:18,color:C.textDim}},"+"),e(PixelGrid,{data:data.rF,cols:data.C,cellSize:24,colorScale:spectral,label:"Fish"}),e("div",{style:{fontSize:18,color:C.textDim}},"="),e(PixelGrid,{data:data.avg,cols:data.C,cellSize:24,colorScale:spectral,label:"Average"})),e("div",{style:{marginTop:16}},e("div",{style:{fontSize:12,color:C.text,fontWeight:600,marginBottom:8}},"All 8 components (equal weight each):"),e("div",{style:{display:"flex",gap:6,flexWrap:"wrap",justifyContent:"center"}},Object.keys(SP_COLORS).map(function(cat){return e("div",{key:cat,style:{padding:"4px 10px",background:SP_COLORS[cat]+"22",border:"1px solid "+SP_COLORS[cat]+"44",borderRadius:12,fontSize:11,color:SP_COLORS[cat],fontWeight:500}},cat==="primprod"?"Primary Prod.":cat.charAt(0).toUpperCase()+cat.slice(1));})))); }
+    if (sid==="final") { var vals=data.avg.filter(function(v){return v!==null;}); var mean=Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length); return e("div",null,e("h3",{style:{color:C.text,fontSize:18,fontWeight:700,marginBottom:8}},"Step 8: Final Score & Aggregation"),e("p",{style:{color:C.textDim,fontSize:13,lineHeight:1.6,marginBottom:12}},"Cell-level scores are aggregated to Program Areas, Subregions, and Ecoregions using area-weighted averaging (0.05\u00B0 resolution)."),e(Formula,{tex:"score(zone) = \u03A3[ score'(c) \u00D7 A(c) ] / \u03A3[ A(c) ]",note:"Where A(c) = cell area; aggregated over all cells c within the zone"}),e("div",{style:{textAlign:"center",marginTop:20}},e(PixelGrid,{data:data.avg,cols:data.C,cellSize:cs,colorScale:spectral,label:"Cell-Level Final Scores"}),e("div",{style:{marginTop:16,display:"inline-block",padding:"16px 32px",background:"linear-gradient(135deg, "+C.panelLight+", #1a2744)",borderRadius:12,border:"2px solid "+C.accent}},e("div",{style:{fontSize:11,color:C.textDim,marginBottom:4}},"Area-Weighted Mean \u2192 Program Area Score"),e("div",{style:{fontSize:40,fontWeight:700,color:C.accent}},e(AnimNum,{value:mean})),e("div",{style:{fontSize:11,color:C.textDim}},"out of 100"))),e("div",{style:{marginTop:20,display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}},[{l:"Program Areas",d:"20 BOEM planning regions",i:"\uD83D\uDDFA\uFE0F"},{l:"Subregions",d:"Alaska, Pacific, Gulf, USA",i:"\uD83C\uDFD4\uFE0F"},{l:"Ecoregions",d:"12 BOEM ecological zones",i:"\uD83C\uDF0A"}].map(function(z){return e("div",{key:z.l,style:{background:C.panelLight,borderRadius:8,padding:12,border:"1px solid "+C.border,textAlign:"center"}},e("div",{style:{fontSize:20}},z.i),e("div",{style:{fontSize:12,color:C.text,fontWeight:600,marginTop:4}},z.l),e("div",{style:{fontSize:10,color:C.textDim}},z.d));}))); }
+  }
+
+  return e("div",{style:{background:C.bg,color:C.text,fontFamily:"'Inter',system-ui,sans-serif",minHeight:600}},
+    e("div",{style:{background:"linear-gradient(90deg,"+C.panel+",#0f1d35)",borderBottom:"1px solid "+C.border,padding:"12px 20px",display:"flex",alignItems:"center",justifyContent:"space-between"}},
+      e("div",{style:{display:"flex",alignItems:"center",gap:12}},e("div",{style:{fontSize:20}},"\uD83C\uDF0A"),e("div",null,e("div",{style:{fontSize:15,fontWeight:700,color:C.text}},"Marine Sensitivity Toolkit"),e("div",{style:{fontSize:11,color:C.textDim}},"Scoring Pipeline Walkthrough"))),
+      e("div",{style:{fontSize:11,color:C.textDim}},"Step "+(step+1)+" of "+STEPS.length)
+    ),
+    e("div",{style:{display:"flex",overflowX:"auto",background:C.panel,borderBottom:"1px solid "+C.border,padding:"0 8px"}},
+      STEPS.map(function(s,i){return e("button",{key:s.id,onClick:function(){setStep(i);setAnim(0);},style:{background:i===step?C.accentDim:"transparent",border:"none",borderBottom:i===step?"2px solid "+C.accent:"2px solid transparent",color:i===step?C.accent:i<step?C.green:C.textMuted,padding:"8px 12px",fontSize:11,fontWeight:i===step?700:500,cursor:"pointer",whiteSpace:"nowrap",transition:"all 0.2s",display:"flex",alignItems:"center",gap:"4px"}},e("span",{style:{fontSize:13}},s.icon),e("span",null,s.title));})
+    ),
+    e("div",{style:{padding:"20px 24px",maxWidth:900,margin:"0 auto",paddingBottom:70}},renderStep()),
+    e("div",{style:{background:C.panel,borderTop:"1px solid "+C.border,padding:"10px 24px",display:"flex",justifyContent:"space-between",alignItems:"center"}},
+      e("button",{onClick:prev,disabled:step===0,style:{background:step===0?C.panelLight:C.accent,border:"none",borderRadius:8,color:step===0?C.textMuted:"#fff",padding:"8px 20px",fontSize:13,fontWeight:600,cursor:step===0?"default":"pointer"}},"\u2190 Previous"),
+      e("div",{style:{display:"flex",gap:4}},STEPS.map(function(_,i){return e("div",{key:i,onClick:function(){setStep(i);setAnim(0);},style:{width:8,height:8,borderRadius:"50%",background:i===step?C.accent:i<step?C.green:C.textMuted,cursor:"pointer",transition:"all 0.3s"}});})),
+      e("button",{onClick:next,disabled:step===STEPS.length-1,style:{background:step===STEPS.length-1?C.panelLight:C.accent,border:"none",borderRadius:8,color:step===STEPS.length-1?C.textMuted:"#fff",padding:"8px 20px",fontSize:13,fontWeight:600,cursor:step===STEPS.length-1?"default":"pointer"}},"Next \u2192")
+    )
+  );
+}
+
+ReactDOM.render(e(App), document.getElementById("mst-walkthrough-root"));
+</script>

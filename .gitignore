@@ -9,5 +9,6 @@ _book
 site_libs/
 *_files/
 *.html
+!_scoring-walkthrough-app.html
 
 **/*.quarto_ipynb
