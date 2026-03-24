@@ -27,6 +27,18 @@ Division by 100 converts the product from a 0--10,000 range back to a 0--100 sca
 
 In plain terms, for each cell in the ocean the MST adds up the sensitivity contributions of all species found there. If a cell has many species that are both likely to be present and at high risk of extinction, it gets a higher sensitivity score. This helps identify places where rare or threatened species are concentrated.
 
+### Two Scoring Approaches
+
+The formula above applies to **most species** (fish, birds, mammals, corals, invertebrates, other), where `er_score` is a **scalar** value per species (1--100) and `v` is the MAX-merged suitability value.
+
+For **sea turtles**, extinction risk is already embedded in the merged model values via the multiplicative merge (see @sec-model-merging, Step 2b). In this case the scoring formula simplifies to:
+
+$$
+\text{score}_{c,g} = \sum_{s=1}^{S_g} v_{merged,s,c}
+$$ {#eq-cell-score-turtle}
+
+because `er_score = 100` is used as a pass-through multiplier (dividing by 100 cancels it out). The spatially varying extinction risk from the SWOT+DPS raster is already encoded in $v_{merged}$, so cells within an Endangered DPS contribute higher values than cells within a Threatened DPS, even for the same species and suitability level.
+
 ## Metric Keys
 
 Cell-level scores are stored as named metrics in the DuckDB database:

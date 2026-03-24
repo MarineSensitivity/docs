@@ -50,6 +50,34 @@ $$ {#eq-merge-max}
 
 This ensures that the most informative (highest confidence) prediction is used. For example, if AquaMaps predicts 30% suitability but NMFS has designated the cell as critical habitat for an endangered species (100%), the merged value is 100%.
 
+### Step 2b: Turtle Multiplicative Merge
+
+For **sea turtles** (6 species), the merge uses a multiplicative approach instead of simple MAX. The SWOT+DPS dataset provides a spatially varying extinction risk (ER) surface where cell values encode the ESA listing status of the Distinct Population Segment (DPS) that overlaps each cell (Endangered = 100, Threatened = 50). This ER surface is multiplied with the suitability surface (from AquaMaps or other SDMs) during merging:
+
+$$
+v_{merged,c} = \max\!\Big(1,\; \mathrm{round}\!\Big(\frac{v_{er,c} \times v_{suit,c}}{100}\Big)\Big)
+$$ {#eq-merge-turtle}
+
+where:
+
+- $v_{er,c}$ = extinction risk value from SWOT+DPS raster (EN: 100, TN: 50)
+- $v_{suit,c}$ = suitability value from AquaMaps SDM (1--100)
+
+Critical habitat cells (NMFS or FWS designated) override via MAX — if the critical habitat value exceeds the multiplicative product, the higher value is used.
+
+Because extinction risk is already embedded in the merged values, these species receive `er_score = 100` at scoring time as a pass-through multiplier (flagged via `is_er_spatial`). This contrasts with the standard approach where all species receive a single scalar extinction risk weight applied during scoring (see @sec-scoring).
+
+::: {.callout-note}
+## Two modeling approaches
+
+The MST uses two distinct merge strategies:
+
+- **Standard (most species)**: MAX across input rasters, then multiply by a **scalar** extinction risk score at scoring time
+- **Turtles only**: Multiply suitability raster by an **extinction risk raster** during merging, embedding spatially varying ER directly in the merged model
+
+See the [Scoring Walkthrough](scoring-walkthrough.qmd) for an animated side-by-side comparison.
+:::
+
 ### Step 3: Spatial Masking
 
 When a range map or designated habitat exists for a species, the merged model is **constrained to the spatial extent** of these mask datasets. The mask is formed as the union of all available `is_mask = TRUE` datasets for that species.
@@ -66,7 +94,13 @@ $$
 v_{c} = \max(v_{merged,c},\; 20)
 $$ {#eq-mmpa-floor}
 
-This ensures that every cell where a marine mammal is present has a minimum value of 20%, reflecting the legal protection that MMPA affords regardless of ESA status.
+This ensures that every cell where a marine mammal is present has a minimum value of 20%, reflecting the legal protection that MMPA affords regardless of ESA status. This includes both NMFS-managed species (whales, dolphins, seals, sea lions) and FWS-managed species (walrus, polar bear, sea otter, manatee, dugong).
+
+::: {.callout-important}
+## v5 fix: FWS-managed marine mammals
+
+As of v5, the MMPA floor is correctly applied to **all** marine mammals regardless of managing agency. Earlier versions incorrectly excluded FWS-managed species (walrus, polar bear, sea otter, manatee, dugong) from this floor because the `is_mmpa` flag was derived only from the NMFS Species Directory.
+:::
 
 ### Step 5: MBTA Spatial Floor
 
