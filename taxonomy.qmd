@@ -65,8 +65,9 @@ Not all taxa in the database are included in the final analysis. A species is fl
 - is classified as marine (based on WoRMS `isMarine` flag, or BirdLife seabird classification)
 - is not extinct (WoRMS `isExtinct` or IUCN Red List `EX` status)
 - has cells overlapping at least one BOEM Program Area
+- expert range map (if available) intersects the US EEZ — species whose IUCN range falls entirely outside US waters are excluded even if AquaMaps predicts suitable habitat in the EEZ, since these predictions are edge-of-range model artifacts not supported by expert assessment
 
-This filter yields **9,819 valid species** from approximately 17,333 total taxa across all datasets.
+This filter yields **9,424 valid species** from approximately 17,561 total taxa across all datasets.
 
 ## Key Function
 

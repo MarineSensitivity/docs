@@ -86,6 +86,12 @@ For most taxa, the IUCN range map serves as the global mask. For **sea turtles**
 
 This prevents the AquaMaps SDM (which often has broad environmental envelope predictions) from extending species presence far beyond their known range. Cells outside the mask are set to zero (species absent). This ensures that suitable habitat is not included outside known ranges, so that model predictions align with expert knowledge of where species actually occur.
 
+::: {.callout-important}
+## v6 fix: species with ranges outside the US EEZ
+
+Species whose IUCN expert range polygon produces zero cells when rasterized to the US EEZ grid now receive a 0-cell `rng_iucn` entry in the database (rather than being silently skipped during ingestion). The merge clips AquaMaps predictions against this empty mask, producing zero merged cells, and the species is flagged `is_ok=FALSE`. This excluded 371 species (343 fish, 20 invertebrates, 6 corals, 2 mammals) that had spurious AquaMaps edge-of-range predictions in US waters despite IUCN expert assessment placing them entirely outside the US EEZ. The quantitative impact on Program Area scores is negligible because the removed species had near-zero suitability values.
+:::
+
 ### Step 4: MMPA Spatial Floor
 
 For species protected under the Marine Mammal Protection Act (all marine mammals), a spatial minimum floor is applied:
@@ -136,4 +142,4 @@ After merging, species are flagged as valid (`is_ok = TRUE`) based on the criter
 - species category is not "reptile" (except sea turtles, which are reclassified as category "reptile")
 - has cells overlapping at least one BOEM Program Area
 
-This filtering yields **9,819 valid species** that contribute to the final sensitivity scores.
+This filtering yields **9,424 valid species** that contribute to the final sensitivity scores.
