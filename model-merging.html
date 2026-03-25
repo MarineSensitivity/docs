@@ -548,6 +548,19 @@ v_{merged,c} = \max\!\Big(1,\; \mathrm{round}\!\Big(\frac{v_{er,c} \times v_{sui
 <p>When a range map or designated habitat exists for a species, the merged model is <strong>constrained to the spatial extent</strong> of these mask datasets. The mask is formed as the union of all available <code>is_mask = TRUE</code> datasets for that species.</p>
 <p>For most taxa, the IUCN range map serves as the global mask. For <strong>sea turtles</strong>, the SWOT+DPS dataset (<code>rng_turtle_swot_dps</code>; see <a href="data-sources.html#sec-swot-dps" class="quarto-xref"><span>Section 3.2.8</span></a>) replaces the IUCN range as the global mask, providing more realistic distributions based on expert-reviewed SWOT polygons with ESA-based DPS status encoding. NMFS Critical Habitat and FWS Critical Habitat also contribute to the mask when designated.</p>
 <p>This prevents the AquaMaps SDM (which often has broad environmental envelope predictions) from extending species presence far beyond their known range. Cells outside the mask are set to zero (species absent). This ensures that suitable habitat is not included outside known ranges, so that model predictions align with expert knowledge of where species actually occur.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>v6 fix: species with ranges outside the US EEZ
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Species whose IUCN expert range polygon produces zero cells when rasterized to the US EEZ grid now receive a 0-cell <code>rng_iucn</code> entry in the database (rather than being silently skipped during ingestion). The merge clips AquaMaps predictions against this empty mask, producing zero merged cells, and the species is flagged <code>is_ok=FALSE</code>. This excluded 371 species (343 fish, 20 invertebrates, 6 corals, 2 mammals) that had spurious AquaMaps edge-of-range predictions in US waters despite IUCN expert assessment placing them entirely outside the US EEZ. The quantitative impact on Program Area scores is negligible because the removed species had near-zero suitability values.</p>
+</div>
+</div>
 </section>
 <section id="step-4-mmpa-spatial-floor" class="level3" data-number="6.1.5">
 <h3 data-number="6.1.5" class="anchored" data-anchor-id="step-4-mmpa-spatial-floor"><span class="header-section-number">6.1.5</span> Step 4: MMPA Spatial Floor</h3>
@@ -604,7 +617,7 @@ v_{c} = \max(v_{merged,c},\; 10)
 <li>species category is not “reptile” (except sea turtles, which are reclassified as category “reptile”)</li>
 <li>has cells overlapping at least one BOEM Program Area</li>
 </ul>
-<p>This filtering yields <strong>9,819 valid species</strong> that contribute to the final sensitivity scores.</p>
+<p>This filtering yields <strong>9,424 valid species</strong> that contribute to the final sensitivity scores.</p>
 
 
 </section>
