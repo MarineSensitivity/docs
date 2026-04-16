@@ -20,6 +20,7 @@ book:
   date-format: "YYYY-MM-DD"
   repo-url: https://github.com/MarineSensitivity/docs/
   repo-actions: [edit]
+  favicon: images/favicon.ico
   downloads: [pdf, docx]
   sharing: [twitter, facebook]
   # google-analytics: "G-V3HZN14Z8G" # TODO: add Google Analytics
