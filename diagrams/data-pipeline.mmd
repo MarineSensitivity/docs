@@ -1,0 +1,54 @@
+flowchart LR
+  classDef src    fill:#e8f0fe,stroke:#1a73e8,color:#111;
+  classDef proc   fill:#fff3e0,stroke:#e67e22,color:#111;
+  classDef store  fill:#f3e5f5,stroke:#6a1b9a,color:#111;
+  classDef served fill:#e6f7e6,stroke:#2e7d32,color:#111;
+
+  subgraph sources[Source datasets]
+    AM[AquaMaps]:::src
+    NMFS[NMFS / FWS listings<br/>+ critical habitat]:::src
+    IUCN[IUCN RedList<br/>assessments + ranges]:::src
+    BL[BirdLife distributions]:::src
+    Taxa[WoRMS / eBird taxa]:::src
+    Zones[BOEM Program Areas<br/>+ Ecoregions + Planning Areas]:::src
+  end
+
+  subgraph ingest[Ingest — Quarto workflows]
+    IQ[ingest_*.qmd<br/>+ merge_models.qmd]:::proc
+  end
+
+  subgraph score[Scoring — workflows]
+    CS[calc_scores.qmd<br/>→ cell_metric<br/>→ zone_metric]:::proc
+  end
+
+  subgraph build[Derived build artifacts]
+    COG[make_cellid_cog.py<br/>one-shot]:::proc
+    PM[ply_* → .pmtiles<br/>tippecanoe + gpkg]:::proc
+  end
+
+  subgraph authoritative[Authoritative store]
+    DB[(sdm.duckdb)]:::store
+    CID[(r_cellid.tif)]:::store
+    PMF[(*.pmtiles)]:::store
+  end
+
+  subgraph serving[Serving]
+    TF[TiTiler factory +<br/>Varnish]:::served
+    FS[Caddy file server<br/>/pmtiles]:::served
+    APP[mapgl / mapsp<br/>Shiny apps]:::served
+  end
+
+  sources --> IQ --> DB
+  Taxa    --> IQ
+  Zones   --> IQ
+  DB --> CS --> DB
+  DB --> COG --> CID
+  Zones --> PM --> PMF
+  CID --> TF
+  DB  --> TF
+  PMF --> FS
+  TF  --> APP
+  FS  --> APP
+  DB  --> APP
+
+%% mmdc -i diagrams/data-pipeline.mmd --theme default --backgroundColor transparent --scale 8 -o diagrams/data-pipeline.png

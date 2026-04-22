@@ -1,19 +1,45 @@
-architecture-beta
-    group api(cloud)[API]
+flowchart LR
+  classDef store   fill:#e8f0fe,stroke:#1a73e8,color:#111;
+  classDef svc     fill:#fff3e0,stroke:#e67e22,color:#111;
+  classDef client  fill:#e6f7e6,stroke:#2e7d32,color:#111;
+  classDef edge    fill:#f3e5f5,stroke:#6a1b9a,color:#111;
 
-    service server(fa:fa-server)[Server] in api
-    service db(database)[Database] in api
-    service disk1(disk)[Storage] in api
-    service disk2(disk)[Storage] in api
-    service server(server)[Server] in api
+  subgraph client_grp[Client browser]
+    Mapbox[mapbox-gl<br/>Shiny UI]:::client
+  end
 
-    db:L -- R:server
-    disk1:T -- B:server
-    disk2:T -- B:db
+  subgraph edge_grp[Edge HTTPS — Caddy reverse proxy]
+    Caddy[app / api / titiler / titilecache /<br/>file / pmtiles subdomains]:::edge
+  end
 
-%% render in Terminal:
-%%   mmdc -i diagrams/architecture.mmd -o diagrams/architecture.svg
-%%   dark [t]heme, transparent [b]ackground
-%% https://quarto.org/docs/authoring/diagrams.html#using-mermaids-built-in-themes
-%%   mmdc -i diagrams/architecture.mmd -o diagrams/architecture.svg -t dark -b transparent
-%%   mmdc -i diagrams/architecture.mmd -o diagrams/architecture.svg -t default -b transparent
+  subgraph app_grp[Shiny server]
+    Shiny[rstudio / shiny-server<br/>apps: mapgl, mapsp, ...]:::svc
+  end
+
+  subgraph tile_grp[Raster tiling]
+    Varnish[titilecache<br/>Varnish 7d TTL]:::svc
+    TiTiler[titiler custom factory<br/>/msens/* routes]:::svc
+    CellIdCOG[(r_cellid.tif<br/>single-band uint32<br/>-180..180° WGS84)]:::store
+  end
+
+  subgraph data_grp[Source of truth]
+    DuckDB[(sdm.duckdb<br/>cell_metric / zone_metric /<br/>zone / zone_cell /<br/>taxon / taxon_model / model_cell)]:::store
+  end
+
+  subgraph static_grp[Static vector tiles]
+    PMTiles[(.pmtiles on /share<br/>ply_programareas_2026 /<br/>ply_ecoregions_2025 / ...)]:::store
+  end
+
+  Mapbox -- raster XYZ --> Caddy
+  Mapbox -- PMTiles range GET --> Caddy
+  Mapbox -- Shiny websocket --> Caddy
+  Caddy  -- tiles --> Varnish
+  Caddy  -- .pmtiles bytes --> PMTiles
+  Caddy  -- app --> Shiny
+  Varnish -- miss --> TiTiler
+  TiTiler -- read-only SQL --> DuckDB
+  TiTiler -- nearest-neighbor read --> CellIdCOG
+  Shiny   -- read-only --> DuckDB
+  Shiny   -- match_expr paint --> Mapbox
+
+%% mmdc -i diagrams/architecture.mmd --theme default --backgroundColor transparent --scale 8 -o diagrams/architecture.png

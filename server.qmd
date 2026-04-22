@@ -1,16 +1,19 @@
 ---
-title: Server
 description: "server software configuration using Docker"
 image: /figures/components/server.png
 output: html_document
-editor_options: 
+editor_options:
   chunk_output_type: console
-include-in-header: 
+include-in-header:
   text: |
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 ---
 
+# Server {#sec-server}
+
 The server is for serving up any web services outside those of Github (e.g., [website](https://marinesensitivity.org/), [docs](https://marinesensitivity.org/docs) and R package [msens](https://marinesensitivity.org/msens)) using [Docker](https://www.docker.com/) (see the [docker-compose.yml](https://github.com/MarineSensitivity/server/blob/main/docker-compose.yml); with reverse proxying from subdomains to ports by [Caddy](https://caddyserver.com)).
+
+The full architecture is summarized in the [Software overview](software.qmd). This chapter documents the concrete services running on the host and how Caddy maps subdomains to container ports.
 
 <!--
 ![Testing architecture.](diagrams/architecture.svg){#fig-arch}
@@ -42,18 +45,19 @@ The domain name server (DNS) records are managed by [SquareSpace](https://accoun
 | \@        | A     | 185.199.110.153       |
 | \@        | A     | 185.199.109.153       |
 | \@        | A     | 185.199.108.153       |
-| api       | A     | 100.25.173.0          |
-| file      | A     | 100.25.173.0          |
-| msens1    | A     | 100.25.173.0          |
-| pgadmin   | A     | 100.25.173.0          |
-| rest      | A     | 100.25.173.0          |
-| rstudio   | A     | 100.25.173.0          |
-| shiny     | A     | 100.25.173.0          |
-| swagger   | A     | 100.25.173.0          |
-| tile      | A     | 100.25.173.0          |
-| tilecache | A     | 100.25.173.0          |
-| titiler   | A     | 100.25.173.0          |
-| www       | CNAME | marinesensitivity.org |
+| api          | A     | 100.25.173.0          |
+| app          | A     | 100.25.173.0          |
+| file         | A     | 100.25.173.0          |
+| msens1       | A     | 100.25.173.0          |
+| pgadmin      | A     | 100.25.173.0          |
+| pmtiles      | A     | 100.25.173.0          |
+| rstudio      | A     | 100.25.173.0          |
+| shiny        | A     | 100.25.173.0          |
+| tile         | A     | 100.25.173.0          |
+| tilecache    | A     | 100.25.173.0          |
+| titiler      | A     | 100.25.173.0          |
+| titilecache  | A     | 100.25.173.0          |
+| www          | CNAME | marinesensitivity.org |
 
 ## Caddyfile
 
@@ -65,62 +69,46 @@ The Caddyfile parameterizes the reverse proxying between the external subdomains
 
 ## Services
 
-The server is running the following services:
+The server is running the following services. Subdomains with 🔒 are internal (admin / development); others are public.
 
-<!-- 
-TODO: + container/services with document listing and categories:
+### App + data plane
 
-- rstudio
-  tags: admin
-- pgadmin
-  tags: admin
-- shiny
-  tags: app
-- api
-  tags: API
-- swagger
-  tags: API
-- tile
-  tags: API
-
-Explanation of categories:
-
-- admin: internal for administration and development
-- app: external for general users to interact with
-- API: external for other applications and data scientists to interact with
-- docs: external reference for general and technical users
--->
-
--   [**RStudio**](https://rstudio.marinesensitivity.org)\
-    *integrated development environment (IDE) to code and debug directly on the server*\
-    ![](figures/server/rstudio.png){width="300"}\
-    [More info..](https://posit.co/products/open-source/rstudio-server/)
-
--   [**Shiny**](https://shiny.marinesensitivity.org)\
-    *interactive applications*\
-    e.g., [**shiny**.marinesensitivity.org/**map**](https://shiny.marinesensitivity.org/map)\
+-   [**app**](https://app.marinesensitivity.org) / [**shiny**](https://shiny.marinesensitivity.org)\
+    *interactive Shiny applications* (`mapgl`, `mapsp`, ...) — proxied to the `rstudio` container's Shiny Server on internal port 3838\
     ![](figures/server/shiny.png){width="300"}\
-    [More info..](https://shiny.posit.co/)
+    [Shiny Server docs](https://shiny.posit.co/)
 
--   [**PGadmin**](https://pgadmin.marinesensitivity.org)\
-    *PostGreSQL database administration interface*\
-    ![](figures/server/pgadmin.png){width="300"}\
-    [More info..](https://www.pgadmin.org/)
+-   [**file**](https://file.marinesensitivity.org)\
+    *static file server for PMTiles archives, report downloads, reference GeoPackages* — served by Caddy's `file_server` directive directly from the `/share` bind-mount. This replaces the old `pg_tileserv` vector-tile path for Program Areas, Ecoregions, Planning Areas, protractions, blocks and aliquots; each layer is a single `.pmtiles` file that the browser range-reads for only the tiles it needs.
+
+-   [**titiler**](https://titiler.marinesensitivity.org) + [**titilecache**](https://titilecache.marinesensitivity.org) 🔒🟢\
+    *custom msens [TiTiler](https://developmentseed.org/titiler/) factory fronted by a [Varnish](https://varnish-cache.org) cache.*\
+    The factory exposes `/msens/*` routes that execute a validated SELECT against DuckDB, look the result up against a pre-baked cell-id COG, and return on-the-fly colorized PNG tiles (see @sec-apis). `titilecache` keys on the full URL (including base64 SQL) and caches each tile for 7 days with `default_keep=604800`; the custom VCL (`server/varnish/titiler.vcl`) normalizes query-param order via `std.querysort()` so semantically-identical URLs share a cache entry, strips cookies / authorization (the factory is stateless), and adds an `X-Cache: HIT | MISS` debug header.
 
 -   [**api**](https://api.marinesensitivity.org)\
-    *custom API: using R plumber*\
-    ![](figures/server/api.png){width="300"}\
-    [More info..](https://www.rplumber.io/)
+    *custom R [`plumber`](https://www.rplumber.io) API* for programmatic access to DuckDB — see @sec-apis\
+    ![](figures/server/api.png){width="300"}
 
--   [**swagger**](https://swagger.marinesensitivity.org)\
-    *generic database API: using PostGREST*\
-    ![](figures/server/swagger.png){width="300"}\
-    [More info..](https://postgrest.org/en/stable/)
+### Admin
 
--   [**tile**](https://tile.marinesensitivity.org)\
-    *spatial database API: using pg_tileserv for serving vector tiles*\
-    ![](figures/server/tile.png){width="300"}\
-    [More info..](https://github.com/CrunchyData/pg_tileserv)
+-   [**rstudio**](https://rstudio.marinesensitivity.org) 🔒\
+    *integrated development environment (IDE) to code and debug directly on the server.*\
+    ![](figures/server/rstudio.png){width="300"}\
+    [Posit RStudio Server](https://posit.co/products/open-source/rstudio-server/)
 
+-   [**pgadmin**](https://pgadmin.marinesensitivity.org) 🔒\
+    *PostgreSQL database administration interface* — used for legacy apps that still connect to PostgreSQL (see below).\
+    ![](figures/server/pgadmin.png){width="300"}\
+    [pgAdmin](https://www.pgadmin.org/)
+
+### Legacy (carried for backward-compat; not in the critical path)
+
+As of 2026-04, the new raster tile path (`titiler` + `titilecache`) and PMTiles-via-`file` replace what was previously handled by PostgreSQL + `pg_tileserv`. The **authoritative store is now DuckDB** (`/share/data/big/latest/sdm.duckdb`). The following services remain in `docker-compose.yml` only for backward compatibility with a small set of pre-2026 apps (`indicators`, `bird_hotspots`) that still read from PostgreSQL. New app code should target DuckDB + the TiTiler factory + PMTiles.
+
+-   **postgis** (`postgis/postgis:latest`, internal 5432)\
+    *PostgreSQL + PostGIS* — formerly the primary spatial database; now read by legacy apps only.
+-   **tile** (`pramsey/pg_tileserv:latest`, internal 7800) + **tilecache** (Varnish, 6081)\
+    *vector tiles from PostGIS tables* — superseded by static PMTiles served by Caddy.
+-   **rest** and **swagger** — PostgREST + Swagger UI, both **commented out** in `docker-compose.yml`.
 
 {{< fa ellipsis-h >}} <!-- init fontawesome to get in mermaid diagrams -->

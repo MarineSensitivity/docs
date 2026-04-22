@@ -1,34 +1,61 @@
 ---
-title: Database
-description: "PostgreSQL database extended spatially with PostGIS"
+description: "DuckDB as the authoritative store for species distribution models and derived scores"
 image: /figures/components/db.png
 output: html_document
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
-## Table and Column Naming Conventions
+# Database {#sec-db}
 
-- Table names are plural and use all lower case.
-- Unique identifiers are suffixed with:
-  - `*_id` for unique integer keys;
-  - `*_key` for unique string keys;
-  - `*_seq` for auto-incrementing sequence integer keys.
-- Column names are singular and use snake_case.
-- Foreign keys are named with the singular form of the table they reference, followed by _id.
-- Primary keys are named id.
+The **source of truth** for the Marine Sensitivity Toolkit is a single [DuckDB](https://duckdb.org) file, `sdm.duckdb`, stored on the server at `/share/data/big/latest/sdm.duckdb` (a symlink to the current versioned directory, currently `v6`). DuckDB is a columnar, embedded analytic database — it's fast enough to power live `cell_metric` queries from the TiTiler factory while also being a single-file artifact that can be copied, versioned and served read-only to multiple processes concurrently.
 
-## Species Distribution Models
+All species distributions (merged from AquaMaps, BirdLife, IUCN and others), per-cell scores (`cell_metric`) and per-zone aggregates (`zone_metric`) live here. The Shiny apps, the custom `plumber` API and the TiTiler tile factory all read the same file in read-only mode; workflows under `workflows/` are the only writers.
 
-See entity relationship diagram (ERD) for the species distribution models (SDM) database tables in this workflow:
+::: {.callout-note}
+**Why DuckDB and not PostgreSQL?** Earlier versions of the stack used PostgreSQL + PostGIS as the primary store. As the dataset stabilized around a fixed 0.05° cell grid and a small number of zone layers, we no longer needed live geometry operations or concurrent writes — just fast analytic reads. DuckDB gives us columnar scans over tens of millions of `cell_metric` rows in well under a second, without a separate database server process. PostgreSQL is retained in `docker-compose.yml` only for a handful of legacy apps (see @sec-server).
+:::
 
-* [Create SDM Tables](https://marinesensitivity.org/workflows/create_sdm-tables.html)
+## Table and column naming conventions
 
-And example of ingesting SDM outputs into the database in this workflow:
+- Table names are plural and use lower case.
+- Unique identifier columns are suffixed with:
+  - `*_id` for unique integer keys (stable across rebuilds);
+  - `*_key` for unique string keys (human-readable);
+  - `*_seq` for auto-incrementing sequence integer keys (internal join keys).
+- Column names are singular and use `snake_case`.
+- Foreign keys use the singular form of the referenced table, followed by the primary-key suffix (`_id`, `_key`, or `_seq`).
+- Primary keys are named `id` when a table has a single natural key.
 
-* [Ingest GoMex cetacean & sea turtle SDMs](https://marinesensitivity.org/workflows/ingest_sdm-gm.html)
+## Core tables
 
+The stack revolves around ∼10 tables; the ones touched by the tile factory and the Shiny apps are:
 
+| Table | Rows (v6) | Purpose | Read by |
+|---|---|---|---|
+| `cell` | ∼660 k | 0.05°-resolution grid cells covering the US EEZ footprint. | workflows, apps |
+| `cell_metric` | ∼10 M | `(cell_id, metric_seq, value)` — the per-cell score for each metric. | **TiTiler factory**, apps |
+| `metric` | ∼20 | Metric metadata (`metric_key`, `metric_seq`, description). | factory, apps |
+| `zone` | ∼100 | Zone registry (`zone_seq`, `tbl`, `fld`, `value`) — keyed by the source GeoPackage table, field and value, so Program Areas, Ecoregions, Subregions, Planning Areas all share one schema. | factory (mask SQL), apps |
+| `zone_cell` | ∼3 M | `(zone_seq, cell_id)` — membership mapping, used for subregion / Program Area filters. | factory, apps |
+| `zone_metric` | ∼2 k | Pre-aggregated `(zone_seq, metric_seq, score)` — the per-Program-Area / per-subregion score values that drive the choropleth. | apps |
+| `taxon` | ∼17 k | Unified taxonomy (one row per species) merged from WoRMS, eBird, IUCN. | apps |
+| `taxon_model` | ∼20 k | `(taxon_id, ds_key, mdl_seq)` — which species is represented by which distribution model(s). | apps |
+| `model_cell` | ∼30 M | `(mdl_seq, cell_id, value)` — raw species-distribution-model output per cell (0–100 suitability or similar). | apps (species explorer) |
+| `dataset` | ∼10 | Source datasets (AquaMaps, BirdLife, NMFS CH, FWS CH, IUCN, ...). | apps |
 
+### How the core tables feed the serving tier
 
+- **Raster cell tiles** (@fig-raster) — the TiTiler factory receives a base64-encoded SELECT that joins `cell_metric` with `metric` (and optionally `zone` / `zone_cell` when the user picks a subregion), returning `(cell_id, value)` rows. The factory LRU-caches this result per-SQL and looks each `cell_id` up against the pre-baked cell-id COG to colorize the tile.
+- **"Cells outside Program Areas" mask** — a specific SQL returning every `cell_metric` `cell_id` that is **not** in any row of `zone_cell` where `zone.fld = 'programarea_key'`. Rendered with the factory's `color=` single-color mask path.
+- **Program Area choropleth** (@fig-choropleth) — Shiny queries `zone_metric` joined to `zone` (filtered to `fld = 'programarea_key'`), maps score → color, and pushes a `match_expr` paint rule to `mapbox-gl`. Geometry comes from static PMTiles; only the paint spec changes on metric switch.
 
+The entity-relationship diagram (ERD) and detailed schema are built by the `create_sdm-tables.qmd` workflow:
+
+- [Create SDM Tables](https://marinesensitivity.org/workflows/create_sdm-tables.html)
+
+And ingestion from a specific source is illustrated in:
+
+- [Ingest GoMex cetacean & sea turtle SDMs](https://marinesensitivity.org/workflows/ingest_sdm-gm.html)
+
+See @sec-workflows for the full list of ingest / score workflows.

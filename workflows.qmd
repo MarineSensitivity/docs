@@ -1,16 +1,44 @@
 ---
-title: Workflows
 description: "scripts for exploring plus production workflows"
 image: /figures/components/workflows.png
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
-Workflows are scripts for testing data analytics and visualization as well as production workflows for ingesting data. See:
+# Workflows {#sec-workflows}
 
-- [marinesensitivity.org/workflows](https://marinesensitivity.org/workflows/)\
-  rendered html pages from the scripts (as Quarto notebooks) 
+Workflows are scripts — mostly [Quarto](https://quarto.org) notebooks — that ingest source datasets, merge taxonomic authorities, compute scores, and build the derived artifacts consumed by the serving tier. They are the only writers of `sdm.duckdb`; everything downstream (Shiny apps, the TiTiler factory, the `plumber` API) reads it in read-only mode.
 
-- [github.com/MarineSensitivity/workflows](https://github.com/MarineSensitivity/workflows)\
-  source code in the Github repository
+Links:
 
+- [marinesensitivity.org/workflows](https://marinesensitivity.org/workflows/) — rendered HTML
+- [github.com/MarineSensitivity/workflows](https://github.com/MarineSensitivity/workflows) — source
+
+See @fig-data-pipeline for a visual summary and @sec-db for the target schema.
+
+## Ingest workflows (populate `sdm.duckdb`)
+
+Each source dataset has a dedicated `ingest_*.qmd` that writes rows to `cell_metric`, `model_cell`, `taxon`, `dataset` and related tables:
+
+| Workflow | Source |
+|---|---|
+| `ingest_aquamaps_to_sdm_duckdb.qmd` | [AquaMaps](https://www.aquamaps.org) predictions (∼16,800 models) |
+| `ingest_sdm-nc.qmd`, `ingest_sdm-gm.qmd` | NOAA/GEBCO cetacean + sea-turtle distribution models |
+| `ingest_taxon.qmd` | Unified taxonomy from [WoRMS](https://www.marinespecies.org), [eBird](https://ebird.org) |
+| `ingest_nmfs-fws-listings.qmd`, `ingest_iucn*.qmd` | Conservation status (ESA listings, IUCN Red List) |
+| `ingest_prot.qmd`, `ingest_blocks.qmd`, `ingest_mregions.qmd` | Spatial zones (protractions, blocks, marine regions) |
+| `merge_models.qmd` | Authority merging — unified `taxon` table, `taxon_model` junction, merged `mdl_seq` per species |
+
+## Scoring workflow (`cell_metric` + `zone_metric`)
+
+- **`calc_scores.qmd`** — the primary scoring pipeline. Loads `sdm.duckdb` read-write, computes extinction-risk metrics by species category (e.g., `extrisk_bird`, `extrisk_fish`, `extrisk_mammal`), writes rows to `cell_metric`, and aggregates into `zone_metric` for both Program Area and subregion zones. Also exports helper caches (`taxon.csv`, `layers_v6.csv`, `flower_default_subregions.csv`) used by the Shiny apps at startup.
+- **`update_scores.qmd`** — targeted remap when the score scale changes (e.g., the 2026 migration from the old 70/90 critical-habitat scale to the unified `er_score` EN=100 / TN=50 / LC=1 scale).
+
+## Derived artifacts for the serving tier
+
+Two one-shot build steps produce the binary artifacts that sit next to `sdm.duckdb` on `/share`:
+
+- **`server/titiler/scripts/make_cellid_cog.py`** — one-shot script that reads band 1 of the source multi-band raster (`r_bio-oracle_planarea.tif`, stored in 0–360° longitude convention for contiguous US EEZ coverage across the Pacific), casts NaN → 0 + float32 → uint32, wraps longitudes to standard −180..180°, and writes a single-band tiled GeoTIFF at `/share/data/derived/r_cellid.tif`. No overviews — nearest-neighbor reads at native resolution are fast enough for z ≤ 4 and interpolating overviews would corrupt integer cell ids.
+- **PMTiles builds** — offline `tippecanoe` runs over the source GeoPackages (`ply_programareas_2026`, `ply_ecoregions_2025`, `ply_planareas_2025`, …) produce `.pmtiles` archives, published to `/share/pmtiles/` and served by Caddy at `file.marinesensitivity.org/pmtiles/<layer>.pmtiles`.
+
+Re-run either when the underlying data changes; the Shiny app's `mtime` cache-busting parameter (tied to `sdm.duckdb`'s mtime) invalidates cached tiles automatically when the DB is rebuilt.
