@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="PostgreSQL database extended spatially with PostGIS">
+<meta name="description" content="DuckDB as the authoritative store for species distribution models and derived scores">
 
 <title>12&nbsp; Database – Marine Sensitivity</title>
 <style>
@@ -394,8 +394,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#table-and-column-naming-conventions" id="toc-table-and-column-naming-conventions" class="nav-link active" data-scroll-target="#table-and-column-naming-conventions"><span class="header-section-number">12.1</span> Table and Column Naming Conventions</a></li>
-  <li><a href="#species-distribution-models" id="toc-species-distribution-models" class="nav-link" data-scroll-target="#species-distribution-models"><span class="header-section-number">12.2</span> Species Distribution Models</a></li>
+  <li><a href="#table-and-column-naming-conventions" id="toc-table-and-column-naming-conventions" class="nav-link active" data-scroll-target="#table-and-column-naming-conventions"><span class="header-section-number">12.1</span> Table and column naming conventions</a></li>
+  <li><a href="#core-tables" id="toc-core-tables" class="nav-link" data-scroll-target="#core-tables"><span class="header-section-number">12.2</span> Core tables</a>
+  <ul class="collapse">
+  <li><a href="#how-the-core-tables-feed-the-serving-tier" id="toc-how-the-core-tables-feed-the-serving-tier" class="nav-link" data-scroll-target="#how-the-core-tables-feed-the-serving-tier"><span class="header-section-number">12.2.1</span> How the core tables feed the serving tier</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/db.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -404,7 +407,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./db.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Database</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Database</span></h1>
+<h1 class="title"><span id="sec-db" class="quarto-section-identifier"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Database</span></span></h1>
 </div>
 
 
@@ -421,33 +424,136 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>The <strong>source of truth</strong> for the Marine Sensitivity Toolkit is a single <a href="https://duckdb.org">DuckDB</a> file, <code>sdm.duckdb</code>, stored on the server at <code>/share/data/big/latest/sdm.duckdb</code> (a symlink to the current versioned directory, currently <code>v6</code>). DuckDB is a columnar, embedded analytic database — it’s fast enough to power live <code>cell_metric</code> queries from the TiTiler factory while also being a single-file artifact that can be copied, versioned and served read-only to multiple processes concurrently.</p>
+<p>All species distributions (merged from AquaMaps, BirdLife, IUCN and others), per-cell scores (<code>cell_metric</code>) and per-zone aggregates (<code>zone_metric</code>) live here. The Shiny apps, the custom <code>plumber</code> API and the TiTiler tile factory all read the same file in read-only mode; workflows under <code>workflows/</code> are the only writers.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Why DuckDB and not PostgreSQL?</strong> Earlier versions of the stack used PostgreSQL + PostGIS as the primary store. As the dataset stabilized around a fixed 0.05° cell grid and a small number of zone layers, we no longer needed live geometry operations or concurrent writes — just fast analytic reads. DuckDB gives us columnar scans over tens of millions of <code>cell_metric</code> rows in well under a second, without a separate database server process. PostgreSQL is retained in <code>docker-compose.yml</code> only for a handful of legacy apps (see <a href="server.html" class="quarto-xref"><span>Chapter 11</span></a>).</p>
+</div>
+</div>
 <section id="table-and-column-naming-conventions" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="table-and-column-naming-conventions"><span class="header-section-number">12.1</span> Table and Column Naming Conventions</h2>
+<h2 data-number="12.1" class="anchored" data-anchor-id="table-and-column-naming-conventions"><span class="header-section-number">12.1</span> Table and column naming conventions</h2>
 <ul>
-<li>Table names are plural and use all lower case.</li>
-<li>Unique identifiers are suffixed with:
+<li>Table names are plural and use lower case.</li>
+<li>Unique identifier columns are suffixed with:
 <ul>
-<li><code>*_id</code> for unique integer keys;</li>
-<li><code>*_key</code> for unique string keys;</li>
-<li><code>*_seq</code> for auto-incrementing sequence integer keys.</li>
+<li><code>*_id</code> for unique integer keys (stable across rebuilds);</li>
+<li><code>*_key</code> for unique string keys (human-readable);</li>
+<li><code>*_seq</code> for auto-incrementing sequence integer keys (internal join keys).</li>
 </ul></li>
-<li>Column names are singular and use snake_case.</li>
-<li>Foreign keys are named with the singular form of the table they reference, followed by _id.</li>
-<li>Primary keys are named id.</li>
+<li>Column names are singular and use <code>snake_case</code>.</li>
+<li>Foreign keys use the singular form of the referenced table, followed by the primary-key suffix (<code>_id</code>, <code>_key</code>, or <code>_seq</code>).</li>
+<li>Primary keys are named <code>id</code> when a table has a single natural key.</li>
 </ul>
 </section>
-<section id="species-distribution-models" class="level2" data-number="12.2">
-<h2 data-number="12.2" class="anchored" data-anchor-id="species-distribution-models"><span class="header-section-number">12.2</span> Species Distribution Models</h2>
-<p>See entity relationship diagram (ERD) for the species distribution models (SDM) database tables in this workflow:</p>
+<section id="core-tables" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="core-tables"><span class="header-section-number">12.2</span> Core tables</h2>
+<p>The stack revolves around ∼10 tables; the ones touched by the tile factory and the Shiny apps are:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Table</th>
+<th>Rows (v6)</th>
+<th>Purpose</th>
+<th>Read by</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>cell</code></td>
+<td>∼660 k</td>
+<td>0.05°-resolution grid cells covering the US EEZ footprint.</td>
+<td>workflows, apps</td>
+</tr>
+<tr class="even">
+<td><code>cell_metric</code></td>
+<td>∼10 M</td>
+<td><code>(cell_id, metric_seq, value)</code> — the per-cell score for each metric.</td>
+<td><strong>TiTiler factory</strong>, apps</td>
+</tr>
+<tr class="odd">
+<td><code>metric</code></td>
+<td>∼20</td>
+<td>Metric metadata (<code>metric_key</code>, <code>metric_seq</code>, description).</td>
+<td>factory, apps</td>
+</tr>
+<tr class="even">
+<td><code>zone</code></td>
+<td>∼100</td>
+<td>Zone registry (<code>zone_seq</code>, <code>tbl</code>, <code>fld</code>, <code>value</code>) — keyed by the source GeoPackage table, field and value, so Program Areas, Ecoregions, Subregions, Planning Areas all share one schema.</td>
+<td>factory (mask SQL), apps</td>
+</tr>
+<tr class="odd">
+<td><code>zone_cell</code></td>
+<td>∼3 M</td>
+<td><code>(zone_seq, cell_id)</code> — membership mapping, used for subregion / Program Area filters.</td>
+<td>factory, apps</td>
+</tr>
+<tr class="even">
+<td><code>zone_metric</code></td>
+<td>∼2 k</td>
+<td>Pre-aggregated <code>(zone_seq, metric_seq, score)</code> — the per-Program-Area / per-subregion score values that drive the choropleth.</td>
+<td>apps</td>
+</tr>
+<tr class="odd">
+<td><code>taxon</code></td>
+<td>∼17 k</td>
+<td>Unified taxonomy (one row per species) merged from WoRMS, eBird, IUCN.</td>
+<td>apps</td>
+</tr>
+<tr class="even">
+<td><code>taxon_model</code></td>
+<td>∼20 k</td>
+<td><code>(taxon_id, ds_key, mdl_seq)</code> — which species is represented by which distribution model(s).</td>
+<td>apps</td>
+</tr>
+<tr class="odd">
+<td><code>model_cell</code></td>
+<td>∼30 M</td>
+<td><code>(mdl_seq, cell_id, value)</code> — raw species-distribution-model output per cell (0–100 suitability or similar).</td>
+<td>apps (species explorer)</td>
+</tr>
+<tr class="even">
+<td><code>dataset</code></td>
+<td>∼10</td>
+<td>Source datasets (AquaMaps, BirdLife, NMFS CH, FWS CH, IUCN, …).</td>
+<td>apps</td>
+</tr>
+</tbody>
+</table>
+<section id="how-the-core-tables-feed-the-serving-tier" class="level3" data-number="12.2.1">
+<h3 data-number="12.2.1" class="anchored" data-anchor-id="how-the-core-tables-feed-the-serving-tier"><span class="header-section-number">12.2.1</span> How the core tables feed the serving tier</h3>
+<ul>
+<li><strong>Raster cell tiles</strong> (<a href="software.html#fig-raster" class="quarto-xref">Figure&nbsp;<span>10.2</span></a>) — the TiTiler factory receives a base64-encoded SELECT that joins <code>cell_metric</code> with <code>metric</code> (and optionally <code>zone</code> / <code>zone_cell</code> when the user picks a subregion), returning <code>(cell_id, value)</code> rows. The factory LRU-caches this result per-SQL and looks each <code>cell_id</code> up against the pre-baked cell-id COG to colorize the tile.</li>
+<li><strong>“Cells outside Program Areas” mask</strong> — a specific SQL returning every <code>cell_metric</code> <code>cell_id</code> that is <strong>not</strong> in any row of <code>zone_cell</code> where <code>zone.fld = 'programarea_key'</code>. Rendered with the factory’s <code>color=</code> single-color mask path.</li>
+<li><strong>Program Area choropleth</strong> (<a href="software.html#fig-choropleth" class="quarto-xref">Figure&nbsp;<span>10.4</span></a>) — Shiny queries <code>zone_metric</code> joined to <code>zone</code> (filtered to <code>fld = 'programarea_key'</code>), maps score → color, and pushes a <code>match_expr</code> paint rule to <code>mapbox-gl</code>. Geometry comes from static PMTiles; only the paint spec changes on metric switch.</li>
+</ul>
+<p>The entity-relationship diagram (ERD) and detailed schema are built by the <code>create_sdm-tables.qmd</code> workflow:</p>
 <ul>
 <li><a href="https://marinesensitivity.org/workflows/create_sdm-tables.html">Create SDM Tables</a></li>
 </ul>
-<p>And example of ingesting SDM outputs into the database in this workflow:</p>
+<p>And ingestion from a specific source is illustrated in:</p>
 <ul>
 <li><a href="https://marinesensitivity.org/workflows/ingest_sdm-gm.html">Ingest GoMex cetacean &amp; sea turtle SDMs</a></li>
 </ul>
+<p>See <a href="workflows.html" class="quarto-xref"><span>Chapter 13</span></a> for the full list of ingest / score workflows.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

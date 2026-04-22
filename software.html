@@ -509,50 +509,133 @@ window.Quarto = {
 
 <section id="software-overview" class="level2" data-number="10.1">
 <h2 data-number="10.1" class="anchored" data-anchor-id="software-overview"><span class="header-section-number">10.1</span> Software Overview</h2>
-<p>The <strong>Marine Sensitivity Toolkit</strong> (MST) is a stack of software components for reproducibly, interactively and hierarchically generating environmental vulnerability maps and scores. Tabular data is collated across studies evaluating sensitivity of species to oil &amp; gas and offshore wind energy development. The best available species and benthic habitat distributions are being mosaicked across the US EEZ. Scores will be summarized according to subgroups within Species, Benthic Habitats and Primary Productivity. These scores will be averaged into an overall score and visualized as a flower plot, applicable to various levels of BOEM relevancy: regional, ecoregions, protraction diagrams, blocks and aliquots. The software components for achieving this interactively are: 1) server — a Docker configuration to spin up all the software; 2) database — a spatially enabled database (PostgreSQL with PostGIS extension); 3) workflows — scripts (as Quarto notebooks) to explore, ingest and update the database and output files; 4) APIs — application programming interfaces for rendering vector (using pg_tileserv) or raster (using TiTiler) tile services for interactive mapping as well as a custom API (using R plumber); 5) libraries — re-usable documented functions as an R package for import, analysis and visualization using the APIs; 6) applications — interactive apps using the R Shiny framework for rendering vulnerability maps; and 7) documentation — as a Quarto notebook with figures, tables, glossary and references in interactive html or static docx/pdf output formats. This toolbox is intended to primarily serve BOEM needs internally, but by being open-source and fully reproducible the hope is to enlist buy-in and even contributions from external partners, whether from other government agencies, academia, NGOs or industry.</p>
+<p>The <strong>Marine Sensitivity Toolkit</strong> (MST) is a stack of software components for reproducibly, interactively and hierarchically generating environmental vulnerability maps and scores. Tabular data is collated across studies evaluating sensitivity of species to oil &amp; gas and offshore wind energy development. The best available species and benthic habitat distributions are being mosaicked across the US EEZ. Scores are summarized according to subgroups within Species, Benthic Habitats and Primary Productivity, averaged into an overall score, and visualized as a flower plot, applicable to various levels of BOEM relevancy: regional, ecoregions, protraction diagrams, blocks and aliquots.</p>
+<p>The software components for achieving this interactively are:</p>
+<ol type="1">
+<li><strong>server</strong> — a Docker Compose configuration orchestrating the reverse proxy, Shiny server, APIs, custom TiTiler tile factory + Varnish cache, and file server;</li>
+<li><strong>database</strong> — a columnar, embedded analytic database (<a href="https://duckdb.org"><strong>DuckDB</strong></a>) as the single source of truth for species distributions, per-cell scores and derived per-zone metrics;</li>
+<li><strong>workflows</strong> — Quarto notebooks to ingest source datasets (AquaMaps, IUCN, NMFS/FWS, BirdLife, WoRMS, BOEM zones), merge taxonomic authorities, and compute scores that are written back to DuckDB;</li>
+<li><strong>APIs</strong> — a custom R <a href="https://www.rplumber.io"><code>plumber</code></a> API for data requests and a custom <a href="https://developmentseed.org/titiler/"><strong>TiTiler</strong></a> factory that renders on-the-fly raster PNG tiles from arbitrary DuckDB queries, cached by Varnish;</li>
+<li><strong>libraries</strong> — re-usable documented functions as the <a href="https://github.com/MarineSensitivities/msens"><code>msens</code></a> R package, including the tile-URL helpers (<code>cell_tile_url()</code>, <code>cell_stats()</code>, <code>add_cell_tiles()</code>) that the Shiny apps use to talk to the factory;</li>
+<li><strong>applications</strong> — interactive Shiny apps (<code>mapgl</code>, <code>mapsp</code>, …) that combine the raster tile factory with static <a href="https://protomaps.com/docs/pmtiles/">PMTiles</a> vector layers and live-pushed choropleth paint rules;</li>
+<li><strong>documentation</strong> — this Quarto book with figures, tables, glossary and references in interactive HTML or static DOCX / PDF output.</li>
+</ol>
+<p>This toolbox is intended to primarily serve BOEM needs internally, but by being open-source and fully reproducible the hope is to enlist buy-in and even contributions from external partners, whether from other government agencies, academia, NGOs or industry.</p>
 <p>We ascribe to the philosophy of sharing all code for the sake of reproducibility, transparency and efficiency <span class="citation" data-cites="maitner2024 lowndes2017">(<a href="references.html#ref-maitner2024" role="doc-biblioref">Maitner et al. 2024</a>; <a href="references.html#ref-lowndes2017" role="doc-biblioref">Lowndes et al. 2017</a>)</span>; i.e.&nbsp;the FAIR principles of Findability, Accessibility, Interoperability, and Reusability <span class="citation" data-cites="wilkinson2016">(<a href="references.html#ref-wilkinson2016" role="doc-biblioref"><span class="nocase">Wilkinson et al.</span> 2016</a>)</span>.</p>
+<div class="cell" data-file="diagrams/architecture.mmd" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-architecture" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<p><a href="software_files/figure-html/mermaid-figure-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;10.1: System architecture: DuckDB is the authoritative store for cell-level species/score data. A custom TiTiler factory renders those cell values on-the-fly into PNG tiles (cached by Varnish); Program Area / Ecoregion polygons are served as static PMTiles through Caddy; the Shiny apps combine both layer types and push per-Program-Area scores live from DuckDB into the polygon paint spec."><img src="software_files/figure-html/mermaid-figure-1.png" style="width:7in;height:2.74in" class="figure-img"></a></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.1: System architecture: DuckDB is the authoritative store for cell-level species/score data. A custom TiTiler factory renders those cell values on-the-fly into PNG tiles (cached by Varnish); Program Area / Ecoregion polygons are served as static PMTiles through Caddy; the Shiny apps combine both layer types and push per-Program-Area scores live from DuckDB into the polygon paint spec.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <section id="interactive-applications" class="level3" data-number="10.1.1">
 <h3 data-number="10.1.1" class="anchored" data-anchor-id="interactive-applications"><span class="header-section-number">10.1.1</span> Interactive Applications</h3>
 <p>We have developed a series of interactive applications to explore the data and results of the MST project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the <a href="https://shiny.posit.co"><code>shiny</code></a> package in R <span class="citation" data-cites="shiny">(<a href="references.html#ref-shiny" role="doc-biblioref">Chang et al. 2024</a>)</span>, which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.</p>
 </section>
 <section id="overcoming-challenges-with-large-spatial-data" class="level3" data-number="10.1.2">
 <h3 data-number="10.1.2" class="anchored" data-anchor-id="overcoming-challenges-with-large-spatial-data"><span class="header-section-number">10.1.2</span> Overcoming Challenges with Large Spatial Data</h3>
-<p>The MS project incorporates many large spatial datasets that are problematic to render in a typical interactive application. For instance, the most common interactive mapping R package <code>leaflet</code> has a 4MB limitation for displaying rasters (see “Large Raster Warning” in <a href="https://rstudio.github.io/leaflet/articles/raster.html#large-raster-warning">Raster Images • leaflet</a>). Vectors (i.e., points, lines and polygons) get smoothed when containing many vertices, but contiguity gets lost between polygons and rendering degrades to non-usable depending on the internet speed of the user’s connection.</p>
-<p>To work around these limitations, we have implemented “cloud native” web services and formats (see also <a href="https://guide.cloudnativegeo.org/">Cloud-Optimized Geospatial Formats Guide</a>). Our implementations effectively reduce the size of any given spatial object based on the zoom level of the user’s browser. For rasters, we use cloud-optimized GeoTIFFs (COGs) and for vectors, we use Mapbox Vector Tiles (MVT). These formats are designed to be fast and efficient for web mapping applications, and they allow us to display large spatial datasets in an interactive web application without sacrificing performance or usability. Let’s take a closer look at implementation of each.</p>
-<section id="raster-cloud-optimized-geotiffs-cogs-and-titiler" class="level4" data-number="10.1.2.1">
-<h4 data-number="10.1.2.1" class="anchored" data-anchor-id="raster-cloud-optimized-geotiffs-cogs-and-titiler"><span class="header-section-number">10.1.2.1</span> Raster: Cloud-Optimized GeoTIFFs (<strong>COGs</strong>) and <strong>Titiler</strong></h4>
-<p>Historically, to read a raster, such as a GeoTIFF, from the web, the client software would have to read the entire file before rendering. Cloud Optimized GeoTIFFs (<a href="https://www.cogeo.org">COGs</a>) take advantage of <a href="https://tools.ietf.org/html/rfc7233">HTTP GET range requests</a> to read only the part of the file needed for rendering. So a COG stores quadtree simplifications of the original raster at multiple zoom levels and metadata for accessing their byte ranges in the file in the metadata header. This allows the client software to request only the parts of the file needed for rendering, which can greatly reduce the amount of data transferred and speed up rendering. This is for accessing the raw data in pixel values, e.g., for a raster of species distribution then the abundance of a species in each cell. We would want to also apply a color ramp to visualize the data. The open-source (<a href="https://developmentseed.org/titiler/">TiTiler</a> software is a lightweight web service that serves up these color ramped tiles on the fly. So COGs can be stored on a simple file server (like Amazon S3 or Azure Blob Storage) and served up as interactive web maps with TiTiler as an intermediary between the COG files and the client accessing the interactive Shiny mapping app (<a href="#fig-raster" class="quarto-xref">Figure&nbsp;<span>10.1</span></a>).</p>
+<p>The MST project incorporates many large spatial datasets that are problematic to render in a typical interactive application. For instance, the most common interactive mapping R package <code>leaflet</code> has a 4 MB limitation for displaying rasters (see “Large Raster Warning” in <a href="https://rstudio.github.io/leaflet/articles/raster.html#large-raster-warning">Raster Images • leaflet</a>). Vectors (points, lines and polygons) get smoothed when containing many vertices, but contiguity between polygons is lost and rendering degrades depending on the user’s connection speed.</p>
+<p>To work around these limitations we use a “cloud native” stack (see also the <a href="https://guide.cloudnativegeo.org/">Cloud-Optimized Geospatial Formats Guide</a>) that transfers only the pixels / features visible in the current viewport:</p>
+<ul>
+<li><strong>Raster cell values</strong> are rendered on-the-fly from DuckDB by a custom TiTiler factory, cached by Varnish, and delivered as small <code>256×256</code> PNG tiles.</li>
+<li><strong>Vector polygons</strong> (Program Areas, Ecoregions, Planning Areas, …) are served as static <a href="https://protomaps.com/docs/pmtiles/">PMTiles</a> archives by the Caddy file server — a single archive per layer, range-read by the browser.</li>
+<li><strong>Choropleth values</strong> (per-Program-Area scores) are pushed live from DuckDB into the PMTiles paint spec via a <code>mapbox-gl</code> <code>match</code> expression, so geometry stays static but color updates as the user changes metric / subregion.</li>
+</ul>
+<p>Let’s take a closer look at each.</p>
+<section id="raster-duckdb-cell-values-rendered-via-a-custom-titiler-factory" class="level4" data-number="10.1.2.1">
+<h4 data-number="10.1.2.1" class="anchored" data-anchor-id="raster-duckdb-cell-values-rendered-via-a-custom-titiler-factory"><span class="header-section-number">10.1.2.1</span> Raster: DuckDB cell values rendered via a custom TiTiler factory</h4>
+<p>Each metric (e.g., <code>extrisk_mammal</code>) resolves, in DuckDB’s <code>cell_metric</code> table, to a list of <code>(cell_id, value)</code> rows — one row per 0.05°-resolution grid cell in the US EEZ. To show these in the browser we would historically have to materialize the full raster (∼4 GiB for the whole EEZ) and ship it over the wire.</p>
+<p>Instead we keep the values in DuckDB and extract <strong>only</strong> the tiles the user’s browser is asking for. The Shiny app builds a small SELECT, base64-encodes it and embeds it in the tile URL template. On tile request, our custom <a href="https://developmentseed.org/titiler/">TiTiler</a> factory:</p>
+<ol type="1">
+<li>validates the SQL (SELECT-only, via <code>sqlglot</code>) and executes it once per unique query, LRU-caching the resulting <code>cell_id → value</code> map in-process;</li>
+<li>reads the tile’s window of integer cell ids from a pre-baked single-band cell-id COG (<code>r_cellid.tif</code>) via <strong>nearest-neighbor</strong> resampling, so integer ids are never interpolated;</li>
+<li>looks the value up for every pixel, applies rescale + colormap, and returns a PNG.</li>
+</ol>
+<p><a href="https://varnish-cache.org">Varnish</a> sits in front of the factory and caches each tile URL for 7 days, so once a tile has been rendered for a given SQL + colormap + rescale combination, every subsequent viewer is served from cache in sub-millisecond time (<a href="#fig-raster" class="quarto-xref">Figure&nbsp;<span>10.2</span></a>). A <code>mtime</code> query parameter tied to the source DuckDB’s modification time automatically busts the cache when the DB is rebuilt.</p>
 <div class="cell" data-file="diagrams/raster.mmd" data-layout-align="default">
 <div class="cell-output-display">
 <div id="fig-raster" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-raster-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
-<p><a href="software_files/figure-html/mermaid-figure-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;10.1: Sequence diagram implementing large raster interactive display using Cloud-Optimized GeoTIFFs (COGs) and Titiler in a Shiny mapping app."><img src="software_files/figure-html/mermaid-figure-1.png" style="width:6in;height:2.08in" class="figure-img"></a></p>
+<p><a href="software_files/figure-html/mermaid-figure-5.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;10.2: Sequence diagram: a cell-values raster layer is rendered on-the-fly by the custom msens TiTiler factory from the DuckDB source of truth. Varnish caches identical tile URLs for 7 days."><img src="software_files/figure-html/mermaid-figure-5.png" style="width:7in;height:3.9in" class="figure-img"></a></p>
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-raster-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;10.1: Sequence diagram implementing large raster interactive display using Cloud-Optimized GeoTIFFs (COGs) and Titiler in a Shiny mapping app.
+Figure&nbsp;10.2: Sequence diagram: a cell-values raster layer is rendered on-the-fly by the custom msens TiTiler factory from the DuckDB source of truth. Varnish caches identical tile URLs for 7 days.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The same factory also supports a single-color “mask” render — the “Cells outside Program Areas” overlay in <code>mapgl</code> is built this way: a SQL that returns all cells with metric data <em>not</em> in any Program Area zone, rendered with <code>color=#222222</code> (no colormap, no rescale) as a semi-transparent dark overlay.</p>
+</section>
+<section id="vector-static-pmtiles-served-by-caddy" class="level4" data-number="10.1.2.2">
+<h4 data-number="10.1.2.2" class="anchored" data-anchor-id="vector-static-pmtiles-served-by-caddy"><span class="header-section-number">10.1.2.2</span> Vector: static PMTiles served by Caddy</h4>
+<p>For polygon layers (Program Areas, Ecoregions, Planning Areas, protractions, blocks, aliquots) we build <a href="https://protomaps.com/docs/pmtiles/">PMTiles</a> archives offline via <a href="https://github.com/mapbox/tippecanoe">tippecanoe</a> and publish them as static files on the server. A PMTiles archive is a single file with an internal directory structure that lets any HTTP client issue small range requests for individual tiles; no tile server process is required — Caddy’s static file handler is all we need (<a href="#fig-pmtiles" class="quarto-xref">Figure&nbsp;<span>10.3</span></a>).</p>
+<div class="cell" data-file="diagrams/pmtiles.mmd" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-pmtiles" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pmtiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<p><a href="software_files/figure-html/mermaid-figure-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;10.3: Sequence diagram: vector layers are served as static PMTiles archives through Caddy. Each tile is a byte-range read of the archive — no tile server process is in the path."><img src="software_files/figure-html/mermaid-figure-4.png" style="width:7in;height:2.5in" class="figure-img"></a></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pmtiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.3: Sequence diagram: vector layers are served as static PMTiles archives through Caddy. Each tile is a byte-range read of the archive — no tile server process is in the path.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This is a deliberate simplification from the prior architecture which used PostgreSQL + PostGIS + <a href="https://github.com/CrunchyData/pg_tileserv">pg_tileserv</a>. For our workload — polygon layers that change only when the data is rebuilt — a compiled tile server and live database query engine add latency and operational complexity for no benefit over byte-range reads of a pre-baked archive. (The PostgreSQL service remains in <code>docker-compose.yml</code> for compatibility with a few legacy apps; see <a href="server.html" class="quarto-xref"><span>Chapter 11</span></a>.)</p>
+</section>
+<section id="choropleth-live-duckdb-values-static-pmtiles-geometry" class="level4" data-number="10.1.2.3">
+<h4 data-number="10.1.2.3" class="anchored" data-anchor-id="choropleth-live-duckdb-values-static-pmtiles-geometry"><span class="header-section-number">10.1.2.3</span> Choropleth: live DuckDB values + static PMTiles geometry</h4>
+<p>The Program Area choropleth is the interesting hybrid case. The <em>geometry</em> (Program Area polygons keyed by <code>programarea_key</code>) is static — it comes from the same PMTiles file as the polygon outlines. But the <em>fill color</em> depends on the currently-selected metric + subregion, which means the per-Program-Area score has to come live from DuckDB.</p>
+<p>The Shiny server handles this by querying <code>zone_metric</code> (pre-aggregated per-zone values), building a <code>mapbox-gl</code> <code>match</code> expression that maps <code>programarea_key → fill_color</code>, and pushing that paint rule to the map through <code>mapgl</code>’s Shiny proxy. No tiles are re-rendered; only the paint specification changes (<a href="#fig-choropleth" class="quarto-xref">Figure&nbsp;<span>10.4</span></a>).</p>
+<div class="cell" data-file="diagrams/choropleth.mmd" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-choropleth" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-choropleth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<p><a href="software_files/figure-html/mermaid-figure-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;10.4: Sequence diagram: the Program Area choropleth. Polygon geometry is static (PMTiles from Caddy file server); per-area fill values come live from DuckDB’s zone_metric table and are pushed into mapbox-gl’s paint spec via a match expression. Switching metrics updates only the paint rule, not the tiles."><img src="software_files/figure-html/mermaid-figure-3.png" style="width:7in;height:3.13in" class="figure-img"></a></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-choropleth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.4: Sequence diagram: the Program Area choropleth. Polygon geometry is static (PMTiles from Caddy file server); per-area fill values come live from DuckDB’s zone_metric table and are pushed into mapbox-gl’s paint spec via a match expression. Switching metrics updates only the paint rule, not the tiles.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="vector-mapbox-vector-tiles-mvts-and-pg_tileserv" class="level4" data-number="10.1.2.2">
-<h4 data-number="10.1.2.2" class="anchored" data-anchor-id="vector-mapbox-vector-tiles-mvts-and-pg_tileserv"><span class="header-section-number">10.1.2.2</span> Vector: Mapbox Vector Tiles (<strong>MVTs</strong>) and <strong>pg_tileserv</strong></h4>
-<p>Although “cloud native” vector formats exist for simple file storage (see <a href="https://guide.cloudnativegeo.org/">Cloud-Optimized Geospatial Formats Guide</a>), none of these allow for flexible filtering and manipulation. Instead, we use PostgreSQL with the spatial extension (<a href="https://postgis.net">PostGIS</a>) to store the vector data and serve it as Mapbox Vector Tiles (<a href="https://docs.mapbox.com/vector-tiles/specification/">MVTs</a>) using the <a href="https://github.com/CrunchyData/pg_tileserv"><strong>pg_tileserv</strong></a> web service written in the language Go, which is very fast. This means that we don’t have to pre-render the MVTs (such as you might do with <a href="https://github.com/mapbox/tippecanoe">tippecanoe</a>), but can instead serve the raw vector data directly from the database and let <strong>pg_tileserv</strong> handle the rendering on the fly. Filters (in the form of <a href="https://github.com/CrunchyData/pg_tileserv/blob/master/hugo/content/usage/cql.md">CQL</a>) can be applied to the request. Symbology is rendered client-side via JavaScript, which allows for interactive hover and click events on vector objects (e.g., BOEM aliquot). Some speed-up is enabled by implementing a <a href="https://varnish-cache.org">Varnish</a> cache service in between. We can even write our own database functions for customized rendering, such as H3 hexagonal summaries. This allows us to serve vector data as web maps with minimal configuration and setup, and it provides a fast and efficient way to display large vector datasets in an interactive web application (<a href="#fig-vector" class="quarto-xref">Figure&nbsp;<span>10.2</span></a>).</p>
-<div class="cell" data-file="diagrams/vector.mmd" data-layout-align="default">
+<section id="data-pipeline-how-the-source-of-truth-is-built" class="level4" data-number="10.1.2.4">
+<h4 data-number="10.1.2.4" class="anchored" data-anchor-id="data-pipeline-how-the-source-of-truth-is-built"><span class="header-section-number">10.1.2.4</span> Data pipeline — how the source of truth is built</h4>
+<p>The three serving paths above all sit downstream of the same data pipeline: ingest workflows populate DuckDB from ∼7 source datasets (AquaMaps, IUCN, NMFS/FWS, BirdLife, WoRMS/eBird taxa, BOEM zones, …); <code>calc_scores.qmd</code> computes per-cell and per-zone metrics back into DuckDB; and a one-shot <code>make_cellid_cog.py</code> bakes the cell-id COG consumed by the TiTiler factory. PMTiles archives are built offline from the same zone geopackages used to populate the <code>zone</code> table (<a href="#fig-data-pipeline" class="quarto-xref">Figure&nbsp;<span>10.5</span></a>).</p>
+<div class="cell" data-file="diagrams/data-pipeline.mmd" data-layout-align="default">
 <div class="cell-output-display">
-<div id="fig-vector" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-data-pipeline" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-vector-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div aria-describedby="fig-data-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
-<p><a href="software_files/figure-html/mermaid-figure-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;10.2: Sequence diagram implementing large vector interactive display using Mapbox Vector Tiles (MVTs) and pg_tileserv in a Shiny mapping app."><img src="software_files/figure-html/mermaid-figure-2.png" style="width:6in;height:2.67in" class="figure-img"></a></p>
+<p><a href="software_files/figure-html/mermaid-figure-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;10.5: Data pipeline: ingest workflows populate DuckDB; scoring workflows compute cell_metric and zone_metric back into DuckDB; a one-shot COG regen and offline PMTiles build produce the derived artifacts the serving tier reads."><img src="software_files/figure-html/mermaid-figure-2.png" style="width:7in;height:4.01in" class="figure-img"></a></p>
 </div>
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vector-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;10.2: Sequence diagram implementing large vector interactive display using Mapbox Vector Tiles (MVTs) and pg_tileserv in a Shiny mapping app.
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.5: Data pipeline: ingest workflows populate DuckDB; scoring workflows compute cell_metric and zone_metric back into DuckDB; a one-shot COG regen and offline PMTiles build produce the derived artifacts the serving tier reads.
 </figcaption>
 </figure>
 </div>
@@ -621,7 +704,7 @@ Figure&nbsp;10.2: Sequence diagram implementing large vector interactive display
 <h3 data-number="10.1.4" class="anchored" data-anchor-id="software-components"><span class="header-section-number">10.1.4</span> Software Components</h3>
 <div id="listing-list-components" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1776344733923" data-listing-reading-time-sort="1" data-listing-word-count-sort="55">
+<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1776851253285" data-listing-reading-time-sort="3" data-listing-word-count-sort="599">
 <a href="./apis.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -642,7 +725,7 @@ APIs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1776344733923" data-listing-reading-time-sort="2" data-listing-word-count-sort="250">
+<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1776851253285" data-listing-reading-time-sort="3" data-listing-word-count-sort="403">
 <a href="./apps.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -663,7 +746,7 @@ Apps
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1776344734044" data-listing-reading-time-sort="1" data-listing-word-count-sort="104">
+<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1776851253391" data-listing-reading-time-sort="4" data-listing-word-count-sort="700">
 <a href="./db.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -674,7 +757,7 @@ Apps
 Database
 </h5>
 <div class="card-text listing-description delink">
-<p>PostgreSQL database extended spatially with PostGIS</p>
+<p>DuckDB as the authoritative store for species distribution models and derived scores</p>
 </div>
 <div class="card-attribution card-text-small start">
 <div class="listing-author">
@@ -684,7 +767,7 @@ Database
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1776344734056" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
+<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1776851253400" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
 <a href="./docs.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -705,7 +788,7 @@ Docs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1776344734176" data-listing-reading-time-sort="1" data-listing-word-count-sort="54">
+<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1776851253496" data-listing-reading-time-sort="2" data-listing-word-count-sort="208">
 <a href="./libraries.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -726,7 +809,7 @@ Libraries
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1776344734178" data-listing-reading-time-sort="4" data-listing-word-count-sort="764">
+<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1776851253498" data-listing-reading-time-sort="6" data-listing-word-count-sort="1083">
 <a href="./server.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -747,7 +830,7 @@ Server
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1776344734179" data-listing-reading-time-sort="1" data-listing-word-count-sort="38">
+<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1776851253498" data-listing-reading-time-sort="2" data-listing-word-count-sort="378">
 <a href="./workflows.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">

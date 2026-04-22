@@ -389,15 +389,23 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#ingest-workflows-populate-sdm.duckdb" id="toc-ingest-workflows-populate-sdm.duckdb" class="nav-link active" data-scroll-target="#ingest-workflows-populate-sdm.duckdb"><span class="header-section-number">13.1</span> Ingest workflows (populate <code>sdm.duckdb</code>)</a></li>
+  <li><a href="#scoring-workflow-cell_metric-zone_metric" id="toc-scoring-workflow-cell_metric-zone_metric" class="nav-link" data-scroll-target="#scoring-workflow-cell_metric-zone_metric"><span class="header-section-number">13.2</span> Scoring workflow (<code>cell_metric</code> + <code>zone_metric</code>)</a></li>
+  <li><a href="#derived-artifacts-for-the-serving-tier" id="toc-derived-artifacts-for-the-serving-tier" class="nav-link" data-scroll-target="#derived-artifacts-for-the-serving-tier"><span class="header-section-number">13.3</span> Derived artifacts for the serving tier</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/workflows.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./workflows.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Workflows</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Workflows</span></h1>
+<h1 class="title"><span id="sec-workflows" class="quarto-section-identifier"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Workflows</span></span></h1>
 </div>
 
 
@@ -414,15 +422,69 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Workflows are scripts for testing data analytics and visualization as well as production workflows for ingesting data. See:</p>
+<p>Workflows are scripts — mostly <a href="https://quarto.org">Quarto</a> notebooks — that ingest source datasets, merge taxonomic authorities, compute scores, and build the derived artifacts consumed by the serving tier. They are the only writers of <code>sdm.duckdb</code>; everything downstream (Shiny apps, the TiTiler factory, the <code>plumber</code> API) reads it in read-only mode.</p>
+<p>Links:</p>
 <ul>
-<li><p><a href="https://marinesensitivity.org/workflows/">marinesensitivity.org/workflows</a><br>
-rendered html pages from the scripts (as Quarto notebooks)</p></li>
-<li><p><a href="https://github.com/MarineSensitivity/workflows">github.com/MarineSensitivity/workflows</a><br>
-source code in the Github repository</p></li>
+<li><a href="https://marinesensitivity.org/workflows/">marinesensitivity.org/workflows</a> — rendered HTML</li>
+<li><a href="https://github.com/MarineSensitivity/workflows">github.com/MarineSensitivity/workflows</a> — source</li>
 </ul>
+<p>See <a href="software.html#fig-data-pipeline" class="quarto-xref">Figure&nbsp;<span>10.5</span></a> for a visual summary and <a href="db.html" class="quarto-xref"><span>Chapter 12</span></a> for the target schema.</p>
+<section id="ingest-workflows-populate-sdm.duckdb" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="ingest-workflows-populate-sdm.duckdb"><span class="header-section-number">13.1</span> Ingest workflows (populate <code>sdm.duckdb</code>)</h2>
+<p>Each source dataset has a dedicated <code>ingest_*.qmd</code> that writes rows to <code>cell_metric</code>, <code>model_cell</code>, <code>taxon</code>, <code>dataset</code> and related tables:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Workflow</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ingest_aquamaps_to_sdm_duckdb.qmd</code></td>
+<td><a href="https://www.aquamaps.org">AquaMaps</a> predictions (∼16,800 models)</td>
+</tr>
+<tr class="even">
+<td><code>ingest_sdm-nc.qmd</code>, <code>ingest_sdm-gm.qmd</code></td>
+<td>NOAA/GEBCO cetacean + sea-turtle distribution models</td>
+</tr>
+<tr class="odd">
+<td><code>ingest_taxon.qmd</code></td>
+<td>Unified taxonomy from <a href="https://www.marinespecies.org">WoRMS</a>, <a href="https://ebird.org">eBird</a></td>
+</tr>
+<tr class="even">
+<td><code>ingest_nmfs-fws-listings.qmd</code>, <code>ingest_iucn*.qmd</code></td>
+<td>Conservation status (ESA listings, IUCN Red List)</td>
+</tr>
+<tr class="odd">
+<td><code>ingest_prot.qmd</code>, <code>ingest_blocks.qmd</code>, <code>ingest_mregions.qmd</code></td>
+<td>Spatial zones (protractions, blocks, marine regions)</td>
+</tr>
+<tr class="even">
+<td><code>merge_models.qmd</code></td>
+<td>Authority merging — unified <code>taxon</code> table, <code>taxon_model</code> junction, merged <code>mdl_seq</code> per species</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="scoring-workflow-cell_metric-zone_metric" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="scoring-workflow-cell_metric-zone_metric"><span class="header-section-number">13.2</span> Scoring workflow (<code>cell_metric</code> + <code>zone_metric</code>)</h2>
+<ul>
+<li><strong><code>calc_scores.qmd</code></strong> — the primary scoring pipeline. Loads <code>sdm.duckdb</code> read-write, computes extinction-risk metrics by species category (e.g., <code>extrisk_bird</code>, <code>extrisk_fish</code>, <code>extrisk_mammal</code>), writes rows to <code>cell_metric</code>, and aggregates into <code>zone_metric</code> for both Program Area and subregion zones. Also exports helper caches (<code>taxon.csv</code>, <code>layers_v6.csv</code>, <code>flower_default_subregions.csv</code>) used by the Shiny apps at startup.</li>
+<li><strong><code>update_scores.qmd</code></strong> — targeted remap when the score scale changes (e.g., the 2026 migration from the old 70/90 critical-habitat scale to the unified <code>er_score</code> EN=100 / TN=50 / LC=1 scale).</li>
+</ul>
+</section>
+<section id="derived-artifacts-for-the-serving-tier" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="derived-artifacts-for-the-serving-tier"><span class="header-section-number">13.3</span> Derived artifacts for the serving tier</h2>
+<p>Two one-shot build steps produce the binary artifacts that sit next to <code>sdm.duckdb</code> on <code>/share</code>:</p>
+<ul>
+<li><strong><code>server/titiler/scripts/make_cellid_cog.py</code></strong> — one-shot script that reads band 1 of the source multi-band raster (<code>r_bio-oracle_planarea.tif</code>, stored in 0–360° longitude convention for contiguous US EEZ coverage across the Pacific), casts NaN → 0 + float32 → uint32, wraps longitudes to standard −180..180°, and writes a single-band tiled GeoTIFF at <code>/share/data/derived/r_cellid.tif</code>. No overviews — nearest-neighbor reads at native resolution are fast enough for z ≤ 4 and interpolating overviews would corrupt integer cell ids.</li>
+<li><strong>PMTiles builds</strong> — offline <code>tippecanoe</code> runs over the source GeoPackages (<code>ply_programareas_2026</code>, <code>ply_ecoregions_2025</code>, <code>ply_planareas_2025</code>, …) produce <code>.pmtiles</code> archives, published to <code>/share/pmtiles/</code> and served by Caddy at <code>file.marinesensitivity.org/pmtiles/&lt;layer&gt;.pmtiles</code>.</li>
+</ul>
+<p>Re-run either when the underlying data changes; the Shiny app’s <code>mtime</code> cache-busting parameter (tied to <code>sdm.duckdb</code>’s mtime) invalidates cached tiles automatically when the DB is rebuilt.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -845,7 +907,7 @@ source code in the Github repository</p></li>
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/workflows.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/workflows.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org/" target="_blank">Quarto</a></p>
 </div>

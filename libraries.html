@@ -389,15 +389,21 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#map-tile-helpers-as-of-0.3.4" id="toc-map-tile-helpers-as-of-0.3.4" class="nav-link active" data-scroll-target="#map-tile-helpers-as-of-0.3.4"><span class="header-section-number">15.1</span> Map-tile helpers (as of 0.3.4)</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/libraries.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./libraries.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Libraries</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Libraries</span></h1>
+<h1 class="title"><span id="sec-libraries" class="quarto-section-identifier"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Libraries</span></span></h1>
 </div>
 
 
@@ -414,14 +420,49 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>By creating an R package, we can document functions and make them easily available to other users.</p>
+<p>By creating an R package, we document functions and make them easily available across workflows and apps.</p>
 <ul>
 <li><a href="https://github.com/MarineSensitivity/msens"><code>msens</code></a><br>
 R library of functions for mapping marine sensitivities, sponsored by BOEM</li>
 </ul>
-<p>Functions can <em><strong>read</strong></em> data from the one <a href="./apis.html">APIs</a> (which communicate with the <a href="./db.html">Database</a>), <em><strong>analyze</strong></em> the data, <em><strong>visualize</strong></em> the results and store some smaller <em><strong>data</strong></em>.</p>
+<p>Functions <code>read</code> data from <a href="db.html" class="quarto-xref"><span>Chapter 12</span></a>, <code>analyze</code> it, and <code>visualize</code> results. The Shiny apps in <a href="apps.html" class="quarto-xref"><span>Chapter 16</span></a> consume <code>msens::*</code> helpers exclusively — app code never talks to the tile factory or PMTiles URL templates directly.</p>
+<section id="map-tile-helpers-as-of-0.3.4" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="map-tile-helpers-as-of-0.3.4"><span class="header-section-number">15.1</span> Map-tile helpers (as of 0.3.4)</h2>
+<p>The following helpers bridge the Shiny app to the msens TiTiler factory (<a href="apis.html" class="quarto-xref"><span>Chapter 14</span></a>):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Helper</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>cell_tile_url(sql, colormap, rescale, color, mtime, base)</code></td>
+<td>Compose an XYZ tile URL template for the factory, base64url-encoding <code>sql</code> and omitting <code>colormap</code>/<code>rescale</code> when <code>color=</code> is set (single-color mask).</td>
+</tr>
+<tr class="even">
+<td><code>cell_stats(sql, mtime, base)</code></td>
+<td>GET <code>/msens/statistics</code> — returns <code>list(n, min, max, mean, std, p2, p50, p98)</code> for a stable legend rescale.</td>
+</tr>
+<tr class="odd">
+<td><code>add_cell_tiles(m, tile_url, ...)</code></td>
+<td>Wraps <code>mapgl::add_raster_source()</code> + <code>mapgl::add_raster_layer()</code> so the Shiny app adds a cell-values (or mask) layer to a map in one call.</td>
+</tr>
+<tr class="even">
+<td><code>add_cells(m, r, colors, ...)</code> (retained)</td>
+<td>Legacy image-source path for static report figures that need terra <code>SpatRaster</code> rendering (e.g., Quarto-to-DOCX output that can’t reach the tile server).</td>
+</tr>
+</tbody>
+</table>
+<p>The SQL passed to <code>cell_tile_url()</code> and <code>cell_stats()</code> must return exactly two columns, <code>cell_id</code> (integer) and <code>value</code> (numeric) — see the examples in <a href="db.html" class="quarto-xref"><span>Chapter 12</span></a>.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -844,7 +885,7 @@ R library of functions for mapping marine sensitivities, sponsored by BOEM</li>
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/libraries.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/libraries.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org/" target="_blank">Quarto</a></p>
 </div>

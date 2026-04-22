@@ -408,7 +408,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./apps.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Apps</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Apps</span></h1>
+<h1 class="title"><span id="sec-apps" class="quarto-section-identifier"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Apps</span></span></h1>
 </div>
 
 
@@ -431,15 +431,21 @@ ul.task-list li input[type="checkbox"] {
 <h2 data-number="16.1" class="anchored" data-anchor-id="current-applications"><span class="header-section-number">16.1</span> Current Applications</h2>
 <section id="mapgl-sensitivity-map" class="level3" data-number="16.1.1">
 <h3 data-number="16.1.1" class="anchored" data-anchor-id="mapgl-sensitivity-map"><span class="header-section-number">16.1.1</span> mapgl — Sensitivity Map</h3>
-<p>The <a href="https://shiny.marinesensitivity.org/mapgl/">mapgl</a> application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:</p>
+<p>The <a href="https://app.marinesensitivity.org/mapgl/">mapgl</a> application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:</p>
 <ul>
-<li><strong>Multi-resolution viewing</strong>: toggle between cell-level (0.05° grid) and program area aggregations</li>
-<li><strong>Study area selection</strong>: focus on specific program areas or subregions</li>
+<li><strong>Multi-resolution viewing</strong>: toggle between cell-level (0.05° grid) and Program Area aggregations</li>
+<li><strong>Study area selection</strong>: focus on specific Program Areas or subregions</li>
 <li><strong>Layer selection</strong>: view individual species category scores or composite metrics</li>
 <li><strong>Flower plot</strong>: interactive summary showing scores by species category with weighted center value</li>
 <li><strong>Species table</strong>: sortable table of species present in selected area with extinction risk details</li>
 <li><strong>Treemap</strong>: hierarchical view of species contributions to sensitivity</li>
 <li><strong>CSV export</strong>: download data for selected area or species</li>
+</ul>
+<p>Under the hood, mapgl composes three types of map layers — all driven from the same DuckDB source of truth (<a href="software.html#fig-architecture" class="quarto-xref">Figure&nbsp;<span>10.1</span></a>):</p>
+<ul>
+<li><strong>Cell-values raster</strong> — on-the-fly PNG tiles from the msens TiTiler factory. The Shiny server builds the SELECT via <code>cell_sql(metric_key, subregion_key)</code>, fetches the stats for a stable legend via <code>msens::cell_stats()</code>, and passes the tile URL template to <code>msens::add_cell_tiles()</code>. The browser fetches only the tiles intersecting its current viewport; Varnish caches each tile for 7 days. No ∼4 GB full-raster transfer on initial load (see <a href="software.html#fig-raster" class="quarto-xref">Figure&nbsp;<span>10.2</span></a>).</li>
+<li><strong>“Cells outside Program Areas” mask</strong> — same factory, single-color <code>color=#222222</code> render path, with a SQL returning <code>cell_metric</code> cells <strong>not</strong> in any <code>zone</code> row where <code>fld='programarea_key'</code>.</li>
+<li><strong>Program Area choropleth</strong> — when the user switches unit to Program Area, polygon geometry comes from a static PMTiles file served by Caddy; per-area fill colors come live from DuckDB’s <code>zone_metric</code> table via a <code>mapbox-gl</code> <code>match</code> expression pushed through the Shiny proxy (see <a href="software.html#fig-choropleth" class="quarto-xref">Figure&nbsp;<span>10.4</span></a>).</li>
 </ul>
 <p>See <a href="./apps/mapgl.html">Appendix: mapgl</a> for details.</p>
 </section>

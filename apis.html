@@ -47,6 +47,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-5ccb035bea26c1e21f80f44cf7c27909.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -389,15 +392,28 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#msens-titiler-factory" id="toc-msens-titiler-factory" class="nav-link active" data-scroll-target="#msens-titiler-factory"><span class="header-section-number">14.1</span> msens TiTiler factory</a>
+  <ul class="collapse">
+  <li><a href="#endpoints" id="toc-endpoints" class="nav-link" data-scroll-target="#endpoints"><span class="header-section-number">14.1.1</span> Endpoints</a></li>
+  <li><a href="#caching" id="toc-caching" class="nav-link" data-scroll-target="#caching"><span class="header-section-number">14.1.2</span> Caching</a></li>
+  <li><a href="#derived-cog-r_cellid.tif" id="toc-derived-cog-r_cellid.tif" class="nav-link" data-scroll-target="#derived-cog-r_cellid.tif"><span class="header-section-number">14.1.3</span> Derived COG: <code>r_cellid.tif</code></a></li>
+  </ul></li>
+  <li><a href="#custom-plumber-api" id="toc-custom-plumber-api" class="nav-link" data-scroll-target="#custom-plumber-api"><span class="header-section-number">14.2</span> Custom plumber API</a></li>
+  <li><a href="#legacy-apis-deprecated" id="toc-legacy-apis-deprecated" class="nav-link" data-scroll-target="#legacy-apis-deprecated"><span class="header-section-number">14.3</span> Legacy APIs (deprecated)</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/apis.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./apis.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">APIs</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">APIs</span></h1>
+<h1 class="title"><span id="sec-apis" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">APIs</span></span></h1>
 </div>
 
 
@@ -414,26 +430,94 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>There three APIs, each used for different purposes:</p>
+<p>Two APIs sit in front of the DuckDB source of truth:</p>
 <ol type="1">
-<li><p><a href="https://api.marinesensitivity.org"><strong>api</strong></a><br>
-<em>custom API: using R <a href="https://www.rplumber.io/">plumber</a></em><br>
-source: <a href="https://github.com/MarineSensitivity/api/blob/main/plumber.R">MarineSensitivity/api</a><br>
-<img src="figures/apis/api.marinesensitivity.org.png" class="img-fluid" width="300"><br>
-</p></li>
-<li><p><a href="https://swagger.marinesensitivity.org"><strong>swagger</strong></a><br>
-<em>generic database API: using <a href="https://postgrest.org/en/stable/">PostGREST</a></em><br>
-source: Postgres database, non-spatial<br>
-<img src="figures/apis/swagger.marinesensitivity.org.png" class="img-fluid" width="300"><br>
-</p></li>
-<li><p><a href="https://tile.marinesensitivity.org"><strong>tile</strong></a><br>
-<em>spatial database API: using <a href="https://postgrest.org/en/stable/">pg_tileserv</a> for serving vector tiles</em><br>
-source: Postgres database, spatial<br>
-<img src="figures/apis/tile.marinesensitivity.org.png" class="img-fluid" width="300"><br>
-</p></li>
+<li><strong><a href="https://titilecache.marinesensitivity.org">titilecache.marinesensitivity.org</a></strong> — a custom <a href="https://developmentseed.org/titiler/">TiTiler</a> factory that renders on-the-fly PNG raster tiles from arbitrary DuckDB SELECTs, cached by Varnish.</li>
+<li><strong><a href="https://api.marinesensitivity.org">api.marinesensitivity.org</a></strong> — a custom R <a href="https://www.rplumber.io/"><code>plumber</code></a> API for programmatic (non-tile) data access.</li>
 </ol>
+<p>Static vector data (PMTiles) is served directly by Caddy’s file server and doesn’t need an API in the traditional sense — see <a href="server.html" class="quarto-xref"><span>Chapter 11</span></a>.</p>
+<section id="msens-titiler-factory" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="msens-titiler-factory"><span class="header-section-number">14.1</span> msens TiTiler factory</h2>
+<p>The factory is a FastAPI subclass of <code>titiler.core.factory.TilerFactory</code>, registered at the <code>/msens</code> prefix on top of the default TiTiler application. It runs in the <code>titiler</code> container (image built from <code>server/titiler/</code>) and is fronted by a Varnish cache (<code>titilecache</code>).</p>
+<p>Source: <a href="https://github.com/MarineSensitivity/server/blob/main/titiler/factory.py">server/titiler/factory.py</a>.</p>
+<section id="endpoints" class="level3" data-number="14.1.1">
+<h3 data-number="14.1.1" class="anchored" data-anchor-id="endpoints"><span class="header-section-number">14.1.1</span> Endpoints</h3>
+<p>All <code>/msens/*</code> routes accept a <code>sql</code> query parameter: a <strong>base64url-encoded SELECT</strong> returning exactly two columns, <code>cell_id</code> (integer) and <code>value</code> (numeric). The SQL is parsed with <code>sqlglot</code> (SELECT-only, no write ops, no dynamic I/O like <code>read_*</code> / <code>httpfs</code> / <code>load_*</code>), executed against a read-only DuckDB connection, and the resulting <code>cell_id → value</code> map is cached in-process with an LRU keyed on the canonical SQL string. A <code>mtime</code> parameter can be passed for cache-busting (typically the mtime of <code>sdm.duckdb</code>).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Endpoint</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>GET /msens/bounds</code></td>
+<td>Geographic (EPSG:4326) bounds of the cell-id COG.</td>
+</tr>
+<tr class="even">
+<td><code>GET /msens/statistics?sql=…</code></td>
+<td><code>{n, min, max, mean, std, p2, p50, p98}</code> of the SQL result — used by clients to set a stable legend rescale without fetching any tiles. Cached by Varnish.</td>
+</tr>
+<tr class="odd">
+<td><code>GET /msens/tilejson.json?sql=…&amp;colormap=…&amp;rescale=…</code></td>
+<td>TileJSON 2.2.0 document with the tile URL template — lets any TileJSON-aware client (QGIS, MapLibre, Mapbox GL) consume the layer.</td>
+</tr>
+<tr class="even">
+<td><code>GET /msens/tiles/{z}/{x}/{y}.png?sql=…&amp;colormap=…&amp;rescale=…</code></td>
+<td>The tile endpoint. Renders a 256×256 RGBA PNG by: (a) executing the SQL and LRU-caching the <code>cell_id → value</code> map; (b) reading the z/x/y window of the cell-id COG with nearest-neighbor resampling; (c) looking the value up per pixel, rescaling and colorizing; (d) returning PNG with <code>Cache-Control: public, max-age=604800</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>GET /msens/tiles/{z}/{x}/{y}.png?sql=…&amp;color=#rrggbb[aa]</code></td>
+<td><strong>Single-color mask</strong> variant: every valid (in-range, finite-value) pixel is painted with the given hex color; <code>colormap</code> and <code>rescale</code> are ignored. Used for binary overlays like “cells outside Program Areas”.</td>
+</tr>
+<tr class="even">
+<td><code>GET /msens/debug/cog</code></td>
+<td>Inspect the underlying cell-id COG (bounds, CRS, dtype, nodata, overviews, <code>rio_tiler</code> / <code>rasterio</code> versions).</td>
+</tr>
+<tr class="odd">
+<td><code>GET /msens/debug/tile/{z}/{x}/{y}</code></td>
+<td>Inspect what <code>rio_tiler.Reader.tile()</code> returns for a given tile (cell-id range, mask valid-pixel count, top-10 cell-ids by count).</td>
+</tr>
+</tbody>
+</table>
+<p>A typical mapgl Shiny app composes tile URLs via <a href="https://marinesensitivity.org/msens/reference/cell_tile_url.html"><code>msens::cell_tile_url()</code></a> and fetches stats via <a href="https://marinesensitivity.org/msens/reference/cell_stats.html"><code>msens::cell_stats()</code></a>; see <a href="libraries.html" class="quarto-xref"><span>Chapter 15</span></a>.</p>
+</section>
+<section id="caching" class="level3" data-number="14.1.2">
+<h3 data-number="14.1.2" class="anchored" data-anchor-id="caching"><span class="header-section-number">14.1.2</span> Caching</h3>
+<p><a href="https://varnish-cache.org">Varnish</a> fronts the factory at <code>titilecache:6082</code>. The custom VCL (<code>server/varnish/titiler.vcl</code>):</p>
+<ul>
+<li>Normalizes query-param order via <code>std.querysort()</code> so semantically-identical URLs share a cache entry.</li>
+<li>Strips <code>Cookie</code> / <code>Authorization</code> (the factory is stateless).</li>
+<li>Caches 2xx responses on <code>/msens/(tiles/|tilejson|bounds|statistics)</code> for 7 days (<code>grace=1h</code>, <code>keep=24h</code>); errors for 60 s to prevent stampede.</li>
+<li>Adds <code>X-Cache: HIT | MISS</code> for debugging.</li>
+</ul>
+<p>When the source DuckDB regenerates, the Shiny app bumps the <code>mtime</code> query parameter to invalidate all cached tiles at once.</p>
+</section>
+<section id="derived-cog-r_cellid.tif" class="level3" data-number="14.1.3">
+<h3 data-number="14.1.3" class="anchored" data-anchor-id="derived-cog-r_cellid.tif"><span class="header-section-number">14.1.3</span> Derived COG: <code>r_cellid.tif</code></h3>
+<p>The factory looks values up against a single-band uint32 cell-id COG at <code>/share/data/derived/r_cellid.tif</code>. This file is rebuilt by a one-shot script (<code>server/titiler/scripts/make_cellid_cog.py</code>) any time the grid definition changes. See <a href="workflows.html" class="quarto-xref"><span>Chapter 13</span></a> for details.</p>
+</section>
+</section>
+<section id="custom-plumber-api" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="custom-plumber-api"><span class="header-section-number">14.2</span> Custom plumber API</h2>
+<p>The plumber API at <a href="https://api.marinesensitivity.org">api.marinesensitivity.org</a> covers non-tile use cases — CSV exports, species lookups by feature, on-demand PDF/DOCX report generation. Source: <a href="https://github.com/MarineSensitivity/api/blob/main/plumber.R">MarineSensitivity/api</a>.</p>
+<p><a href="figures/apis/api.marinesensitivity.org.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="figures/apis/api.marinesensitivity.org.png" class="img-fluid" width="300"></a></p>
+</section>
+<section id="legacy-apis-deprecated" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="legacy-apis-deprecated"><span class="header-section-number">14.3</span> Legacy APIs (deprecated)</h2>
+<p>The following APIs were part of the pre-2026 PostgreSQL-backed stack and are <strong>no longer in the critical path</strong> for <code>mapgl</code> / <code>mapsp</code>. Endpoints remain reachable for backward compatibility with legacy apps (<code>indicators</code>, <code>bird_hotspots</code>) but should not be targeted by new code.</p>
+<ul>
+<li><code>swagger.marinesensitivity.org</code> — PostgREST over the PostgreSQL DB (currently commented out in <code>docker-compose.yml</code>).</li>
+<li><code>tile.marinesensitivity.org</code> — <code>pg_tileserv</code> vector tiles from PostGIS. Superseded by static PMTiles served by Caddy’s <code>file</code> subdomain; see <a href="software.html" class="quarto-xref"><span>Chapter 10</span></a>.</li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -856,12 +940,44 @@ source: Postgres database, spatial<br>
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/apis.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/apis.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org/" target="_blank">Quarto</a></p>
 </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

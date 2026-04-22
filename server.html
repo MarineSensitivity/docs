@@ -442,7 +442,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#docker-compose" id="toc-docker-compose" class="nav-link" data-scroll-target="#docker-compose"><span class="header-section-number">11.2</span> Docker compose</a></li>
   <li><a href="#dns" id="toc-dns" class="nav-link" data-scroll-target="#dns"><span class="header-section-number">11.3</span> DNS</a></li>
   <li><a href="#caddyfile" id="toc-caddyfile" class="nav-link" data-scroll-target="#caddyfile"><span class="header-section-number">11.4</span> Caddyfile</a></li>
-  <li><a href="#services" id="toc-services" class="nav-link" data-scroll-target="#services"><span class="header-section-number">11.5</span> Services</a></li>
+  <li><a href="#services" id="toc-services" class="nav-link" data-scroll-target="#services"><span class="header-section-number">11.5</span> Services</a>
+  <ul class="collapse">
+  <li><a href="#app-data-plane" id="toc-app-data-plane" class="nav-link" data-scroll-target="#app-data-plane"><span class="header-section-number">11.5.1</span> App + data plane</a></li>
+  <li><a href="#admin" id="toc-admin" class="nav-link" data-scroll-target="#admin"><span class="header-section-number">11.5.2</span> Admin</a></li>
+  <li><a href="#legacy-carried-for-backward-compat-not-in-the-critical-path" id="toc-legacy-carried-for-backward-compat-not-in-the-critical-path" class="nav-link" data-scroll-target="#legacy-carried-for-backward-compat-not-in-the-critical-path"><span class="header-section-number">11.5.3</span> Legacy (carried for backward-compat; not in the critical path)</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/server.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -451,7 +456,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./server.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Server</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Server</span></h1>
+<h1 class="title"><span id="sec-server" class="quarto-section-identifier"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Server</span></span></h1>
 </div>
 
 
@@ -469,6 +474,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>The server is for serving up any web services outside those of Github (e.g., <a href="https://marinesensitivity.org/">website</a>, <a href="https://marinesensitivity.org/docs">docs</a> and R package <a href="https://marinesensitivity.org/msens">msens</a>) using <a href="https://www.docker.com/">Docker</a> (see the <a href="https://github.com/MarineSensitivity/server/blob/main/docker-compose.yml">docker-compose.yml</a>; with reverse proxying from subdomains to ports by <a href="https://caddyserver.com">Caddy</a>).</p>
+<p>The full architecture is summarized in the <a href="./software.html">Software overview</a>. This chapter documents the concrete services running on the host and how Caddy maps subdomains to container ports.</p>
 <!--
 ![Testing architecture.](diagrams/architecture.svg){#fig-arch}
 
@@ -768,30 +774,37 @@ xvdb     202:16   0    60G  0 disk</code></pre>
 <span id="cb13-156"><a href="#cb13-156" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-157"><a href="#cb13-157" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">titiler</span><span class="kw">:</span></span>
 <span id="cb13-158"><a href="#cb13-158" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> titiler</span></span>
-<span id="cb13-159"><a href="#cb13-159" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> ghcr.io/developmentseed/titiler:latest</span></span>
+<span id="cb13-159"><a href="#cb13-159" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./titiler</span></span>
 <span id="cb13-160"><a href="#cb13-160" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb13-161"><a href="#cb13-161" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">8000</span></span>
+<span id="cb13-161"><a href="#cb13-161" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PORT</span><span class="kw">:</span><span class="at">              </span><span class="dv">8000</span></span>
 <span id="cb13-162"><a href="#cb13-162" aria-hidden="true" tabindex="-1"></a><span class="co">      # WORKERS_PER_CORE: 1</span></span>
-<span id="cb13-163"><a href="#cb13-163" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb13-164"><a href="#cb13-164" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8000:8000"</span></span>
-<span id="cb13-165"><a href="#cb13-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-166"><a href="#cb13-166" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">titilecache</span><span class="kw">:</span></span>
-<span id="cb13-167"><a href="#cb13-167" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> titilecache</span></span>
-<span id="cb13-168"><a href="#cb13-168" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> varnish:latest</span><span class="co"> # 7.4.2  # last updated: 2023-12-26</span></span>
-<span id="cb13-169"><a href="#cb13-169" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb13-170"><a href="#cb13-170" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
-<span id="cb13-171"><a href="#cb13-171" aria-hidden="true" tabindex="-1"></a><span class="co">      # - "./varnish/default.vcl:/etc/varnish/default.vcl"</span></span>
-<span id="cb13-172"><a href="#cb13-172" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb13-173"><a href="#cb13-173" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 6082:6082</span><span class="co"> # which ports?</span></span>
-<span id="cb13-174"><a href="#cb13-174" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb13-175"><a href="#cb13-175" aria-hidden="true" tabindex="-1"></a><span class="co">      # VARNISH_SIZE: '2G'</span></span>
-<span id="cb13-176"><a href="#cb13-176" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_HOST</span><span class="kw">:</span><span class="at"> titiler</span><span class="co"> # .marinesensitivity.org</span></span>
-<span id="cb13-177"><a href="#cb13-177" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">8000</span></span>
-<span id="cb13-178"><a href="#cb13-178" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_HTTP_PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">6082</span><span class="co">  # VARNISH_PROXY_PORT: '6081'</span></span>
-<span id="cb13-179"><a href="#cb13-179" aria-hidden="true" tabindex="-1"></a><span class="co">    #command: "-p default_keep=43200" # 60*60*12 = 43200 sec = 12 hrs</span></span>
-<span id="cb13-180"><a href="#cb13-180" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
-<span id="cb13-181"><a href="#cb13-181" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
-<span id="cb13-182"><a href="#cb13-182" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"titiler"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-163"><a href="#cb13-163" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_CELLID_COG</span><span class="kw">:</span><span class="at"> /share/data/derived/r_cellid.tif</span></span>
+<span id="cb13-164"><a href="#cb13-164" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_DUCKDB</span><span class="kw">:</span><span class="at">     /share/data/big/latest/sdm.duckdb</span></span>
+<span id="cb13-165"><a href="#cb13-165" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_MAX_ROWS</span><span class="kw">:</span><span class="at">   </span><span class="st">"1000000"</span></span>
+<span id="cb13-166"><a href="#cb13-166" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_LRU_SIZE</span><span class="kw">:</span><span class="at">   </span><span class="st">"128"</span></span>
+<span id="cb13-167"><a href="#cb13-167" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-168"><a href="#cb13-168" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-169"><a href="#cb13-169" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-170"><a href="#cb13-170" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8000:8000"</span></span>
+<span id="cb13-171"><a href="#cb13-171" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb13-172"><a href="#cb13-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-173"><a href="#cb13-173" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">titilecache</span><span class="kw">:</span></span>
+<span id="cb13-174"><a href="#cb13-174" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> titilecache</span></span>
+<span id="cb13-175"><a href="#cb13-175" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> varnish:latest</span><span class="co"> # 7.4.2  # last updated: 2023-12-26</span></span>
+<span id="cb13-176"><a href="#cb13-176" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-177"><a href="#cb13-177" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-178"><a href="#cb13-178" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"./varnish/titiler.vcl:/etc/varnish/default.vcl:ro"</span></span>
+<span id="cb13-179"><a href="#cb13-179" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-180"><a href="#cb13-180" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 6082:6082</span></span>
+<span id="cb13-181"><a href="#cb13-181" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-182"><a href="#cb13-182" aria-hidden="true" tabindex="-1"></a><span class="co">      # VARNISH_SIZE: '2G'</span></span>
+<span id="cb13-183"><a href="#cb13-183" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_HOST</span><span class="kw">:</span><span class="at"> titiler</span><span class="co"> # .marinesensitivity.org</span></span>
+<span id="cb13-184"><a href="#cb13-184" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">8000</span></span>
+<span id="cb13-185"><a href="#cb13-185" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_HTTP_PORT</span><span class="kw">:</span><span class="at">    </span><span class="dv">6082</span></span>
+<span id="cb13-186"><a href="#cb13-186" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">command</span><span class="kw">:</span><span class="at"> </span><span class="st">"-p default_keep=604800"</span><span class="co"> # 7d, matches vcl TTL</span></span>
+<span id="cb13-187"><a href="#cb13-187" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb13-188"><a href="#cb13-188" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb13-189"><a href="#cb13-189" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"titiler"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="dns" class="level2" data-number="11.3">
 <h2 data-number="11.3" class="anchored" data-anchor-id="dns"><span class="header-section-number">11.3</span> DNS</h2>
@@ -831,37 +844,37 @@ xvdb     202:16   0    60G  0 disk</code></pre>
 <td>100.25.173.0</td>
 </tr>
 <tr class="even">
+<td>app</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="odd">
 <td>file</td>
 <td>A</td>
 <td>100.25.173.0</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>msens1</td>
 <td>A</td>
 <td>100.25.173.0</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>pgadmin</td>
 <td>A</td>
 <td>100.25.173.0</td>
 </tr>
-<tr class="odd">
-<td>rest</td>
+<tr class="even">
+<td>pmtiles</td>
 <td>A</td>
 <td>100.25.173.0</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>rstudio</td>
 <td>A</td>
 <td>100.25.173.0</td>
 </tr>
-<tr class="odd">
-<td>shiny</td>
-<td>A</td>
-<td>100.25.173.0</td>
-</tr>
 <tr class="even">
-<td>swagger</td>
+<td>shiny</td>
 <td>A</td>
 <td>100.25.173.0</td>
 </tr>
@@ -881,6 +894,11 @@ xvdb     202:16   0    60G  0 disk</code></pre>
 <td>100.25.173.0</td>
 </tr>
 <tr class="even">
+<td>titilecache</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="odd">
 <td>www</td>
 <td>CNAME</td>
 <td>marinesensitivity.org</td>
@@ -1003,60 +1021,51 @@ pmtiles.marinesensitivity.org {
 </section>
 <section id="services" class="level2" data-number="11.5">
 <h2 data-number="11.5" class="anchored" data-anchor-id="services"><span class="header-section-number">11.5</span> Services</h2>
-<p>The server is running the following services:</p>
-<!-- 
-TODO: + container/services with document listing and categories:
-
-- rstudio
-  tags: admin
-- pgadmin
-  tags: admin
-- shiny
-  tags: app
-- api
-  tags: API
-- swagger
-  tags: API
-- tile
-  tags: API
-
-Explanation of categories:
-
-- admin: internal for administration and development
-- app: external for general users to interact with
-- API: external for other applications and data scientists to interact with
-- docs: external reference for general and technical users
--->
+<p>The server is running the following services. Subdomains with 🔒 are internal (admin / development); others are public.</p>
+<section id="app-data-plane" class="level3" data-number="11.5.1">
+<h3 data-number="11.5.1" class="anchored" data-anchor-id="app-data-plane"><span class="header-section-number">11.5.1</span> App + data plane</h3>
 <ul>
-<li><p><a href="https://rstudio.marinesensitivity.org"><strong>RStudio</strong></a><br>
-<em>integrated development environment (IDE) to code and debug directly on the server</em><br>
-<img src="figures/server/rstudio.png" class="img-fluid" width="300"><br>
-<a href="https://posit.co/products/open-source/rstudio-server/">More info..</a></p></li>
-<li><p><a href="https://shiny.marinesensitivity.org"><strong>Shiny</strong></a><br>
-<em>interactive applications</em><br>
-e.g., <a href="https://shiny.marinesensitivity.org/map"><strong>shiny</strong>.marinesensitivity.org/<strong>map</strong></a><br>
+<li><p><a href="https://app.marinesensitivity.org"><strong>app</strong></a> / <a href="https://shiny.marinesensitivity.org"><strong>shiny</strong></a><br>
+<em>interactive Shiny applications</em> (<code>mapgl</code>, <code>mapsp</code>, …) — proxied to the <code>rstudio</code> container’s Shiny Server on internal port 3838<br>
 <img src="figures/server/shiny.png" class="img-fluid" width="300"><br>
-<a href="https://shiny.posit.co/">More info..</a></p></li>
-<li><p><a href="https://pgadmin.marinesensitivity.org"><strong>PGadmin</strong></a><br>
-<em>PostGreSQL database administration interface</em><br>
-<img src="figures/server/pgadmin.png" class="img-fluid" width="300"><br>
-<a href="https://www.pgadmin.org/">More info..</a></p></li>
+<a href="https://shiny.posit.co/">Shiny Server docs</a></p></li>
+<li><p><a href="https://file.marinesensitivity.org"><strong>file</strong></a><br>
+<em>static file server for PMTiles archives, report downloads, reference GeoPackages</em> — served by Caddy’s <code>file_server</code> directive directly from the <code>/share</code> bind-mount. This replaces the old <code>pg_tileserv</code> vector-tile path for Program Areas, Ecoregions, Planning Areas, protractions, blocks and aliquots; each layer is a single <code>.pmtiles</code> file that the browser range-reads for only the tiles it needs.</p></li>
+<li><p><a href="https://titiler.marinesensitivity.org"><strong>titiler</strong></a> + <a href="https://titilecache.marinesensitivity.org"><strong>titilecache</strong></a> 🔒🟢<br>
+<em>custom msens <a href="https://developmentseed.org/titiler/">TiTiler</a> factory fronted by a <a href="https://varnish-cache.org">Varnish</a> cache.</em><br>
+The factory exposes <code>/msens/*</code> routes that execute a validated SELECT against DuckDB, look the result up against a pre-baked cell-id COG, and return on-the-fly colorized PNG tiles (see <a href="apis.html" class="quarto-xref"><span>Chapter 14</span></a>). <code>titilecache</code> keys on the full URL (including base64 SQL) and caches each tile for 7 days with <code>default_keep=604800</code>; the custom VCL (<code>server/varnish/titiler.vcl</code>) normalizes query-param order via <code>std.querysort()</code> so semantically-identical URLs share a cache entry, strips cookies / authorization (the factory is stateless), and adds an <code>X-Cache: HIT | MISS</code> debug header.</p></li>
 <li><p><a href="https://api.marinesensitivity.org"><strong>api</strong></a><br>
-<em>custom API: using R plumber</em><br>
-<img src="figures/server/api.png" class="img-fluid" width="300"><br>
-<a href="https://www.rplumber.io/">More info..</a></p></li>
-<li><p><a href="https://swagger.marinesensitivity.org"><strong>swagger</strong></a><br>
-<em>generic database API: using PostGREST</em><br>
-<img src="figures/server/swagger.png" class="img-fluid" width="300"><br>
-<a href="https://postgrest.org/en/stable/">More info..</a></p></li>
-<li><p><a href="https://tile.marinesensitivity.org"><strong>tile</strong></a><br>
-<em>spatial database API: using pg_tileserv for serving vector tiles</em><br>
-<img src="figures/server/tile.png" class="img-fluid" width="300"><br>
-<a href="https://github.com/CrunchyData/pg_tileserv">More info..</a></p></li>
+<em>custom R <a href="https://www.rplumber.io"><code>plumber</code></a> API</em> for programmatic access to DuckDB — see <a href="apis.html" class="quarto-xref"><span>Chapter 14</span></a><br>
+<img src="figures/server/api.png" class="img-fluid" width="300"></p></li>
+</ul>
+</section>
+<section id="admin" class="level3" data-number="11.5.2">
+<h3 data-number="11.5.2" class="anchored" data-anchor-id="admin"><span class="header-section-number">11.5.2</span> Admin</h3>
+<ul>
+<li><p><a href="https://rstudio.marinesensitivity.org"><strong>rstudio</strong></a> 🔒<br>
+<em>integrated development environment (IDE) to code and debug directly on the server.</em><br>
+<img src="figures/server/rstudio.png" class="img-fluid" width="300"><br>
+<a href="https://posit.co/products/open-source/rstudio-server/">Posit RStudio Server</a></p></li>
+<li><p><a href="https://pgadmin.marinesensitivity.org"><strong>pgadmin</strong></a> 🔒<br>
+<em>PostgreSQL database administration interface</em> — used for legacy apps that still connect to PostgreSQL (see below).<br>
+<img src="figures/server/pgadmin.png" class="img-fluid" width="300"><br>
+<a href="https://www.pgadmin.org/">pgAdmin</a></p></li>
+</ul>
+</section>
+<section id="legacy-carried-for-backward-compat-not-in-the-critical-path" class="level3" data-number="11.5.3">
+<h3 data-number="11.5.3" class="anchored" data-anchor-id="legacy-carried-for-backward-compat-not-in-the-critical-path"><span class="header-section-number">11.5.3</span> Legacy (carried for backward-compat; not in the critical path)</h3>
+<p>As of 2026-04, the new raster tile path (<code>titiler</code> + <code>titilecache</code>) and PMTiles-via-<code>file</code> replace what was previously handled by PostgreSQL + <code>pg_tileserv</code>. The <strong>authoritative store is now DuckDB</strong> (<code>/share/data/big/latest/sdm.duckdb</code>). The following services remain in <code>docker-compose.yml</code> only for backward compatibility with a small set of pre-2026 apps (<code>indicators</code>, <code>bird_hotspots</code>) that still read from PostgreSQL. New app code should target DuckDB + the TiTiler factory + PMTiles.</p>
+<ul>
+<li><strong>postgis</strong> (<code>postgis/postgis:latest</code>, internal 5432)<br>
+<em>PostgreSQL + PostGIS</em> — formerly the primary spatial database; now read by legacy apps only.</li>
+<li><strong>tile</strong> (<code>pramsey/pg_tileserv:latest</code>, internal 7800) + <strong>tilecache</strong> (Varnish, 6081)<br>
+<em>vector tiles from PostGIS tables</em> — superseded by static PMTiles served by Caddy.</li>
+<li><strong>rest</strong> and <strong>swagger</strong> — PostgREST + Swagger UI, both <strong>commented out</strong> in <code>docker-compose.yml</code>.</li>
 </ul>
 <p><i class="fa-solid fa-ellipsis-h" aria-label="ellipsis-h"></i> <!-- init fontawesome to get in mermaid diagrams --></p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
