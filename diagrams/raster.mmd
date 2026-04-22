@@ -2,21 +2,21 @@ sequenceDiagram
   autonumber
   Client      ->> ShinyServer: request Shiny map app with a cell-values layer
   ShinyServer ->> DuckDB:      cell_stats(sql) for legend min/max
-  DuckDB      ->> ShinyServer: {n, min, max, mean, std, p2, p50, p98}
-  ShinyServer ->> Client:      return JS with tile URL template incl. base64(SQL) + colormap + rescale + mtime
-  loop for every tile in the current viewport (z/x/y)
-    Client      ->> Varnish:      request /msens/tiles/{z}/{x}/{y}.png?sql=...&colormap=...&rescale=...
+  DuckDB      ->> ShinyServer: min, max, mean, percentiles
+  ShinyServer ->> Client:      return JS with tile URL template (base64 SQL, colormap, rescale, mtime)
+  loop for every tile in the current viewport (z, x, y)
+    Client      ->> Varnish:      request msens tile for z, x, y with sql, colormap, rescale
     alt cache hit
-      Varnish   ->> Client:       return cached PNG (< 1 ms)
+      Varnish   ->> Client:       return cached PNG (sub-ms)
     else cache miss
       Varnish   ->> TiTiler:      pass request through
-      Note over TiTiler: validate SQL (sqlglot), LRU-cache the per-SQL cell_id→value map
+      Note over TiTiler: validate SQL via sqlglot.<br/>LRU-cache cell_id-to-value map per SQL
       TiTiler   ->> DuckDB:        execute SELECT cell_id, value FROM ...
       DuckDB    ->> TiTiler:       rows (once per unique SQL, then LRU-cached)
       TiTiler   ->> CellIdCOG:     read z/x/y window (nearest-neighbor) from r_cellid.tif
-      CellIdCOG ->> TiTiler:       (1, 256, 256) uint32 cell-id tile
-      Note over TiTiler: lookup value per cell_id, rescale + colormap, render PNG
-      TiTiler   ->> Varnish:       PNG (cached 7 d)
+      CellIdCOG ->> TiTiler:       256 by 256 uint32 cell-id tile
+      Note over TiTiler: look up value per cell_id,<br/>rescale and colorize, render PNG
+      TiTiler   ->> Varnish:       PNG (cached 7 days)
       Varnish   ->> Client:        return PNG
     end
   end

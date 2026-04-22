@@ -8,18 +8,18 @@ flowchart LR
     Mapbox[mapbox-gl<br/>Shiny UI]:::client
   end
 
-  subgraph edge_grp[Edge HTTPS — Caddy reverse proxy]
-    Caddy[app / api / titiler / titilecache /<br/>file / pmtiles subdomains]:::edge
+  subgraph edge_grp[Edge HTTPS - Caddy reverse proxy]
+    Caddy[app, api, titiler, titilecache,<br/>file, pmtiles subdomains]:::edge
   end
 
   subgraph app_grp[Shiny server]
-    Shiny[rstudio / shiny-server<br/>apps: mapgl, mapsp, ...]:::svc
+    Shiny[rstudio + shiny-server<br/>apps: mapgl, mapsp, etc.]:::svc
   end
 
   subgraph tile_grp[Raster tiling]
     Varnish[titilecache<br/>Varnish 7d TTL]:::svc
-    TiTiler[titiler custom factory<br/>/msens/* routes]:::svc
-    CellIdCOG[(r_cellid.tif<br/>single-band uint32<br/>-180..180° WGS84)]:::store
+    TiTiler[titiler custom factory<br/>msens routes]:::svc
+    CellIdCOG[(r_cellid.tif<br/>single-band uint32<br/>-180 to +180 deg WGS84)]:::store
   end
 
   subgraph data_grp[Source of truth]

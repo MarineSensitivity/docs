@@ -1,11 +1,11 @@
 sequenceDiagram
   autonumber
-  Client       ->> ShinyServer: user selects a metric + subregion (unit = "pra")
-  ShinyServer  ->> DuckDB:      SELECT zone_seq, score FROM zone_metric JOIN zone ...
+  Client       ->> ShinyServer: user selects a metric and subregion (unit is pra)
+  ShinyServer  ->> DuckDB:      SELECT zone_seq, score FROM zone_metric JOIN zone
   DuckDB       ->> ShinyServer: per-Program-Area scores (one row per PA)
-  Note over ShinyServer: build a mapgl::match_expr paint rule:<br/>column = "programarea_key", stops = d_pra$fill_color
-  ShinyServer  ->> Client:      send fill-color match_expr + layer ids via Shiny proxy
-  Client       ->> Caddy:       (once) request /pmtiles/ply_programareas_2026.pmtiles byte range
+  Note over ShinyServer: build a mapgl match_expr paint rule —<br/>column programarea_key,<br/>stops d_pra$fill_color
+  ShinyServer  ->> Client:      send fill-color match_expr and layer ids via Shiny proxy
+  Client       ->> Caddy:       (once per session) range GET on ply_programareas_2026.pmtiles
   Caddy        ->> Client:      PMTiles vector features (Program Area polygons, keyed by programarea_key)
-  Note over Client: mapbox-gl applies the match_expr paint — values live from DuckDB,<br/>geometry from static PMTiles. No tile re-render on metric change; only paint updates.
+  Note over Client: mapbox-gl applies the match_expr paint —<br/>values live from DuckDB,<br/>geometry from static PMTiles.<br/>No tile re-render on metric change, only paint updates.
 %% mmdc -i diagrams/choropleth.mmd --theme default --backgroundColor transparent --scale 8 -o diagrams/choropleth.png

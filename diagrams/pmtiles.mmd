@@ -1,11 +1,11 @@
 sequenceDiagram
   autonumber
-  Client      ->> ShinyServer: request Shiny map app with a vector layer (Program Areas, Ecoregions, ...)
-  ShinyServer ->> Client:      return JS with PMTiles URL (https://file.marinesensitivity.org/pmtiles/<layer>.pmtiles)
+  Client      ->> ShinyServer: request Shiny map app with a vector layer (Program Areas, Ecoregions, etc.)
+  ShinyServer ->> Client:      return JS with PMTiles URL (file.marinesensitivity.org/pmtiles/LAYER.pmtiles)
   loop for every tile in the current viewport
-    Client     ->> Caddy:        HTTP range GET on the .pmtiles archive for tile {z}/{x}/{y}
+    Client     ->> Caddy:        HTTP range GET on the .pmtiles archive for tile z, x, y
     Caddy      ->> FileServer:   serve byte range from the static .pmtiles file on /share
     FileServer ->> Client:       return MVT bytes for the requested tile
-    Note over Client: mapbox-gl renders + applies paint spec (fill-color, line-color) from match_expr
+    Note over Client: mapbox-gl renders features and<br/>applies paint spec (fill-color, line-color)<br/>from a match_expr rule
   end
 %% mmdc -i diagrams/pmtiles.mmd --theme default --backgroundColor transparent --scale 8 -o diagrams/pmtiles.png
