@@ -15,7 +15,18 @@ execute:
 book:
   title: "Marine Sensitivity"
   subtitle: "Project Documentation"
-  author: "Ben Best"
+  author:
+  - name: "Benjamin D. Best"
+    orcid: 0000-0002-2686-0784
+    email: bill@gates.com
+    affiliations:
+      - name: Ocean Metrics LLC
+  - name: "Timothy P. White"
+    email: timothy.white@boem.gov
+    affiliations:
+      - name: BOEM’s Office of Environmental Programs
+        city: Sterling
+        state: VA
   date: today
   date-format: "YYYY-MM-DD"
   repo-url: https://github.com/MarineSensitivity/docs/
