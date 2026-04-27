@@ -19,7 +19,7 @@ This book documents the scientific methodology, software infrastructure, and int
 
 ### How to Cite
 
-> Best, B.D. (2026). Marine Sensitivity Toolkit: Project Documentation. Bureau of Ocean Energy Management, Environmental Studies Program. <https://marinesensitivity.org/docs/>
+> Best, B.D., T.P. White (2026). Marine Sensitivity Toolkit: Project Documentation. Bureau of Ocean Energy Management, Environmental Studies Program. <https://marinesensitivity.org/docs/>
 
 ### Acknowledgments
 
