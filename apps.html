@@ -317,14 +317,14 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./apps/mapgl.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">mapgl — Sensitivity Map</span></span></a>
+  <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./apps/mapsp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">mapsp — Species Distribution Viewer</span></span></a>
+  <a href="./apps/species.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
   </div>
 </li>
       </ul>
@@ -359,7 +359,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scores Explorer</span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -396,8 +396,8 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#current-applications" id="toc-current-applications" class="nav-link active" data-scroll-target="#current-applications"><span class="header-section-number">16.1</span> Current Applications</a>
   <ul class="collapse">
-  <li><a href="#mapgl-sensitivity-map" id="toc-mapgl-sensitivity-map" class="nav-link" data-scroll-target="#mapgl-sensitivity-map"><span class="header-section-number">16.1.1</span> mapgl — Sensitivity Map</a></li>
-  <li><a href="#mapsp-species-distribution-viewer" id="toc-mapsp-species-distribution-viewer" class="nav-link" data-scroll-target="#mapsp-species-distribution-viewer"><span class="header-section-number">16.1.2</span> mapsp — Species Distribution Viewer</a></li>
+  <li><a href="#scores-mapper-of-aggregate-sensitivity-scores" id="toc-scores-mapper-of-aggregate-sensitivity-scores" class="nav-link" data-scroll-target="#scores-mapper-of-aggregate-sensitivity-scores"><span class="header-section-number">16.1.1</span> Scores — mapper of aggregate sensitivity scores</a></li>
+  <li><a href="#species-mapper-of-individual-species-distributions" id="toc-species-mapper-of-individual-species-distributions" class="nav-link" data-scroll-target="#species-mapper-of-individual-species-distributions"><span class="header-section-number">16.1.2</span> Species — mapper of individual species distributions</a></li>
   </ul></li>
   <li><a href="#legacy-applications" id="toc-legacy-applications" class="nav-link" data-scroll-target="#legacy-applications"><span class="header-section-number">16.2</span> Legacy Applications</a></li>
   </ul>
@@ -429,9 +429,9 @@ ul.task-list li input[type="checkbox"] {
 <p>These tools allow stakeholders, scientists, and decision-makers to understand the underlying components contributing to an area’s sensitivity to offshore energy development, supporting better planning and impact assessment.</p>
 <section id="current-applications" class="level2" data-number="16.1">
 <h2 data-number="16.1" class="anchored" data-anchor-id="current-applications"><span class="header-section-number">16.1</span> Current Applications</h2>
-<section id="mapgl-sensitivity-map" class="level3" data-number="16.1.1">
-<h3 data-number="16.1.1" class="anchored" data-anchor-id="mapgl-sensitivity-map"><span class="header-section-number">16.1.1</span> mapgl — Sensitivity Map</h3>
-<p>The <a href="https://app.marinesensitivity.org/mapgl/">mapgl</a> application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:</p>
+<section id="scores-mapper-of-aggregate-sensitivity-scores" class="level3" data-number="16.1.1">
+<h3 data-number="16.1.1" class="anchored" data-anchor-id="scores-mapper-of-aggregate-sensitivity-scores"><span class="header-section-number">16.1.1</span> Scores — mapper of aggregate sensitivity scores</h3>
+<p>The <a href="https://app.marinesensitivity.org/scores/">Scores</a> application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:</p>
 <ul>
 <li><strong>Multi-resolution viewing</strong>: toggle between cell-level (0.05° grid) and Program Area aggregations</li>
 <li><strong>Study area selection</strong>: focus on specific Program Areas or subregions</li>
@@ -441,17 +441,17 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Treemap</strong>: hierarchical view of species contributions to sensitivity</li>
 <li><strong>CSV export</strong>: download data for selected area or species</li>
 </ul>
-<p>Under the hood, mapgl composes three types of map layers — all driven from the same DuckDB source of truth (<a href="software.html#fig-architecture" class="quarto-xref">Figure&nbsp;<span>10.1</span></a>):</p>
+<p>Under the hood, the Scores app composes three types of map layers — all driven from the same DuckDB source of truth (<a href="software.html#fig-architecture" class="quarto-xref">Figure&nbsp;<span>10.1</span></a>):</p>
 <ul>
 <li><strong>Cell-values raster</strong> — on-the-fly PNG tiles from the msens TiTiler factory. The Shiny server builds the SELECT via <code>cell_sql(metric_key, subregion_key)</code>, fetches the stats for a stable legend via <code>msens::cell_stats()</code>, and passes the tile URL template to <code>msens::add_cell_tiles()</code>. The browser fetches only the tiles intersecting its current viewport; Varnish caches each tile for 7 days. No ∼4 GB full-raster transfer on initial load (see <a href="software.html#fig-raster" class="quarto-xref">Figure&nbsp;<span>10.2</span></a>).</li>
 <li><strong>“Cells outside Program Areas” mask</strong> — same factory, single-color <code>color=#222222</code> render path, with a SQL returning <code>cell_metric</code> cells <strong>not</strong> in any <code>zone</code> row where <code>fld='programarea_key'</code>.</li>
 <li><strong>Program Area choropleth</strong> — when the user switches unit to Program Area, polygon geometry comes from a static PMTiles file served by Caddy; per-area fill colors come live from DuckDB’s <code>zone_metric</code> table via a <code>mapbox-gl</code> <code>match</code> expression pushed through the Shiny proxy (see <a href="software.html#fig-choropleth" class="quarto-xref">Figure&nbsp;<span>10.4</span></a>).</li>
 </ul>
-<p>See <a href="./apps/mapgl.html">Appendix: mapgl</a> for details.</p>
+<p>See <a href="./apps/scores.html">Appendix: scores</a> for details.</p>
 </section>
-<section id="mapsp-species-distribution-viewer" class="level3" data-number="16.1.2">
-<h3 data-number="16.1.2" class="anchored" data-anchor-id="mapsp-species-distribution-viewer"><span class="header-section-number">16.1.2</span> mapsp — Species Distribution Viewer</h3>
-<p>The <a href="https://shiny.marinesensitivity.org/mapsp/">mapsp</a> application enables exploration of individual species distribution models. Key features include:</p>
+<section id="species-mapper-of-individual-species-distributions" class="level3" data-number="16.1.2">
+<h3 data-number="16.1.2" class="anchored" data-anchor-id="species-mapper-of-individual-species-distributions"><span class="header-section-number">16.1.2</span> Species — mapper of individual species distributions</h3>
+<p>The <a href="https://shiny.marinesensitivity.org/mapsp/">Species</a> application enables exploration of individual species distribution models. Key features include:</p>
 <ul>
 <li><strong>Species selection</strong>: search by common or scientific name, filter by species category</li>
 <li><strong>Model display</strong>: view merged models or individual source dataset layers</li>
@@ -459,7 +459,7 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Species info panel</strong>: ESA listing, IUCN Red List category, MMPA/MBTA protection flags, extinction risk score</li>
 <li><strong>Deep-linking</strong>: URL parameters support direct links to specific species</li>
 </ul>
-<p>See <a href="./apps/mapsp.html">Appendix: mapsp</a> for details.</p>
+<p>See <a href="./apps/species.html">Appendix: species</a> for details.</p>
 </section>
 </section>
 <section id="legacy-applications" class="level2" data-number="16.2">

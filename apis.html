@@ -320,14 +320,14 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./apps/mapgl.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">mapgl — Sensitivity Map</span></span></a>
+  <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./apps/mapsp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">mapsp — Species Distribution Viewer</span></span></a>
+  <a href="./apps/species.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
   </div>
 </li>
       </ul>
@@ -362,7 +362,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scores Explorer</span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -485,7 +485,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-<p>A typical mapgl Shiny app composes tile URLs via <a href="https://marinesensitivity.org/msens/reference/cell_tile_url.html"><code>msens::cell_tile_url()</code></a> and fetches stats via <a href="https://marinesensitivity.org/msens/reference/cell_stats.html"><code>msens::cell_stats()</code></a>; see <a href="libraries.html" class="quarto-xref"><span>Chapter 15</span></a>.</p>
+<p>A typical Scores Shiny app composes tile URLs via <a href="https://marinesensitivity.org/msens/reference/cell_tile_url.html"><code>msens::cell_tile_url()</code></a> and fetches stats via <a href="https://marinesensitivity.org/msens/reference/cell_stats.html"><code>msens::cell_stats()</code></a>; see <a href="libraries.html" class="quarto-xref"><span>Chapter 15</span></a>.</p>
 </section>
 <section id="caching" class="level3" data-number="14.1.2">
 <h3 data-number="14.1.2" class="anchored" data-anchor-id="caching"><span class="header-section-number">14.1.2</span> Caching</h3>
@@ -510,7 +510,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="legacy-apis-deprecated" class="level2" data-number="14.3">
 <h2 data-number="14.3" class="anchored" data-anchor-id="legacy-apis-deprecated"><span class="header-section-number">14.3</span> Legacy APIs (deprecated)</h2>
-<p>The following APIs were part of the pre-2026 PostgreSQL-backed stack and are <strong>no longer in the critical path</strong> for <code>mapgl</code> / <code>mapsp</code>. Endpoints remain reachable for backward compatibility with legacy apps (<code>indicators</code>, <code>bird_hotspots</code>) but should not be targeted by new code.</p>
+<p>The following APIs were part of the pre-2026 PostgreSQL-backed stack and are <strong>no longer in the critical path</strong> for <code>scores</code> / <code>species</code> apps. Endpoints remain reachable for backward compatibility with legacy apps (<code>indicators</code>, <code>bird_hotspots</code>) but should not be targeted by new code.</p>
 <ul>
 <li><code>swagger.marinesensitivity.org</code> — PostgREST over the PostgreSQL DB (currently commented out in <code>docker-compose.yml</code>).</li>
 <li><code>tile.marinesensitivity.org</code> — <code>pg_tileserv</code> vector tiles from PostGIS. Superseded by static PMTiles served by Caddy’s <code>file</code> subdomain; see <a href="software.html" class="quarto-xref"><span>Chapter 10</span></a>.</li>

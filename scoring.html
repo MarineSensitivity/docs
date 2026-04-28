@@ -391,14 +391,14 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./apps/mapgl.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">mapgl — Sensitivity Map</span></span></a>
+  <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./apps/mapsp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">mapsp — Species Distribution Viewer</span></span></a>
+  <a href="./apps/species.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
   </div>
 </li>
       </ul>
@@ -433,7 +433,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scores Explorer</span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -680,7 +680,7 @@ Figure&nbsp;7.2: Flower plots for all 20 BOEM Program Areas showing ecoregionall
 </figure>
 </div>
 <p>The flower plot lets decision-makers quickly spot which ecological elements drive sensitivity in an area, aiding better planning and impact assessment.</p>
-<p>The flower plot is implemented as an interactive <code>ggiraph</code> visualization using polar coordinates in R (<code>ggplot2 + coord_polar()</code>), with tooltips showing detailed score breakdowns on hover. The <code>plot_flower()</code> function in <code>calc_scores.qmd</code> generates static versions for reports, while the mapgl web application implements an interactive JavaScript version for responsive rendering (see <a href="apps/mapgl.html#fig-mapgl-flower" class="quarto-xref">Figure&nbsp;<span>A.2</span></a>).</p>
+<p>The flower plot is implemented as an interactive <code>ggiraph</code> visualization using polar coordinates in R (<code>ggplot2 + coord_polar()</code>), with tooltips showing detailed score breakdowns on hover. The <code>plot_flower()</code> function in <code>calc_scores.qmd</code> generates static versions for reports, while the mapgl web application implements an interactive JavaScript version for responsive rendering (see <span class="quarto-unresolved-ref">?fig-mapgl-flower</span>).</p>
 </section>
 <section id="treemap" class="level3" data-number="7.6.2">
 <h3 data-number="7.6.2" class="anchored" data-anchor-id="treemap"><span class="header-section-number">7.6.2</span> Treemap</h3>
@@ -717,8 +717,8 @@ Figure&nbsp;7.4: Zoomed treemap showing individual species within a specific ris
 <h3 data-number="7.6.3" class="anchored" data-anchor-id="interactive-maps"><span class="header-section-number">7.6.3</span> Interactive Maps</h3>
 <p>The primary visualization tools are two Shiny web applications:</p>
 <ul>
-<li><strong><a href="https://shiny.marinesensitivity.org/mapgl/">mapgl</a></strong>: general sensitivity mapping app showing composite scores by program area with flower plots and treemaps (see <a href="./apps/mapgl.html">Appendix: mapgl</a>)</li>
-<li><strong><a href="https://shiny.marinesensitivity.org/mapsp/">mapsp</a></strong>: species distribution viewer showing individual and merged models with regulatory status information (see <a href="./apps/mapsp.html">Appendix: mapsp</a>)</li>
+<li><strong><a href="https://app.marinesensitivity.org/scores/">Scores</a></strong>: general sensitivity mapping app showing composite scores by program area with flower plots and treemaps (see <a href="apps/mapgl.qmd">Appendix: mapgl</a>)</li>
+<li><strong><a href="https://app.marinesensitivity.org/species/">Species</a></strong>: species distribution viewer showing individual and merged models with regulatory status information (see <a href="apps/mapsp.qmd">Appendix: mapsp</a>)</li>
 </ul>
 
 

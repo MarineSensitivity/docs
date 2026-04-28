@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Calculate scores based on sensitivity metric – for now, extinction risk across taxonomic groups.">
+<meta name="description" content="general sensitivity mapping application">
 
-<title>Scores Explorer – Marine Sensitivity</title>
+<title>Appendix A — Scores — mapper of aggregate sensitivity scores – Marine Sensitivity</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -34,8 +34,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../apps/sdm.html" rel="next">
-<link href="../apps/map.html" rel="prev">
+<link href="../apps/species.html" rel="next">
+<link href="../glossary.html" rel="prev">
 <link href="../images/favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -47,8 +47,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-5ccb035bea26c1e21f80f44cf7c27909.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
-<link href="../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -92,7 +90,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="../apps/aoi.html">Applications (Legacy)</a></li><li class="breadcrumb-item"><a href="../apps/scores.html">Scores Explorer</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="../apps/scores.html">Applications (Current)</a></li><li class="breadcrumb-item"><a href="../apps/scores.html"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -313,36 +311,36 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text">Applications (Current)</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../apps/mapgl.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">mapgl — Sensitivity Map</span></span></a>
+  <a href="../apps/scores.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../apps/mapsp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">mapsp — Species Distribution Viewer</span></span></a>
+  <a href="../apps/species.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
   </div>
 </li>
       </ul>
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
  <span class="menu-text">Applications (Legacy)</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 show">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../apps/aoi.html" class="sidebar-item-text sidebar-link">
@@ -363,8 +361,8 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../apps/scores.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Scores Explorer</span></a>
+  <a href="../apps/scores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -394,19 +392,33 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">A.1</span> Overview</a></li>
+  <li><a href="#features" id="toc-features" class="nav-link" data-scroll-target="#features"><span class="header-section-number">A.2</span> Features</a>
+  <ul class="collapse">
+  <li><a href="#map-display" id="toc-map-display" class="nav-link" data-scroll-target="#map-display"><span class="header-section-number">A.2.1</span> Map Display</a></li>
+  <li><a href="#sensitivity-metrics" id="toc-sensitivity-metrics" class="nav-link" data-scroll-target="#sensitivity-metrics"><span class="header-section-number">A.2.2</span> Sensitivity Metrics</a></li>
+  <li><a href="#flower-plot" id="toc-flower-plot" class="nav-link" data-scroll-target="#flower-plot"><span class="header-section-number">A.2.3</span> Flower Plot</a></li>
+  <li><a href="#species-table" id="toc-species-table" class="nav-link" data-scroll-target="#species-table"><span class="header-section-number">A.2.4</span> Species Table</a></li>
+  <li><a href="#data-export" id="toc-data-export" class="nav-link" data-scroll-target="#data-export"><span class="header-section-number">A.2.5</span> Data Export</a></li>
+  </ul></li>
+  <li><a href="#generating-screenshots" id="toc-generating-screenshots" class="nav-link" data-scroll-target="#generating-screenshots"><span class="header-section-number">A.3</span> Generating Screenshots</a></li>
+  <li><a href="#source-code" id="toc-source-code" class="nav-link" data-scroll-target="#source-code"><span class="header-section-number">A.4</span> Source Code</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/apps/scores.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="../apps/aoi.html">Applications (Legacy)</a></li><li class="breadcrumb-item"><a href="../apps/scores.html">Scores Explorer</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="../apps/scores.html">Applications (Current)</a></li><li class="breadcrumb-item"><a href="../apps/scores.html"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Scores Explorer</h1>
+<h1 class="title">Appendix A — Scores — mapper of aggregate sensitivity scores</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">distributions</div>
-    <div class="quarto-category">vulnerabilities</div>
-    <div class="quarto-category">vector</div>
+    <div class="quarto-category">current</div>
   </div>
   </div>
 
@@ -424,14 +436,88 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Calculate scores based on sensitivity metric – for now, extinction risk across taxonomic groups.</p>
+<section id="overview" class="level2" data-number="A.1">
+<h2 data-number="A.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">A.1</span> Overview</h2>
+<p>The <strong>Scores</strong> application (<a href="https://shiny.marinesensitivity.org/scores/">app.marinesensitivity.org/scores</a>) is the primary interactive tool for exploring composite marine sensitivity scores across BOEM Program Areas. It enables users to visualize extinction risk weighted species presence at multiple spatial resolutions, with integrated flower plot and treemap summaries.</p>
+<p><a href="#fig-scores-map" class="quarto-xref">Figure&nbsp;<span>A.1</span></a> shows the global view of cell-level sensitivity scores across all US waters. The sidebar provides controls for study area, spatial units (raster cells or program areas), and layer selection.</p>
+<div id="fig-scores-map" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../figures/apps/scores-map.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;A.1: The Scores application displaying cell-level sensitivity scores across US waters. The sidebar provides controls for study area selection, spatial resolution (raster cells vs.&nbsp;program areas), and layer choice. The globe view shows scores from 0 (blue) to 89 (red) with MapBox basemap."><img src="../figures/apps/scores-map.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;A.1: The Scores application displaying cell-level sensitivity scores across US waters. The sidebar provides controls for study area selection, spatial resolution (raster cells vs.&nbsp;program areas), and layer choice. The globe view shows scores from 0 (blue) to 89 (red) with MapBox basemap.
+</figcaption>
+</figure>
+</div>
+<p><a href="#fig-scores-flower" class="quarto-xref">Figure&nbsp;<span>A.2</span></a> shows the flower plot panel that appears when a program area is selected. Here, the Southern California program area displays a weighted mean score of 29, with petals representing species categories (bird, coral, fish, invertebrate, mammal, other, turtle) and primary productivity.</p>
+<div id="fig-scores-flower" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-flower-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../figures/apps/scores-flower.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;A.2: The Scores application showing the flower plot panel for Southern California. Petal length represents each category’s rescaled sensitivity score; petal width represents its weight. The center value (29) is the weighted mean across all categories."><img src="../figures/apps/scores-flower.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-flower-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;A.2: The Scores application showing the flower plot panel for Southern California. Petal length represents each category’s rescaled sensitivity score; petal width represents its weight. The center value (29) is the weighted mean across all categories.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="features" class="level2" data-number="A.2">
+<h2 data-number="A.2" class="anchored" data-anchor-id="features"><span class="header-section-number">A.2</span> Features</h2>
+<section id="map-display" class="level3" data-number="A.2.1">
+<h3 data-number="A.2.1" class="anchored" data-anchor-id="map-display"><span class="header-section-number">A.2.1</span> Map Display</h3>
 <ul>
-<li><p><a href="https://shiny.marinesensitivity.org/scores/"><i class="fa-solid fa-globe" aria-label="globe"></i> website</a></p></li>
-<li><p><a href="https://github.com/MarineSensitivity/apps/tree/main/scores"><i class="fa-brands fa-github" aria-label="github"></i> <code>code</code></a></p></li>
+<li><strong>Cell-level view</strong>: 0.05° grid cells colored by sensitivity score for the selected metric</li>
+<li><strong>Program area view</strong>: aggregated scores by BOEM Program Area, with boundaries overlaid</li>
+<li><strong>Base maps</strong>: multiple MapBox base layers (satellite, streets, light, dark)</li>
+<li><strong>Study area selection</strong>: click a program area to focus the view and update summary panels</li>
 </ul>
-<p><a href="../figures/apps/scores.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="../figures/apps/scores.png" class="img-fluid"></a></p>
+</section>
+<section id="sensitivity-metrics" class="level3" data-number="A.2.2">
+<h3 data-number="A.2.2" class="anchored" data-anchor-id="sensitivity-metrics"><span class="header-section-number">A.2.2</span> Sensitivity Metrics</h3>
+<p>The map can display any of the following layers:</p>
+<ul>
+<li>Composite extinction risk (weighted sum across all species categories)</li>
+<li>Individual category scores: bird, coral, fish, invertebrate, mammal, reptile/turtle</li>
+<li>Primary productivity</li>
+</ul>
+<p>All scores are ecoregionally rescaled to [0–100] for meaningful cross-region comparison (see <a href="../scoring.html" class="quarto-xref"><span>Chapter 7</span></a>).</p>
+</section>
+<section id="flower-plot" class="level3" data-number="A.2.3">
+<h3 data-number="A.2.3" class="anchored" data-anchor-id="flower-plot"><span class="header-section-number">A.2.3</span> Flower Plot</h3>
+<p>Selecting a program area displays a flower plot summarizing the sensitivity profile:</p>
+<ul>
+<li>Each petal represents a species category</li>
+<li>Petal length = rescaled sensitivity score (0–100)</li>
+<li>Petal width = category weight</li>
+<li>Center value = weighted mean across categories</li>
+</ul>
+</section>
+<section id="species-table" class="level3" data-number="A.2.4">
+<h3 data-number="A.2.4" class="anchored" data-anchor-id="species-table"><span class="header-section-number">A.2.4</span> Species Table</h3>
+<p>A sortable table of all valid species present in the selected area, showing:</p>
+<ul>
+<li>Scientific and common name</li>
+<li>Species category</li>
+<li>ESA listing, IUCN Red List status</li>
+<li>MMPA/MBTA protection flags</li>
+<li>Extinction risk score</li>
+</ul>
+</section>
+<section id="data-export" class="level3" data-number="A.2.5">
+<h3 data-number="A.2.5" class="anchored" data-anchor-id="data-export"><span class="header-section-number">A.2.5</span> Data Export</h3>
+<p>Users can download CSV files of scores and species lists for the selected program area or custom area of interest.</p>
+</section>
+</section>
+<section id="generating-screenshots" class="level2" data-number="A.3">
+<h2 data-number="A.3" class="anchored" data-anchor-id="generating-screenshots"><span class="header-section-number">A.3</span> Generating Screenshots</h2>
+</section>
+<section id="source-code" class="level2" data-number="A.4">
+<h2 data-number="A.4" class="anchored" data-anchor-id="source-code"><span class="header-section-number">A.4</span> Source Code</h2>
+<p>The application source code is at: <a href="https://github.com/MarineSensitivity/apps/tree/main/mapgl"><code>apps/mapgl/app.R</code></a></p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -836,13 +922,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../apps/map.html" class="pagination-link" aria-label="Regional Map">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Regional Map</span>
+      <a href="../glossary.html" class="pagination-link" aria-label="Glossary">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Glossary</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../apps/sdm.html" class="pagination-link" aria-label="Distributions, Vector">
-        <span class="nav-page-text">Distributions, Vector</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../apps/species.html" class="pagination-link" aria-label="Species — mapper of individual species distributions">
+        <span class="nav-page-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -854,7 +940,7 @@ ul.task-list li input[type="checkbox"] {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/apps/scores.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/apps/scores.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org/" target="_blank">Quarto</a></p>
 </div>
