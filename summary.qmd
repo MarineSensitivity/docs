@@ -12,7 +12,7 @@ The Marine Sensitivity Toolkit (MST) provides a comprehensive, reproducible syst
 
 - **Ecoregional rescaling** normalizes sensitivity scores to a [0--100%] range within each BOEM ecoregion, enabling meaningful cross-region comparison despite natural differences in species richness between tropical and polar waters
 
-- **Interactive tools** (mapgl and mapsp applications) provide decision makers and scientists with accessible interfaces for exploring sensitivity patterns, individual species distributions, and score breakdowns at multiple spatial scales
+- **Interactive tools** (Scores and Species applications) provide decision makers and scientists with accessible interfaces for exploring sensitivity patterns, individual species distributions, and score breakdowns at multiple spatial scales
 
 ## Future Directions
 

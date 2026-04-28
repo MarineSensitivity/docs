@@ -74,7 +74,7 @@ The server is running the following services. Subdomains with 🔒 are internal 
 ### App + data plane
 
 -   [**app**](https://app.marinesensitivity.org) / [**shiny**](https://shiny.marinesensitivity.org)\
-    *interactive Shiny applications* (`mapgl`, `mapsp`, ...) — proxied to the `rstudio` container's Shiny Server on internal port 3838\
+    *interactive Shiny applications* (`scores`, `species`, ...) — proxied to the `rstudio` container's Shiny Server on internal port 3838\
     ![](figures/server/shiny.png){width="300"}\
     [Shiny Server docs](https://shiny.posit.co/)
 

@@ -14,9 +14,9 @@ These tools allow stakeholders, scientists, and decision-makers to understand th
 
 ## Current Applications
 
-### mapgl — Sensitivity Map
+### Scores — mapper of aggregate sensitivity scores
 
-The [mapgl](https://app.marinesensitivity.org/mapgl/) application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:
+The [Scores](https://app.marinesensitivity.org/scores/) application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:
 
 - **Multi-resolution viewing**: toggle between cell-level (0.05° grid) and Program Area aggregations
 - **Study area selection**: focus on specific Program Areas or subregions
@@ -26,17 +26,17 @@ The [mapgl](https://app.marinesensitivity.org/mapgl/) application is the primary
 - **Treemap**: hierarchical view of species contributions to sensitivity
 - **CSV export**: download data for selected area or species
 
-Under the hood, mapgl composes three types of map layers — all driven from the same DuckDB source of truth (@fig-architecture):
+Under the hood, the Scores app composes three types of map layers — all driven from the same DuckDB source of truth (@fig-architecture):
 
 - **Cell-values raster** — on-the-fly PNG tiles from the msens TiTiler factory. The Shiny server builds the SELECT via `cell_sql(metric_key, subregion_key)`, fetches the stats for a stable legend via `msens::cell_stats()`, and passes the tile URL template to `msens::add_cell_tiles()`. The browser fetches only the tiles intersecting its current viewport; Varnish caches each tile for 7 days. No ∼4 GB full-raster transfer on initial load (see @fig-raster).
 - **"Cells outside Program Areas" mask** — same factory, single-color `color=#222222` render path, with a SQL returning `cell_metric` cells **not** in any `zone` row where `fld='programarea_key'`.
 - **Program Area choropleth** — when the user switches unit to Program Area, polygon geometry comes from a static PMTiles file served by Caddy; per-area fill colors come live from DuckDB's `zone_metric` table via a `mapbox-gl` `match` expression pushed through the Shiny proxy (see @fig-choropleth).
 
-See [Appendix: mapgl](apps/mapgl.qmd) for details.
+See [Appendix: scores](apps/scores.qmd) for details.
 
-### mapsp — Species Distribution Viewer
+### Species — mapper of individual species distributions
 
-The [mapsp](https://shiny.marinesensitivity.org/mapsp/) application enables exploration of individual species distribution models. Key features include:
+The [Species](https://shiny.marinesensitivity.org/mapsp/) application enables exploration of individual species distribution models. Key features include:
 
 - **Species selection**: search by common or scientific name, filter by species category
 - **Model display**: view merged models or individual source dataset layers
@@ -44,7 +44,7 @@ The [mapsp](https://shiny.marinesensitivity.org/mapsp/) application enables expl
 - **Species info panel**: ESA listing, IUCN Red List category, MMPA/MBTA protection flags, extinction risk score
 - **Deep-linking**: URL parameters support direct links to specific species
 
-See [Appendix: mapsp](apps/mapsp.qmd) for details.
+See [Appendix: species](apps/species.qmd) for details.
 
 ## Legacy Applications
 

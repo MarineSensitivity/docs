@@ -141,5 +141,5 @@ Zooming into a specific category reveals individual species contributions:
 
 The primary visualization tools are two Shiny web applications:
 
-- **[mapgl](https://shiny.marinesensitivity.org/mapgl/)**: general sensitivity mapping app showing composite scores by program area with flower plots and treemaps (see [Appendix: mapgl](apps/mapgl.qmd))
-- **[mapsp](https://shiny.marinesensitivity.org/mapsp/)**: species distribution viewer showing individual and merged models with regulatory status information (see [Appendix: mapsp](apps/mapsp.qmd))
+- **[Scores](https://app.marinesensitivity.org/scores/)**: general sensitivity mapping app showing composite scores by program area with flower plots and treemaps (see [Appendix: mapgl](apps/mapgl.qmd))
+- **[Species](https://app.marinesensitivity.org/species/)**: species distribution viewer showing individual and merged models with regulatory status information (see [Appendix: mapsp](apps/mapsp.qmd))

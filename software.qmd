@@ -31,7 +31,7 @@ The software components for achieving this interactively are:
 3. **workflows** — Quarto notebooks to ingest source datasets (AquaMaps, IUCN, NMFS/FWS, BirdLife, WoRMS, BOEM zones), merge taxonomic authorities, and compute scores that are written back to DuckDB;
 4. **APIs** — a custom R [`plumber`](https://www.rplumber.io) API for data requests and a custom [**TiTiler**](https://developmentseed.org/titiler/) factory that renders on-the-fly raster PNG tiles from arbitrary DuckDB queries, cached by Varnish;
 5. **libraries** — re-usable documented functions as the [`msens`](https://github.com/MarineSensitivities/msens) R package, including the tile-URL helpers (`cell_tile_url()`, `cell_stats()`, `add_cell_tiles()`) that the Shiny apps use to talk to the factory;
-6. **applications** — interactive Shiny apps (`mapgl`, `mapsp`, …) that combine the raster tile factory with static [PMTiles](https://protomaps.com/docs/pmtiles/) vector layers and live-pushed choropleth paint rules;
+6. **applications** — interactive Shiny apps (`scores`, `species`, …) that combine the raster tile factory with static [PMTiles](https://protomaps.com/docs/pmtiles/) vector layers and live-pushed choropleth paint rules;
 7. **documentation** — this Quarto book with figures, tables, glossary and references in interactive HTML or static DOCX / PDF output.
 
 This toolbox is intended to primarily serve BOEM needs internally, but by being open-source and fully reproducible the hope is to enlist buy-in and even contributions from external partners, whether from other government agencies, academia, NGOs or industry.

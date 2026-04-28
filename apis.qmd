@@ -35,7 +35,7 @@ All `/msens/*` routes accept a `sql` query parameter: a **base64url-encoded SELE
 | `GET /msens/debug/cog` | Inspect the underlying cell-id COG (bounds, CRS, dtype, nodata, overviews, `rio_tiler` / `rasterio` versions). |
 | `GET /msens/debug/tile/{z}/{x}/{y}` | Inspect what `rio_tiler.Reader.tile()` returns for a given tile (cell-id range, mask valid-pixel count, top-10 cell-ids by count). |
 
-A typical mapgl Shiny app composes tile URLs via [`msens::cell_tile_url()`](https://marinesensitivity.org/msens/reference/cell_tile_url.html) and fetches stats via [`msens::cell_stats()`](https://marinesensitivity.org/msens/reference/cell_stats.html); see @sec-libraries.
+A typical Scores Shiny app composes tile URLs via [`msens::cell_tile_url()`](https://marinesensitivity.org/msens/reference/cell_tile_url.html) and fetches stats via [`msens::cell_stats()`](https://marinesensitivity.org/msens/reference/cell_stats.html); see @sec-libraries.
 
 ### Caching
 
@@ -60,7 +60,7 @@ The plumber API at [api.marinesensitivity.org](https://api.marinesensitivity.org
 
 ## Legacy APIs (deprecated)
 
-The following APIs were part of the pre-2026 PostgreSQL-backed stack and are **no longer in the critical path** for `mapgl` / `mapsp`. Endpoints remain reachable for backward compatibility with legacy apps (`indicators`, `bird_hotspots`) but should not be targeted by new code.
+The following APIs were part of the pre-2026 PostgreSQL-backed stack and are **no longer in the critical path** for `scores` / `species` apps. Endpoints remain reachable for backward compatibility with legacy apps (`indicators`, `bird_hotspots`) but should not be targeted by new code.
 
 - `swagger.marinesensitivity.org` — PostgREST over the PostgreSQL DB (currently commented out in `docker-compose.yml`).
 - `tile.marinesensitivity.org` — `pg_tileserv` vector tiles from PostGIS. Superseded by static PMTiles served by Caddy's `file` subdomain; see @sec-software.

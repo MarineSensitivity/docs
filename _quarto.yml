@@ -72,8 +72,8 @@ book:
     - glossary.qmd
     - part: Applications (Current)
       chapters:
-        - apps/mapgl.qmd
-        - apps/mapsp.qmd
+        - apps/scores.qmd
+        - apps/species.qmd
     - part: Applications (Legacy)
       chapters:
         - apps/aoi.qmd
