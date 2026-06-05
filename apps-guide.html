@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>17&nbsp; Apps User Guide – Marine Sensitivity</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./docs.html" rel="next">
+<link href="./apps.html" rel="prev">
+<link href="./images/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-5ccb035bea26c1e21f80f44cf7c27909.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./apps-guide.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Apps User Guide</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Marine Sensitivity</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/MarineSensitivity/docs/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Marine-Sensitivity.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Marine-Sensitivity.docx">
+              <i class="bi bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Science</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./science.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Science</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data Sources</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./taxonomy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Taxonomy</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./extinction-risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Extinction Risk</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./model-merging.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Merging</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Scoring</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scoring-walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Scoring Walkthrough</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stressors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Stressors</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./server.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Server</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./db.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Database</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Workflows</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">APIs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./libraries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Libraries</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Apps</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps-guide.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Apps User Guide</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Applications (Current)</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/species.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Applications (Legacy)</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/aoi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Areas of Interest</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/bird_hotspots.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bird Hotspots</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Regional Map</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/sdm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, Vector</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/sdm-cog.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, Raster</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/vmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vulnerability Mapper</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#scores-app" id="toc-scores-app" class="nav-link active" data-scroll-target="#scores-app"><span class="header-section-number">17.1</span> Scores app</a>
+  <ul class="collapse">
+  <li><a href="#study-area" id="toc-study-area" class="nav-link" data-scroll-target="#study-area"><span class="header-section-number">17.1.1</span> 1. Study Area</a></li>
+  <li><a href="#spatial-units" id="toc-spatial-units" class="nav-link" data-scroll-target="#spatial-units"><span class="header-section-number">17.1.2</span> 2. Spatial Units</a></li>
+  <li><a href="#layer-selection" id="toc-layer-selection" class="nav-link" data-scroll-target="#layer-selection"><span class="header-section-number">17.1.3</span> 3. Layer Selection</a></li>
+  <li><a href="#map-tab" id="toc-map-tab" class="nav-link" data-scroll-target="#map-tab"><span class="header-section-number">17.1.4</span> 4. Map tab</a></li>
+  <li><a href="#layers-control" id="toc-layers-control" class="nav-link" data-scroll-target="#layers-control"><span class="header-section-number">17.1.5</span> 5. Layers control</a></li>
+  <li><a href="#go-to-location" id="toc-go-to-location" class="nav-link" data-scroll-target="#go-to-location"><span class="header-section-number">17.1.6</span> 6. Go to location</a></li>
+  <li><a href="#full-screen" id="toc-full-screen" class="nav-link" data-scroll-target="#full-screen"><span class="header-section-number">17.1.7</span> 7. Full screen</a></li>
+  <li><a href="#zoom-in-out" id="toc-zoom-in-out" class="nav-link" data-scroll-target="#zoom-in-out"><span class="header-section-number">17.1.8</span> 8. Zoom in / out</a></li>
+  <li><a href="#plot-of-scores-tab" id="toc-plot-of-scores-tab" class="nav-link" data-scroll-target="#plot-of-scores-tab"><span class="header-section-number">17.1.9</span> 9. Plot of Scores tab</a></li>
+  <li><a href="#table-of-species-tab" id="toc-table-of-species-tab" class="nav-link" data-scroll-target="#table-of-species-tab"><span class="header-section-number">17.1.10</span> 10. Table of Species tab</a></li>
+  <li><a href="#report-tab" id="toc-report-tab" class="nav-link" data-scroll-target="#report-tab"><span class="header-section-number">17.1.11</span> 11. Report tab</a></li>
+  </ul></li>
+  <li><a href="#species-app" id="toc-species-app" class="nav-link" data-scroll-target="#species-app"><span class="header-section-number">17.2</span> Species app</a>
+  <ul class="collapse">
+  <li><a href="#select-a-species" id="toc-select-a-species" class="nav-link" data-scroll-target="#select-a-species"><span class="header-section-number">17.2.1</span> 1. Select a Species</a></li>
+  <li><a href="#mask-selection" id="toc-mask-selection" class="nav-link" data-scroll-target="#mask-selection"><span class="header-section-number">17.2.2</span> 2. Mask Selection</a></li>
+  <li><a href="#layer-selector" id="toc-layer-selector" class="nav-link" data-scroll-target="#layer-selector"><span class="header-section-number">17.2.3</span> 3. Layer Selector</a></li>
+  <li><a href="#species-map" id="toc-species-map" class="nav-link" data-scroll-target="#species-map"><span class="header-section-number">17.2.4</span> 4. Species Map</a></li>
+  <li><a href="#species-info" id="toc-species-info" class="nav-link" data-scroll-target="#species-info"><span class="header-section-number">17.2.5</span> 5. Species Info</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/apps-guide.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./apps-guide.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Apps User Guide</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Apps User Guide</span></h1>
+<p class="subtitle lead">Step-by-step walkthrough of the Scores and Species applications</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This guide walks through the two interactive applications — <strong>Scores</strong> (<a href="https://app.marinesensitivity.org/scores/">app.marinesensitivity.org/scores</a>) and <strong>Species</strong> (<a href="https://app.marinesensitivity.org/species/">app.marinesensitivity.org/species</a>) — one control at a time. Each numbered step below mirrors a step in that app’s built-in <strong>Take a Tour</strong> (click <em>About → Take a Tour</em> in either app to walk the same path live), with the relevant control highlighted on the screenshot.</p>
+<p>For a feature-by-feature reference instead, see the <a href="./apps/scores.html">Scores</a> and <a href="./apps/species.html">Species</a> appendix pages.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>How this guide stays in sync
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The steps, captions, and highlighted screenshots are generated directly from the apps’ in-app tours (the <code>Conductor$new()$step(...)</code> chains in each <code>app.R</code>). Running <code>libs/apps-guide-regenerate.R</code> re-parses both tours, re-highlights the same CSS element each tour points at, and re-captures the screenshots, writing <code>figures/apps-guide/steps.json</code>. So whenever a tour changes, re-running that one script refreshes this whole page.</p>
+</div>
+</div>
+<section id="scores-app" class="level2" data-number="17.1">
+<h2 data-number="17.1" class="anchored" data-anchor-id="scores-app"><span class="header-section-number">17.1</span> Scores app</h2>
+<section id="study-area" class="level3" data-number="17.1.1">
+<h3 data-number="17.1.1" class="anchored" data-anchor-id="study-area"><span class="header-section-number">17.1.1</span> 1. Study Area</h3>
+<p>Pick a region to focus on. ‘Full study area’ shows all US federal waters from the Aleutians to the Caribbean and out to the Pacific Island Territories. The other choices zoom into a single subregion.</p>
+<div id="fig-scores-01" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Pick a region to focus on. 'Full study area' shows all US federal waters from the Aleutians to the Caribbean and out to the Pacific Island Territories. The other choices zoom into a single subregion.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/scores-01.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;17.1: Study Area"><img src="./figures/apps-guide/scores-01.png" class="img-fluid figure-img" alt="Pick a region to focus on. 'Full study area' shows all US federal waters from the Aleutians to the Caribbean and out to the Pacific Island Territories. The other choices zoom into a single subregion."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.1: Study Area
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="spatial-units" class="level3" data-number="17.1.2">
+<h3 data-number="17.1.2" class="anchored" data-anchor-id="spatial-units"><span class="header-section-number">17.1.2</span> 2. Spatial Units</h3>
+<p>Toggle between fine-grained raster cells (0.05°) and aggregated BOEM Program Area polygons. Cell mode lets you click any pixel; Program Area mode shows pre-aggregated zone scores.</p>
+<div id="fig-scores-02" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Toggle between fine-grained raster cells (0.05°) and aggregated BOEM Program Area polygons. Cell mode lets you click any pixel; Program Area mode shows pre-aggregated zone scores.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/scores-02.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;17.2: Spatial Units"><img src="./figures/apps-guide/scores-02.png" class="img-fluid figure-img" alt="Toggle between fine-grained raster cells (0.05°) and aggregated BOEM Program Area polygons. Cell mode lets you click any pixel; Program Area mode shows pre-aggregated zone scores."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.2: Spatial Units
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="layer-selection" class="level3" data-number="17.1.3">
+<h3 data-number="17.1.3" class="anchored" data-anchor-id="layer-selection"><span class="header-section-number">17.1.3</span> 3. Layer Selection</h3>
+<p>Choose which sensitivity metric to display — composite score, individual species categories (bird, fish, mammal, etc.), or primary productivity. Note that some cells (Atlantic, Gulf of America, Hawaii, Puerto Rico, Pacific Islands) have scores but lie outside any v6 BOEM Program Area; they appear dimmed under a ‘Cells outside Program Areas’ overlay.</p>
+<div id="fig-scores-03" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Choose which sensitivity metric to display — composite score, individual species categories (bird, fish, mammal, etc.), or primary productivity. Note that some cells (Atlantic, Gulf of America, Hawaii, Puerto Rico, Pacific Islands) have scores but lie outside any v6 BOEM Program Area; they appear dimmed under a 'Cells outside Program Areas' overlay.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/scores-03.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;17.3: Layer Selection"><img src="./figures/apps-guide/scores-03.png" class="img-fluid figure-img" alt="Choose which sensitivity metric to display — composite score, individual species categories (bird, fish, mammal, etc.), or primary productivity. Note that some cells (Atlantic, Gulf of America, Hawaii, Puerto Rico, Pacific Islands) have scores but lie outside any v6 BOEM Program Area; they appear dimmed under a 'Cells outside Program Areas' overlay."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.3: Layer Selection
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="map-tab" class="level3" data-number="17.1.4">
+<h3 data-number="17.1.4" class="anchored" data-anchor-id="map-tab"><span class="header-section-number">17.1.4</span> 4. Map tab</h3>
+<p>The Map tab is where you explore scores spatially — click cells or click Program Areas to see their scores.</p>
+<div id="fig-scores-04" class="quarto-float quarto-figure quarto-figure-center anchored" alt="The Map tab is where you explore scores spatially — click cells or click Program Areas to see their scores.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/scores-04.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;17.4: Map tab"><img src="./figures/apps-guide/scores-04.png" class="img-fluid figure-img" alt="The Map tab is where you explore scores spatially — click cells or click Program Areas to see their scores."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.4: Map tab
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="layers-control" class="level3" data-number="17.1.5">
+<h3 data-number="17.1.5" class="anchored" data-anchor-id="layers-control"><span class="header-section-number">17.1.5</span> 5. Layers control</h3>
+<p>Toggle individual map layers on and off — program area outlines, ecoregion outlines, raster cells, and the gray ‘Cells outside Program Areas’ overlay.</p>
+<div id="fig-scores-05" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Toggle individual map layers on and off — program area outlines, ecoregion outlines, raster cells, and the gray 'Cells outside Program Areas' overlay.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/scores-05.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;17.5: Layers control"><img src="./figures/apps-guide/scores-05.png" class="img-fluid figure-img" alt="Toggle individual map layers on and off — program area outlines, ecoregion outlines, raster cells, and the gray 'Cells outside Program Areas' overlay."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.5: Layers control
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="go-to-location" class="level3" data-number="17.1.6">
+<h3 data-number="17.1.6" class="anchored" data-anchor-id="go-to-location"><span class="header-section-number">17.1.6</span> 6. Go to location</h3>
+<p>Search for a place name and the map will fly there — useful for jumping to a specific Program Area, port, or feature.</p>
+<div id="fig-scores-06" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Search for a place name and the map will fly there — useful for jumping to a specific Program Area, port, or feature.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-06-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/scores-06.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;17.6: Go to location"><img src="./figures/apps-guide/scores-06.png" class="img-fluid figure-img" alt="Search for a place name and the map will fly there — useful for jumping to a specific Program Area, port, or feature."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-06-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.6: Go to location
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="full-screen" class="level3" data-number="17.1.7">
+<h3 data-number="17.1.7" class="anchored" data-anchor-id="full-screen"><span class="header-section-number">17.1.7</span> 7. Full screen</h3>
+<p>Expand the map to fill the entire window.</p>
+<div id="fig-scores-07" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Expand the map to fill the entire window.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-07-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/scores-07.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;17.7: Full screen"><img src="./figures/apps-guide/scores-07.png" class="img-fluid figure-img" alt="Expand the map to fill the entire window."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-07-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.7: Full screen
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="zoom-in-out" class="level3" data-number="17.1.8">
+<h3 data-number="17.1.8" class="anchored" data-anchor-id="zoom-in-out"><span class="header-section-number">17.1.8</span> 8. Zoom in / out</h3>
+<p>Zoom and reset the view. You can also use the mouse wheel, pinch gesture, or double-click.</p>
+<div id="fig-scores-08" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Zoom and reset the view. You can also use the mouse wheel, pinch gesture, or double-click.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-08-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/scores-08.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;17.8: Zoom in / out"><img src="./figures/apps-guide/scores-08.png" class="img-fluid figure-img" alt="Zoom and reset the view. You can also use the mouse wheel, pinch gesture, or double-click."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-08-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.8: Zoom in / out
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="plot-of-scores-tab" class="level3" data-number="17.1.9">
+<h3 data-number="17.1.9" class="anchored" data-anchor-id="plot-of-scores-tab"><span class="header-section-number">17.1.9</span> 9. Plot of Scores tab</h3>
+<p>Switch here to see the flower plot of aggregated sensitivity scores for the current selection, broken out by species category. Petal length = score (0–100); center number = weighted mean. Defaults to ‘All USA’ until you click a cell or click a Program Area.</p>
+<div id="fig-scores-09" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Switch here to see the flower plot of aggregated sensitivity scores for the current selection, broken out by species category. Petal length = score (0–100); center number = weighted mean. Defaults to 'All USA' until you click a cell or click a Program Area.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/scores-09.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figure&nbsp;17.9: Plot of Scores tab"><img src="./figures/apps-guide/scores-09.png" class="img-fluid figure-img" alt="Switch here to see the flower plot of aggregated sensitivity scores for the current selection, broken out by species category. Petal length = score (0–100); center number = weighted mean. Defaults to 'All USA' until you click a cell or click a Program Area."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.9: Plot of Scores tab
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="table-of-species-tab" class="level3" data-number="17.1.10">
+<h3 data-number="17.1.10" class="anchored" data-anchor-id="table-of-species-tab"><span class="header-section-number">17.1.10</span> 10. Table of Species tab</h3>
+<p>A sortable, downloadable table of every species in the currently selected area, with extinction-risk codes, areas, and per-category contributions.</p>
+<div id="fig-scores-10" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A sortable, downloadable table of every species in the currently selected area, with extinction-risk codes, areas, and per-category contributions.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-10-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/scores-10.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figure&nbsp;17.10: Table of Species tab"><img src="./figures/apps-guide/scores-10.png" class="img-fluid figure-img" alt="A sortable, downloadable table of every species in the currently selected area, with extinction-risk codes, areas, and per-category contributions."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-10-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.10: Table of Species tab
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="report-tab" class="level3" data-number="17.1.11">
+<h3 data-number="17.1.11" class="anchored" data-anchor-id="report-tab"><span class="header-section-number">17.1.11</span> 11. Report tab</h3>
+<p>Generate a sensitivity report for one or more custom areas. Build up a list of labeled areas by drawing a polygon on the map (using the polygon tool) and/or by selecting a Program Area, then clicking ‘Add’ for each. Set a title, data version, and output format (HTML, Word, or PDF), then click ‘Generate report’.</p>
+<div id="fig-scores-11" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Generate a sensitivity report for one or more custom areas. Build up a list of labeled areas by drawing a polygon on the map (using the polygon tool) and/or by selecting a Program Area, then clicking 'Add' for each. Set a title, data version, and output format (HTML, Word, or PDF), then click 'Generate report'.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-11-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/scores-11.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Figure&nbsp;17.11: Report tab"><img src="./figures/apps-guide/scores-11.png" class="img-fluid figure-img" alt="Generate a sensitivity report for one or more custom areas. Build up a list of labeled areas by drawing a polygon on the map (using the polygon tool) and/or by selecting a Program Area, then clicking 'Add' for each. Set a title, data version, and output format (HTML, Word, or PDF), then click 'Generate report'."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-11-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.11: Report tab
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="species-app" class="level2" data-number="17.2">
+<h2 data-number="17.2" class="anchored" data-anchor-id="species-app"><span class="header-section-number">17.2</span> Species app</h2>
+<section id="select-a-species" class="level3" data-number="17.2.1">
+<h3 data-number="17.2.1" class="anchored" data-anchor-id="select-a-species"><span class="header-section-number">17.2.1</span> 1. Select a Species</h3>
+<p>Search by common or scientific name. Results are grouped by category (bird, fish, mammal, etc.).</p>
+<div id="fig-species-01" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Search by common or scientific name. Results are grouped by category (bird, fish, mammal, etc.).">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-species-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/species-01.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Figure&nbsp;17.12: Select a Species"><img src="./figures/apps-guide/species-01.png" class="img-fluid figure-img" alt="Search by common or scientific name. Results are grouped by category (bird, fish, mammal, etc.)."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-species-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.12: Select a Species
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="mask-selection" class="level3" data-number="17.2.2">
+<h3 data-number="17.2.2" class="anchored" data-anchor-id="mask-selection"><span class="header-section-number">17.2.2</span> 2. Mask Selection</h3>
+<p>Choose whether to overlay BOEM Program Area or Ecoregion boundaries on the map.</p>
+<div id="fig-species-02" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Choose whether to overlay BOEM Program Area or Ecoregion boundaries on the map.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-species-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/species-02.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Figure&nbsp;17.13: Mask Selection"><img src="./figures/apps-guide/species-02.png" class="img-fluid figure-img" alt="Choose whether to overlay BOEM Program Area or Ecoregion boundaries on the map."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-species-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.13: Mask Selection
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="layer-selector" class="level3" data-number="17.2.3">
+<h3 data-number="17.2.3" class="anchored" data-anchor-id="layer-selector"><span class="header-section-number">17.2.3</span> 3. Layer Selector</h3>
+<p>The colored bar shows which model layer is displayed. Green means the final Merged Model; orange means you are viewing a single input. Click the pills to switch layers.</p>
+<div id="fig-species-03" class="quarto-float quarto-figure quarto-figure-center anchored" alt="The colored bar shows which model layer is displayed. Green means the final Merged Model; orange means you are viewing a single input. Click the pills to switch layers.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-species-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/species-03.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Figure&nbsp;17.14: Layer Selector"><img src="./figures/apps-guide/species-03.png" class="img-fluid figure-img" alt="The colored bar shows which model layer is displayed. Green means the final Merged Model; orange means you are viewing a single input. Click the pills to switch layers."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-species-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.14: Layer Selector
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="species-map" class="level3" data-number="17.2.4">
+<h3 data-number="17.2.4" class="anchored" data-anchor-id="species-map"><span class="header-section-number">17.2.4</span> 4. Species Map</h3>
+<p>The map shows the species distribution model. Cell values range from 1 (low sensitivity) to 100 (high sensitivity). Click cells for details.</p>
+<div id="fig-species-04" class="quarto-float quarto-figure quarto-figure-center anchored" alt="The map shows the species distribution model. Cell values range from 1 (low sensitivity) to 100 (high sensitivity). Click cells for details.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-species-04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/species-04.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15" title="Figure&nbsp;17.15: Species Map"><img src="./figures/apps-guide/species-04.png" class="img-fluid figure-img" alt="The map shows the species distribution model. Cell values range from 1 (low sensitivity) to 100 (high sensitivity). Click cells for details."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-species-04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.15: Species Map
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="species-info" class="level3" data-number="17.2.5">
+<h3 data-number="17.2.5" class="anchored" data-anchor-id="species-info"><span class="header-section-number">17.2.5</span> 5. Species Info</h3>
+<p>Open the sidebar to see ESA listing, IUCN status, MMPA/MBTA flags, and extinction risk score for the selected species.</p>
+<div id="fig-species-05" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Open the sidebar to see ESA listing, IUCN status, MMPA/MBTA flags, and extinction risk score for the selected species.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-species-05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="./figures/apps-guide/species-05.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16" title="Figure&nbsp;17.16: Species Info"><img src="./figures/apps-guide/species-05.png" class="img-fluid figure-img" alt="Open the sidebar to see ESA listing, IUCN status, MMPA/MBTA flags, and extinction risk score for the selected species."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-species-05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17.16: Species Info
+</figcaption>
+</figure>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./apps.html" class="pagination-link" aria-label="Apps">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Apps</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./docs.html" class="pagination-link" aria-label="Docs">
+        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Docs</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© <a href="https://bbest.github.io/cv/" target="_blank">Ben Best</a>, <a href="https://www.boem.gov/environment/environmental-studies/environmental-studies-information" target="_blank">BOEM-ESP</a></p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/apps-guide.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org/" target="_blank">Quarto</a></p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>
