@@ -44,8 +44,9 @@ fs::dir_create(fig_dir)
 
 vwidth   <- 1280
 vheight  <- 860
-settle   <- 8    # base seconds for shiny + mapbox tiles to paint
-max_wait <- 25   # extra seconds to poll for a slow-rendering target element
+settle     <- 8    # base seconds for shiny + mapbox tiles to paint
+max_wait   <- 25   # extra seconds to poll for a slow-rendering target element
+post_click <- 7    # seconds after activating a tab/sidebar for content to render
 
 # extract_steps: parse Conductor tour steps from an app.R ----
 # the tours are written as a chained Conductor$new()$step(...)$step(...). we
@@ -130,6 +131,51 @@ has_selector <- function(b, selector) {
                .open = "<<", .close = ">>"))$result$value)
 }
 
+# is_activator: does clicking this element reveal content worth showing? ----
+# tab nav-links switch the visible panel; the sidebar collapse toggle opens
+# the sidebar. we click these before capturing so the screenshot shows the
+# resulting content (flower plot, species table, report form, species info).
+# other targets (dropdowns, map zoom/fullscreen) are left alone — clicking
+# them would open a menu or change the view.
+is_activator <- function(selector)
+  grepl("nav-link", selector, fixed = TRUE) ||
+  grepl("collapse-toggle", selector, fixed = TRUE)
+
+# click_js: click the selector (used to activate tabs / open the sidebar) ----
+click_js <- function(selector) {
+  sel <- gsub("'", "\\\\'", gsub("\\\\", "\\\\\\\\", selector))
+  glue::glue("
+    (function(){
+      var el = document.querySelector('<<sel>>');
+      if (!el) return 'NOT_FOUND';
+      el.click();
+      return 'OK';
+    })();",
+    .open = "<<", .close = ">>")
+}
+
+# has_text: TRUE once an element has rendered visible text ----
+# used to wait out outputs that are suspended while hidden (e.g. the species
+# info panel, which only renders ~6s after its sidebar is opened).
+has_text <- function(b, selector) {
+  sel <- gsub("'", "\\\\'", gsub("\\\\", "\\\\\\\\", selector))
+  n <- b$Runtime$evaluate(glue::glue(
+    "(function(){var e=document.querySelector('<<sel>>');
+       return e ? e.innerText.trim().length : 0;})()",
+    .open = "<<", .close = ">>"))$result$value
+  isTRUE(n > 0)
+}
+
+# highlight_target: what to box after activating ----
+# the opened sidebar (showing the species info) rather than its tiny toggle;
+# tabs box the tab itself, with the revealed panel visible below.
+highlight_target <- function(selector)
+  if (grepl("collapse-toggle", selector, fixed = TRUE)) "aside.sidebar" else selector
+
+# content_target: element whose text must appear before capture, or NA ----
+content_target <- function(selector)
+  if (grepl("collapse-toggle", selector, fixed = TRUE)) "#species_info" else NA_character_
+
 # shoot_step: navigate, wait for the target, highlight, capture ----
 # a base `settle` lets shiny + mapbox tiles paint; we then poll up to
 # `max_wait` for renderUI-populated targets (e.g. the species layer bar)
@@ -148,9 +194,28 @@ shoot_step <- function(url, selector, file) {
   while (!has_selector(b, selector) && waited < max_wait) {
     Sys.sleep(1); waited <- waited + 1
   }
-  res <- b$Runtime$evaluate(highlight_js(selector))$result$value %||% "NULL"
+  # activate tabs / open the sidebar so the screenshot shows real content
+  if (is_activator(selector)) {
+    b$Runtime$evaluate(click_js(selector))
+    # nudge shiny to re-evaluate output visibility: a programmatic click that
+    # opens the sidebar doesn't reliably un-suspend its suspend-when-hidden
+    # outputs (e.g. species_info), but a resize event forces a recalc
+    b$Runtime$evaluate("window.dispatchEvent(new Event('resize'));")
+    Sys.sleep(post_click)   # let the revealed panel / embedded map render
+    ct <- content_target(selector)   # wait out suspended-while-hidden outputs
+    if (!is.na(ct)) {
+      waited <- 0
+      while (!has_text(b, ct) && waited < max_wait) {
+        b$Runtime$evaluate("window.dispatchEvent(new Event('resize'));")
+        Sys.sleep(1); waited <- waited + 1
+      }
+      Sys.sleep(2)   # let the just-rendered content paint before capture
+    }
+  }
+  hl  <- highlight_target(selector)
+  res <- b$Runtime$evaluate(highlight_js(hl))$result$value %||% "NULL"
   if (!identical(res, "OK"))
-    message(glue::glue("    ! selector not found ({res}): {selector}"))
+    message(glue::glue("    ! highlight target not found ({res}): {hl}"))
   shot <- b$Page$captureScreenshot(
     clip = list(x = 0, y = 0, width = vwidth, height = vheight, scale = 1))
   writeBin(jsonlite::base64_dec(shot$data), file)
