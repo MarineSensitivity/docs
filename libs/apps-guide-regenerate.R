@@ -17,7 +17,7 @@
 # the capture and we need that to draw the highlight box. the resulting pngs
 # are plain raster images, so they work in every quarto format (html/pdf/docx).
 
-librarian::shelf(chromote, jsonlite, here, glue, fs, quiet = TRUE)
+librarian::shelf(chromote, jsonlite, here, glue, fs, png, quiet = TRUE)
 
 `%||%` <- function(a, b) if (is.null(a)) b else a
 
@@ -44,9 +44,15 @@ fs::dir_create(fig_dir)
 
 vwidth   <- 1280
 vheight  <- 860
-settle     <- 8    # base seconds for shiny + mapbox tiles to paint
-max_wait   <- 25   # extra seconds to poll for a slow-rendering target element
-post_click <- 7    # seconds after activating a tab/sidebar for content to render
+connect      <- 5      # base seconds for the app to boot before doing anything
+net_stable   <- 5      # seconds of no new network requests = map tiles done loading
+net_max      <- 35     # cap on the network-idle wait
+max_wait     <- 25     # extra seconds to poll for a slow-rendering target element
+post_click   <- 8      # floor after activating a tab/sidebar (websocket content)
+paint        <- 2      # final buffer so freshly rendered content paints
+max_attempts <- 6      # the score raster paints only ~40% of loads (mapbox race),
+cell_thresh  <- 0.015  # so retry a fresh session until colored cells exceed this
+                       # fraction of the map area (empty maps measure ~0.005)
 
 # extract_steps: parse Conductor tour steps from an app.R ----
 # the tours are written as a chained Conductor$new()$step(...)$step(...). we
@@ -131,6 +137,26 @@ has_selector <- function(b, selector) {
                .open = "<<", .close = ">>"))$result$value)
 }
 
+# wait_net_idle: block until map tiles stop loading ----
+# mapbox raster tiles (the score cells / SDM) load over http and are flaky —
+# a fixed delay catches them in some sessions but not others. instead poll the
+# resource-timing entry count and return once it has been unchanged for
+# `net_stable` seconds (tiles done) or `net_max` is hit.
+wait_net_idle <- function(b, stable_for = net_stable, timeout = net_max) {
+  b$Runtime$evaluate("try{performance.setResourceTimingBufferSize(5000)}catch(e){}")
+  count <- function()
+    b$Runtime$evaluate("performance.getEntriesByType('resource').length")$result$value
+  prev <- -1L; stable <- 0; waited <- 0
+  repeat {
+    n <- count()
+    stable <- if (isTRUE(n == prev)) stable + 1 else 0
+    prev <- n
+    if (stable >= stable_for || waited >= timeout) break
+    Sys.sleep(1); waited <- waited + 1
+  }
+  invisible(waited)
+}
+
 # is_activator: does clicking this element reveal content worth showing? ----
 # tab nav-links switch the visible panel; the sidebar collapse toggle opens
 # the sidebar. we click these before capturing so the screenshot shows the
@@ -176,50 +202,93 @@ highlight_target <- function(selector)
 content_target <- function(selector)
   if (grepl("collapse-toggle", selector, fixed = TRUE)) "#species_info" else NA_character_
 
-# shoot_step: navigate, wait for the target, highlight, capture ----
-# a base `settle` lets shiny + mapbox tiles paint; we then poll up to
-# `max_wait` for renderUI-populated targets (e.g. the species layer bar)
-# that appear after the initial paint.
-shoot_step <- function(url, selector, file) {
+# needs_cells: should this step show a colored cell raster? ----
+# every step shows the cell map except the Scores tabs that switch away from
+# it (the flower plot, the species table) or to a different outline-only map
+# (the report builder). only these get the render check + retry.
+needs_cells <- function(selector)
+  !grepl("Plot of Scores|Table of Species|Report", selector)
+
+# colored_frac: fraction of the map area painted with saturated cell color ----
+# reads the captured png bytes directly; near-empty maps (basemap + outlines
+# only) measure ~0.005, a rendered cell raster measures >0.03.
+colored_frac <- function(bytes) {
+  a  <- png::readPNG(bytes)
+  w  <- dim(a)[2]; x0 <- round(w * 0.30)   # map area is the right ~70%
+  r  <- a[, x0:w, 1]; g <- a[, x0:w, 2]; bl <- a[, x0:w, 3]
+  mx <- pmax(r, g, bl); mn <- pmin(r, g, bl)
+  mean((mx - mn) > 0.12 & mx > 0.15 & mx < 0.95)
+}
+
+# capture_once: one full session -> navigate, prepare, highlight, png bytes ----
+# `connect` lets the app boot, then wait_net_idle() blocks until mapbox tiles
+# finish loading; we also poll up to `max_wait` for renderUI-populated targets
+# (e.g. the species layer bar) that appear after the initial paint. returns the
+# raw png bytes, or NULL if the session errored.
+capture_once <- function(nav_url, selector) {
   b <- chromote::ChromoteSession$new(width = vwidth, height = vheight)
   on.exit(b$close(), add = TRUE)
-  # ?splash=false suppresses the welcome modal in both apps; the JS dismissal
-  # below is a fallback for any deploy that predates that flag
-  nav_url <- paste0(url, if (grepl("?", url, fixed = TRUE)) "&" else "?", "splash=false")
-  b$Page$navigate(nav_url, wait_ = TRUE)
-  Sys.sleep(settle)
-  b$Runtime$evaluate(dismiss_modal_js)   # fallback: clear any welcome splash
-  Sys.sleep(3)                           # let the app repaint behind it
-  waited <- 0
-  while (!has_selector(b, selector) && waited < max_wait) {
-    Sys.sleep(1); waited <- waited + 1
-  }
-  # activate tabs / open the sidebar so the screenshot shows real content
-  if (is_activator(selector)) {
-    b$Runtime$evaluate(click_js(selector))
-    # nudge shiny to re-evaluate output visibility: a programmatic click that
-    # opens the sidebar doesn't reliably un-suspend its suspend-when-hidden
-    # outputs (e.g. species_info), but a resize event forces a recalc
-    b$Runtime$evaluate("window.dispatchEvent(new Event('resize'));")
-    Sys.sleep(post_click)   # let the revealed panel / embedded map render
-    ct <- content_target(selector)   # wait out suspended-while-hidden outputs
-    if (!is.na(ct)) {
-      waited <- 0
-      while (!has_text(b, ct) && waited < max_wait) {
-        b$Runtime$evaluate("window.dispatchEvent(new Event('resize'));")
-        Sys.sleep(1); waited <- waited + 1
-      }
-      Sys.sleep(2)   # let the just-rendered content paint before capture
+  tryCatch({
+    b$Page$navigate(nav_url, wait_ = TRUE)
+    Sys.sleep(connect)
+    b$Runtime$evaluate(dismiss_modal_js)   # fallback: clear any welcome splash
+    wait_net_idle(b)                       # block until the map tiles finish
+    Sys.sleep(paint)
+    waited <- 0
+    while (!has_selector(b, selector) && waited < max_wait) {
+      Sys.sleep(1); waited <- waited + 1
     }
+    # activate tabs / open the sidebar so the screenshot shows real content
+    if (is_activator(selector)) {
+      b$Runtime$evaluate(click_js(selector))
+      # nudge shiny to re-evaluate output visibility: a programmatic click that
+      # opens the sidebar doesn't reliably un-suspend its suspend-when-hidden
+      # outputs (e.g. species_info), but a resize event forces a recalc
+      b$Runtime$evaluate("window.dispatchEvent(new Event('resize'));")
+      Sys.sleep(post_click)   # floor for websocket-rendered panels (plot/table)
+      wait_net_idle(b)        # block until the report tab's embedded map tiles load
+      ct <- content_target(selector)   # wait out suspended-while-hidden outputs
+      if (!is.na(ct)) {
+        waited <- 0
+        while (!has_text(b, ct) && waited < max_wait) {
+          b$Runtime$evaluate("window.dispatchEvent(new Event('resize'));")
+          Sys.sleep(1); waited <- waited + 1
+        }
+      }
+      Sys.sleep(paint)   # let the just-rendered content paint before capture
+    }
+    hl  <- highlight_target(selector)
+    res <- b$Runtime$evaluate(highlight_js(hl))$result$value %||% "NULL"
+    if (!identical(res, "OK"))
+      message(glue::glue("    ! highlight target not found ({res}): {hl}"))
+    shot <- b$Page$captureScreenshot(
+      clip = list(x = 0, y = 0, width = vwidth, height = vheight, scale = 1))
+    jsonlite::base64_dec(shot$data)
+  }, error = function(e) {
+    message(glue::glue("    ! capture error: {conditionMessage(e)}"))
+    NULL
+  })
+}
+
+# shoot_step: capture, verify the cell raster painted, retry if not ----
+# the score raster paints only ~40% of loads (a mapbox layer-add race), so for
+# cell-bearing steps we retry fresh sessions and keep the best render.
+shoot_step <- function(url, selector, file) {
+  nav_url <- paste0(url, if (grepl("?", url, fixed = TRUE)) "&" else "?", "splash=false")
+  want    <- needs_cells(selector)
+  best <- NULL; best_frac <- -1
+  for (attempt in seq_len(if (want) max_attempts else 1L)) {
+    bytes <- capture_once(nav_url, selector)
+    if (is.null(bytes)) next
+    frac <- if (want) colored_frac(bytes) else 1
+    if (frac > best_frac) { best_frac <- frac; best <- bytes }
+    if (frac >= cell_thresh) break
+    message(glue::glue(
+      "    cells not painted (frac={format(round(frac, 4))}), retry {attempt}/{max_attempts}"))
   }
-  hl  <- highlight_target(selector)
-  res <- b$Runtime$evaluate(highlight_js(hl))$result$value %||% "NULL"
-  if (!identical(res, "OK"))
-    message(glue::glue("    ! highlight target not found ({res}): {hl}"))
-  shot <- b$Page$captureScreenshot(
-    clip = list(x = 0, y = 0, width = vwidth, height = vheight, scale = 1))
-  writeBin(jsonlite::base64_dec(shot$data), file)
-  invisible(file)
+  if (is.null(best)) stop(glue::glue("all captures failed for {selector}"))
+  writeBin(best, file)
+  invisible(best_frac)
 }
 
 # run ----
@@ -237,7 +306,8 @@ for (key in names(apps)) {
     st  <- steps[[i]]
     png <- glue::glue("{key}-{sprintf('%02d', i)}.png")
     message(glue::glue("   [{i}/{length(steps)}] {st$title}  <-  {st$selector}"))
-    shoot_step(app$url, st$selector, file.path(fig_dir, png))
+    frac <- shoot_step(app$url, st$selector, file.path(fig_dir, png))
+    message(glue::glue("       cell-fraction = {format(round(frac, 4))}"))
     all_steps[[length(all_steps) + 1]] <- list(
       app      = app$name,
       app_key  = key,
