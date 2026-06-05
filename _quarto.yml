@@ -65,6 +65,7 @@ book:
         - apis.qmd
         - libraries.qmd
         - apps.qmd
+        - apps-guide.qmd
         - docs.qmd
     - summary.qmd
     - references.qmd

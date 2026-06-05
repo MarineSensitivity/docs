@@ -1,0 +1,74 @@
+---
+title: "Apps User Guide"
+subtitle: "Step-by-step walkthrough of the Scores and Species applications"
+---
+
+This guide walks through the two interactive applications — **Scores**
+([app.marinesensitivity.org/scores](https://app.marinesensitivity.org/scores/))
+and **Species**
+([app.marinesensitivity.org/species](https://app.marinesensitivity.org/species/))
+— one control at a time. Each numbered step below mirrors a step in that app's
+built-in **Take a Tour** (click *About → Take a Tour* in either app to walk the
+same path live), with the relevant control highlighted on the screenshot.
+
+For a feature-by-feature reference instead, see the
+[Scores](apps/scores.qmd) and [Species](apps/species.qmd) appendix pages.
+
+::: callout-tip
+## How this guide stays in sync
+
+The steps, captions, and highlighted screenshots are generated directly from
+the apps' in-app tours (the `Conductor$new()$step(...)` chains in each
+`app.R`). Running `libs/apps-guide-regenerate.R` re-parses both tours,
+re-highlights the same CSS element each tour points at, and re-captures the
+screenshots, writing `figures/apps-guide/steps.json`. So whenever a tour
+changes, re-running that one script refreshes this whole page.
+:::
+
+```{r}
+#| label: setup
+#| include: false
+librarian::shelf(jsonlite, here, quiet = TRUE)
+
+manifest <- here::here("figures", "apps-guide", "steps.json")
+steps    <- if (file.exists(manifest)) jsonlite::read_json(manifest) else list()
+
+# staleness check: is a tour source newer than the generated manifest?
+apps_dir  <- Sys.getenv(
+  "MSENS_APPS_DIR",
+  unset = normalizePath(file.path(here::here(), "..", "apps"), mustWork = FALSE))
+app_files <- file.path(apps_dir, c("mapgl", "mapsp"), "app.R")
+stale     <- file.exists(manifest) &&
+  any(file.exists(app_files) & file.mtime(app_files) > file.mtime(manifest))
+```
+
+```{r}
+#| label: guide
+#| output: asis
+if (length(steps) == 0) {
+  cat(
+    "::: callout-warning\n",
+    "No screenshot manifest found. Run ",
+    "`Rscript libs/apps-guide-regenerate.R` (needs the sibling `apps` repo ",
+    "and the live apps) to generate `figures/apps-guide/steps.json` and the ",
+    "annotated screenshots.\n",
+    ":::\n", sep = "")
+} else {
+  if (isTRUE(stale)) cat(
+    "::: callout-warning\n",
+    "A tour in `app.R` is newer than these screenshots — re-run ",
+    "`libs/apps-guide-regenerate.R` to refresh this page.\n",
+    ":::\n\n", sep = "")
+
+  for (app in unique(vapply(steps, `[[`, "", "app"))) {
+    cat(sprintf("\n## %s app\n\n", app))
+    for (s in Filter(function(x) x$app == app, steps)) {
+      cat(sprintf("\n### %d. %s\n\n", s$n, s$title))
+      cat(s$text, "\n\n")
+      cat(sprintf(
+        "![%s](%s){#fig-%s-%02d fig-alt=\"%s\"}\n\n",
+        s$title, s$image, s$app_key, s$n, gsub('"', "'", s$text)))
+    }
+  }
+}
+```

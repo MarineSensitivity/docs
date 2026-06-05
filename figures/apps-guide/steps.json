@@ -1,0 +1,162 @@
+[
+  {
+    "app": "Scores",
+    "app_key": "scores",
+    "n": 1,
+    "title": "Study Area",
+    "text": "Pick a region to focus on. 'Full study area' shows all US federal waters from the Aleutians to the Caribbean and out to the Pacific Island Territories. The other choices zoom into a single subregion.",
+    "selector": "#tour_subregion",
+    "url": "https://app.marinesensitivity.org/scores/",
+    "image": "/figures/apps-guide/scores-01.png"
+  },
+  {
+    "app": "Scores",
+    "app_key": "scores",
+    "n": 2,
+    "title": "Spatial Units",
+    "text": "Toggle between fine-grained raster cells (0.05°) and aggregated BOEM Program Area polygons. Cell mode lets you click any pixel; Program Area mode shows pre-aggregated zone scores.",
+    "selector": "#tour_unit",
+    "url": "https://app.marinesensitivity.org/scores/",
+    "image": "/figures/apps-guide/scores-02.png"
+  },
+  {
+    "app": "Scores",
+    "app_key": "scores",
+    "n": 3,
+    "title": "Layer Selection",
+    "text": "Choose which sensitivity metric to display — composite score, individual species categories (bird, fish, mammal, etc.), or primary productivity. Note that some cells (Atlantic, Gulf of America, Hawaii, Puerto Rico, Pacific Islands) have scores but lie outside any v6 BOEM Program Area; they appear dimmed under a 'Cells outside Program Areas' overlay.",
+    "selector": "#tour_lyr",
+    "url": "https://app.marinesensitivity.org/scores/",
+    "image": "/figures/apps-guide/scores-03.png"
+  },
+  {
+    "app": "Scores",
+    "app_key": "scores",
+    "n": 4,
+    "title": "Map tab",
+    "text": "The Map tab is where you explore scores spatially — click cells or click Program Areas to see their scores.",
+    "selector": "[data-value='Map'].nav-link",
+    "url": "https://app.marinesensitivity.org/scores/",
+    "image": "/figures/apps-guide/scores-04.png"
+  },
+  {
+    "app": "Scores",
+    "app_key": "scores",
+    "n": 5,
+    "title": "Layers control",
+    "text": "Toggle individual map layers on and off — program area outlines, ecoregion outlines, raster cells, and the gray 'Cells outside Program Areas' overlay.",
+    "selector": ".layers-control",
+    "url": "https://app.marinesensitivity.org/scores/",
+    "image": "/figures/apps-guide/scores-05.png"
+  },
+  {
+    "app": "Scores",
+    "app_key": "scores",
+    "n": 6,
+    "title": "Go to location",
+    "text": "Search for a place name and the map will fly there — useful for jumping to a specific Program Area, port, or feature.",
+    "selector": ".mapboxgl-ctrl-geocoder",
+    "url": "https://app.marinesensitivity.org/scores/",
+    "image": "/figures/apps-guide/scores-06.png"
+  },
+  {
+    "app": "Scores",
+    "app_key": "scores",
+    "n": 7,
+    "title": "Full screen",
+    "text": "Expand the map to fill the entire window.",
+    "selector": ".mapboxgl-ctrl-fullscreen",
+    "url": "https://app.marinesensitivity.org/scores/",
+    "image": "/figures/apps-guide/scores-07.png"
+  },
+  {
+    "app": "Scores",
+    "app_key": "scores",
+    "n": 8,
+    "title": "Zoom in / out",
+    "text": "Zoom and reset the view. You can also use the mouse wheel, pinch gesture, or double-click.",
+    "selector": ".mapboxgl-ctrl-zoom-in",
+    "url": "https://app.marinesensitivity.org/scores/",
+    "image": "/figures/apps-guide/scores-08.png"
+  },
+  {
+    "app": "Scores",
+    "app_key": "scores",
+    "n": 9,
+    "title": "Plot of Scores tab",
+    "text": "Switch here to see the flower plot of aggregated sensitivity scores for the current selection, broken out by species category. Petal length = score (0–100); center number = weighted mean. Defaults to 'All USA' until you click a cell or click a Program Area.",
+    "selector": "[data-value='Plot of Scores'].nav-link",
+    "url": "https://app.marinesensitivity.org/scores/",
+    "image": "/figures/apps-guide/scores-09.png"
+  },
+  {
+    "app": "Scores",
+    "app_key": "scores",
+    "n": 10,
+    "title": "Table of Species tab",
+    "text": "A sortable, downloadable table of every species in the currently selected area, with extinction-risk codes, areas, and per-category contributions.",
+    "selector": "[data-value='Table of Species'].nav-link",
+    "url": "https://app.marinesensitivity.org/scores/",
+    "image": "/figures/apps-guide/scores-10.png"
+  },
+  {
+    "app": "Scores",
+    "app_key": "scores",
+    "n": 11,
+    "title": "Report tab",
+    "text": "Generate a sensitivity report for one or more custom areas. Build up a list of labeled areas by drawing a polygon on the map (using the polygon tool) and/or by selecting a Program Area, then clicking 'Add' for each. Set a title, data version, and output format (HTML, Word, or PDF), then click 'Generate report'.",
+    "selector": "[data-value='Report'].nav-link",
+    "url": "https://app.marinesensitivity.org/scores/",
+    "image": "/figures/apps-guide/scores-11.png"
+  },
+  {
+    "app": "Species",
+    "app_key": "species",
+    "n": 1,
+    "title": "Select a Species",
+    "text": "Search by common or scientific name. Results are grouped by category (bird, fish, mammal, etc.).",
+    "selector": "#tour_sp",
+    "url": "https://app.marinesensitivity.org/species/",
+    "image": "/figures/apps-guide/species-01.png"
+  },
+  {
+    "app": "Species",
+    "app_key": "species",
+    "n": 2,
+    "title": "Mask Selection",
+    "text": "Choose whether to overlay BOEM Program Area or Ecoregion boundaries on the map.",
+    "selector": "#tour_mask",
+    "url": "https://app.marinesensitivity.org/species/",
+    "image": "/figures/apps-guide/species-02.png"
+  },
+  {
+    "app": "Species",
+    "app_key": "species",
+    "n": 3,
+    "title": "Layer Selector",
+    "text": "The colored bar shows which model layer is displayed. Green means the final Merged Model; orange means you are viewing a single input. Click the pills to switch layers.",
+    "selector": ".layer-bar",
+    "url": "https://app.marinesensitivity.org/species/",
+    "image": "/figures/apps-guide/species-03.png"
+  },
+  {
+    "app": "Species",
+    "app_key": "species",
+    "n": 4,
+    "title": "Species Map",
+    "text": "The map shows the species distribution model. Cell values range from 1 (low sensitivity) to 100 (high sensitivity). Click cells for details.",
+    "selector": "#map",
+    "url": "https://app.marinesensitivity.org/species/",
+    "image": "/figures/apps-guide/species-04.png"
+  },
+  {
+    "app": "Species",
+    "app_key": "species",
+    "n": 5,
+    "title": "Species Info",
+    "text": "Open the sidebar to see ESA listing, IUCN status, MMPA/MBTA flags, and extinction risk score for the selected species.",
+    "selector": ".bslib-sidebar-toggle",
+    "url": "https://app.marinesensitivity.org/species/",
+    "image": "/figures/apps-guide/species-05.png"
+  }
+]
