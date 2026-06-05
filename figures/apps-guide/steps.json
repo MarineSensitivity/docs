@@ -155,7 +155,7 @@
     "n": 5,
     "title": "Species Info",
     "text": "Open the sidebar to see ESA listing, IUCN status, MMPA/MBTA flags, and extinction risk score for the selected species.",
-    "selector": ".bslib-sidebar-toggle",
+    "selector": ".collapse-toggle",
     "url": "https://app.marinesensitivity.org/species/",
     "image": "/figures/apps-guide/species-05.png"
   }

@@ -42,9 +42,10 @@ fig_dir  <- here::here("figures", "apps-guide")
 manifest <- file.path(fig_dir, "steps.json")
 fs::dir_create(fig_dir)
 
-vwidth  <- 1280
-vheight <- 860
-delay   <- 9   # seconds to let shiny + mapbox tiles settle before capture
+vwidth   <- 1280
+vheight  <- 860
+settle   <- 8    # base seconds for shiny + mapbox tiles to paint
+max_wait <- 25   # extra seconds to poll for a slow-rendering target element
 
 # extract_steps: parse Conductor tour steps from an app.R ----
 # the tours are written as a chained Conductor$new()$step(...)$step(...). we
@@ -85,6 +86,18 @@ extract_steps <- function(app_r) {
   out
 }
 
+# dismiss_modal_js: fallback to clear the welcome splash ----
+# the ?splash=false url flag (above) is the primary suppression; this strips
+# any lingering modal + backdrop for deploys that predate that flag, so the
+# screenshots always show the actual interface.
+dismiss_modal_js <- "
+  (function(){
+    document.querySelectorAll('.modal, .modal-backdrop').forEach(function(e){ e.remove(); });
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = ''; document.body.style.paddingRight = '';
+    return 'OK';
+  })();"
+
 # highlight_js: spotlight the tour's css selector ----
 # draws a red outline around the element and dims everything else via a giant
 # box-shadow, mirroring the visual emphasis of the live conductor tour.
@@ -109,12 +122,32 @@ highlight_js <- function(selector) {
     .open = "<<", .close = ">>")
 }
 
-# shoot_step: navigate, highlight, capture the viewport to a png ----
+# has_selector: TRUE once the element exists in the live DOM ----
+has_selector <- function(b, selector) {
+  sel <- gsub("'", "\\\\'", gsub("\\\\", "\\\\\\\\", selector))
+  isTRUE(b$Runtime$evaluate(
+    glue::glue("!!document.querySelector('<<sel>>')",
+               .open = "<<", .close = ">>"))$result$value)
+}
+
+# shoot_step: navigate, wait for the target, highlight, capture ----
+# a base `settle` lets shiny + mapbox tiles paint; we then poll up to
+# `max_wait` for renderUI-populated targets (e.g. the species layer bar)
+# that appear after the initial paint.
 shoot_step <- function(url, selector, file) {
   b <- chromote::ChromoteSession$new(width = vwidth, height = vheight)
   on.exit(b$close(), add = TRUE)
-  b$Page$navigate(url, wait_ = TRUE)
-  Sys.sleep(delay)
+  # ?splash=false suppresses the welcome modal in both apps; the JS dismissal
+  # below is a fallback for any deploy that predates that flag
+  nav_url <- paste0(url, if (grepl("?", url, fixed = TRUE)) "&" else "?", "splash=false")
+  b$Page$navigate(nav_url, wait_ = TRUE)
+  Sys.sleep(settle)
+  b$Runtime$evaluate(dismiss_modal_js)   # fallback: clear any welcome splash
+  Sys.sleep(3)                           # let the app repaint behind it
+  waited <- 0
+  while (!has_selector(b, selector) && waited < max_wait) {
+    Sys.sleep(1); waited <- waited + 1
+  }
   res <- b$Runtime$evaluate(highlight_js(selector))$result$value %||% "NULL"
   if (!identical(res, "OK"))
     message(glue::glue("    ! selector not found ({res}): {selector}"))
