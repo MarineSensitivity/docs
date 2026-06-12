@@ -1,5 +1,10 @@
 # Model Merging {#sec-model-merging}
 
+```{r}
+#| include: false
+source(here::here("stats.R"))
+```
+
 Each species may have distribution data in multiple source datasets (see @sec-data-sources). The model merging pipeline combines these into a single merged model per species, applying spatial masking and minimum floor values to reflect regulatory protections.
 
 ::: {.callout-tip}
@@ -142,4 +147,4 @@ After merging, species are flagged as valid (`is_ok = TRUE`) based on the criter
 
 As of v7, an overlap with a BOEM Program Area is **no longer** required for validity (it previously narrowed the set to 9,424); Program-Area scope is now a spatial/zone query so the full study-area biodiversity is retained.
 
-This filtering yields **16,158 valid species** across the study area, of which **9,230** contribute to scores within the 20 BOEM Program Areas of the current program cycle.
+This filtering yields **`r n_fmt(mst_stats$valid_species)` valid species** across the study area, of which **`r n_fmt(mst_stats$species_program_areas)`** contribute to scores within the `r mst_stats$n_program_areas` BOEM Program Areas of the current program cycle.

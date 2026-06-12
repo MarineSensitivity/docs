@@ -1,5 +1,10 @@
 # Taxonomy {#sec-taxonomy}
 
+```{r}
+#| include: false
+source(here::here("stats.R"))
+```
+
 Integrating species distribution data from 7 source datasets requires resolving taxonomic identities across multiple naming systems. The MST uses a multi-authority matching pipeline to ensure each species is uniquely identified, enabling accurate merging of models from different data providers.
 
 ## Taxonomic Authorities
@@ -59,16 +64,25 @@ Taxonomic names change over time as species are reclassified. The pipeline handl
 
 ### Valid Species Filter (`is_ok`)
 
-Not all taxa in the database are included in the final analysis. A species is flagged as valid (`is_ok = TRUE`) when it meets all of the following criteria:
+The source datasets together contain roughly **`r n_fmt(mst_stats$total_taxa)` taxa** — dominated by the ~17,000 marine species modeled globally by AquaMaps, plus the regulatory and range-map datasets. Not all are appropriate for the sensitivity analysis. A taxon is flagged **valid** (`is_ok = TRUE`) only when it meets *every* one of the following criteria:
 
-- has a merged model (i.e., at least one source dataset provides cell values)
-- is classified as marine (based on WoRMS `isMarine` flag, or BirdLife seabird classification)
-- is not extinct (WoRMS `isExtinct` or IUCN Red List `EX` status)
-- expert range map (if available) intersects the US EEZ — species whose IUCN range falls entirely outside US waters are excluded even if AquaMaps predicts suitable habitat in the EEZ, since these predictions are edge-of-range model artifacts not supported by expert assessment
+- **Taxonomically accepted & marine**: a resolved WoRMS/BirdLife identity with an accepted (or alternative-representation) status, classified as marine (WoRMS `isMarine`, or BirdLife seabird), and not extinct (WoRMS `isExtinct` or IUCN Red List `EX`); non-turtle reptiles (e.g., sea snakes) are excluded.
+- **Has a mapped distribution**: the merged model resolves to at least one grid cell with a value — a few stale, empty model records are excluded so the valid count matches the species actually mapped.
+- **Expert range intersects the US EEZ**: where an IUCN expert range map exists, it must overlap US waters. Species whose global range falls entirely outside the US EEZ are dropped even if AquaMaps predicts suitable habitat there, since those are edge-of-range model artifacts not supported by expert assessment.
 
-As of v7, validity is **no longer** gated by overlap with a BOEM Program Area: a species is valid if it has a modeled distribution anywhere in the study area, so that biodiversity outside the current Program Areas is represented faithfully. Program-Area membership is applied later as a spatial query, not a species-level filter.
+**Program-Area overlap is *not* a validity criterion.** A species is valid if it has a modeled distribution anywhere in the study area; whether it falls within one of the BOEM Program Areas is determined later by a spatial (zone) query, not by the `is_ok` flag. This was introduced in **v7** — earlier versions silently required Program-Area overlap, which conflated "valid" with "occurs in a Program Area" and hid biodiversity outside the current program cycle (see below).
 
-This filter yields **16,158 valid species** from approximately 17,561 total taxa across all datasets (of which **9,230** have modeled distributions that fall within the 20 BOEM Program Areas of the current program cycle).
+This filter currently yields **`r n_fmt(mst_stats$valid_species)` valid species** across the full study area (the US EEZ), of which **`r n_fmt(mst_stats$species_program_areas)`** have modeled distributions within the **`r mst_stats$n_program_areas` BOEM Program Areas** of the current program cycle. These figures are pulled live from the [`/stats.json`](https://api.marinesensitivity.org/stats.json) endpoint for the current database version (`r mst_stats$version`).
+
+::: {.callout-note collapse="true"}
+## How the valid-species count has changed across versions
+
+The definition of "valid species" has tightened over time, so the headline count is **not** directly comparable across versions:
+
+- **v5 (~9,819)** — valid after taxonomic filtering, before excluding IUCN ranges outside the US EEZ.
+- **v6 (9,424)** — after excluding ~371 species whose IUCN ranges fall entirely outside the US EEZ. This count *also* silently required overlap with a BOEM Program Area, conflating "valid" with "occurs in a Program Area."
+- **v7 (`r n_fmt(mst_stats$valid_species)`)** — the Program-Area requirement was removed, so the count reflects the full study-area biodiversity (the ~17,000-species universe minus the taxonomic and range exclusions). The **`r n_fmt(mst_stats$species_program_areas)`** within the Program Areas is now reported separately as a spatial subset rather than baked into the flag.
+:::
 
 ## Key Function
 

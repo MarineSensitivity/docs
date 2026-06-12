@@ -1,10 +1,15 @@
 # Summary
 
+```{r}
+#| include: false
+source(here::here("stats.R"))
+```
+
 The Marine Sensitivity Toolkit (MST) provides a comprehensive, reproducible system for assessing the sensitivity of marine ecosystems to offshore energy development across US waters.
 
 ## Key Findings
 
-- **16,158 valid marine species** mapped at 0.05° resolution (~4 km cells) across the full US EEZ study area (**9,230** within the **20 BOEM Program Areas**), integrating data from 7 source datasets including AquaMaps SDMs, NMFS and FWS regulatory designations, BirdLife seabird ranges, and IUCN range maps
+- **`r n_fmt(mst_stats$valid_species)` valid marine species** mapped at 0.05° resolution (~4 km cells) across the full US EEZ study area (**`r n_fmt(mst_stats$species_program_areas)`** within the **`r mst_stats$n_program_areas` BOEM Program Areas**), integrating data from 7 source datasets including AquaMaps SDMs, NMFS and FWS regulatory designations, BirdLife seabird ranges, and IUCN range maps
 
 - **Extinction risk scoring** (1--100 scale) incorporates protections under the Endangered Species Act (ESA), Marine Mammal Protection Act (MMPA), and Migratory Bird Treaty Act (MBTA), ensuring that federally protected species are properly weighted in the sensitivity analysis
 
