@@ -84,6 +84,23 @@ The definition of "valid species" has tightened over time, so the headline count
 - **v7 (`r n_fmt(mst_stats$valid_species)`)** — the Program-Area requirement was removed, so the count reflects the full study-area biodiversity (the ~17,000-species universe minus the taxonomic and range exclusions). The **`r n_fmt(mst_stats$species_program_areas)`** within the Program Areas is now reported separately as a spatial subset rather than baked into the flag.
 :::
 
+### From source taxa to valid species
+
+The table below traces the cumulative effect of each `is_ok` gate — applied in the order used by the merge pipeline — showing the number of species **removed** at each step and the number **remaining**, from the full pool of source-dataset taxa down to the valid species, then the spatial subset that falls within the BOEM Program Areas. The largest reductions are species with no merged distribution (those whose IUCN expert range falls entirely outside the US EEZ produce zero cells) and non-marine taxa. Counts are pulled live for the current database version (`r mst_stats$version`).
+
+```{r}
+#| label: tbl-filter-funnel
+#| tbl-cap: "Cumulative `is_ok` filter funnel: species removed and remaining at each validity gate, then the within-Program-Area spatial subset. Pulled live from the API for the current database version."
+.f <- mst_stats$funnel
+knitr::kable(
+  data.frame(
+    `Filter step`       = .f$filter,
+    Removed             = ifelse(.f$removed == 0, "—", paste0("−", n_fmt(.f$removed))),
+    `Species remaining` = n_fmt(.f$remaining),
+    check.names         = FALSE),
+  align = c("l", "r", "r"))
+```
+
 ## Key Function
 
 The taxonomic matching is implemented in `msens::match_taxa()`, which orchestrates the ID resolution cascade and returns a unified taxon table with cross-referenced identifiers from all authorities.

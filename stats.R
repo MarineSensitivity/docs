@@ -17,7 +17,16 @@ mst_stats <- local({
     n_program_areas         = 20L,
     n_ecoregions            = 12L,
     n_datasets              = 9L,
-    n_cells                 = 662075L)
+    n_cells                 = 662075L,
+    funnel = data.frame(
+      step      = 1:8,
+      filter    = c("Source taxa (all datasets)", "Resolved taxon ID",
+                    "Has a merged model (distribution)", "Not extinct", "Marine",
+                    "Accepted taxonomy (excl. non-turtle reptiles)",
+                    "Mapped to ≥1 cell — valid (is_ok)",
+                    "Within BOEM Program Areas (spatial subset)"),
+      remaining = c(17561L, 17561L, 16388L, 16367L, 16213L, 16158L, 16153L, 9230L),
+      removed   = c(0L, 0L, 1173L, 21L, 154L, 55L, 5L, 6923L)))
   out <- tryCatch(
     jsonlite::fromJSON("https://api.marinesensitivity.org/stats.json"),
     error   = function(e) NULL,
