@@ -581,10 +581,10 @@ Table&nbsp;4.2: Species categories used in the MST for scoring and visualization
 <li>has a merged model (i.e., at least one source dataset provides cell values)</li>
 <li>is classified as marine (based on WoRMS <code>isMarine</code> flag, or BirdLife seabird classification)</li>
 <li>is not extinct (WoRMS <code>isExtinct</code> or IUCN Red List <code>EX</code> status)</li>
-<li>has cells overlapping at least one BOEM Program Area</li>
 <li>expert range map (if available) intersects the US EEZ — species whose IUCN range falls entirely outside US waters are excluded even if AquaMaps predicts suitable habitat in the EEZ, since these predictions are edge-of-range model artifacts not supported by expert assessment</li>
 </ul>
-<p>This filter yields <strong>9,424 valid species</strong> from approximately 17,561 total taxa across all datasets.</p>
+<p>As of v7, validity is <strong>no longer</strong> gated by overlap with a BOEM Program Area: a species is valid if it has a modeled distribution anywhere in the study area, so that biodiversity outside the current Program Areas is represented faithfully. Program-Area membership is applied later as a spatial query, not a species-level filter.</p>
+<p>This filter yields <strong>16,158 valid species</strong> from approximately 17,561 total taxa across all datasets (of which <strong>9,230</strong> have modeled distributions that fall within the 20 BOEM Program Areas of the current program cycle).</p>
 </section>
 </section>
 <section id="key-function" class="level2" data-number="4.5">
