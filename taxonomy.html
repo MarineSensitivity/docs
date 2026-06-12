@@ -407,6 +407,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#duplicate-resolution" id="toc-duplicate-resolution" class="nav-link" data-scroll-target="#duplicate-resolution"><span class="header-section-number">4.4.1</span> Duplicate Resolution</a></li>
   <li><a href="#synonym-handling" id="toc-synonym-handling" class="nav-link" data-scroll-target="#synonym-handling"><span class="header-section-number">4.4.2</span> Synonym Handling</a></li>
   <li><a href="#valid-species-filter-is_ok" id="toc-valid-species-filter-is_ok" class="nav-link" data-scroll-target="#valid-species-filter-is_ok"><span class="header-section-number">4.4.3</span> Valid Species Filter (<code>is_ok</code>)</a></li>
+  <li><a href="#from-source-taxa-to-valid-species" id="toc-from-source-taxa-to-valid-species" class="nav-link" data-scroll-target="#from-source-taxa-to-valid-species"><span class="header-section-number">4.4.4</span> From source taxa to valid species</a></li>
   </ul></li>
   <li><a href="#key-function" id="toc-key-function" class="nav-link" data-scroll-target="#key-function"><span class="header-section-number">4.5</span> Key Function</a></li>
   </ul>
@@ -603,6 +604,79 @@ Table&nbsp;4.2: Species categories used in the MST for scoring and visualization
 <li><strong>v7 (16,153)</strong> — the Program-Area requirement was removed, so the count reflects the full study-area biodiversity (the ~17,000-species universe minus the taxonomic and range exclusions). The <strong>9,230</strong> within the Program Areas is now reported separately as a spatial subset rather than baked into the flag.</li>
 </ul>
 </div>
+</div>
+</div>
+</section>
+<section id="from-source-taxa-to-valid-species" class="level3" data-number="4.4.4">
+<h3 data-number="4.4.4" class="anchored" data-anchor-id="from-source-taxa-to-valid-species"><span class="header-section-number">4.4.4</span> From source taxa to valid species</h3>
+<p>The table below traces the cumulative effect of each <code>is_ok</code> gate — applied in the order used by the merge pipeline — showing the number of species <strong>removed</strong> at each step and the number <strong>remaining</strong>, from the full pool of source-dataset taxa down to the valid species, then the spatial subset that falls within the BOEM Program Areas. The largest reductions are species with no merged distribution (those whose IUCN expert range falls entirely outside the US EEZ produce zero cells) and non-marine taxa. Counts are pulled live for the current database version (v7).</p>
+<div class="cell">
+<div id="tbl-filter-funnel" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-filter-funnel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4.3: Cumulative <code>is_ok</code> filter funnel: species removed and remaining at each validity gate, then the within-Program-Area spatial subset. Pulled live from the API for the current database version.
+</figcaption>
+<div aria-describedby="tbl-filter-funnel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 63%">
+<col style="width: 11%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Filter step</th>
+<th style="text-align: right;">Removed</th>
+<th style="text-align: right;">Species remaining</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Source taxa (all datasets)</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">17,561</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Resolved taxon ID</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">17,561</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Has a merged model (distribution)</td>
+<td style="text-align: right;">−1,173</td>
+<td style="text-align: right;">16,388</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Not extinct</td>
+<td style="text-align: right;">−21</td>
+<td style="text-align: right;">16,367</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Marine</td>
+<td style="text-align: right;">−154</td>
+<td style="text-align: right;">16,213</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Accepted taxonomy (excl. non-turtle reptiles)</td>
+<td style="text-align: right;">−55</td>
+<td style="text-align: right;">16,158</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Mapped to ≥1 cell — valid (is_ok)</td>
+<td style="text-align: right;">−5</td>
+<td style="text-align: right;">16,153</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Within BOEM Program Areas (spatial subset)</td>
+<td style="text-align: right;">−6,923</td>
+<td style="text-align: right;">9,230</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
 </div>
 </div>
 </section>
