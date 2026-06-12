@@ -64,10 +64,11 @@ Not all taxa in the database are included in the final analysis. A species is fl
 - has a merged model (i.e., at least one source dataset provides cell values)
 - is classified as marine (based on WoRMS `isMarine` flag, or BirdLife seabird classification)
 - is not extinct (WoRMS `isExtinct` or IUCN Red List `EX` status)
-- has cells overlapping at least one BOEM Program Area
 - expert range map (if available) intersects the US EEZ — species whose IUCN range falls entirely outside US waters are excluded even if AquaMaps predicts suitable habitat in the EEZ, since these predictions are edge-of-range model artifacts not supported by expert assessment
 
-This filter yields **9,424 valid species** from approximately 17,561 total taxa across all datasets.
+As of v7, validity is **no longer** gated by overlap with a BOEM Program Area: a species is valid if it has a modeled distribution anywhere in the study area, so that biodiversity outside the current Program Areas is represented faithfully. Program-Area membership is applied later as a spatial query, not a species-level filter.
+
+This filter yields **16,158 valid species** from approximately 17,561 total taxa across all datasets (of which **9,230** have modeled distributions that fall within the 20 BOEM Program Areas of the current program cycle).
 
 ## Key Function
 

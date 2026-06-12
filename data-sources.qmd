@@ -101,7 +101,7 @@ See workflow: [ingest_turtles-swot-dps](https://marinesensitivity.org/workflows/
 
 ## Merged Model (`ms_merge`)
 
-The merged model is the derived output of the model merging pipeline (see @sec-model-merging). For each of the 9,819 valid species, cell values are computed as:
+The merged model is the derived output of the model merging pipeline (see @sec-model-merging). For each of the 16,158 valid species, cell values are computed as:
 
 1. **MAX** across all source dataset values for that species in each cell
 2. **Masked** to the spatial extent defined by IUCN, NMFS CH, and FWS CH ranges (when available)

@@ -41,7 +41,7 @@ In other words, if a cell has many species that are both likely to be present an
 
 The MST assesses sensitivity through three components:
 
-1. **Species** — by taxonomic category (bird, coral, fish, invertebrate, mammal, reptile/turtle): extinction risk weighted species distribution models across 9,819 valid species (see @sec-data-sources, @sec-extinction-risk)
+1. **Species** — by taxonomic category (bird, coral, fish, invertebrate, mammal, reptile/turtle): extinction risk weighted species distribution models across 16,158 valid species (see @sec-data-sources, @sec-extinction-risk)
 2. **Habitats** — benthic habitats such as coral reefs, seamounts, and hydrothermal vents (planned for future phases)
 3. **Primary Productivity** — satellite-derived net primary productivity from the Vertically Generalized Production Model (VGPM), measured as metric tons C km^-2^ yr^-1^ (see @sec-data-sources)
 

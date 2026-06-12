@@ -1,6 +1,6 @@
 # Preface {.unnumbered}
 
-The **Marine Sensitivity Toolkit** (MST) is a cloud-native system developed for the Bureau of Ocean Energy Management (BOEM) to assess the sensitivity of marine ecosystems to offshore energy development. It integrates 9,819 species distribution models with extinction risk assessments across 20 BOEM Program Areas spanning US waters.
+The **Marine Sensitivity Toolkit** (MST) is a cloud-native system developed for the Bureau of Ocean Energy Management (BOEM) to assess the sensitivity of marine ecosystems to offshore energy development. It integrates 16,158 species distribution models with extinction risk assessments across US waters (9,230 of which fall within the 20 BOEM Program Areas of the current program cycle).
 
 ![Overview of the MST methodology: species distribution models from 7 source datasets are merged, weighted by extinction risk scores (incorporating ESA, MMPA, MBTA, and IUCN protections), rescaled by ecoregion, and aggregated to management zones for visualization.](figures/overview-methods.svg){#fig-overview-preface}
 

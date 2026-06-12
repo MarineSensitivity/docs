@@ -4,7 +4,7 @@ The Marine Sensitivity Toolkit (MST) provides a comprehensive, reproducible syst
 
 ## Key Findings
 
-- **9,819 valid marine species** mapped at 0.05° resolution (~4 km cells) across **20 BOEM Program Areas**, integrating data from 7 source datasets including AquaMaps SDMs, NMFS and FWS regulatory designations, BirdLife seabird ranges, and IUCN range maps
+- **16,158 valid marine species** mapped at 0.05° resolution (~4 km cells) across the full US EEZ study area (**9,230** within the **20 BOEM Program Areas**), integrating data from 7 source datasets including AquaMaps SDMs, NMFS and FWS regulatory designations, BirdLife seabird ranges, and IUCN range maps
 
 - **Extinction risk scoring** (1--100 scale) incorporates protections under the Endangered Species Act (ESA), Marine Mammal Protection Act (MMPA), and Migratory Bird Treaty Act (MBTA), ensuring that federally protected species are properly weighted in the sensitivity analysis
 
