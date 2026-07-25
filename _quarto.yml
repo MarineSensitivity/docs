@@ -34,7 +34,11 @@ book:
   favicon: images/favicon.ico
   downloads: [pdf, docx]
   sharing: [twitter, facebook]
-  # google-analytics: "G-V3HZN14Z8G" # TODO: add Google Analytics
+  # analytics live in _analytics.html (include-in-header under format.html), not
+  # the `google-analytics:` key — the key cannot set `content_group` (how the one
+  # shared measurement ID separates products) and cannot track the pdf/docx
+  # download buttons above. NOTE: the ID previously stubbed here (G-V3HZN14Z8G)
+  # was NOT the project property; docs now share the homepage's G-9HW6L751XG.
   search: true
   page-navigation: true
   page-footer:
@@ -97,6 +101,8 @@ format:
     mermaid-format: png
     theme: cosmo
     echo: false
+    include-in-header:
+      - _analytics.html
   docx:
     toc: true
     echo: false

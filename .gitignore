@@ -10,6 +10,9 @@ site_libs/
 *_files/
 *.html
 !_scoring-walkthrough-app.html
+# GA4 snippet, included via format.html.include-in-header. Must be tracked, or a
+# fresh CI checkout renders without it and Quarto errors on the missing include.
+!_analytics.html
 
 **/*.quarto_ipynb
 .positai
