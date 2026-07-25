@@ -30,112 +30,123 @@ services:
       - /share:/share
       - /share/shiny_apps:/srv/shiny-server
 
+  # plumber: DuckDB-backed custom API (postgres stack retired 2026-06). Serves
+  # the OBIS H3 summary endpoint /h3 (obisindicators::obis_h3t_sql) from the same
+  # store as the h3t tile service. Caddy already routes
+  # api.marinesensitivity.org -> plumber:8888. No postgis dependency: the
+  # postgres-backed endpoints degrade (see api/plumber.R lazy `con`).
   plumber:
     container_name: plumber
     build: ./plumber
+    environment:
+      MSENS_OBIS_DUCKDB: /share/data/obis/obis_h3.duckdb
     ports:
       - 8888:8888  # api
+    volumes:
+      - /share:/share
     restart: unless-stopped
-    volumes:
-      - /share:/share
-    depends_on:
-      - postgis
 
-  postgis:
-    container_name: postgis
-    image: postgis/postgis:latest
-    environment:
-      POSTGRES_DB: msens
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: ${PASSWORD}
-      ANON_PASSWORD: ${ANON_PASSWORD}
-      PGDATA: /share/postgis/data
-    volumes:
-      # all files in /docker-entrypoint-initdb.dare automatically executed
-      #  in alphabetical order on container creation
-      - ./postgis/init.sh:/docker-entrypoint-initdb.d/init.sh  # add user anon
-      - /share:/share
-      - /share/postgis:/var/lib/postgresql
-    restart: unless-stopped
-    healthcheck:
-      test: 'exit 0'
-    ports:
-      - 5432:5432
+  # --- postgres stack retired (2026-06) to free resources for OBIS h3 build ---
+  # plumber:
+  #   container_name: plumber
+  #   build: ./plumber
+  #   ports:
+  #     - 8888:8888  # api
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /share:/share
+  #   depends_on:
+  #     - postgis
 
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4:8.14
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ben@ecoquants.com
-      PGADMIN_DEFAULT_PASSWORD: ${PASSWORD}
-      PGADMIN_LISTEN_PORT: 8088
-      # PGADMIN_CONFIG_CONFIG_DATABASE_URI: "'postgresql://admin:$PASSWORD@postgis:5432/msens'"
-    ports:
-      - 8088:8088
-    volumes:
-      - /share/pgadmin:/var/lib/pgadmin
-    depends_on:
-      - postgis
+  # postgis:
+  #   container_name: postgis
+  #   image: postgis/postgis:latest
+  #   environment:
+  #     POSTGRES_DB: msens
+  #     POSTGRES_USER: admin
+  #     POSTGRES_PASSWORD: ${PASSWORD}
+  #     ANON_PASSWORD: ${ANON_PASSWORD}
+  #     PGDATA: /share/postgis/data
+  #   volumes:
+  #     - ./postgis/init.sh:/docker-entrypoint-initdb.d/init.sh
+  #     - /share:/share
+  #     - /share/postgis:/var/lib/postgresql
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: 'exit 0'
+  #   ports:
+  #     - 5432:5432
 
-  pgbkups:
-    container_name: pgbkups
-    image: prodrigestivill/postgres-backup-local
-    restart: always
-    user: postgres:postgres # Optional: see below
-    volumes:
-      - /share/postgis_backups:/backups
-      # sudo mkdir /share/postgis_backups; sudo chown -R 999:999 /share/postgis_backups
-    links:
-      - postgis
-    depends_on:
-      - postgis
-    environment:
-      - POSTGRES_HOST=postgis
-      - POSTGRES_DB=msens
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=${PASSWORD}
-      - POSTGRES_EXTRA_OPTS=-Z6 --blobs
-      - SCHEDULE=@daily
-      - HEALTHCHECK_PORT=8088
-      - BACKUP_KEEP_DAYS=2
-      - BACKUP_KEEP_WEEKS=1
-      - BACKUP_KEEP_MONTHS=2
+  # pgadmin:
+  #   container_name: pgadmin
+  #   image: dpage/pgadmin4:8.14
+  #   restart: always
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ben@ecoquants.com
+  #     PGADMIN_DEFAULT_PASSWORD: ${PASSWORD}
+  #     PGADMIN_LISTEN_PORT: 8088
+  #   ports:
+  #     - 8088:8088
+  #   volumes:
+  #     - /share/pgadmin:/var/lib/pgadmin
+  #   depends_on:
+  #     - postgis
 
-  tile:
-    container_name: tile
-    environment:
-      DATABASE_URL: 'postgresql://admin:${PASSWORD}@postgis:5432/msens'
-    image: pramsey/pg_tileserv:latest
-    depends_on:
-      - postgis
-    ports:
-      - 7800:7800
+  # pgbkups:
+  #   container_name: pgbkups
+  #   image: prodrigestivill/postgres-backup-local
+  #   restart: always
+  #   user: postgres:postgres
+  #   volumes:
+  #     - /share/postgis_backups:/backups
+  #   links:
+  #     - postgis
+  #   depends_on:
+  #     - postgis
+  #   environment:
+  #     - POSTGRES_HOST=postgis
+  #     - POSTGRES_DB=msens
+  #     - POSTGRES_USER=admin
+  #     - POSTGRES_PASSWORD=${PASSWORD}
+  #     - POSTGRES_EXTRA_OPTS=-Z6 --blobs
+  #     - SCHEDULE=@daily
+  #     - HEALTHCHECK_PORT=8088
+  #     - BACKUP_KEEP_DAYS=2
+  #     - BACKUP_KEEP_WEEKS=1
+  #     - BACKUP_KEEP_MONTHS=2
 
-  tilecache:
-    container_name: tilecache
-    image: varnish:latest # 7.4.2  # last updated: 2023-12-26
-    volumes:
-      - /share:/share
-      # - "./varnish/default.vcl:/etc/varnish/default.vcl"
-    ports:
-      - 6081:6081
-    environment:
-      # VARNISH_SIZE: '2G'
-      VARNISH_BACKEND_HOST: tile # .marinesensitivity.org
-      VARNISH_BACKEND_PORT: 7800
-      VARNISH_HTTP_PORT: 6081  # VARNISH_PROXY_PORT: '6081'
-    #command: "-p default_keep=43200" # 60*60*12 = 43200 sec = 12 hrs
-    restart: always
-    depends_on:
-      - "tile"
+  # tile:
+  #   container_name: tile
+  #   environment:
+  #     DATABASE_URL: 'postgresql://admin:${PASSWORD}@postgis:5432/msens'
+  #   image: pramsey/pg_tileserv:latest
+  #   depends_on:
+  #     - postgis
+  #   ports:
+  #     - 7800:7800
+
+  # tilecache:
+  #   container_name: tilecache
+  #   image: varnish:latest
+  #   volumes:
+  #     - /share:/share
+  #   ports:
+  #     - 6081:6081
+  #   environment:
+  #     VARNISH_BACKEND_HOST: tile
+  #     VARNISH_BACKEND_PORT: 7800
+  #     VARNISH_HTTP_PORT: 6081
+  #   restart: always
+  #   depends_on:
+  #     - "tile"
+  # --- end postgres stack ---
 
   # rest:
   #   container_name: rest
   #   environment:
   #     PGRST_DB_URI: 'postgresql://anon:${ANON_PASSWORD}@postgis:5432/msens'
   #     PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
-  #     PGRST_DB_ANON_ROLE: anon  # db-anon-role
+  #     PGRST_DB_ANON_ROLE: anon
   #   image: postgrest/postgrest
   #   depends_on:
   #     - postgis
@@ -170,6 +181,24 @@ services:
       - "8000:8000"
     restart: always
 
+  # v8 parallel serving: a tiny view-only DuckDB whose model_cell is a VIEW over the
+  # partitioned Parquet on S3 (marine-atlas/v8), rendered on the global [-180,180] cell COG.
+  # v7 titiler above stays fully live (A/B). serve.duckdb is KB — no multi-GB rsync.
+  titiler-v8:
+    container_name: titiler-v8
+    build: ./titiler
+    environment:
+      PORT:             8000
+      MSENS_CELLID_COG: /share/data/derived/r_cellid_global.tif
+      MSENS_DUCKDB:     /share/data/big/v8/serve.duckdb
+      MSENS_MAX_ROWS:   "1000000"
+      MSENS_LRU_SIZE:   "128"
+    volumes:
+      - /share:/share
+    ports:
+      - "8001:8000"
+    restart: always
+
   titilecache:
     container_name: titilecache
     image: varnish:latest # 7.4.2  # last updated: 2023-12-26
@@ -179,11 +208,48 @@ services:
     ports:
       - 6082:6082
     environment:
-      # VARNISH_SIZE: '2G'
-      VARNISH_BACKEND_HOST: titiler # .marinesensitivity.org
+      VARNISH_BACKEND_HOST: titiler
       VARNISH_BACKEND_PORT: 8000
       VARNISH_HTTP_PORT:    6082
     command: "-p default_keep=604800" # 7d, matches vcl TTL
     restart: always
     depends_on:
       - "titiler"
+
+  # h3t: OBIS biodiversity-by-hex tile factory (DuckDB SELECT -> h3j JSON tiles)
+  h3t:
+    container_name: h3t
+    build: ./h3t
+    environment:
+      H3T_DBS:             "obis:/share/data/obis/obis_h3.duckdb"
+      H3T_DEFAULT_DB:      obis
+      H3T_MAX_ROWS:        "50000"
+      # common filtered maps now hit precomputed idx_h3 / idx_h3_taxon layers;
+      # these caps are the stopgap for the remaining live occ_h3 paths (year
+      # filters, multi-value / fine-rank taxa). raise the timeout above the
+      # app-side client timeout in apps/h3-db/app.R.
+      H3T_STMT_TIMEOUT_MS: "8000"
+      H3T_THREADS:         "4"      # cap serving CPU (don't peg all cores)
+      H3T_MEMORY_LIMIT:    "6GB"    # cap serving RAM (occ_h3 rollups can spill)
+    volumes:
+      - /share:/share
+    ports:
+      - "8889:8889"
+    restart: always
+
+  h3tcache:
+    container_name: h3tcache
+    image: varnish:latest # 7.4.2  # last updated: 2023-12-26
+    volumes:
+      - /share:/share
+      - "./varnish/h3t.vcl:/etc/varnish/default.vcl:ro"
+    ports:
+      - 6083:6083
+    environment:
+      VARNISH_BACKEND_HOST: h3t
+      VARNISH_BACKEND_PORT: 8889
+      VARNISH_HTTP_PORT:    6083
+    command: "-p default_keep=604800" # 7d, matches vcl TTL
+    restart: always
+    depends_on:
+      - "h3t"

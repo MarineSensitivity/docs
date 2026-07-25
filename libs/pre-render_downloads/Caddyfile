@@ -34,6 +34,18 @@ file.marinesensitivity.org {
 		file_server browse
 	}
 
+	# stac catalog (sdm extension) — static JSON tree
+	handle_path /stac/* {
+		root * /share/data/derived/stac
+		file_server browse
+	}
+
+	# versioned derived data (geoparquet, cogs, gpkg) referenced by stac assets
+	handle_path /derived/* {
+		root * /share/data/derived
+		file_server browse
+	}
+
 	# force reports to download (especially HTML which otherwise renders inline)
 	handle_path /reports/* {
 		root * /share/public/reports
@@ -89,8 +101,20 @@ titiler.marinesensitivity.org {
 	reverse_proxy titiler:8000
 }
 
+titiler-v8.marinesensitivity.org {
+	reverse_proxy titiler-v8:8000
+}
+
 titilecache.marinesensitivity.org {
 	reverse_proxy titilecache:6082
+}
+
+h3t.marinesensitivity.org {
+	reverse_proxy h3t:8889
+}
+
+h3tcache.marinesensitivity.org {
+	reverse_proxy h3tcache:6083
 }
 
 pmtiles.marinesensitivity.org {
