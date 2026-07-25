@@ -565,6 +565,57 @@ function initializeDrawAttributeEditor(map, drawControl, options) {
   };
 }
 
+// Shared layer-state and filter-composition helpers.
+//
+// `window._mapglLayerState[mapId]` is the cross-file state object used by
+// the main binding, the proxy handler, and legend-interactivity. These
+// helpers are the single entry point for populating and composing filters
+// across multiple filter sources (layer-initial, proxy set_filter,
+// interactive legend, slider).
+function _mapglEnsureLayerState(map) {
+  if (!window._mapglLayerState) window._mapglLayerState = {};
+  const mapId = map.getContainer().id;
+  const s =
+    window._mapglLayerState[mapId] ||
+    (window._mapglLayerState[mapId] = {});
+  if (!s.filters) s.filters = {};
+  if (!s.paintProperties) s.paintProperties = {};
+  if (!s.layoutProperties) s.layoutProperties = {};
+  if (!s.tooltips) s.tooltips = {};
+  if (!s.popups) s.popups = {};
+  // Parallel maps holding the (optional) tooltip/popup style spec for proxy
+  // set_tooltip()/set_popup() so theming survives a style reload.
+  if (!s.tooltipStyles) s.tooltipStyles = {};
+  if (!s.popupStyles) s.popupStyles = {};
+  if (!s.legends) s.legends = {};
+  if (!s.interactiveFilters) s.interactiveFilters = {};
+  if (!s.filterStack) s.filterStack = {};
+  return s;
+}
+
+// Compose active filter slots for a layer and apply the result.
+// Slots: base (layer-initial), user (proxy set_filter), legend
+// (interactive legend), slider (slider). Writes the composed
+// expression back to state.filters so the style-reload replay path
+// continues to work.
+function _mapglComposeAndApplyFilter(map, layerId) {
+  const state = _mapglEnsureLayerState(map);
+  const stack = state.filterStack[layerId] || {};
+  const active = [stack.base, stack.user, stack.legend, stack.slider].filter(
+    (f) => f != null,
+  );
+  const composed =
+    active.length === 0 ? null : active.length === 1 ? active[0] : ["all", ...active];
+  if (map.getLayer && map.getLayer(layerId)) {
+    map.setFilter(layerId, composed);
+  }
+  state.filters[layerId] = composed;
+}
+
+// Expose for cross-file consumers (legend-interactivity, slider).
+window._mapglEnsureLayerState = _mapglEnsureLayerState;
+window._mapglComposeFilter = _mapglComposeAndApplyFilter;
+
 // Measurement functionality
 function createMeasurementBox(map) {
   const box = document.createElement("div");
@@ -1020,6 +1071,186 @@ function evaluateExpression(expression, properties) {
   }
 }
 
+// Escape a value for safe insertion as tooltip/popup text. Used by the brace
+// template renderer so substituted values cannot inject markup.
+function escapeTemplateValue(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// Render a {brace} template against a properties object. Each {key} (dotted
+// paths like {origin.id} supported) is replaced by the HTML-escaped value;
+// literal text/markup in the template is emitted as-is. Shared, package-wide
+// tooltip/popup syntax. NOTE: duplicated verbatim in maplibregl.js,
+// mapboxgl_compare.js, maplibregl_compare.js, and flowmap.js — keep in sync.
+function renderTemplate(template, properties) {
+  if (typeof template !== "string") {
+    return template;
+  }
+  return template.replace(/\{([^}]+)\}/g, function (match, path) {
+    const value = path
+      .trim()
+      .split(".")
+      .reduce(function (acc, key) {
+        return acc == null ? undefined : acc[key];
+      }, properties);
+    return value == null ? "" : escapeTemplateValue(value);
+  });
+}
+
+// Resolve a tooltip/popup content spec against a feature's properties:
+//   array  -> Mapbox-style expression (concat/number_format/get) via evaluateExpression
+//   "{..}" -> brace template via renderTemplate
+//   string -> a column name (direct property lookup)
+function resolveTooltipContent(spec, properties) {
+  if (Array.isArray(spec)) {
+    return evaluateExpression(spec, properties);
+  }
+  if (typeof spec === "string" && spec.indexOf("{") !== -1) {
+    return renderTemplate(spec, properties);
+  }
+  return properties[spec];
+}
+
+// Convert "#rgb"/"#rrggbb" + alpha to rgba(); pass other color strings through.
+function tooltipHexToRgba(color, alpha) {
+  if (typeof color !== "string" || color.charAt(0) !== "#") {
+    return color;
+  }
+  let h = color.slice(1);
+  if (h.length === 3) {
+    h = h
+      .split("")
+      .map(function (c) {
+        return c + c;
+      })
+      .join("");
+  }
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+}
+
+// Build (and cache) a scoped CSS class from a tooltip/popup style spec, so a
+// themed popup needs only a className. Returns null for an empty/absent spec
+// (native appearance). One <style> per unique spec, shared via a window-level
+// cache. NOTE: duplicated in maplibregl.js, the compare bindings, flowmap.js.
+function tooltipStyleToClass(spec) {
+  if (!spec || typeof spec !== "object") {
+    return null;
+  }
+  if (!window._mapglTooltipStyleClasses) {
+    window._mapglTooltipStyleClasses = {};
+  }
+  const cache = window._mapglTooltipStyleClasses;
+  const key = JSON.stringify(spec);
+  if (cache[key]) {
+    return cache[key];
+  }
+  const cls = "mapgl-tooltip-style-" + (Object.keys(cache).length + 1);
+
+  let bg = spec.background_color;
+  if (bg != null && spec.background_opacity != null) {
+    bg = tooltipHexToRgba(bg, spec.background_opacity);
+  }
+
+  const content = [];
+  if (bg != null) content.push("background:" + bg + ";");
+  if (spec.text_color != null) content.push("color:" + spec.text_color + ";");
+  if (spec.border_color != null || spec.border_width != null) {
+    const bw = spec.border_width == null ? 1 : spec.border_width;
+    const bc = spec.border_color == null ? "transparent" : spec.border_color;
+    content.push("border:" + bw + "px solid " + bc + ";");
+  }
+  if (spec.border_radius != null) {
+    content.push("border-radius:" + spec.border_radius + "px;");
+  }
+  if (spec.font_family != null) {
+    content.push("font-family:" + spec.font_family + ";");
+  }
+  if (spec.font_size != null) {
+    content.push("font-size:" + spec.font_size + "px;");
+  }
+  if (spec.font_weight != null) {
+    content.push("font-weight:" + spec.font_weight + ";");
+  }
+  if (spec.padding != null) content.push("padding:" + spec.padding + "px;");
+  if (spec.max_width != null) {
+    const mw =
+      typeof spec.max_width === "number"
+        ? spec.max_width + "px"
+        : spec.max_width;
+    content.push("max-width:" + mw + ";");
+  }
+  if (spec.shadow) {
+    const ss = spec.shadow_size == null ? 8 : spec.shadow_size;
+    const sc = spec.shadow_color == null ? "rgba(0, 0, 0, 0.2)" : spec.shadow_color;
+    content.push("box-shadow:0 2px " + ss + "px " + sc + ";");
+  }
+
+  let css =
+    "." +
+    cls +
+    " .mapboxgl-popup-content, ." +
+    cls +
+    " .maplibregl-popup-content {" +
+    content.join("") +
+    "}";
+  if (bg != null) {
+    // Match the tip (arrow) color to the background for top/bottom anchors.
+    css +=
+      "." +
+      cls +
+      " .mapboxgl-popup-tip, ." +
+      cls +
+      " .maplibregl-popup-tip {border-top-color:" +
+      bg +
+      ";border-bottom-color:" +
+      bg +
+      ";}";
+  }
+
+  const styleEl = document.createElement("style");
+  styleEl.textContent = css;
+  document.head.appendChild(styleEl);
+  cache[key] = cls;
+  return cls;
+}
+
+// Apply a style spec's generated class to a popup. A tooltip's Popup is built
+// lazily on addTo(), so its container does not exist at creation time and
+// neither addClassName() nor (in Mapbox GL v3) a later options.className write
+// reliably lands. Instead we (re)apply the class on every "open" event, when
+// the container is guaranteed to exist — works for both Mapbox and MapLibre —
+// and swap out any previously applied generated class so nothing accumulates.
+function applyPopupClass(popup, spec) {
+  if (!popup) {
+    return;
+  }
+  const cls = tooltipStyleToClass(spec);
+  const prev = popup._mapglStyleClass;
+  if (popup._container && prev && prev !== cls) {
+    popup._container.classList.remove(prev);
+  }
+  popup._mapglStyleClass = cls || null;
+  if (popup._container && cls) {
+    popup._container.classList.add(cls);
+  }
+  if (!popup._mapglClassHook && typeof popup.on === "function") {
+    popup._mapglClassHook = true;
+    popup.on("open", function () {
+      if (popup._container && popup._mapglStyleClass) {
+        popup._container.classList.add(popup._mapglStyleClass);
+      }
+    });
+  }
+}
+
 function onMouseMoveTooltip(e, map, tooltipPopup, tooltipProperty, layerId) {
   if (e.features.length > 0) {
     // Query all features at this point to determine z-order
@@ -1048,19 +1279,12 @@ function onMouseMoveTooltip(e, map, tooltipPopup, tooltipProperty, layerId) {
         window._activeTooltip.remove();
       }
 
-      let description;
-
-      // Check if tooltipProperty is an expression (array) or a simple property name (string)
-      if (Array.isArray(tooltipProperty)) {
-        // It's an expression, evaluate it
-        description = evaluateExpression(
-          tooltipProperty,
-          e.features[0].properties,
-        );
-      } else {
-        // It's a property name, get the value
-        description = e.features[0].properties[tooltipProperty];
-      }
+      // tooltipProperty may be a column name, a {brace} template, or a
+      // concat()/number_format() expression — resolveTooltipContent handles all.
+      const description = resolveTooltipContent(
+        tooltipProperty,
+        e.features[0].properties,
+      );
 
       tooltipPopup.setLngLat(e.lngLat).setHTML(description).addTo(map);
 
@@ -1090,7 +1314,7 @@ function onMouseLeaveTooltip(map, tooltipPopup) {
   }
 }
 
-function onClickPopup(e, map, popupProperty, layerId) {
+function onClickPopup(e, map, popupProperty, layerId, popupStyle) {
   if (e.features.length > 0) {
     // Query all features at this point to determine z-order
     const allFeatures = map.queryRenderedFeatures(e.point);
@@ -1113,19 +1337,12 @@ function onClickPopup(e, map, popupProperty, layerId) {
 
     // Only show popup if this is the topmost layer with a popup
     if (topmostLayerWithPopup === layerId) {
-      let description;
-
-      // Check if popupProperty is an expression (array) or a simple property name (string)
-      if (Array.isArray(popupProperty)) {
-        // It's an expression, evaluate it
-        description = evaluateExpression(
-          popupProperty,
-          e.features[0].properties,
-        );
-      } else {
-        // It's a property name, get the value
-        description = e.features[0].properties[popupProperty];
-      }
+      // popupProperty may be a column name, a {brace} template, or a
+      // concat()/number_format() expression.
+      const description = resolveTooltipContent(
+        popupProperty,
+        e.features[0].properties,
+      );
 
       // Remove any existing popup for this layer
       if (window._mapboxPopups && window._mapboxPopups[layerId]) {
@@ -1137,6 +1354,7 @@ function onClickPopup(e, map, popupProperty, layerId) {
         .setLngLat(e.lngLat)
         .setHTML(description)
         .addTo(map);
+      applyPopupClass(popup, popupStyle);
 
       // Store reference to this popup
       if (!window._mapboxPopups) {
@@ -1951,6 +2169,17 @@ HTMLWidgets.widget({
                   map.addLayer(layerConfig);
                 }
 
+                // Seed the filter registry with this layer's initial filter
+                // (if any) so later filter sources (proxy set_filter,
+                // interactive legend, slider) compose with it rather
+                // than clobber it.
+                (function () {
+                  const _s = _mapglEnsureLayerState(map);
+                  _s.filterStack[layer.id] = _s.filterStack[layer.id] || {};
+                  _s.filterStack[layer.id].base = layer.filter || null;
+                  _s.filters[layer.id] = layer.filter || null;
+                })();
+
                 // Add popups or tooltips if provided
                 if (layer.popup) {
                   // Initialize popup tracking if it doesn't exist
@@ -1960,7 +2189,7 @@ HTMLWidgets.widget({
 
                   // Create click handler for this layer
                   const clickHandler = function (e) {
-                    onClickPopup(e, map, layer.popup, layer.id);
+                    onClickPopup(e, map, layer.popup, layer.id, layer.popup_style);
                   };
 
                   // Store these handler references so we can remove them later if needed
@@ -1989,6 +2218,7 @@ HTMLWidgets.widget({
                     closeOnClick: false,
                     maxWidth: "400px",
                   });
+                  applyPopupClass(tooltip, layer.tooltip_style);
 
                   // Create a reference to the mousemove handler function.
                   // We need to pass 'e', 'map', 'tooltip', 'layer.tooltip', and 'layer.id' to onMouseMoveTooltip.
@@ -2100,6 +2330,10 @@ HTMLWidgets.widget({
                 console.error("Failed to add layer: ", layer, e);
               }
             });
+          }
+
+          if (window.MapGLFlowmapPlugin) {
+            window.MapGLFlowmapPlugin.init(map, x, el, HTMLWidgets);
           }
 
           // Apply setFilter if provided
@@ -2663,6 +2897,17 @@ HTMLWidgets.widget({
             map.controls.push(fullscreen);
           }
 
+          // Add slider control if configured
+          if (
+            x.slider_control &&
+            typeof window.MapglSliderControl === "function"
+          ) {
+            const _tsCfg = x.slider_control;
+            const _ts = new window.MapglSliderControl(_tsCfg);
+            map.addControl(_ts, _tsCfg.position || "top-left");
+            map.controls.push({ type: "slider", control: _ts });
+          }
+
           // Add geolocate control if enabled
           if (x.geolocate_control) {
             const geolocate = new mapboxgl.GeolocateControl({
@@ -2842,265 +3087,12 @@ HTMLWidgets.widget({
 
           // Add the layers control if provided
           if (x.layers_control) {
-            const layersControl = document.createElement("div");
-            layersControl.id = x.layers_control.control_id;
-            layersControl.className = x.layers_control.collapsible
-              ? "layers-control collapsible"
-              : "layers-control";
-            layersControl.style.position = "absolute";
-
-            // Set the position correctly - fix position bug by using correct CSS positioning
-            const position = x.layers_control.position || "top-left";
-            if (position === "top-left") {
-              layersControl.style.top =
-                (x.layers_control.margin_top || 10) + "px";
-              layersControl.style.left =
-                (x.layers_control.margin_left || 10) + "px";
-            } else if (position === "top-right") {
-              layersControl.style.top =
-                (x.layers_control.margin_top || 10) + "px";
-              layersControl.style.right =
-                (x.layers_control.margin_right || 10) + "px";
-            } else if (position === "bottom-left") {
-              layersControl.style.bottom =
-                (x.layers_control.margin_bottom || 30) + "px";
-              layersControl.style.left =
-                (x.layers_control.margin_left || 10) + "px";
-            } else if (position === "bottom-right") {
-              layersControl.style.bottom =
-                (x.layers_control.margin_bottom || 40) + "px";
-              layersControl.style.right =
-                (x.layers_control.margin_right || 10) + "px";
-            }
-
-            // Apply custom colors if provided
-            if (x.layers_control.custom_colors) {
-              const colors = x.layers_control.custom_colors;
-
-              // Create a style element for custom colors
-              const styleEl = document.createElement("style");
-              let css = "";
-
-              if (colors.background) {
-                css += `#${x.layers_control.control_id} { background-color: ${colors.background}; }\n`;
-              }
-
-              if (colors.text) {
-                css += `#${x.layers_control.control_id} a { color: ${colors.text}; }\n`;
-              }
-
-              if (colors.active) {
-                css += `#${x.layers_control.control_id} a.active { background-color: ${colors.active}; }\n`;
-                css += `#${x.layers_control.control_id} .toggle-button { background-color: ${colors.active}; }\n`;
-              }
-
-              if (colors.activeText) {
-                css += `#${x.layers_control.control_id} a.active { color: ${colors.activeText}; }\n`;
-                css += `#${x.layers_control.control_id} .toggle-button { color: ${colors.activeText}; }\n`;
-              }
-
-              if (colors.hover) {
-                css += `#${x.layers_control.control_id} a:hover { background-color: ${colors.hover}; }\n`;
-                css += `#${x.layers_control.control_id} .toggle-button:hover { background-color: ${colors.hover}; }\n`;
-              }
-
-              styleEl.textContent = css;
-              document.head.appendChild(styleEl);
-            }
-
-            el.appendChild(layersControl);
-
-            const layersList = document.createElement("div");
-            layersList.className = "layers-list";
-            layersControl.appendChild(layersList);
-
-            // Fetch layers to be included in the control
-            let layers =
-              x.layers_control.layers ||
-              map.getStyle().layers.map((layer) => layer.id);
-            let layersConfig = x.layers_control.layers_config;
-
-            // If we have a layers_config, use that; otherwise fall back to original behavior
-            if (layersConfig && Array.isArray(layersConfig)) {
-              layersConfig.forEach((config, index) => {
-                const link = document.createElement("a");
-                // Ensure config.ids is always an array
-                const layerIds = Array.isArray(config.ids)
-                  ? config.ids
-                  : [config.ids];
-                link.id = layerIds.join("-");
-                link.href = "#";
-                link.textContent = config.label;
-                link.setAttribute("data-layer-ids", JSON.stringify(layerIds));
-                link.setAttribute("data-layer-type", config.type);
-
-                // Check if the first layer's visibility is set to "none" initially
-                const firstLayerId = layerIds[0];
-                const initialVisibility = map.getLayoutProperty(
-                  firstLayerId,
-                  "visibility",
-                );
-                link.className = initialVisibility === "none" ? "" : "active";
-
-                // Also hide any associated legends if the layer is initially hidden
-                if (initialVisibility === "none") {
-                  layerIds.forEach((layerId) => {
-                    const associatedLegends = document.querySelectorAll(
-                      `.mapboxgl-legend[data-layer-id="${layerId}"]`,
-                    );
-                    associatedLegends.forEach((legend) => {
-                      legend.style.display = "none";
-                    });
-                  });
-                }
-
-                // Show or hide layer(s) when the toggle is clicked
-                link.onclick = function (e) {
-                  e.preventDefault();
-                  e.stopPropagation();
-
-                  const layerIds = JSON.parse(
-                    this.getAttribute("data-layer-ids"),
-                  );
-                  const firstLayerId = layerIds[0];
-                  const visibility = map.getLayoutProperty(
-                    firstLayerId,
-                    "visibility",
-                  );
-
-                  // Toggle visibility for all layer IDs in the group
-                  if (visibility === "visible") {
-                    layerIds.forEach((layerId) => {
-                      map.setLayoutProperty(layerId, "visibility", "none");
-                      // Hide associated legends
-                      const associatedLegends = document.querySelectorAll(
-                        `.mapboxgl-legend[data-layer-id="${layerId}"]`,
-                      );
-                      associatedLegends.forEach((legend) => {
-                        legend.style.display = "none";
-                      });
-                    });
-                    this.className = "";
-                  } else {
-                    layerIds.forEach((layerId) => {
-                      map.setLayoutProperty(layerId, "visibility", "visible");
-                      // Show associated legends
-                      const associatedLegends = document.querySelectorAll(
-                        `.mapboxgl-legend[data-layer-id="${layerId}"]`,
-                      );
-                      associatedLegends.forEach((legend) => {
-                        legend.style.display = "";
-                      });
-                    });
-                    this.className = "active";
-                  }
-                };
-
-                layersList.appendChild(link);
-              });
-            } else {
-              // Fallback to original behavior for simple layer arrays
-              // Ensure layers is always an array
-              if (!Array.isArray(layers)) {
-                layers = [layers];
-              }
-
-              layers.forEach((layerId, index) => {
-                const link = document.createElement("a");
-                link.id = layerId;
-                link.href = "#";
-                link.textContent = layerId;
-
-                // Check if the layer visibility is set to "none" initially
-                const initialVisibility = map.getLayoutProperty(
-                  layerId,
-                  "visibility",
-                );
-                link.className = initialVisibility === "none" ? "" : "active";
-
-                // Also hide any associated legends if the layer is initially hidden
-                if (initialVisibility === "none") {
-                  const associatedLegends = document.querySelectorAll(
-                    `.mapboxgl-legend[data-layer-id="${layerId}"]`,
-                  );
-                  associatedLegends.forEach((legend) => {
-                    legend.style.display = "none";
-                  });
-                }
-
-                // Show or hide layer when the toggle is clicked
-                link.onclick = function (e) {
-                  const clickedLayer = this.textContent;
-                  e.preventDefault();
-                  e.stopPropagation();
-
-                  const visibility = map.getLayoutProperty(
-                    clickedLayer,
-                    "visibility",
-                  );
-
-                  // Toggle layer visibility by changing the layout object's visibility property
-                  if (visibility === "visible") {
-                    map.setLayoutProperty(clickedLayer, "visibility", "none");
-                    this.className = "";
-
-                    // Hide associated legends
-                    const associatedLegends = document.querySelectorAll(
-                      `.mapboxgl-legend[data-layer-id="${clickedLayer}"]`,
-                    );
-                    associatedLegends.forEach((legend) => {
-                      legend.style.display = "none";
-                    });
-                  } else {
-                    this.className = "active";
-                    map.setLayoutProperty(
-                      clickedLayer,
-                      "visibility",
-                      "visible",
-                    );
-
-                    // Show associated legends
-                    const associatedLegends = document.querySelectorAll(
-                      `.mapboxgl-legend[data-layer-id="${clickedLayer}"]`,
-                    );
-                    associatedLegends.forEach((legend) => {
-                      legend.style.display = "";
-                    });
-                  }
-                };
-
-                layersList.appendChild(link);
-              });
-            }
-
-            // Handle collapsible behavior
-            if (x.layers_control.collapsible) {
-              const toggleButton = document.createElement("div");
-              toggleButton.className = "toggle-button";
-
-              // Use stacked layers icon instead of text if requested
-              if (x.layers_control.use_icon) {
-                // Add icon-only class to the control for compact styling
-                layersControl.classList.add("icon-only");
-
-                // More GIS-like layers stack icon
-                toggleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                                    <polyline points="2 17 12 22 22 17"></polyline>
-                                    <polyline points="2 12 12 17 22 12"></polyline>
-                                </svg>`;
-                toggleButton.style.display = "flex";
-                toggleButton.style.alignItems = "center";
-                toggleButton.style.justifyContent = "center";
-              } else {
-                toggleButton.textContent = "Layers";
-              }
-
-              toggleButton.onclick = function () {
-                layersControl.classList.toggle("open");
-              };
-              layersControl.insertBefore(toggleButton, layersList);
-            }
+            const layersControl = new MapglLayersControl(x.layers_control);
+            map.addControl(
+              layersControl,
+              x.layers_control.position || "top-left",
+            );
+            map.controls.push({ type: "layers", control: layersControl });
           }
 
             // Mark initial style as loaded to prevent control duplication on subsequent set_style() calls
@@ -3243,22 +3235,10 @@ if (HTMLWidgets.shinyMode) {
     if (map) {
       var message = data.message;
 
-      // Initialize layer state tracking if not already present
-      if (!window._mapglLayerState) {
-        window._mapglLayerState = {};
-      }
+      // Initialize (or upgrade) layer state tracking via the shared helper.
+      // See _mapglEnsureLayerState at the top of this file.
       const mapId = map.getContainer().id;
-      if (!window._mapglLayerState[mapId]) {
-        window._mapglLayerState[mapId] = {
-          filters: {}, // layerId -> filter expression
-          paintProperties: {}, // layerId -> {propertyName -> value}
-          layoutProperties: {}, // layerId -> {propertyName -> value}
-          tooltips: {}, // layerId -> tooltip property
-          popups: {}, // layerId -> popup property
-          legends: {}, // legendId -> {html: string, css: string}
-        };
-      }
-      const layerState = window._mapglLayerState[mapId];
+      const layerState = _mapglEnsureLayerState(map);
 
       // Helper function to update drawn features
       function updateDrawnFeatures(debounce) {
@@ -3271,9 +3251,12 @@ if (HTMLWidgets.shinyMode) {
         });
       }
       if (message.type === "set_filter") {
-        map.setFilter(message.layer, message.filter);
-        // Track filter state for layer restoration
-        layerState.filters[message.layer] = message.filter;
+        // Route through the filter registry so `user` composes with any
+        // base/legend/slider slots rather than overwriting them.
+        layerState.filterStack[message.layer] =
+          layerState.filterStack[message.layer] || {};
+        layerState.filterStack[message.layer].user = message.filter || null;
+        _mapglComposeAndApplyFilter(map, message.layer);
       } else if (message.type === "add_source") {
         if (message.source.type === "vector") {
           const sourceConfig = {
@@ -3448,6 +3431,28 @@ if (HTMLWidgets.shinyMode) {
             );
           }
 
+          // Seed the filter registry for this late-added layer. If a time
+          // slider is already active and targets this layer id, compose
+          // its filter in immediately so the layer paints filtered on its
+          // first frame.
+          layerState.filterStack[message.layer.id] =
+            layerState.filterStack[message.layer.id] || {};
+          layerState.filterStack[message.layer.id].base =
+            message.layer.filter || null;
+          const _ts = map._mapglSliderControl;
+          if (
+            _ts &&
+            _ts.targetsLayer &&
+            _ts.targetsLayer(message.layer.id)
+          ) {
+            layerState.filterStack[message.layer.id].slider =
+              _ts.currentFilter();
+            if (typeof _ts.captureAndApplyPaintForLayer === "function") {
+              _ts.captureAndApplyPaintForLayer(message.layer.id);
+            }
+          }
+          _mapglComposeAndApplyFilter(map, message.layer.id);
+
           // Add popups or tooltips if provided
           if (message.layer.popup) {
             // Initialize popup tracking if it doesn't exist
@@ -3457,7 +3462,13 @@ if (HTMLWidgets.shinyMode) {
 
             // Create click handler for this layer
             const clickHandler = function (e) {
-              onClickPopup(e, map, message.layer.popup, message.layer.id);
+              onClickPopup(
+                e,
+                map,
+                message.layer.popup,
+                message.layer.id,
+                message.layer.popup_style,
+              );
             };
 
             // Store these handler references so we can remove them later if needed
@@ -3486,6 +3497,7 @@ if (HTMLWidgets.shinyMode) {
               closeOnClick: false,
               maxWidth: "400px",
             });
+            applyPopupClass(tooltip, message.layer.tooltip_style);
 
             // Define named handler functions:
             const mouseMoveHandler = function (e) {
@@ -3661,14 +3673,14 @@ if (HTMLWidgets.shinyMode) {
         }
 
         // Clean up tracked layer state
-        const mapId = map.getContainer().id;
         if (window._mapglLayerState && window._mapglLayerState[mapId]) {
-          const layerState = window._mapglLayerState[mapId];
-          delete layerState.filters[message.layer];
-          delete layerState.paintProperties[message.layer];
-          delete layerState.layoutProperties[message.layer];
-          delete layerState.tooltips[message.layer];
-          delete layerState.popups[message.layer];
+          const _ls = window._mapglLayerState[mapId];
+          delete _ls.filters[message.layer];
+          delete _ls.paintProperties[message.layer];
+          delete _ls.layoutProperties[message.layer];
+          delete _ls.tooltips[message.layer];
+          delete _ls.popups[message.layer];
+          delete _ls.filterStack[message.layer];
           // Note: legends are not tied to specific layers, so we don't clear them here
         }
       } else if (message.type === "fit_bounds") {
@@ -3691,6 +3703,18 @@ if (HTMLWidgets.shinyMode) {
         }
         layerState.layoutProperties[message.layer][message.name] =
           message.value;
+      } else if (message.type === "set_flowmap_filter") {
+        if (window.MapGLFlowmapPlugin) {
+          window.MapGLFlowmapPlugin.setFilter(map, message.id, message.filter);
+        }
+      } else if (message.type === "set_flowmap_settings") {
+        if (window.MapGLFlowmapPlugin) {
+          window.MapGLFlowmapPlugin.setSettings(
+            map,
+            message.id,
+            message.settings,
+          );
+        }
       } else if (message.type === "set_paint_property") {
         const layerId = message.layer;
         const propertyName = message.name;
@@ -3886,15 +3910,6 @@ if (HTMLWidgets.shinyMode) {
           const onStyleLoad = function () {
             console.log("[MapGL Debug] style.load event fired! Re-adding", userLayers.length, "layers");
 
-            // HACK: Reset layers control UI to show all layers as active
-            const layersControl = document.querySelector('.layers-control');
-            if (layersControl) {
-              const layerLinks = layersControl.querySelectorAll('a');
-              layerLinks.forEach(link => {
-                link.className = 'active';
-              });
-            }
-
             // Re-add user sources
             userSourceIds.forEach(function (sourceId) {
               if (!map.getSource(sourceId)) {
@@ -4021,6 +4036,10 @@ if (HTMLWidgets.shinyMode) {
               for (const layerId in savedLayerState.tooltips) {
                 if (map.getLayer(layerId)) {
                   const tooltipProperty = savedLayerState.tooltips[layerId];
+                  const tooltipStyle =
+                    (savedLayerState.tooltipStyles &&
+                      savedLayerState.tooltipStyles[layerId]) ||
+                    null;
 
                   // Remove existing tooltip handlers first
                   if (
@@ -4049,6 +4068,7 @@ if (HTMLWidgets.shinyMode) {
                     closeOnClick: false,
                     maxWidth: "400px",
                   });
+                  applyPopupClass(tooltip, tooltipStyle);
 
                   const mouseMoveHandler = function (e) {
                     onMouseMoveTooltip(
@@ -4082,6 +4102,10 @@ if (HTMLWidgets.shinyMode) {
               for (const layerId in savedLayerState.popups) {
                 if (map.getLayer(layerId)) {
                   const popupProperty = savedLayerState.popups[layerId];
+                  const popupStyle =
+                    (savedLayerState.popupStyles &&
+                      savedLayerState.popupStyles[layerId]) ||
+                    null;
 
                   // Remove existing popup handlers first
                   if (
@@ -4098,7 +4122,7 @@ if (HTMLWidgets.shinyMode) {
 
                   // Create new popup handler
                   const clickHandler = function (e) {
-                    onClickPopup(e, map, popupProperty, layerId);
+                    onClickPopup(e, map, popupProperty, layerId, popupStyle);
                   };
 
                   map.on("click", layerId, clickHandler);
@@ -4152,6 +4176,11 @@ if (HTMLWidgets.shinyMode) {
 
             // Re-add user images after style change
             reAddUserImagesMapbox(map, mapId);
+
+            // Sync layers-control link states with the restored visibility
+            (map._mapglLayersControls || []).forEach((c) =>
+              c.syncVisibilityStates(),
+            );
 
             // Mark style loading as complete and execute any pending operations
             window._mapgl.styleLoading[mapId] = false;
@@ -4673,6 +4702,27 @@ if (HTMLWidgets.shinyMode) {
         const fullscreen = new mapboxgl.FullscreenControl();
         map.addControl(fullscreen, position);
         map.controls.push({ type: "fullscreen", control: fullscreen });
+      } else if (message.type === "add_slider_control") {
+        if (typeof window.MapglSliderControl === "function") {
+          // One-slider-per-map: drop any existing instance first.
+          if (map._mapglSliderControl) {
+            try {
+              map.removeControl(map._mapglSliderControl);
+            } catch (e) { /* noop */ }
+            map.controls = map.controls.filter(function (c) {
+              return c.type !== "slider";
+            });
+          }
+          const _ts = new window.MapglSliderControl(message.options || {});
+          map.addControl(_ts, (message.options && message.options.position) || "top-left");
+          map.controls.push({ type: "slider", control: _ts });
+        } else {
+          console.warn("MapglSliderControl is not loaded.");
+        }
+      } else if (message.type === "update_slider_control") {
+        if (map._mapglSliderControl) {
+          map._mapglSliderControl.update(message.options || {});
+        }
       } else if (message.type === "add_scale_control") {
         const scaleControl = new mapboxgl.ScaleControl({
           maxWidth: message.options.maxWidth,
@@ -4749,250 +4799,10 @@ if (HTMLWidgets.shinyMode) {
           });
         });
       } else if (message.type === "add_layers_control") {
-        const layersControl = document.createElement("div");
-        layersControl.id = message.control_id;
-        layersControl.className = message.collapsible
-          ? "layers-control collapsible"
-          : "layers-control";
-        layersControl.style.position = "absolute";
-
-        // Set the position correctly
-        const position = message.position || "top-left";
-        if (position === "top-left") {
-          layersControl.style.top = (message.margin_top || 10) + "px";
-          layersControl.style.left = (message.margin_left || 10) + "px";
-        } else if (position === "top-right") {
-          layersControl.style.top = (message.margin_top || 10) + "px";
-          layersControl.style.right = (message.margin_right || 10) + "px";
-        } else if (position === "bottom-left") {
-          layersControl.style.bottom = (message.margin_bottom || 30) + "px";
-          layersControl.style.left = (message.margin_left || 10) + "px";
-        } else if (position === "bottom-right") {
-          layersControl.style.bottom = (message.margin_bottom || 40) + "px";
-          layersControl.style.right = (message.margin_right || 10) + "px";
-        }
-
-        // Apply custom colors if provided
-        if (message.custom_colors) {
-          const colors = message.custom_colors;
-
-          // Create a style element for custom colors
-          const styleEl = document.createElement("style");
-          let css = "";
-
-          if (colors.background) {
-            css += `#${message.control_id} { background-color: ${colors.background}; }\n`;
-          }
-
-          if (colors.text) {
-            css += `#${message.control_id} a { color: ${colors.text}; }\n`;
-          }
-
-          if (colors.active) {
-            css += `#${message.control_id} a.active { background-color: ${colors.active}; }\n`;
-            css += `#${message.control_id} .toggle-button { background-color: ${colors.active}; }\n`;
-          }
-
-          if (colors.activeText) {
-            css += `#${message.control_id} a.active { color: ${colors.activeText}; }\n`;
-            css += `#${message.control_id} .toggle-button { color: ${colors.activeText}; }\n`;
-          }
-
-          if (colors.hover) {
-            css += `#${message.control_id} a:hover { background-color: ${colors.hover}; }\n`;
-            css += `#${message.control_id} .toggle-button:hover { background-color: ${colors.hover}; }\n`;
-          }
-
-          styleEl.textContent = css;
-          document.head.appendChild(styleEl);
-        }
-
-        const layersList = document.createElement("div");
-        layersList.className = "layers-list";
-        layersControl.appendChild(layersList);
-
-        let layers = message.layers || [];
-        let layersConfig = message.layers_config;
-
-        // If we have a layers_config, use that; otherwise fall back to original behavior
-        if (layersConfig && Array.isArray(layersConfig)) {
-          layersConfig.forEach((config, index) => {
-            const link = document.createElement("a");
-            // Ensure config.ids is always an array
-            const layerIds = Array.isArray(config.ids)
-              ? config.ids
-              : [config.ids];
-            link.id = layerIds.join("-");
-            link.href = "#";
-            link.textContent = config.label;
-            link.setAttribute("data-layer-ids", JSON.stringify(layerIds));
-            link.setAttribute("data-layer-type", config.type);
-
-            // Check if the first layer's visibility is set to "none" initially
-            const firstLayerId = layerIds[0];
-            const initialVisibility = map.getLayoutProperty(
-              firstLayerId,
-              "visibility",
-            );
-            link.className = initialVisibility === "none" ? "" : "active";
-
-            // Also hide any associated legends if the layer is initially hidden
-            if (initialVisibility === "none") {
-              layerIds.forEach((layerId) => {
-                const associatedLegends = document.querySelectorAll(
-                  `.mapboxgl-legend[data-layer-id="${layerId}"]`,
-                );
-                associatedLegends.forEach((legend) => {
-                  legend.style.display = "none";
-                });
-              });
-            }
-
-            // Show or hide layer(s) when the toggle is clicked
-            link.onclick = function (e) {
-              e.preventDefault();
-              e.stopPropagation();
-
-              const layerIds = JSON.parse(this.getAttribute("data-layer-ids"));
-              const firstLayerId = layerIds[0];
-              const visibility = map.getLayoutProperty(
-                firstLayerId,
-                "visibility",
-              );
-
-              // Toggle visibility for all layer IDs in the group
-              if (visibility === "visible") {
-                layerIds.forEach((layerId) => {
-                  map.setLayoutProperty(layerId, "visibility", "none");
-                  // Hide associated legends
-                  const associatedLegends = document.querySelectorAll(
-                    `.mapboxgl-legend[data-layer-id="${layerId}"]`,
-                  );
-                  associatedLegends.forEach((legend) => {
-                    legend.style.display = "none";
-                  });
-                });
-                this.className = "";
-              } else {
-                layerIds.forEach((layerId) => {
-                  map.setLayoutProperty(layerId, "visibility", "visible");
-                  // Show associated legends
-                  const associatedLegends = document.querySelectorAll(
-                    `.mapboxgl-legend[data-layer-id="${layerId}"]`,
-                  );
-                  associatedLegends.forEach((legend) => {
-                    legend.style.display = "";
-                  });
-                });
-                this.className = "active";
-              }
-            };
-
-            layersList.appendChild(link);
-          });
-        } else {
-          // Fallback to original behavior for simple layer arrays
-          // Ensure layers is always an array
-          if (!Array.isArray(layers)) {
-            layers = [layers];
-          }
-
-          layers.forEach((layerId, index) => {
-            const link = document.createElement("a");
-            link.id = layerId;
-            link.href = "#";
-            link.textContent = layerId;
-
-            // Check if the layer visibility is set to "none" initially
-            const initialVisibility = map.getLayoutProperty(
-              layerId,
-              "visibility",
-            );
-            link.className = initialVisibility === "none" ? "" : "active";
-
-            // Also hide any associated legends if the layer is initially hidden
-            if (initialVisibility === "none") {
-              const associatedLegends = document.querySelectorAll(
-                `.mapboxgl-legend[data-layer-id="${layerId}"]`,
-              );
-              associatedLegends.forEach((legend) => {
-                legend.style.display = "none";
-              });
-            }
-
-            link.onclick = function (e) {
-              const clickedLayer = this.textContent;
-              e.preventDefault();
-              e.stopPropagation();
-
-              const visibility = map.getLayoutProperty(
-                clickedLayer,
-                "visibility",
-              );
-
-              if (visibility === "visible") {
-                map.setLayoutProperty(clickedLayer, "visibility", "none");
-                this.className = "";
-
-                // Hide associated legends
-                const associatedLegends = document.querySelectorAll(
-                  `.mapboxgl-legend[data-layer-id="${clickedLayer}"]`,
-                );
-                associatedLegends.forEach((legend) => {
-                  legend.style.display = "none";
-                });
-              } else {
-                this.className = "active";
-                map.setLayoutProperty(clickedLayer, "visibility", "visible");
-
-                // Show associated legends
-                const associatedLegends = document.querySelectorAll(
-                  `.mapboxgl-legend[data-layer-id="${clickedLayer}"]`,
-                );
-                associatedLegends.forEach((legend) => {
-                  legend.style.display = "";
-                });
-              }
-            };
-
-            layersList.appendChild(link);
-          });
-        }
-
-        if (message.collapsible) {
-          const toggleButton = document.createElement("div");
-          toggleButton.className = "toggle-button";
-
-          // Use stacked layers icon instead of text if requested
-          if (message.use_icon) {
-            // Add icon-only class to the control for compact styling
-            layersControl.classList.add("icon-only");
-
-            // More GIS-like layers stack icon
-            toggleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                            <polyline points="2 17 12 22 22 17"></polyline>
-                            <polyline points="2 12 12 17 22 12"></polyline>
-                        </svg>`;
-            toggleButton.style.display = "flex";
-            toggleButton.style.alignItems = "center";
-            toggleButton.style.justifyContent = "center";
-          } else {
-            toggleButton.textContent = "Layers";
-          }
-
-          toggleButton.onclick = function () {
-            layersControl.classList.toggle("open");
-          };
-          layersControl.insertBefore(toggleButton, layersList);
-        }
-
-        const mapContainer = document.getElementById(data.id);
-        if (mapContainer) {
-          mapContainer.appendChild(layersControl);
-        } else {
-          console.error(`Cannot find map container with ID ${data.id}`);
-        }
+        const layersControl = new MapglLayersControl(message);
+        map.addControl(layersControl, message.position || "top-left");
+        if (!map.controls) map.controls = [];
+        map.controls.push({ type: "layers", control: layersControl });
       } else if (message.type === "clear_legend") {
         if (message.ids && Array.isArray(message.ids)) {
           message.ids.forEach((id) => {
@@ -5071,13 +4881,18 @@ if (HTMLWidgets.shinyMode) {
             }
           });
           map.controls = [];
-
-          const layersControl = document.querySelector(
-            `#${data.id} .layers-control`,
-          );
-          if (layersControl) {
-            layersControl.remove();
+          // SliderControl.onRemove clears its filter-registry slot; we
+          // also explicitly clear the map slot in case a non-standard add
+          // path left it dangling.
+          if (map._mapglSliderControl) {
+            delete map._mapglSliderControl;
           }
+
+          // Defensive sweep: remove any layers controls not tracked in
+          // map.controls (onRemove cleans up the registry)
+          (map._mapglLayersControls || [])
+            .slice()
+            .forEach((c) => map.removeControl(c));
 
           // Remove globe minimap if it exists
           const globeMinimap = document.querySelector(
@@ -5105,12 +4920,11 @@ if (HTMLWidgets.shinyMode) {
           // Handle special controls that aren't in the controls array
           controlsToRemove.forEach((controlType) => {
             if (controlType === "layers") {
-              const layersControl = document.querySelector(
-                `#${data.id} .layers-control`,
-              );
-              if (layersControl) {
-                layersControl.remove();
-              }
+              // Defensive sweep for any untracked layers controls; normally
+              // already removed via map.controls above
+              (map._mapglLayersControls || [])
+                .slice()
+                .forEach((c) => map.removeControl(c));
             } else if (controlType === "globe_minimap") {
               const globeMinimap = document.querySelector(
                 ".mapboxgl-ctrl-globe-minimap",
@@ -5175,9 +4989,11 @@ if (HTMLWidgets.shinyMode) {
       } else if (message.type === "set_tooltip") {
         const layerId = message.layer;
         const newTooltipProperty = message.tooltip;
+        const newTooltipStyle = message.tooltip_style || null;
 
-        // Track tooltip state
+        // Track tooltip state (content + style, so a style reload restores both)
         layerState.tooltips[layerId] = newTooltipProperty;
+        layerState.tooltipStyles[layerId] = newTooltipStyle;
 
         // If there's an active tooltip open, remove it first
         if (window._activeTooltip) {
@@ -5203,6 +5019,7 @@ if (HTMLWidgets.shinyMode) {
           closeOnClick: false,
           maxWidth: "400px",
         });
+        applyPopupClass(tooltip, newTooltipStyle);
 
         // Define new handlers referencing the updated tooltip property
         const mouseMoveHandler = function (e) {
@@ -5227,9 +5044,11 @@ if (HTMLWidgets.shinyMode) {
       } else if (message.type === "set_popup") {
         const layerId = message.layer;
         const newPopupProperty = message.popup;
+        const newPopupStyle = message.popup_style || null;
 
-        // Track popup state
+        // Track popup state (content + style)
         layerState.popups[layerId] = newPopupProperty;
+        layerState.popupStyles[layerId] = newPopupStyle;
 
         // Remove any existing popup for this layer
         if (window._mapboxPopups && window._mapboxPopups[layerId]) {
@@ -5252,7 +5071,7 @@ if (HTMLWidgets.shinyMode) {
 
         // Create new click handler
         const clickHandler = function (e) {
-          onClickPopup(e, map, newPopupProperty, layerId);
+          onClickPopup(e, map, newPopupProperty, layerId, newPopupStyle);
         };
 
         // Add the new event handler
