@@ -240,6 +240,24 @@ div.csl-indent {
         sel.appendChild(o);
       });
 
+      // A release exists in the registry long before its DOCS are built -- today
+      // only v8 is published, so offering v1-v7 as live options would hand the
+      // reader a 404. Probe each one and mark the unbuilt ones, rather than
+      // maintaining a second list that would drift from what is actually there.
+      versions.forEach(function (v) {
+        if (v.ver === here.ver) return;
+        fetch(here.prefix + v.ver + "/", { method: "HEAD" })
+          .then(function (r) {
+            if (r.ok) return;
+            var o = sel.querySelector("option[value='" + v.ver + "']");
+            if (o) { o.disabled = true; o.textContent = label(v) + " — docs not published"; }
+          })
+          .catch(function () {
+            var o = sel.querySelector("option[value='" + v.ver + "']");
+            if (o) { o.disabled = true; o.textContent = label(v) + " — docs not published"; }
+          });
+      });
+
       sel.addEventListener("change", function () {
         // keep the reader on the SAME page in the other version; if that page
         // did not exist then, the server 404s and they can climb to its index —
@@ -846,7 +864,7 @@ Figure&nbsp;10.5: Data pipeline: ingest workflows populate DuckDB; scoring workf
 <h3 data-number="10.1.4" class="anchored" data-anchor-id="software-components"><span class="header-section-number">10.1.4</span> Software Components</h3>
 <div id="listing-list-components" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1786401501327" data-listing-reading-time-sort="3" data-listing-word-count-sort="600">
+<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1786401958626" data-listing-reading-time-sort="3" data-listing-word-count-sort="600">
 <a href="./apis.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -867,7 +885,7 @@ APIs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1786401501327" data-listing-reading-time-sort="3" data-listing-word-count-sort="410">
+<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1786401958626" data-listing-reading-time-sort="3" data-listing-word-count-sort="410">
 <a href="./apps.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -888,7 +906,7 @@ Apps
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1786401501420" data-listing-reading-time-sort="4" data-listing-word-count-sort="700">
+<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1786401958753" data-listing-reading-time-sort="4" data-listing-word-count-sort="700">
 <a href="./db.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -909,7 +927,7 @@ Database
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1786401501432" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
+<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1786401958993" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
 <a href="./docs.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -930,7 +948,7 @@ Docs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1786401501534" data-listing-reading-time-sort="2" data-listing-word-count-sort="208">
+<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1786401959206" data-listing-reading-time-sort="2" data-listing-word-count-sort="208">
 <a href="./libraries.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -951,7 +969,7 @@ Libraries
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1786401501536" data-listing-reading-time-sort="6" data-listing-word-count-sort="1083">
+<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1786401959208" data-listing-reading-time-sort="6" data-listing-word-count-sort="1083">
 <a href="./server.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -972,7 +990,7 @@ Server
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1786401501537" data-listing-reading-time-sort="2" data-listing-word-count-sort="378">
+<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1786401959209" data-listing-reading-time-sort="2" data-listing-word-count-sort="378">
 <a href="./workflows.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
