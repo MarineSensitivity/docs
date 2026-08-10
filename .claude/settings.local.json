@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(quarto render:*)",
+      "WebFetch(domain:www.boem.gov)",
+      "WebSearch",
+      "WebFetch(domain:espis.boem.gov)"
+    ]
+  }
+}

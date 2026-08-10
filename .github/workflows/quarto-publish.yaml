@@ -36,10 +36,68 @@ jobs:
         with:
           cache-version: 2
 
-      - name: Render and Publish
-        uses: quarto-dev/quarto-actions/publish@v2
-        with:
-          target: gh-pages
+      # The MST release this build documents. Bump VERSION in the same change
+      # that documents a new release; CI publishes to gh-pages/{VERSION}/.
+      - name: Read docs version
+        id: ver
+        run: echo "ver=$(tr -d '[:space:]' < VERSION)" >> "$GITHUB_OUTPUT"
+
+      - name: Render
+        uses: quarto-dev/quarto-actions/render@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           QUARTO_CHROMIUM_HEADLESS_MODE: new
+
+      # NOT quarto-actions/publish: it REPLACES the whole gh-pages branch, so
+      # publishing v8 would delete v7. peaceiris with keep_files writes into
+      # {version}/ and leaves its siblings alone, which is what makes the docs
+      # versioned at all.
+      - name: Publish this version
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_book
+          destination_dir: ${{ steps.ver.outputs.ver }}
+          keep_files: true
+
+      # / redirects to the version named by the atlas registry's latest.txt --
+      # the SAME pointer the apps resolve, so docs and data cannot disagree about
+      # which release is current. Written as its own tiny publish so it does not
+      # depend on the book render.
+      - name: Point / at the promoted release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          THIS_VER: ${{ steps.ver.outputs.ver }}
+        run: |
+          set -euo pipefail
+          LATEST=$(curl -sf --max-time 60 \
+            https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/latest.txt \
+            | tr -d '[:space:]')
+          [ -n "$LATEST" ] || { echo "could not resolve latest.txt" >&2; exit 1; }
+
+          # latest.txt names the promoted DATA release, which may not have docs
+          # built yet -- today it is v7 while this book documents v8. Redirecting
+          # at it blindly would 404. Check gh-pages for that directory and fall
+          # back to the version just published.
+          TARGET="$LATEST"
+          if ! gh api "repos/${GITHUB_REPOSITORY}/contents/${LATEST}?ref=gh-pages" >/dev/null 2>&1; then
+            echo "no docs published for $LATEST yet; / will point at $THIS_VER"
+            TARGET="$THIS_VER"
+          fi
+          LATEST="$TARGET"
+          echo "root redirect target: $LATEST"
+          mkdir -p _root
+          cat > _root/index.html <<HTML
+          <!doctype html><meta charset="utf-8">
+          <title>Marine Sensitivity documentation</title>
+          <link rel="canonical" href="./$LATEST/">
+          <meta http-equiv="refresh" content="0; url=./$LATEST/">
+          <p>Redirecting to the current documentation (<a href="./$LATEST/">$LATEST</a>)&hellip;</p>
+          HTML
+          printf 'User-agent: *\nAllow: /\n' > _root/robots.txt
+
+      - name: Publish the root redirect
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_root
+          keep_files: true

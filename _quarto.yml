@@ -103,6 +103,7 @@ format:
     echo: false
     include-in-header:
       - _analytics.html
+      - _version-switcher.html
   docx:
     toc: true
     echo: false
