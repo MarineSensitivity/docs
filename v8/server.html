@@ -147,6 +147,98 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     });
   }, true);
 </script>
+<!--
+  Documentation version switcher.
+
+  One book documented eight model releases, so a reader could not tell which
+  version a page described, and a citation to the v4 methods had nowhere to
+  point. Docs are now published per release under /{ver}/, and this widget moves
+  between them.
+
+  It reads the SAME versions.json that drives the pipeline and the apps, so the
+  three cannot disagree about what exists. The bucket serves it with
+  `Access-Control-Allow-Origin: *`, so the fetch works from the browser.
+
+  The page's own version comes from its URL, not from a build-time injection:
+  the published layout is /{ver}/..., so the path is the source of truth and
+  cannot drift from where the file actually sits. If anything fails — offline,
+  registry unreachable, an unversioned preview render — the widget simply does
+  not appear, because a docs page must never fail to render over its own chrome.
+-->
+<script>
+(function () {
+  var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
+
+  function parsePath() {
+    var m = location.pathname.match(/^(.*?\/)(v\d+[a-z]?)(\/.*)?$/);
+    if (!m) return null;
+    return { prefix: m[1], ver: m[2], rest: m[3] || "/" };
+  }
+
+  function label(v) {
+    var s = v.ver;
+    if (v.status === "prerelease") s += " (pre-release)";
+    else if (v.status === "retired") s += " (retired)";
+    return v.title ? s + " — " + v.title : s;
+  }
+
+  function mount(el) {
+    // the book sidebar is the natural home; fall back to the footer, then body
+    var host = document.querySelector("#quarto-margin-sidebar")
+            || document.querySelector("#quarto-sidebar")
+            || document.querySelector(".nav-footer")
+            || document.body;
+    host.insertBefore(el, host.firstChild);
+  }
+
+  var here = parsePath();
+  if (!here) return;   // unversioned (local preview) — nothing to switch between
+
+  fetch(REGISTRY, { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (j) {
+      var versions = (j && j.versions) || j;
+      if (!versions || !versions.length) return;
+
+      versions = versions.slice().sort(function (a, b) {
+        return String(b.released || b.ver).localeCompare(String(a.released || a.ver));
+      });
+
+      var wrap = document.createElement("div");
+      wrap.className = "docs-version-switcher";
+      wrap.style.cssText = "margin:0.75rem 0;font-size:0.85rem;";
+
+      var lab = document.createElement("label");
+      lab.textContent = "Docs version";
+      lab.style.cssText = "display:block;font-weight:600;margin-bottom:0.25rem;";
+      lab.setAttribute("for", "docs-version-select");
+
+      var sel = document.createElement("select");
+      sel.id = "docs-version-select";
+      sel.className = "form-select form-select-sm";
+
+      versions.forEach(function (v) {
+        var o = document.createElement("option");
+        o.value = v.ver;
+        o.textContent = label(v);
+        if (v.ver === here.ver) o.selected = true;
+        sel.appendChild(o);
+      });
+
+      sel.addEventListener("change", function () {
+        // keep the reader on the SAME page in the other version; if that page
+        // did not exist then, the server 404s and they can climb to its index —
+        // better than always dumping them at the top of an unfamiliar book
+        location.href = here.prefix + sel.value + here.rest;
+      });
+
+      wrap.appendChild(lab);
+      wrap.appendChild(sel);
+      mount(wrap);
+    })
+    .catch(function () { /* registry unreachable: show nothing */ });
+})();
+</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 
@@ -1130,6 +1222,79 @@ file.marinesensitivity.org {
         file_server browse {
             precompressed zstd br gzip
         }
+    }
+}
+
+# Browsable front door for the PUBLIC S3 bucket.
+#
+# Why this exists: S3 serves OBJECTS, not directories. A URL ending in "/" 404s
+# unless an object literally has that key, and anonymous ListBucket is DENIED on
+# this bucket (403 AccessDenied), so a browser cannot enumerate anything. The
+# workflows notebook publish_storage_index.qmd generates a real index.html per
+# directory; this vhost rewrites folder URLs to them:
+#
+#   storage.marinesensitivity.org/marine-atlas/v8/  -&gt; .../v8/index.html
+#   storage.marinesensitivity.org/marine-atlas/latest.txt -&gt; the object
+#
+# Named "storage" rather than "s3" so the URL survives a move to another
+# provider.
+storage.marinesensitivity.org {
+    encode zstd gzip
+
+    log {
+        output file /share/logs/caddy/storage.log {
+            roll_size 64MiB
+            roll_keep 14
+            roll_keep_for 2160h
+        }
+        format json
+    }
+
+    # robots.txt inline, BEFORE the bucket handler, so it cannot be lost by an
+    # index regeneration. The catalog pages are welcome in search results; the
+    # objects behind them are not. Every byte is PROXIED through this server
+    # (reverse_proxy, not a redirect), and the tree is 18 GB across ~90,000
+    # objects, so a crawl would be billed as VM egress.
+    handle /robots.txt {
+        header Content-Type "text/plain; charset=utf-8"
+        respond `# Catalog pages: crawl away. Data objects: please do not.
+User-agent: *
+Crawl-delay: 10
+Disallow: /*.tif$
+Disallow: /*.parquet$
+Disallow: /*.duckdb$
+Disallow: /*.pmtiles$
+Disallow: /*.gz$
+Disallow: /*.zip$
+` 200
+    }
+
+    # ONLY the published atlas. The same bucket holds backups/ -- including a
+    # multi-GB database dump -- which is technically public but must not be
+    # advertised or reachable here, even by exact path. This allow-list is the
+    # server-side half of the restriction the index generator applies.
+    @atlas path_regexp atlas ^/marine-atlas(/|$)
+    handle @atlas {
+        # folder URL -&gt; the index.html object standing in for a listing
+        @dir path_regexp dir ^(.*)/$
+        rewrite @dir {re.dir.1}/index.html
+        reverse_proxy https://s3.us-east-1.amazonaws.com {
+            header_up Host s3.us-east-1.amazonaws.com
+            rewrite /oceanmetrics.io-public{uri}
+        }
+    }
+
+    # the bare host lands on the atlas index
+    redir / /marine-atlas/ 302
+
+    # anything else: refuse, and say where to go
+    handle {
+        header Content-Type "text/plain; charset=utf-8"
+        respond `Not found.
+
+Browsable: /marine-atlas/
+Start here: https://storage.marinesensitivity.org/marine-atlas/
+` 404
     }
 }
 
