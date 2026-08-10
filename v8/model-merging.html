@@ -147,6 +147,16 @@ ul.task-list li input[type="checkbox"] {
     return v.title ? s + " — " + v.title : s;
   }
 
+  // The script is injected into <head>, so on a fast/cached load the fetch can
+  // resolve BEFORE the body exists -- and mounting into a null host silently
+  // does nothing. Observed exactly that: the switcher appeared on the index but
+  // not on an inner page whose registry response came from cache.
+  function whenReady(fn) {
+    if (document.readyState === "loading")
+      document.addEventListener("DOMContentLoaded", fn, { once: true });
+    else fn();
+  }
+
   function mount(el) {
     // the book sidebar is the natural home; fall back to the footer, then body
     var host = document.querySelector("#quarto-margin-sidebar")
@@ -217,7 +227,7 @@ ul.task-list li input[type="checkbox"] {
 
       wrap.appendChild(lab);
       wrap.appendChild(sel);
-      mount(wrap);
+      whenReady(function () { mount(wrap); });
     })
     .catch(function () { /* registry unreachable: show nothing */ });
 })();
