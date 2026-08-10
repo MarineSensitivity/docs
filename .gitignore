@@ -10,9 +10,12 @@ site_libs/
 *_files/
 *.html
 !_scoring-walkthrough-app.html
-# GA4 snippet, included via format.html.include-in-header. Must be tracked, or a
-# fresh CI checkout renders without it and Quarto errors on the missing include.
+# Includes pulled in via format.html.include-in-header. These MUST be tracked:
+# a fresh CI checkout without them renders SILENTLY WITHOUT the include -- Quarto
+# does not error, so CI reports success and the feature is simply missing. That
+# is exactly how the version switcher shipped as a no-op on first attempt.
 !_analytics.html
+!_version-switcher.html
 
 **/*.quarto_ipynb
 .positai
