@@ -38,14 +38,19 @@ jobs:
           echo "versions: $M"
           echo "matrix=$M" >> "$GITHUB_OUTPUT"
 
-  build-deploy:
+  # RENDER ONLY — no job here touches gh-pages.
+  #
+  # These jobs used to publish directly, and two of them finishing together lost a
+  # race on the branch ref:
+  #   ! [remote rejected] gh-pages (cannot lock ref: is at 4cefcb8 but expected 717e68e)
+  # v4 rendered and verified perfectly and was thrown away at the push. `max-parallel`
+  # does not help — it GUARANTEES concurrent pushes. So the render fans out and a
+  # single downstream job makes exactly one commit.
+  build:
     needs: versions
     runs-on: macOS-latest
-    permissions:
-      contents: write
     strategy:
       fail-fast: false      # one release failing must not withhold the other eight
-      max-parallel: 2       # they all publish to the same branch
       matrix:
         ver: ${{ fromJson(needs.versions.outputs.matrix) }}
     steps:
@@ -93,22 +98,18 @@ jobs:
             || grep -q "documents release .*${{ matrix.ver }}" _book/intro.html \
             || { echo "intro.html does not name ${{ matrix.ver }}" >&2; exit 1; }
 
-      # NOT quarto-actions/publish: it REPLACES the whole gh-pages branch, so
-      # publishing v8 would delete v7. peaceiris with keep_files writes into
-      # {version}/ and leaves its siblings alone, which is what makes the docs
-      # versioned at all.
-      - name: Publish ${{ matrix.ver }}
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload the ${{ matrix.ver }} book
+        uses: actions/upload-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_book
-          destination_dir: ${{ matrix.ver }}
-          keep_files: true
+          name: book-${{ matrix.ver }}
+          path: _book
+          retention-days: 1
 
-  # The root is a redirect and nothing else. It runs after every version so the
-  # directory it points at exists.
-  root:
-    needs: [versions, build-deploy]
+  # THE ONLY JOB THAT WRITES gh-pages, and it writes once: every version that
+  # rendered, plus the root redirect, in a single commit. `if: always()` so a
+  # version that failed to render does not withhold the ones that succeeded.
+  publish:
+    needs: [versions, build]
     if: always()
     runs-on: ubuntu-latest
     permissions:
@@ -120,11 +121,30 @@ jobs:
           ref: gh-pages
           fetch-depth: 0
 
-      - name: Point / at the promoted release, and prune the flat root
+      - name: Download every rendered book
+        uses: actions/download-artifact@v4
+        with:
+          pattern: book-*
+          path: _dl
+
+      - name: Publish the versions, point / at the promoted release, prune the flat root
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
+
+          # Each artifact replaces its version directory WHOLESALE, so a page
+          # deleted from the book stops being served instead of lingering.
+          shopt -s nullglob
+          for d in _dl/book-*; do
+            v="${d#_dl/book-}"
+            echo "$v" | grep -Eq '^v[0-9]+[a-z]?$' || { echo "skipping odd artifact $d" >&2; continue; }
+            [ -f "$d/index.html" ] || { echo "artifact $d has no index.html" >&2; exit 1; }
+            rm -rf "./$v"
+            mv "$d" "./$v"
+            echo "  staged $v"
+          done
+          rm -rf _dl
 
           # / redirects to the version named by the atlas registry's latest.txt --
           # the SAME pointer the apps resolve, so docs and data cannot disagree
@@ -158,7 +178,10 @@ jobs:
           for f in $(ls -A); do
             if ! echo "$f" | grep -Eq "$KEEP"; then
               echo "  pruning $f"
-              git rm -rq --ignore-unmatch -- "$f"
+              # git rm alone leaves an UNTRACKED path on disk, which `git add -A`
+              # would then re-add — so remove it from the worktree too
+              git rm -rq --ignore-unmatch -- "$f" || true
+              rm -rf -- "$f"
               PRUNED=$((PRUNED+1))
             fi
           done
@@ -175,10 +198,10 @@ jobs:
 
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html robots.txt
-          if git diff --cached --quiet && [ "$PRUNED" -eq 0 ]; then
-            echo "root already current"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "gh-pages already current"
           else
-            git commit -m "docs: root redirect -> $LATEST; prune $PRUNED flat-root entries"
+            git commit -m "docs: publish $(ls -d v*/ 2>/dev/null | tr -d '/' | tr '\n' ' ')- root -> $LATEST, $PRUNED pruned"
             git push
           fi
