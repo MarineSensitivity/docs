@@ -1,0 +1,1254 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Marine Sensitivity",
+    "section": "",
+    "text": "Preface\nThe Marine Sensitivity Toolkit (MST) is a cloud-native system developed for the Bureau of Ocean Energy Management (BOEM) to assess the sensitivity of marine ecosystems to offshore energy development.\nIt integrates 17,353 species distribution models with extinction risk assessments across US waters (9,792 of which fall within the 20 BOEM Program Areas of the current program cycle).\n\n\n\n\n\n\nFigure 1: Overview of the MST methodology: species distribution models from the source datasets are merged, weighted by extinction risk scores (incorporating ESA, MMPA, MBTA, and IUCN protections), rescaled by ecoregion, and aggregated to management zones for visualization.\n\n\n\n\nInteractive Apps\n\nComposite Scores — sensitivity scores by zone, with flower-plot summaries\nSpecies Distribution — individual species distribution models and habitat suitability\n\nBoth render any published release: append ?ver=v3 (or any version) to view that one. - Scoring Walkthrough — step through the scoring pipeline interactively, from input rasters to final scores\n\n\nDocumentation\nThis book documents the scientific methodology, software infrastructure, and interactive applications that comprise the MST. It is organized in two parts:\n\n4  Science — data sources, taxonomic integration, extinction risk scoring, model merging, and sensitivity scoring methodology\n12  Software — server architecture, databases, workflows, APIs, R libraries, and interactive applications\n\n\n\nHow to Cite\n\nBest, B.D., T.P. White (2026). Marine Sensitivity Toolkit: Project Documentation. Bureau of Ocean Energy Management, Environmental Studies Program. https://marinesensitivity.org/docs/\n\n\n\nAcknowledgments\nThis work is funded by the BOEM Environmental Studies Program (BOEM-ESP). We thank the data providers whose open datasets make this work possible: AquaMaps, BirdLife International, IUCN Red List, NOAA Fisheries, and U.S. Fish & Wildlife Service.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "intro.html",
+    "href": "intro.html",
+    "title": "1  Introduction",
+    "section": "",
+    "text": "1.1 Overview\nThe Marine Sensitivity Toolkit (MST) is a cloud-native system developed for BOEM (Bureau of Ocean Energy Management) to assess the sensitivity of marine species to offshore energy development, whether oil & gas or wind. The Outer Continental Shelf Lands Act (OCSLA), Section 18(a)(2)(G), mandates that BOEM consider “the relative environmental sensitivity and marine productivity of different areas of the OCS” when planning the timing and location of offshore energy activities. The MST operationalizes this mandate by combining the best available species distribution data with extinction risk assessments to map areas of the ocean that are most sensitive to human activities.\nThe MST marks a significant advancement over prior RESA methodologies (Morandi et al. 2018). Earlier approaches often relied on aggregated data from a limited set of broad species groups and surrogate species, lacking spatially explicit information for individual organisms. As a result, previous assessments were typically coarse and areawide, frequently missing critical ecological variation and fine-scale patterns across the OCS. In contrast, the MST uses a high-resolution 0.05° grid (~4 km per cell) on a species level to capture fine-scale conservation concerns and ecological patterns across US waters.\nThis book documents release v2, which integrates 17,353 valid marine species across 6 source datasets on a 0.05° grid (~4 km cells) covering the US Exclusive Economic Zone study area; of these, 9,792 have modeled distributions inside the 20 BOEM Program Areas of the current program cycle. Every figure on these pages is read from that release’s own published tables, so a page never reports another version’s numbers — see Releases for how the releases differ.\nSpecies distributions are weighted by extinction risk scores that incorporate protections under the Endangered Species Act (ESA), Marine Mammal Protection Act (MMPA), and Migratory Bird Treaty Act (MBTA), as well as IUCN Red List assessments. The merged distribution of sensitivity per species is masked to expert ranges where available — species whose global range maps fall entirely outside the US EEZ are excluded, ensuring that only species with expert-confirmed presence in US waters contribute to scores.\nThis is a process, not a product. Information is imperfect, especially given the large expanse of US waters. Distributions and abundance of species change, modified increasingly by climate change and human activities. Knowledge on species sensitivities continues to expand with more research. Methods for both modeling and distributing this information continue to improve. In alignment with Executive Order 14303, we aim to provide a transparent and reproducible process that can be regularly updated as new data and methods become available.\nThe MST analytical pipeline proceeds through the following stages (Figure 1.1):\nFigure 1.1: Flowchart of the MST analytical pipeline: from source datasets and taxonomic matching through model merging, scoring, and visualization.\nFigure 1.2 illustrates the full methodology at a glance. On the left, species distribution data flows in from the source datasets and the taxonomic authorities. In the center, models are merged per species and weighted by extinction risk scores derived from ESA, MMPA, MBTA, and IUCN regulatory frameworks. On the right, cell-level scores are rescaled within BOEM ecoregions and aggregated to program areas for visualization in the interactive mapping applications.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "intro.html#overview",
+    "href": "intro.html#overview",
+    "title": "1  Introduction",
+    "section": "",
+    "text": "Data sources (Chapter 5): 6 datasets of species distributions — continuous suitability models, regulatory habitat designations and expert range maps\nTaxonomy matching (Chapter 6): source names resolved to one canonical identity — BirdLife for birds, WoRMS for everything else — so models of the same species merge instead of double-counting it\nModel merging (Chapter 8): one surface per taxon, with the expert range constraining suitability predictions and the governing extinction risk applied to the range cells\nCell scoring (Chapter 9): extinction-risk-weighted species presence, summed within each scored species category\nEcoregional rescaling: scores normalized to 0–100 within each BOEM Ecoregion, so richness alone does not decide the ranking\nZone aggregation: area-weighted means to the spatial units the release scored\nVisualization (Chapter 18): flower plots, treemaps and the interactive map applications\n\n\n\n\n\n\n\n\n\nFigure 1.2: Overview of the Marine Sensitivity Toolkit methodology showing the integration of species distribution models, extinction risk scoring, ecoregional rescaling, and spatial aggregation into interactive visualizations.\n\n\n\n\n\n\n\nMorandi, A., S. Berkman, J. Rowe, et al. 2018. Environmental Sensitivity and Associated Risk to Habitats and Species on the Pacific West Coast and Hawaii with Offshore Floating Wind Technologies. OCS Study BOEM 2018-031. US Department of the Interior, Bureau of Ocean Energy Management, Pacific OCS Region. https://www.boem.gov/sites/default/files/environmental-stewardship/Environmental-Studies/Pacific-Region/Studies/BOEM-2018-031-Vol1.pdf.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "releases.html",
+    "href": "releases.html",
+    "title": "2  Releases",
+    "section": "",
+    "text": "2.1 Every release at a glance\nThis book is published once per release. The page you are reading documents v2, and every figure in it comes from that release’s own published tables — so a v3 page reports v3’s numbers, not the newest ones. Use the version switcher in the sidebar to move between builds.\nThis page is the exception: it reads all releases, because the comparison is exactly what a single-version page cannot show.\nTable 2.1: Published releases. Species counts are read from each release’s own taxon table and are not comparable across releases, because the definition of a valid species changed at v3 and again at v7 (see below).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVersion\nReleased\nStatus\nTitle\nDatasets\nValid species\nIn Program Areas\nGrid\n\n\n\n\nv8\n2026-07-28\nprerelease\nMarine Atlas\n8\n17,112\n9,632\nglobal05\n\n\nv7\n2026-06-12\nreleased\nValidity decoupled from Program Areas\n8\n16,153\n9,230\nusa05\n\n\nv6\n2026-04-09\nretired\nIUCN range outside US EEZ\n8\n9,424\n9,226\nusa05\n\n\nv5\n2026-03-24\nretired\nMMPA spatial floor\n8\n9,795\n9,597\nusa05\n\n\nv4b\n2026-03-19\nretired\nTurtle multiplicative merge\n8\n9,795\n9,597\nusa05\n\n\nv4\n2026-03-01\nretired\nSWOT sea turtles\n8\n9,795\n9,597\nusa05\n\n\nv3\n2026-02-01\nretired\nMerged models + extinction risk\n7\n9,795\n9,621\nusa05\n\n\nv2\n2026-01-01\nretired\nProgram Areas\n6\n17,353\n9,792\nusa05\n\n\nv1\n2023-09-01\nretired\nPlanning Areas\n5\n17,379\n—\nusa05\nTable 2.2: What each release published, read from its manifest.\n\n\n\n\n\n\n\n\n\n\n\n\nVersion\nModel id\nMetrics\nSpatial units\n\n\n\n\nv8\nmdl_key\n17\nEcoregions (12), Program Areas (20), Subregions (5)\n\n\nv7\nmdl_seq\n17\nEcoregions (12), Planning Areas (36), Program Areas (20), Subregions (5)\n\n\nv6\nmdl_seq\n17\nEcoregions (12), Planning Areas (36), Program Areas (20), Subregions (4)\n\n\nv5\nmdl_seq\n17\nEcoregions (12), Planning Areas (36), Program Areas (20), Subregions (4)\n\n\nv4b\nmdl_seq\n17\nEcoregions (12), Planning Areas (36), Program Areas (20), Subregions (4)\n\n\nv4\nmdl_seq\n17\nEcoregions (12), Planning Areas (36), Program Areas (20), Subregions (4)\n\n\nv3\nmdl_seq\n17\nEcoregions (12), Planning Areas (36), Program Areas (20), Subregions (4)\n\n\nv2\nmdl_seq\n19\nEcoregions (12), Planning Areas (36), Program Areas (20), Subregions (4)\n\n\nv1\nmdl_seq\n19\nEcoregions (12), Planning Areas (36), Subregions (4)",
+    "crumbs": [
+      "Releases",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Releases</span>"
+    ]
+  },
+  {
+    "objectID": "releases.html#every-release-at-a-glance",
+    "href": "releases.html#every-release-at-a-glance",
+    "title": "2  Releases",
+    "section": "",
+    "text": "WarningWhy the species count is not a trend line\n\n\n\nThe count moves for three different reasons, only one of which is “more data”:\n\nv3 tightened the taxonomy — resolving every source name to a canonical identity, dropping non-marine and extinct taxa — which cut the count roughly in half.\nv6 removed species whose expert range lies entirely outside US waters, whose apparent US presence was an artifact of environmental-envelope prediction.\nv7 stopped requiring Program-Area overlap for validity. Nothing was added; the definition changed, and the count went up accordingly.\n\nRead the column as “what this release considered valid”, never as a measurement of biodiversity that changed between releases.",
+    "crumbs": [
+      "Releases",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Releases</span>"
+    ]
+  },
+  {
+    "objectID": "releases.html#history",
+    "href": "releases.html#history",
+    "title": "2  Releases",
+    "section": "2.2 History",
+    "text": "2.2 History\n\n2.2.1 v8 — Marine Atlas\nA ground-up rebuild as a global Marine Atlas.\n\nWhole-range global ingest. Every species is modeled across its entire global range on a shared global 0.05° ocean grid, with no land mask and no Program-Area gate, so a distribution map shows the species rather than the analysis extent. “How marine” becomes a derived measurement rather than a filter applied up front.\nSeabird de-duplication. A BirdLife ↔︎ WoRMS crosswalk merges each bird’s BirdLife, USFWS and AquaMaps inputs into a single taxon; v7 split some seabirds across two (Marbled Murrelet, Brown Pelican among them), double-counting them. Correcting it lowers seabird-heavy Program Areas in Alaska and the Pacific by several points, with overall Program-Area correlation to v7 of 0.94.\nTaxonomy-driven categories. Categories come from WoRMS class and phylum rather than keyword matching, which removed the catch-all other bucket and surfaced primary_producer. Non-turtle reptiles and amphibians are excluded from scoring.\nOriginal and interpolated distributions. Each source model is published in two representations — the native-resolution original and the 0.05° interpolated surface used in scoring — catalogued in STAC and toggleable in the species app.\nPartitioned Parquet on S3. Releases are published as partitioned, content-addressed Parquet with COGs, PMTiles and a STAC catalog, replacing per-dataset archives and a monolithic database file.\nA stable model identifier. mdl_key (am|Fis-29291, ms_merge|WORMS:137209) replaces the auto-increment mdl_seq, which renumbered on every rebuild and so broke every saved link to a model.\nA different grid. v8 moves from a regional grid on 0–360 longitudes to a global one on −180 to 180, so cell_id denotes a different place than it did in v1–v7.\n\n\n\n2.2.2 v7 — validity decoupled from Program Areas\nEarlier releases silently required a species to overlap a current BOEM Program Area to count as valid, which hid biodiversity outside the program cycle’s footprint. Validity now means a taxonomically valid species with a modeled distribution anywhere in the study area, restoring the set from 9,424 to 16,153 — of which 9,230 fall within the 20 Program Areas. Program-Area membership became a spatial query rather than a species-level filter. Scores were recomputed over the full set with negligible effect: 18 of 20 Program Areas unchanged, and only Gulf of America GAB (−0.04) and GAA (−0.00) shifted at all.\n\n\n2.2.3 v6 — expert ranges outside the US EEZ\nExcluded 371 species (343 fish, 20 invertebrates, 6 corals, 2 mammals) whose IUCN expert ranges fall entirely outside the US EEZ; their AquaMaps predictions in US waters were edge-of-range artifacts with near-zero suitability. Also ingested three missing marine-mammal IUCN ranges (Phoca vitulina, Trichechus manatus, Pusa hispida) from a more complete download. Effect on Program-Area scores was negligible.\nThis exclusion was later lost in the v8 rewrite and restored; it now has a named regression test, because ~750 species were affected while aggregate scores barely moved — precisely the kind of error a whole-pipeline check cannot see (Chapter 8).\n\n\n2.2.4 v5 — MMPA floor for FWS-managed marine mammals\nFixed the MMPA spatial floor for marine mammals managed by FWS rather than NMFS — walrus, polar bear, sea otter, manatee, dugong — which had been missing the protection flag because it was derived from the NMFS Species Directory alone. Later releases assign the flag by taxonomy instead, so no marine mammal can be missed (Chapter 7).\n\n\n2.2.5 v4b — the multiplicative turtle merge\nIntroduced the second modeling approach, for sea turtles only: instead of taking a maximum and applying a scalar extinction-risk weight at scoring time, the SWOT+DPS extinction-risk raster is multiplied into the suitability surface during merging, so risk varies spatially within a species — matching the fact that NOAA Fisheries lists Distinct Population Segments separately. Critical habitat overrides with a maximum. Affected taxa are flagged is_er_spatial and pass er_score = 100 through at scoring so the risk is not counted twice.\nThis was the point at which the MST had two merge strategies rather than one, and it went undocumented for two releases (see Chapter 8).\n\n\n2.2.6 v4 — SWOT sea turtle ranges\nReplaced the overly extensive IUCN sea turtle range maps with the more realistic State of the World’s Sea Turtles global distributions, and applied NOAA Distinct Population Segment polygons carrying ESA listing status to distinguish Endangered from Threatened populations. The result is a more restrictive distribution dominated by ESA risk values.\n\n\n2.2.7 v3 — merged models and extinction risk\nProgram Areas for the National OCS Plan, and ecoregional rescaling. Source datasets merged from continuous suitability models through to binary range maps, with masking where a global IUCN range exists. Introduced species sensitivity weighting from national ESA or global IUCN extinction risk, together with MMPA and MBTA protection. Sea turtles were split out of reptile into their own category.\n\n\n2.2.8 v2 — Program Areas\nTransition to the 2026 Program Areas. Individual model layers, a model-merging pipeline, and cloud-optimized GeoTIFF storage.\n\n\n2.2.9 v1 — Planning Areas\nPlanning Areas across the US EEZ, AquaMaps-based species distributions, flower plots for multi-taxa visualization, and species tables with conservation status. See Chapter 3 for the full v1 methodology as delivered in the 2025 final report.",
+    "crumbs": [
+      "Releases",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Releases</span>"
+    ]
+  },
+  {
+    "objectID": "releases.html#reading-an-older-release",
+    "href": "releases.html#reading-an-older-release",
+    "title": "2  Releases",
+    "section": "2.3 Reading an older release",
+    "text": "2.3 Reading an older release\nEvery release remains published and readable:\n\nDocumentation — this book, at /{version}/; the sidebar switcher moves between builds and marks any version whose docs are not built.\nApplications — /scores/?ver=v3 and /species/?ver=v3, substituting any published version. The per-version application forks are retired; their old URLs 301 to the equivalent ?ver=, so links printed in earlier reports still resolve to the release they always showed.\nData — marine-atlas/{version}/tables/*.parquet on S3, readable directly by DuckDB (including in a browser) without downloading a database.\n\nPromotion is deliberate and separate from publishing. Writing data does not make a release current: the pointer that applications follow by default is only rewritten under an explicit flag, and may only name a released — never a pre-release — version. It currently names v7.",
+    "crumbs": [
+      "Releases",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Releases</span>"
+    ]
+  },
+  {
+    "objectID": "releases/v1.html",
+    "href": "releases/v1.html",
+    "title": "3  v1 — Planning Areas",
+    "section": "",
+    "text": "3.1 Conceptual framework\nv1 was the first delivered version of the Marine Sensitivity Toolkit, reported to BOEM’s Environmental Studies Program under contract 140M0123P0018 as the Marine Sensitivity Toolkit final report (2025).\nIt is documented here in its own right because several of its choices — the conceptual framing, the extinction-risk weighting and its justification, and the honest account of what ecoregional rescaling does and does not preserve — remain the foundation of every later release, and because reports and decisions cite it.\nVulnerability (\\(V\\)) is a function of exposure (\\(E\\)), sensitivity (\\(S\\)) and adaptive capacity (\\(A\\)):\n\\[\nV = f(E, S, A)\n\\tag{3.1}\\]\nThis decomposition is the standard framing in ecological risk and climate-vulnerability assessment (Intergovernmental Panel on Climate Change 2014; Halpern et al. 2007; Hare et al. 2016). The more exposed and sensitive an area is — and the less able it is to recover — the more vulnerable it is to impacts from offshore activities.\nFor spatial implementation, the vulnerability of a cell \\(v_c\\) is the sum across all species in a taxonomic group \\(S_g\\) of the product of the species’ presence in the cell \\(p_{sc}\\) and a species weight \\(w_s\\), the risk of that species going extinct:\n\\[\nv_c = \\sum_{s=1}^{S_g} p_{sc} \\cdot w_s\n\\tag{3.2}\\]\nwhere \\(p_{sc}\\) is presence probability or suitability (0–1) and \\(w_s\\) is how at-risk that species is of going extinct (0–1, ranging from Least Concern at 0.2 to Critically Endangered at 1).\nIn plain terms: if a cell has many species that are both likely to be present and at high risk of extinction, it gets a higher sensitivity score. This is how places where rare or threatened species concentrate are found.",
+    "crumbs": [
+      "Releases",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>v1 — Planning Areas</span>"
+    ]
+  },
+  {
+    "objectID": "releases/v1.html#conceptual-framework",
+    "href": "releases/v1.html#conceptual-framework",
+    "title": "3  v1 — Planning Areas",
+    "section": "",
+    "text": "3.1.1 Where exposure and adaptive capacity sit\nThe implemented score resolves the sensitivity and adaptive-capacity terms jointly, and leaves exposure to be supplied by the decision being evaluated.\nExtinction risk serves as an integrated proxy for both because the IUCN and ESA listing criteria assess population size, rate of decline, range restriction and fragmentation — the same properties that govern whether a population can absorb an added impact and recover from it.\nThis is a deliberate simplification, and the principal structural limitation of v1: adaptive capacity cannot be varied independently of sensitivity, and traits that distinguish recovery potential within a risk category — generation time, fecundity, dispersal, habitat specialization — are not represented. Separating the terms would mean adding activity-specific exposure layers (spill-trajectory probability, lease-block footprints, modeled noise fields) and letting them interact with trait-based adaptive-capacity attributes drawn from established marine vulnerability protocols (Hare et al. 2016).",
+    "crumbs": [
+      "Releases",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>v1 — Planning Areas</span>"
+    ]
+  },
+  {
+    "objectID": "releases/v1.html#extinction-risk-weighting-and-why-these-numbers",
+    "href": "releases/v1.html#extinction-risk-weighting-and-why-these-numbers",
+    "title": "3  v1 — Planning Areas",
+    "section": "3.2 Extinction-risk weighting, and why these numbers",
+    "text": "3.2 Extinction-risk weighting, and why these numbers\nIUCN Red List categories and ESA status codes were standardized to numeric risk weights: CR = 1.0, EN = 0.8, VU and ESA Threatened = 0.6, NT = 0.4, LC = 0.2. Where a species had several assessments the most recent was used; where statuses conflicted across regions the precautionary principle applied, taking the higher risk category.\nThese weights are a rescaling of the IUCN equal-steps weighting used for the Red List Index (Butchart et al. 2004, 2007) and for the Species Threat Abatement and Restoration (STAR) metric (Mair et al. 2021), which maps LC = 0, NT = 1, VU = 2, EN = 3, CR = 4. Dividing by five and shifting Least Concern from 0 to 0.2 yields the multipliers above.\nSTAR is the closest published analogue to the MST score: an additive, spatially explicit sum of species presence weighted by extinction risk.\nLeast Concern is deliberately given non-zero weight so that overall biological richness remains part of the sensitivity signal — consistent with the statutory language — rather than the score being driven entirely by the small fraction of species that are threatened. A Critically Endangered species still carries five times the weight of a Least Concern one.\nEqual-steps weighting is the most widely used convention but not the only defensible one. Extinction-probability weightings (Butchart et al. 2007; Mooers et al. 2008) are strongly convex and would concentrate nearly all weight on CR and EN species. Because the transformation can affect rank order (Mooers et al. 2008), a sensitivity analysis comparing area rankings under equal-steps, extinction-probability and equal (richness-only) weightings is a recommended next step.",
+    "crumbs": [
+      "Releases",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>v1 — Planning Areas</span>"
+    ]
+  },
+  {
+    "objectID": "releases/v1.html#scoring",
+    "href": "releases/v1.html#scoring",
+    "title": "3  v1 — Planning Areas",
+    "section": "3.3 Scoring",
+    "text": "3.3 Scoring\nStep 1 — cell-level scoring. For each 0.05° cell the raw score \\(v_c\\) is the sum of presence × extinction-risk weight across the species in a taxonomic group.\nStep 2 — ecoregional rescaling. Raw cell scores are rescaled to 0–100 within each BOEM Ecoregion, using the minimum and maximum observed inside that ecoregion for the component being scored.\nStep 3 — Planning Area aggregation. Rescaled cell scores are aggregated by area-weighted average: each cell contributes in proportion to the fraction of its area falling inside the Planning Area, so larger low-latitude cells do not outweigh smaller high-latitude ones.\n\n3.3.1 Worked example\nA simplified Planning Area with three equal-area cells in an ecoregion whose fish scores run from 65 to 974:\n\n\n\nCell\nRaw fish score\nRescaled\nCell area (km²)\nWeight\n\n\n\n\nA\n200\n\\((200-65)/(974-65)\\times100 = 15\\)\n25\n0.33\n\n\nB\n600\n\\((600-65)/(974-65)\\times100 = 59\\)\n25\n0.33\n\n\nC\n400\n\\((400-65)/(974-65)\\times100 = 37\\)\n25\n0.33\n\n\n\nThe Planning Area fish score is \\(15\\times0.33 + 59\\times0.33 + 37\\times0.33 = 37\\) — meaning the Planning Area sits 37% of the way between the lowest and highest fish scores observed in its ecoregion.\n\n\n3.3.2 What ecoregional rescaling does and does not preserve\nRescaling within ecoregions is a deliberate analytical choice with a cost that should be explicit.\nBecause min–max rescaling is monotonic, it preserves the complete ordering of cells and Planning Areas within an ecoregion: no within-region comparison is affected. What it removes is the difference in absolute magnitude between ecoregions. A score of 80 in the Gulf of America and a score of 80 in the Arctic both denote “high relative to that region”, not equal absolute sensitivity, and the difference in raw species richness between those regions is by design not visible in the rescaled value.\nThe rationale is that the raw score is count-like — it increases with the number of species modeled in a cell — and is therefore governed by the latitudinal richness gradient. Without rescaling, nearly every subtropical Planning Area would outrank nearly every Arctic one, and the result would approximate a map of model density rather than of conservation concern. Within-region normalization is also consistent with the prior RESA methodology (Niedoroda 2014).\nTwo consequences follow for interpretation:\n\nRescaled scores are not a national ranking. Comparing areas across ecoregions compares each to its own regional context.\nThe endpoints are observed extrema, so a single outlier cell can set the 100 for an entire ecoregion and compress every other score in it. Robust percentile endpoints (1st/99th) are recommended in their place.\n\nBecause absolute magnitude is management-relevant information, reporting raw scores alongside the rescaled ones — together with a nationally rescaled variant and the rank correlation between the two rankings — would let the effect of the normalization on rank order be assessed directly rather than assumed.",
+    "crumbs": [
+      "Releases",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>v1 — Planning Areas</span>"
+    ]
+  },
+  {
+    "objectID": "releases/v1.html#grid-and-projection",
+    "href": "releases/v1.html#grid-and-projection",
+    "title": "3  v1 — Planning Areas",
+    "section": "3.4 Grid and projection",
+    "text": "3.4 Grid and projection\nThe analysis grid is geographic (WGS84) rather than projected, because every input dataset — AquaMaps half-degree cells, Bio-ORACLE reference layers, the VIIRS productivity grid, and IUCN/BirdLife range polygons — is distributed on a regular latitude/longitude grid. Analyzing in geographic coordinates resamples each input once rather than twice, avoiding blurred suitability surfaces and displaced range boundaries; and no single equal-area projection serves both the Gulf of America and the Aleutians well.\nArea distortion is therefore corrected arithmetically rather than by projection: cell area is computed on the sphere, and every cell-to-area aggregation is weighted by that true area and by the cell’s fractional overlap with the Planning Area — making the reported statistics equal-area in effect. Maps are drawn in region-appropriate equal-area projections for display only; no analysis is performed in a display projection.",
+    "crumbs": [
+      "Releases",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>v1 — Planning Areas</span>"
+    ]
+  },
+  {
+    "objectID": "releases/v1.html#marine-relevance-in-v1",
+    "href": "releases/v1.html#marine-relevance-in-v1",
+    "title": "3  v1 — Planning Areas",
+    "section": "3.5 Marine relevance in v1",
+    "text": "3.5 Marine relevance in v1\nIn v1 a spatial inclusion rule was applied — every model whose distribution intersected the study area was ingested — without an independent test of whether the species is marine.\nThis admits a small number of non-marine species with coastal range polygons; the introduced White-winged Parakeet (Brotogeris versicolurus) in southern Florida is one. Because such species are almost always Least Concern and occupy few cells, the effect on scores is negligible, but their presence in the species viewer is not defensible.\nSubsequent versions apply an explicit marine-relevance filter: birds are scored only if they belong to a marine or coastal family and at least 5% of their whole global range falls over ocean, with a curated include/exclude list for edge cases.\n\n\n\n\n\n\nImportant\n\n\n\nThe standard WoRMS isMarine flag cannot be used for this purpose, because seabirds are largely absent from that register. This is the reason the later filter is built from family membership and a measured percentage rather than from the obvious flag — see Section 6.4.",
+    "crumbs": [
+      "Releases",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>v1 — Planning Areas</span>"
+    ]
+  },
+  {
+    "objectID": "releases/v1.html#sources-in-v1",
+    "href": "releases/v1.html#sources-in-v1",
+    "title": "3  v1 — Planning Areas",
+    "section": "3.6 Sources in v1",
+    "text": "3.6 Sources in v1\nv1’s distributions came principally from AquaMaps global species distribution models, downscaled from their native 0.5° half-degree cells to 0.05° by bilinear interpolation, together with BirdLife range maps for birds.\n\n\n\n\n\n\nNoteAquaMaps vintage\n\n\n\nThe 2025 report cites AquaMaps in two ways — a retrieval date in the Methods and “AquaMaps 2019” in the conclusions — which reads as a contradiction. It is not.\nThe model release is AquaMaps Version 10/2019, which is what the release registry records and what the data itself carries; the later date is when that release was retrieved. No newer AquaMaps release has been ingested, and the suitability surfaces have not changed.\n\n\nPresence values follow external convention where one exists and are assigned by the study where one does not. Continuous suitability models are used as published, without modification. Expert range maps take a 50% presence value, following the convention for extent-of-occurrence polygons, which assert presence somewhere within the boundary rather than throughout it. Designated Critical Habitat takes a higher value reflecting the stronger occupancy evidence implied by a legal designation — an assumption of the study rather than an external standard, and identified as such.",
+    "crumbs": [
+      "Releases",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>v1 — Planning Areas</span>"
+    ]
+  },
+  {
+    "objectID": "releases/v1.html#primary-productivity",
+    "href": "releases/v1.html#primary-productivity",
+    "title": "3  v1 — Planning Areas",
+    "section": "3.7 Primary productivity",
+    "text": "3.7 Primary productivity\nNet primary productivity was computed with the Vertically Generalized Production Model (Behrenfeld and Falkowski 1997) from VIIRS satellite data for the most recently completed decade. Monthly NPP was averaged annually, then a ten-year mean and standard deviation computed, downsampled to the analysis grid by bilinear interpolation, and converted to metric tons C km-2 yr-1.",
+    "crumbs": [
+      "Releases",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>v1 — Planning Areas</span>"
+    ]
+  },
+  {
+    "objectID": "releases/v1.html#successor-releases",
+    "href": "releases/v1.html#successor-releases",
+    "title": "3  v1 — Planning Areas",
+    "section": "3.8 Successor releases",
+    "text": "3.8 Successor releases\nv1 scored Planning Areas; the 2026 program cycle introduced Program Areas, which v2 adopted. Later releases changed the taxonomy, the merge and the definition of a valid species — see Releases for what changed and when, and read this page as the record of what v1 did.\n\n\n\n\nBehrenfeld, Michael J., and Paul G. Falkowski. 1997. “Photosynthetic Rates Derived from Satellite-Based Chlorophyll Concentration.” Limnology and Oceanography 42 (1): 1–20. https://doi.org/10.4319/lo.1997.42.1.0001.\n\n\nButchart, Stuart H. M., H. Resit Akçakaya, Janice Chanson, et al. 2007. “Improvements to the Red List Index.” PLoS ONE 2 (1): e140. https://doi.org/10.1371/journal.pone.0000140.\n\n\nButchart, Stuart H. M., Alison J. Stattersfield, Leon A. Bennun, et al. 2004. “Measuring Global Trends in the Status of Biodiversity: Red List Indices for Birds.” PLoS Biology 2 (12): e383. https://doi.org/10.1371/journal.pbio.0020383.\n\n\nHalpern, Benjamin S., Kimberly A. Selkoe, Fiorenza Micheli, and Carrie V. Kappel. 2007. “Evaluating and Ranking the Vulnerability of Global Marine Ecosystems to Anthropogenic Threats.” Conservation Biology 21: 1301–15. https://doi.org/10.1111/j.1523-1739.2007.00752.x.\n\n\nHare, Jonathan A., Wendy E. Morrison, Mark W. Nelson, et al. 2016. “A Vulnerability Assessment of Fish and Invertebrates to Climate Change on the Northeast u.s. Continental Shelf.” PLoS ONE 11 (2): e0146756. https://doi.org/10.1371/journal.pone.0146756.\n\n\nIntergovernmental Panel on Climate Change. 2014. Climate Change 2014: Impacts, Adaptation, and Vulnerability. Contribution of Working Group II to the Fifth Assessment Report. Cambridge University Press.\n\n\nMair, Louise, Leon A. Bennun, Thomas M. Brooks, et al. 2021. “A Metric for Spatially Explicit Contributions to Science-Based Species Targets.” Nature Ecology & Evolution 5: 836–44. https://doi.org/10.1038/s41559-021-01432-0.\n\n\nMooers, Arne Ø., Daniel P. Faith, and Wayne P. Maddison. 2008. “Converting Endangered Species Categories to Probabilities of Extinction for Phylogenetic Conservation Prioritization.” PLoS ONE 3 (11): e3700. https://doi.org/10.1371/journal.pone.0003700.\n\n\nNiedoroda, Alan W. 2014. Renewable Energy Space Assessment Model (RESA). Bureau of Ocean Energy Management.",
+    "crumbs": [
+      "Releases",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>v1 — Planning Areas</span>"
+    ]
+  },
+  {
+    "objectID": "science.html",
+    "href": "science.html",
+    "title": "4  Science",
+    "section": "",
+    "text": "4.1 Conceptual Framework\nThe term combination of exposure and sensitivityvulnerability (\\(V\\)) is a function of the magnitude of the change in the environmentexposure (\\(E\\)), the magnitude of response to the changesensitivity (\\(S\\)) and the capacity of the ecosystem or organism to improve and reorganise in response to stress such as climate change through phenotypic plasticity (acclimation, acclimatisation) or adaptation, distributional shifts, and rapid evolution of traits suited to new conditions. Source: @ross2023.adaptive capacity (\\(A\\)) (Equation 4.1).\n\\[\nV = f(E, S, A)\n\\tag{4.1}\\]\nThe more exposed and sensitive an area is—and the less able it is to recover—the more vulnerable it is to impacts from offshore human activities. The MST currently focuses on the sensitivity component, quantifying the intrinsic biological sensitivity of marine ecosystems based on the species present and their conservation status. Exposure and adaptive capacity components are planned for future phases (see Chapter 11).",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Science</span>"
+    ]
+  },
+  {
+    "objectID": "science.html#cell-vulnerability",
+    "href": "science.html#cell-vulnerability",
+    "title": "4  Science",
+    "section": "4.2 Cell Vulnerability",
+    "text": "4.2 Cell Vulnerability\nFor a given cell \\(c\\), the vulnerability score for a species group \\(g\\) is the sum across all \\(S_g\\) species of the product of species presence probability \\(p_{sc}\\) and extinction risk weight \\(w_s\\) (Equation 4.2):\n\\[\nv_c = \\sum_{s=1}^{S_g} p_{sc} \\cdot w_s\n\\tag{4.2}\\]\nwhere:\n\n\\(v_c\\) = vulnerability score of cell \\(c\\) for species group \\(g\\)\n\\(p_{sc}\\) = probability of species \\(s\\) presence in cell \\(c\\) (0–1 scale, from merged species distribution models)\n\\(w_s\\) = extinction risk weight for species \\(s\\) (0–1 scale, derived from ESA/MMPA/MBTA/IUCN status; see Chapter 7)\n\\(S_g\\) = total number of species in taxonomic group \\(g\\) (e.g., bird, fish, mammal, coral, invertebrate, reptile/turtle)\n\nIn other words, if a cell has many species that are both likely to be present and at high risk of extinction, it gets a higher sensitivity score. This helps identify places where rare or threatened species are concentrated.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Science</span>"
+    ]
+  },
+  {
+    "objectID": "science.html#sensitivity-components",
+    "href": "science.html#sensitivity-components",
+    "title": "4  Science",
+    "section": "4.3 Sensitivity Components",
+    "text": "4.3 Sensitivity Components\nThe MST assesses sensitivity through three components:\n\nSpecies — by taxonomic category (bird, coral, fish, invertebrate, mammal, reptile/turtle): extinction risk weighted species distribution models across 17,353 valid species (see Chapter 5, Chapter 7)\nHabitats — benthic habitats such as coral reefs, seamounts, and hydrothermal vents (planned for future phases)\nPrimary Productivity — satellite-derived net primary productivity from the Vertically Generalized Production Model (VGPM), measured as metric tons C km-2 yr-1 (see Chapter 5)",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Science</span>"
+    ]
+  },
+  {
+    "objectID": "science.html#ecoregional-rescaling",
+    "href": "science.html#ecoregional-rescaling",
+    "title": "4  Science",
+    "section": "4.4 Ecoregional Rescaling",
+    "text": "4.4 Ecoregional Rescaling\nRaw cell scores vary naturally across regions due to differences in species richness and oceanographic conditions. To enable meaningful comparison, scores are rescaled to a [0–100] range within each BOEM Ecoregion using min-max normalization (Equation 4.3):\n\\[\nv'_c = \\frac{v_c - v_{min}}{v_{max} - v_{min}} \\times 100\n\\tag{4.3}\\]\nwhere \\(v_{min}\\) and \\(v_{max}\\) are the minimum and maximum cell scores for a given component within the Ecoregion.\nScores are relative within Ecoregions, not absolute. A score of 100 represents the most sensitive 0.05° cell for a given component (e.g., fish, marine mammals, or primary productivity) within a given BOEM Ecoregion—not globally. The final score is an equally weighted average of these ecoregionally rescaled components. This means that a score of 30 in Alaska reflects a different ecological context than a score of 30 in the Pacific.\nWhy rescale by Ecoregion? Without this step, areas with naturally higher numbers of species (like upwelling zones in the Pacific) would almost always get the highest scores, simply because they have more species. While more species may indicate greater ecological importance, it could also be argued that the fewer species in an ecosystem, the more important each is to its function and resilience. Rescaling by Ecoregion prevents scores from being overwhelmed by species-rich areas. However, comparing across Ecoregions would require developing a mathematical relationship between these competing arguments for sensitivity—one that is still a source of earnest academic debate. For this reason, scores are directly comparable among Program Areas within the same Ecoregion, but should not be compared across Ecoregions.\n\n4.4.1 Geographic Scope\nThe current analysis covers 20 BOEM Program Areas from the 11th National Draft Proposed Program (2025) spanning Alaska, the Pacific, and the Gulf of America (Figure 4.1). The Atlantic OCS region is not included in this program cycle, so ecoregions without Program Areas (e.g., Northeast Continental Shelf, Southeast Continental Shelf, Washington/Oregon) are excluded from the analysis. Species whose distributions do not overlap with any Program Area will not appear in the interactive mapping applications.\nThe Gulf of America Program Areas—GOA Program Area A (GAA) and GOA Program Area B (GAB)—were derived from the larger Gulf of America Planning Areas and span parts of two Ecoregions: Western and Central Gulf of America (WCGOA) and Eastern Gulf of America (EGOA). Because cell scores are rescaled within each Ecoregion before aggregation, cells in GAA that fall within the WCGOA Ecoregion are rescaled relative to WCGOA min/max values, while cells within EGOA use EGOA min/max values. The aggregated Program Area score is then the area-weighted average across all constituent cells, regardless of which Ecoregion they belong to. This approach ensures that the rescaling reflects local ecological context even when a Program Area spans Ecoregion boundaries. See Chapter 9 for implementation details.\n\n\n\n\n\n\n\n\nFigure 4.1: BOEM Ecoregions (colored) and Program Area outlines. Ecoregion keys: CAC = California Current; CBS = Chukchi and Beaufort Seas; EBS = East Bering Sea; EGOA = Eastern Gulf of America; GOA = Gulf of Alaska; HAR = High Arctic; NECS = Northeast Continental Shelf; PIS = Pacific Island Territories; PUR = Puerto Rico and U.S. Virgin Islands; SECS = Southeast Continental Shelf; WAOR = Washington/Oregon; WCGOA = Western and Central Gulf of America. Program Area keys: ALA = Aleutian Arc; ALB = Aleutian Basin; BFT = Beaufort Sea; BOW = Bowers Basin; CEC = Central California; CHU = Chukchi Sea; COK = Cook Inlet; GAA = GOA Program Area A; GAB = GOA Program Area B; GEO = St. George Basin; GOA = Gulf of Alaska; HAR = High Arctic; HOP = Hope Basin; KOD = Kodiak; MAT = St. Matthew-Hall; NAV = Navarin Basin; NOC = Northern California; NOR = Norton Basin; SHU = Shumagin; SOC = Southern California.\n\n\n\n\nSee subsequent chapters for detailed descriptions of: data sources (Chapter 5), taxonomic integration (Chapter 6), extinction risk scoring (Chapter 7), model merging (Chapter 8), and scoring methodology (Chapter 9).",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Science</span>"
+    ]
+  },
+  {
+    "objectID": "data-sources.html",
+    "href": "data-sources.html",
+    "title": "5  Data Sources",
+    "section": "",
+    "text": "5.1 Dataset overview\nThe MST integrates species distributions from 6 source datasets, merged into one surface per taxon (ms_merge). Each source predicts where a species occurs, and they differ in kind: continuous suitability models (AquaMaps), habitats tied to a core area, critical habitat or distinct population segment (NMFS, FWS, SWOT+DPS), and expert range maps (BirdLife, IUCN, FWS).\nTable 5.1: Source datasets in v2. Mask datasets constrain a taxon’s merged distribution to its known range as well as contributing values. Models counts the distributions the release registered for that dataset.\n\n\n\n\n\n\n\n\n\n\n\n\n\nDataset key\nName\nCell values\nMask\nModels\n\n\n\n\nam_0.05\nAquaMaps suitability for all marine taxa (except birds) globally, 2019\n\n—\n17,550\n\n\nbl\nBirdLife Birds of the World, 2024\n\n—\n573\n\n\nch_fws\nFWS Critical Habitat for USA, 2025-05-05\n\n—\n29\n\n\nch_nmfs\nNMFS Critical Habitat for USA, 2025-05-12\n\n—\n34\n\n\nrng_fws\nFWS Current Range Maps, 2025-07-23\n\n—\n106\n\n\nrng_iucn\nIUCN Red List Range Maps, 2025-2\n\n—\n1,516\n\n\nms_merge\nMarine Sensitivity Merged Model, 2026-01-23\n\n—\n1,574\nThe merged model (ms_merge) is the derived output rather than a source: for each taxon it takes the maximum value across that taxon’s source datasets in each cell, constrained to the taxon’s expert range where one exists (see Chapter 8).",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Data Sources</span>"
+    ]
+  },
+  {
+    "objectID": "data-sources.html#the-sources",
+    "href": "data-sources.html#the-sources",
+    "title": "5  Data Sources",
+    "section": "5.2 The sources",
+    "text": "5.2 The sources\n\n5.2.1 AquaMaps suitability for all marine taxa (except birds) globally, 2019 (am_0.05)\nAquaMaps species distribution models downscaled from 0.5° to 0.05° cells\n\nModels: 17,550\nResponse: suitability\nCoverage: Global\nTaxa: all taxa, except birds\n\n\nKaschner, K., K. Kesner-Reyes, C. Garilao, J. Segschneider, J. Rius-Barile, T. Rees, and R. Froese. 2019. AquaMaps: Predicted range maps for aquatic species. World wide web electronic publication, www.aquamaps.org, Version 10/2019. Content from AquaMaps as provided in this R package is licensed under a Creative Commons Attribution-NonCommercial 3.0 UnportedLicense, please see http://creativecommons.org/licenses/by-nc/3.0/\n\nSource · Download · Metadata\n\n\n5.2.2 BirdLife Birds of the World, 2024 (bl)\nThis dataset contains digital distribution information for the world’s birds. It is a joint product of BirdLife International and Handbook of the Birds of the World.\n\nModels: 573\nResponse: binary\nCoverage: Global\nTaxa: birds\n\nSource · Download · Metadata\n\n\n5.2.3 FWS Critical Habitat for USA, 2025-05-05 (ch_fws)\nThis page contains the spatial data for active proposed and final critical habitat for FWS only and Joint FWS/NMFS threatened and endangered species. ECOS is a FWS-sponsored platform for FWS data. The ECOS critical habitat on-line mapper includes (some, not all of the) proposed and final critical habitat for species listed as Threatened and Endangered by the FWS, or that are jointly managed by FWS/NMFS. The on-line mapper does not include species which are under the sole jurisdiction of NMFS.\n\nModels: 29\nResponse: binary\nCoverage: USA\nTaxa: all taxa\n\nSource · Download · Metadata\n\n\n5.2.4 NMFS Critical Habitat for USA, 2025-05-12 (ch_nmfs)\nThe National Marine Fisheries Service (NMFS) developed this geodatabase to standardize its Endangered Species Act (ESA) critical habitat spatial data.\n\nModels: 34\nResponse: binary\nCoverage: USA\nTaxa: all taxa\n\nSource · Download · Metadata\n\n\n5.2.5 FWS Current Range Maps, 2025-07-23 (rng_fws)\nThis is a dataset representing the polygonal boundaries for species as understood by the United States Fish and Wildlife Service.\n\nModels: 106\nResponse: binary\nCoverage: USA\nTaxa: all taxa\n\nSource · Download\n\n\n5.2.6 IUCN Red List Range Maps, 2025-2 (rng_iucn)\nThis dataset contains distribution information on species assessed for The IUCN Red List of Threatened Species™. The maps are developed as part of a comprehensive assessment of global biodiversity in order to highlight taxa threatened with extinction, and thereby promote their conservation.\n\nModels: 1,516\nResponse: binary\nCoverage: Global\nTaxa: all taxa (except birds)\n\n\nIUCN Red List of Threatened Species. Version 2025-2. &lt;www.iucnredlist.org&gt;. Downloaded on 21 January 2026.\n\nSource",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Data Sources</span>"
+    ]
+  },
+  {
+    "objectID": "data-sources.html#notes-on-individual-sources",
+    "href": "data-sources.html#notes-on-individual-sources",
+    "title": "5  Data Sources",
+    "section": "5.3 Notes on individual sources",
+    "text": "5.3 Notes on individual sources\n\n5.3.1 AquaMaps vintage\nAquaMaps is the foundational dataset for most taxa: environmental-envelope models of habitat suitability as a function of depth, temperature, salinity, primary productivity, ice concentration and distance from land (Kaschner et al. 2019). The model vintage is AquaMaps Version 10/2019 — the release named in the citation above, and the one the registry records as its environmental end date. Later dates that appear alongside AquaMaps in project records are retrieval dates for that same 2019 release, not a newer one; the underlying suitability surfaces have not changed.\nModels are native to a 0.5° grid (c-squares) and are interpolated onto the analysis grid bilinearly, implemented as a precomputed weight join rather than a per-species raster resample. Source cells that are absent contribute zero, so a distribution fades to zero within about one cell of its edge rather than ending on a hard step.\n\n\n5.3.2 Sea turtles: why a dedicated range dataset\nSea turtle distributions from AquaMaps and from IUCN range maps were both too broad, extending well beyond where the species actually occur. Several species also carry different ESA protection in different parts of their range, through NOAA Fisheries Distinct Population Segments (DPS) — which a single global range map cannot express.\nThe SWOT+DPS dataset replaces the IUCN range as the global mask for all six sea turtle species, combining SWOT Global Distributions (Wallace et al. 2023) for realistic range polygons with the NOAA Fisheries ESA Species Range Geodatabase (NOAA Fisheries 2025) for DPS listing status. Where DPS data exist (Loggerhead, Green, Olive Ridley), Endangered DPS areas take the Endangered value and the remainder of the SWOT range the Threatened value; for species Endangered throughout (Leatherback, Hawksbill, Kemp’s Ridley) the entire range takes the Endangered value.\n\n\n5.3.3 Range maps as masks\nDatasets marked Mask do double duty: they contribute cell values and define the spatial extent a taxon’s merged distribution may occupy. This is what stops an environmental-envelope model from asserting presence far outside a species’ known range — see Chapter 8.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Data Sources</span>"
+    ]
+  },
+  {
+    "objectID": "data-sources.html#standard-grid",
+    "href": "data-sources.html#standard-grid",
+    "title": "5  Data Sources",
+    "section": "5.4 Standard grid",
+    "text": "5.4 Standard grid\nAll datasets are aligned to the usa05 grid (US study area, 0.05 deg (0-360 frame)): 3,103 × 2,006 cells of 0.05° at 0–360 longitudes. At mid-latitudes a cell is roughly 4 × 4 km (~16 km2). Every cell carries a cell_id, which is what joins spatial data to every table in the database.\nThis release carries 661,372 cells.\n\n\n\n\n\n\nWarningcell_id means a different place on different grids\n\n\n\nThe grid changed at v8, from a regional grid on 0–360 longitudes to a global grid on −180 to 180. A given cell_id therefore denotes an entirely different location in v7 and in v8. Cell ids are meaningful only together with the grid_id the manifest declares, and the cell-id rasters are lookup images — a grid’s geometry cannot be inferred from one.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Data Sources</span>"
+    ]
+  },
+  {
+    "objectID": "data-sources.html#sec-primary-productivity",
+    "href": "data-sources.html#sec-primary-productivity",
+    "title": "5  Data Sources",
+    "section": "5.5 Primary productivity",
+    "text": "5.5 Primary productivity\nPrimary productivity is an explicit statutory consideration: Section 18(a)(2) of the 1978 OCSLA Amendments requires the Department of the Interior to weigh “the relative environmental sensitivity and marine productivity of different areas of the OCS” in the timing and location of OCS activities.\nWe use satellite-derived net primary productivity (NPP) from the Vertically Generalized Production Model [VGPM; Behrenfeld and Falkowski (1997)] produced by Oregon State’s Ocean Productivity Lab, based on VIIRS data for 2014–2023. Values are converted to metric tons C km-2 yr-1 and averaged over the period. NPP enters scoring as its own metric, without extinction-risk weighting (see Chapter 9).\n\n\n\n\n\n\nFigure 5.1: Primary productivity throughout the continental United States averaged across months of 2021, as measured by Oregon State’s Vertically Generalized Production Model (VGPM).\n\n\n\n\n\n\n\nBehrenfeld, Michael J., and Paul G. Falkowski. 1997. “Photosynthetic Rates Derived from Satellite-Based Chlorophyll Concentration.” Limnology and Oceanography 42 (1): 1–20. https://doi.org/10.4319/lo.1997.42.1.0001.\n\n\nKaschner, K., K. Kesner-Reyes, C. Garilao, et al. 2019. AquaMaps: Predicted Range Maps for Aquatic Species. https://www.aquamaps.org.\n\n\nNOAA Fisheries. 2025. Endangered Species Act Species Range Geodatabase. National Oceanic; Atmospheric Administration (NOAA), National Marine Fisheries Service (NMFS), Office of Protected Resources (OPR). https://noaa.maps.arcgis.com/home/search.html?searchTerm=turtle+dps.\n\n\nWallace, Bryan P., Zachary A. Posnik, Bryan J. Hurley, et al. 2023. “Marine Turtle Regional Management Units 2.0.” Endangered Species Research 52: 209–23. https://doi.org/10.3354/esr01243.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Data Sources</span>"
+    ]
+  },
+  {
+    "objectID": "taxonomy.html",
+    "href": "taxonomy.html",
+    "title": "6  Taxonomy",
+    "section": "",
+    "text": "6.1 Two taxonomic namespaces\nIntegrating distribution data from several providers requires resolving taxonomic identity across naming systems, so that models of the same species merge rather than being counted as different species. The MST uses a multi-authority matching pipeline in which every source name resolves to one canonical identifier.\nTaxa resolve into one of two authorities, not one:\nA merged model is keyed by that identity — ms_merge|WORMS:137209, ms_merge|BOTW:22694927 — which is also why species must be counted on the (authority, id) pair: the two namespaces number independently, so counting bare ids collides birds with invertebrates.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Taxonomy</span>"
+    ]
+  },
+  {
+    "objectID": "taxonomy.html#two-taxonomic-namespaces",
+    "href": "taxonomy.html#two-taxonomic-namespaces",
+    "title": "6  Taxonomy",
+    "section": "",
+    "text": "Birds → BirdLife (BOTW:{sisid}). WoRMS coverage of birds is poor and its isMarine flag is unreliable for seabirds, so birds are not resolved through WoRMS.\nEverything else → WoRMS (WORMS:{aphia_id}), resolved from the scientific name via the ITIS↔︎WoRMS crosswalk, then exact WoRMS matching, then the WoRMS REST API for the remainder.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Taxonomy</span>"
+    ]
+  },
+  {
+    "objectID": "taxonomy.html#taxonomic-authorities",
+    "href": "taxonomy.html#taxonomic-authorities",
+    "title": "6  Taxonomy",
+    "section": "6.2 Taxonomic authorities",
+    "text": "6.2 Taxonomic authorities\n\n\n\nTable 6.1: Taxonomic authorities used for name resolution.\n\n\n\n\n\nAuthority\nRole\nKey\n\n\n\n\nWoRMS\nWorld Register of Marine Species — canonical identity for all non-bird marine taxa, and the source of the class/phylum used to assign a species category\nworms_id (AphiaID)\n\n\nBirdLife BOTW\nBirds of the World — canonical identity and ranges for birds\nbotw_id (SIS ID)\n\n\nGBIF\nBackbone taxonomy, used as a crosswalk into WoRMS\ngbif_id\n\n\nITIS\nUS federal standard; the first match attempted where a source supplies a TSN\nitis_tsn\n\n\nIUCN Red List\nConservation status, and expert range maps\niucn_id\n\n\n\n\n\n\nAt each stage deprecated names resolve to their accepted synonyms, with the original source name kept alongside the accepted one.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Taxonomy</span>"
+    ]
+  },
+  {
+    "objectID": "taxonomy.html#species-categories",
+    "href": "taxonomy.html#species-categories",
+    "title": "6  Taxonomy",
+    "section": "6.3 Species categories",
+    "text": "6.3 Species categories\n\n\n\n\nTable 6.2: Species categories in v2. Scored is read from the metric registry — a category is scored only where the release published an extrisk_{cat} metric for it. Valid counts the taxa eligible for scoring.\n\n\n\n\n\n\nCategory\nTaxa\nValid\nScored\n\n\n\n\ninvertebrate\n8,243\n8,183\nYes\n\n\nfish\n6,679\n6,678\nYes\n\n\nother\n1,129\n1,128\nYes\n\n\ncoral\n775\n775\nYes\n\n\nbird\n614\n496\nYes\n\n\nmammal\n89\n88\nYes\n\n\nturtle\n7\n5\nYes\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNoteHow categories are assigned\n\n\n\n\nSea turtles are their own category (turtle), separated from reptile so that the multiplicative turtle merge and the turtle metric have somewhere to live (see Chapter 8). Non-turtle reptiles — sea snakes, marine iguanas — remain in the taxonomy but are not scored.\nother collects taxa this release’s assignment could not place. It is a symptom rather than a category, and later releases removed the need for it by assigning from the taxonomic hierarchy instead — see Releases.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Taxonomy</span>"
+    ]
+  },
+  {
+    "objectID": "taxonomy.html#sec-is-marine",
+    "href": "taxonomy.html#sec-is-marine",
+    "title": "6  Taxonomy",
+    "section": "6.4 Marine relevance",
+    "text": "6.4 Marine relevance\nNot every taxon in the source data belongs in a marine sensitivity analysis, and the obvious test does not work.\nWoRMS isMarine fails for birds. Birds are resolved through BirdLife, so most have no WoRMS record at all, and those that do are inconsistently flagged; relying on it would drop nearly every seabird. Earlier releases sidestepped this with a purely spatial test — a taxon counted as marine if its distribution overlapped the study area — which admits any coastal or inland bird whose range happens to reach the coast.\nThis release predates the explicit marine-relevance cull. Marine status comes from WoRMS isMarine, with birds admitted through BirdLife instead, so the bird counts on this page are broader than in later releases.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Taxonomy</span>"
+    ]
+  },
+  {
+    "objectID": "taxonomy.html#from-source-taxa-to-valid-species",
+    "href": "taxonomy.html#from-source-taxa-to-valid-species",
+    "title": "6  Taxonomy",
+    "section": "6.5 From source taxa to valid species",
+    "text": "6.5 From source taxa to valid species\n\n\n\n\nTable 6.3: Validity gates applied cumulatively to v2’s published taxon table. The final row applies the release’s own validity flag to the whole table — it is the authoritative count, and not simply the conjunction of the diagnostic gates above it.\n\n\n\n\n\n\nFilter step\nRemoved\nTaxa remaining\n\n\n\n\nSource taxa (all datasets)\n—\n17,561\n\n\nResolved to a taxon id\n—\n17,561\n\n\nHas a merged distribution\n—\n17,561\n\n\nNot extinct\n−21\n17,540\n\n\nMarine (WoRMS, or a BirdLife bird)\n−48\n17,492\n\n\nValid for scoring (the release’s is_ok)\n−139\n17,353\n\n\n\n\n\n\n\n\nThis yields 17,353 valid species across the study area.\nOf those, 9,792 have modeled distributions inside the 20 BOEM Program Areas of the current program cycle. That is a spatial result, obtained by asking the zone tables which species occur there — not a property of the validity flag.\n\n\n\n\n\n\nImportantValidity is not the same question as “occurs in a Program Area”\n\n\n\nThrough v6 the validity flag silently required overlap with a BOEM Program Area, conflating “this is a real, mapped marine species” with “this species happens to fall inside the areas of the current program cycle” — and so hiding biodiversity outside that cycle. From v7 the two are separate: validity means the taxon has a modeled distribution in the study area, and Program-Area membership is a zone query answered afterwards.\nThis is why the headline count is not comparable across releases: it rose sharply at v7 without a single species being added, because the definition changed. Per-release counts are on the Releases page.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Taxonomy</span>"
+    ]
+  },
+  {
+    "objectID": "taxonomy.html#data-quality",
+    "href": "taxonomy.html#data-quality",
+    "title": "6  Taxonomy",
+    "section": "6.6 Data quality",
+    "text": "6.6 Data quality\n\n6.6.1 Duplicate resolution\nSeveral datasets may supply a model for the same species. Resolving every source name to one canonical identifier is what makes those models merge — taking the maximum per cell — instead of appearing as separate species and counting the taxon more than once in every score.\n\n\n6.6.2 Synonym handling\nNames change as taxa are reclassified. The pipeline resolves through acceptedNameUsageID in each authority, keeps the original source name alongside the accepted one, and updates deprecated identifiers to their current accepted form.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Taxonomy</span>"
+    ]
+  },
+  {
+    "objectID": "taxonomy.html#implementation",
+    "href": "taxonomy.html#implementation",
+    "title": "6  Taxonomy",
+    "section": "6.7 Implementation",
+    "text": "6.7 Implementation\nName resolution is msens::match_taxa(), which runs the identifier cascade and returns the unified taxon table. Category assignment, the marine cull and the validity flags are applied in the merge_taxon workflow (see Chapter 15).",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Taxonomy</span>"
+    ]
+  },
+  {
+    "objectID": "extinction-risk.html",
+    "href": "extinction-risk.html",
+    "title": "7  Extinction Risk",
+    "section": "",
+    "text": "7.1 Regulatory framework\nExtinction-risk scoring turns a species’ conservation status into a numeric weight, so that a cell holding rare or threatened species scores higher than one holding common ones. The MST combines three US federal frameworks with the international IUCN Red List into a single score from 1 to 100.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Extinction Risk</span>"
+    ]
+  },
+  {
+    "objectID": "extinction-risk.html#regulatory-framework",
+    "href": "extinction-risk.html#regulatory-framework",
+    "title": "7  Extinction Risk",
+    "section": "",
+    "text": "7.1.1 Endangered Species Act (ESA)\nThe Endangered Species Act (1973) protects species listed as Endangered (EN) or Threatened (TN) by NMFS (marine species) or FWS (terrestrial and coastal species). ESA listing is the strongest signal available and drives the score for US-listed species.\n\n\n7.1.2 Marine Mammal Protection Act (MMPA) — assigned by taxonomy\nThe Marine Mammal Protection Act (1972) protects all marine mammals in US waters regardless of ESA status, so the MST assigns it by taxonomy: every taxon in WoRMS class Mammalia, matched on AphiaID.\nThis is deliberate. Deriving the flag from the NMFS Species Directory instead — as earlier releases did — captures only the managed stocks listed there, roughly 70 against the ~137 marine-mammal taxa the analysis actually carries, and it silently omitted the FWS-managed species entirely (walrus, polar bear, sea otter, manatee, dugong). Taxonomy is the complete test because the statute is written in taxonomic terms.\nThe floor is 20, higher than the MBTA’s, because the MMPA imposes a stronger statutory standard: it affirmatively requires marine mammal populations to be maintained at Optimum Sustainable Population levels and mandates recovery, whereas the MBTA is primarily a prohibitive take statute. Marine mammals also tend to have lower reproductive rates and longer recovery times than most seabirds.\n\n\n7.1.3 Migratory Bird Treaty Act (MBTA) — an explicit species list, not all birds\nThe Migratory Bird Treaty Act (1918) protects migratory birds native to the United States and its territories — which is an explicit list, not a taxonomic class.\n\n\n\n\n\n\nImportantThe MBTA floor is the FWS CFR 50 §10.13 list, not all Aves\n\n\n\nA bird absent from 10.13 — a non-US or non-migratory species — receives no MBTA floor. Treating “bird” as equivalent to “MBTA-protected” would apply a US statutory floor to species the statute does not cover, inflating their weight in US waters.\nNote also that most 10.13 birds are terrestrial. The list sets the value of the birds that reach scoring; what keeps terrestrial birds out of the score in the first place is the marine-relevance cull (see Section 6.4).\n\n\n\n\n7.1.4 IUCN Red List\nFor species with no US federal listing, the score falls back to the IUCN Red List category: Critically Endangered (CR), Endangered (EN), Vulnerable (VU), Near Threatened (NT), Least Concern (LC) and Data Deficient (DD).\n\n\n\n\n\n\nNote\n\n\n\nTN is an ESA status (Threatened), not an IUCN one — IUCN uses NT for Near Threatened. msens::compute_er_score() errors on a code such as IUCN:TN rather than scoring it through a default, because a silently-defaulted code is a wrong weight that nothing surfaces.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Extinction Risk</span>"
+    ]
+  },
+  {
+    "objectID": "extinction-risk.html#scoring",
+    "href": "extinction-risk.html#scoring",
+    "title": "7  Extinction Risk",
+    "section": "7.2 Scoring",
+    "text": "7.2 Scoring\nScores are computed by msens::compute_er_score(), on two tracks.\n\n7.2.1 US-listed species\nFor a species with an ESA listing, or MMPA or MBTA protection, the score is the maximum of the applicable components:\n\\[\n\\text{er\\_score} = \\max(\\text{ESA base},\\; \\text{MMPA floor},\\; \\text{MBTA floor})\n\\tag{7.1}\\]\n\n\n\nTable 7.1: Components for a US-listed species; the final score is the maximum across those that apply.\n\n\n\n\n\nComponent\nScore\n\n\n\n\nESA Endangered (EN)\n100\n\n\nESA Threatened (TN)\n50\n\n\nESA not listed (LC)\n1\n\n\nMMPA protected (all Mammalia)\n20\n\n\nMBTA protected (CFR 50 §10.13)\n10\n\n\n\n\n\n\nWorked examples:\n\nESA Endangered whale (also MMPA): \\(\\max(100, 20) = \\mathbf{100}\\)\nESA Threatened seabird on the 10.13 list: \\(\\max(50, 10) = \\mathbf{50}\\)\nMarine mammal with no ESA listing: \\(\\max(1, 20) = \\mathbf{20}\\)\n10.13 migratory bird with no ESA listing: \\(\\max(1, 10) = \\mathbf{10}\\)\n\nA species carrying an MMPA or MBTA floor is routed onto this track even when it has no ESA listing, which is what guarantees the floor is actually applied rather than being lost to the IUCN track.\n\n\n7.2.2 Species with no US listing\n\n\n\nTable 7.2: IUCN-based scores for species not listed by NMFS or FWS.\n\n\n\n\n\nIUCN category\nScore\n\n\n\n\nCritically Endangered (CR)\n50\n\n\nEndangered (EN)\n25\n\n\nVulnerable (VU)\n5\n\n\nNear Threatened (NT)\n2\n\n\nLeast Concern / Data Deficient / other\n1\n\n\n\n\n\n\nThe IUCN scale is deliberately lower than the ESA one: a US statutory listing is a stronger, jurisdiction-specific statement about a species in US waters than an international assessment.\nSpecies with no matching code at all receive the baseline of 1.\n\n\n7.2.3 The governing score, and where it is applied\nA taxon may carry several conservation codes at once — one per contributing dataset — and they can disagree, or be stale. The pipeline therefore computes one governing score per taxon: the most protective across its datasets, with a US national listing overriding the IUCN category, plus the statutory floors.\nThat governing score is applied at merge time, to the range cells — the point at which a species’ presence in a cell should carry its governing risk rather than whatever code the source dataset happened to record. Scoring then reads values that already reflect it.\n\n\n\nTable 7.3: Distribution of the governing er_score across v2’s valid species.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Extinction Risk</span>"
+    ]
+  },
+  {
+    "objectID": "extinction-risk.html#scale",
+    "href": "extinction-risk.html#scale",
+    "title": "7  Extinction Risk",
+    "section": "7.3 Scale",
+    "text": "7.3 Scale\nScores run from 1 to 100 and represent a percentage-like weight — 100 being maximum risk and 1 the baseline. Integers are used for storage efficiency; conceptually the scale is a 0–1 weight multiplied by 100.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Extinction Risk</span>"
+    ]
+  },
+  {
+    "objectID": "extinction-risk.html#implementation",
+    "href": "extinction-risk.html#implementation",
+    "title": "7  Extinction Risk",
+    "section": "7.4 Implementation",
+    "text": "7.4 Implementation\nmsens::compute_er_score(\n  extrisk_code,      # \"NMFS:EN\", \"FWS:TN\", \"IUCN:CR\", ...\n  is_mmpa = FALSE,   # MMPA protection (all WoRMS Mammalia)\n  is_mbta = FALSE)   # MBTA protection (FWS CFR 50 §10.13)\nextrisk_code is AUTHORITY:STATUS, where the authority is NMFS, FWS or IUCN, and the status is an ESA code (EN, TN, LC) or an IUCN code (CR, EN, VU, NT, LC, DD). Any other combination is an error, not a default.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Extinction Risk</span>"
+    ]
+  },
+  {
+    "objectID": "model-merging.html",
+    "href": "model-merging.html",
+    "title": "8  Model Merging",
+    "section": "",
+    "text": "8.1 The rule, in one place\nA taxon may have distribution data in several source datasets. Merging combines them into one surface per taxon, applying the taxon’s governing extinction risk and constraining the result to where experts say the species actually occurs.\nThe merge rules are msens::merge_sql() and msens::turtle_sql() — SQL held in the package rather than inside a notebook. The merge notebook executes them and the unit tests assert them against synthetic fixtures, one per taxon category, so the pipeline and its tests cannot drift apart. Changing a rule in a way that breaks a documented case fails the tests.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Model Merging</span>"
+    ]
+  },
+  {
+    "objectID": "model-merging.html#pipeline",
+    "href": "model-merging.html#pipeline",
+    "title": "8  Model Merging",
+    "section": "8.2 Pipeline",
+    "text": "8.2 Pipeline\n\n\n\n\n\n\n\n\n\n\nFigure 8.1: Merging one taxon’s source models into a single surface.\n\n\n\n\n\n\n8.2.1 Step 1 — gather the taxon’s models\nEvery model resolving to the same taxon is collected: an AquaMaps suitability surface, any regulatory habitat or range designation (NMFS, FWS), a BirdLife or IUCN range map, and for sea turtles a SWOT+DPS range.\n\n\n8.2.2 Step 2 — the expert range constrains AquaMaps\nThis is the heart of the merge, and it is not a plain maximum.\nWhere a taxon has an expert range, the merged surface is the range footprint, valued at the maximum of the taxon’s governing er_score and the AquaMaps value at those cells:\n\\[\nv_{c} = \\max\\!\\big(\\text{er\\_score},\\; v_{am,c}\\big) \\qquad c \\in \\text{range}\n\\tag{8.1}\\]\nAquaMaps values beyond the range are masked away. An environmental-envelope model will happily predict suitable habitat far outside where a species is known to occur; the expert range is what stops that prediction becoming an assertion of presence.\nWhere a taxon has no expert range anywhere, there is nothing to constrain it against, so its raw AquaMaps footprint is kept as-is.\n\n\n\n\n\n\nImportant“Has a range” is a global question, not a local one\n\n\n\nWhether a taxon counts as range-constrained is decided on its range anywhere in the world, not on whether that range reaches the study area.\nThat distinction is the entire mechanism for excluding species whose expert range lies wholly outside US waters. Such a species has an expert range, so it takes the range-constrained path; its range ∩ US is empty, so it contributes no US cells. Deciding instead on “has a range in the US” would push those same species onto the unconstrained AquaMaps path and re-admit roughly 750 of them — river dolphins such as Sotalia guianensis among them — on the strength of edge-of-range model artifacts that expert assessment places nowhere near the US.\nThis was a v6 fix, lost in the v8 rewrite and since restored. It is now a named regression test.\n\n\n\n\n8.2.3 Step 3 — two surfaces, not one\n\n\n8.2.4 Step 4 — sea turtles multiply instead of taking a maximum\nFor the six sea turtle species, extinction risk varies across the range: NOAA Fisheries lists Distinct Population Segments separately, so the same species can be Endangered in one region and Threatened in another. A single scalar weight cannot express that.\nSo the turtle merge multiplies the DPS extinction-risk surface by the suitability surface:\n\\[\nv_{c} = \\max\\!\\Big(1,\\; \\mathrm{round}\\Big(\\frac{v_{er,c} \\times v_{suit,c}}{100}\\Big)\\Big)\n\\tag{8.2}\\]\nCritical-habitat designations then override with a maximum, so a designated cell is never scored below its designation.\nBecause risk is already inside the merged values, turtles receive er_score = 100 at scoring time as a pass-through multiplier (flagged is_er_spatial), which cancels in the division by 100 rather than double-counting.\n\n\n\n\n\n\nNoteTwo merge strategies\n\n\n\n\nMost taxa — range-constrained maximum, then a scalar extinction-risk weight at scoring time.\nSea turtles — an extinction-risk raster multiplied into the merged model, so risk varies spatially within the species.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Model Merging</span>"
+    ]
+  },
+  {
+    "objectID": "model-merging.html#where-extinction-risk-enters",
+    "href": "model-merging.html#where-extinction-risk-enters",
+    "title": "8  Model Merging",
+    "section": "8.3 Where extinction risk enters",
+    "text": "8.3 Where extinction risk enters\nThe governing er_score (Chapter 7) is applied at merge time, valuing the range cells — the point at which a species’ presence in a cell should carry its governing risk rather than whatever code the contributing dataset happened to record. Applying it later, at scoring, would lose that: the merged surface would carry source-specific codes that may be stale or out of jurisdiction.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Model Merging</span>"
+    ]
+  },
+  {
+    "objectID": "model-merging.html#the-statutory-floors",
+    "href": "model-merging.html#the-statutory-floors",
+    "title": "8  Model Merging",
+    "section": "8.4 The statutory floors",
+    "text": "8.4 The statutory floors\nThe MMPA (20) and MBTA (10) floors are part of the governing er_score, not a separate pass over the cells. A marine mammal’s range cells therefore carry at least 20 wherever it is present, and a CFR 50 §10.13 migratory bird at least 10 — see Chapter 7 for how each flag is assigned, and why the MBTA one is a species list rather than “all birds”.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Model Merging</span>"
+    ]
+  },
+  {
+    "objectID": "model-merging.html#persisted-output",
+    "href": "model-merging.html#persisted-output",
+    "title": "8  Model Merging",
+    "section": "8.5 Persisted output",
+    "text": "8.5 Persisted output\nThe merged result is stored as:\n\nmodel — one row per merged model, keyed by mdl_seq.\nmodel_cell — one row per model × cell, holding the merged value in val.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Model Merging</span>"
+    ]
+  },
+  {
+    "objectID": "model-merging.html#validity-after-merging",
+    "href": "model-merging.html#validity-after-merging",
+    "title": "8  Model Merging",
+    "section": "8.6 Validity after merging",
+    "text": "8.6 Validity after merging\nA taxon is flagged valid once merging has run, on the criteria in Chapter 6 — chiefly that it resolved to a taxon, is marine and not extinct, and has at least one merged cell in the study area. Program-Area overlap is not among them from v7 onward; it is a spatial question answered later.\nIn v2 this yields 17,353 valid species across the study area, of which 9,792 contribute to scores within the 20 BOEM Program Areas of the current program cycle.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Model Merging</span>"
+    ]
+  },
+  {
+    "objectID": "model-merging.html#guarding-the-rules",
+    "href": "model-merging.html#guarding-the-rules",
+    "title": "8  Model Merging",
+    "section": "8.7 Guarding the rules",
+    "text": "8.7 Guarding the rules\nEvery merge category has a synthetic fixture in the msens test suite asserting its exact expected output: range-only, both-masked, range-outside-the-US excluded, AquaMaps-only single-model, AquaMaps-only multi-model (which must not deduplicate), and the multiplicative turtle case.\nThis is deliberate. Whole-pipeline checks — the version-equivalence gate on Program-Area scores, and the content-hash checkpoints — catch aggregate drift, but they hide rule-level breakage: the ~750 wrongly-included species above moved aggregate scores almost not at all while being scientifically wrong. A category with no fixture is a category that can break silently.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Model Merging</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html",
+    "href": "scoring.html",
+    "title": "9  Scoring",
+    "section": "",
+    "text": "9.1 Cell-level scoring\nScoring turns merged species distributions and extinction-risk weights into per-cell sensitivity metrics, which are then rescaled within ecoregions and aggregated to management zones.\nFor each cell, sensitivity is the extinction-risk-weighted sum of species presence within a species category:\n\\[\n\\text{score}_{c,g} = \\sum_{s=1}^{S_g} \\frac{\\text{er\\_score}_s \\times v_{s,c}}{100}\n\\tag{9.1}\\]\nwhere \\(\\text{score}_{c,g}\\) is the score for cell \\(c\\) and category \\(g\\); \\(\\text{er\\_score}_s\\) is species \\(s\\)’s extinction-risk weight (1–100, Chapter 7); \\(v_{s,c}\\) is the merged model value for that species in that cell (0–100, Chapter 8); and \\(S_g\\) is the number of valid species in the category. Dividing by 100 returns the product to a 0–100 scale.\nIn plain terms: for every cell the MST adds up the contributions of the species found there. A cell holding many species that are both likely present and at high risk scores higher — which is how places where rare or threatened species concentrate are identified.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#cell-level-scoring",
+    "href": "scoring.html#cell-level-scoring",
+    "title": "9  Scoring",
+    "section": "",
+    "text": "9.1.1 Sea turtles are the exception\nFor turtles, extinction risk is already inside the merged values via the multiplicative merge (Chapter 8), so the formula collapses to a plain sum:\n\\[\n\\text{score}_{c,g} = \\sum_{s=1}^{S_g} v_{merged,s,c}\n\\tag{9.2}\\]\ner_score = 100 acts as a pass-through multiplier that cancels against the division. Cells inside an Endangered DPS therefore contribute more than cells inside a Threatened one, for the same species at the same suitability.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#metrics",
+    "href": "scoring.html#metrics",
+    "title": "9  Scoring",
+    "section": "9.2 Metrics",
+    "text": "9.2 Metrics\n\n\n\n\nTable 9.1: Cell-level metrics published by v2. Each has an ecoregionally rescaled counterpart, and the composite is their equally weighted mean.\n\n\n\n\n\n\n\n\n\n\nMetric\nDescription\n\n\n\n\nextrisk_all\nExtinction risk for all\n\n\nextrisk_all_ecoregion_rescaled\nExtinction risk for all, rescaled to [0,100] based on Ecoregional min/max values\n\n\nextrisk_bird\nExtinction risk for bird\n\n\nextrisk_bird_ecoregion_rescaled\nExtinction risk for bird, rescaled to [0,100] based on Ecoregional min/max values\n\n\nextrisk_coral\nExtinction risk for coral\n\n\nextrisk_coral_ecoregion_rescaled\nExtinction risk for coral, rescaled to [0,100] based on Ecoregional min/max values\n\n\nextrisk_fish\nExtinction risk for fish\n\n\nextrisk_fish_ecoregion_rescaled\nExtinction risk for fish, rescaled to [0,100] based on Ecoregional min/max values\n\n\nextrisk_invertebrate\nExtinction risk for invertebrate\n\n\nextrisk_invertebrate_ecoregion_rescaled\nExtinction risk for invertebrate, rescaled to [0,100] based on Ecoregional min/max values\n\n\nextrisk_mammal\nExtinction risk for mammal\n\n\nextrisk_mammal_ecoregion_rescaled\nExtinction risk for mammal, rescaled to [0,100] based on Ecoregional min/max values\n\n\nextrisk_other\nExtinction risk for other\n\n\nextrisk_other_ecoregion_rescaled\nExtinction risk for other, rescaled to [0,100] based on Ecoregional min/max values\n\n\nextrisk_turtle\nExtinction risk for turtle\n\n\nextrisk_turtle_ecoregion_rescaled\nExtinction risk for turtle, rescaled to [0,100] based on Ecoregional min/max values\n\n\nprimprod\nPrimary productivity: Oregon State Vertically Generalized Production Model (VGPM) from Visible Infrared Imaging Radiometer Suite (VIIRS) satellite data (mg C / m^2 / day) from daily averages available as monthly averaged to annual and averaged to overall for the most recently available full years of data 2014 to 2023\n\n\nprimprod_ecoregion_rescaled\nPrimary productivity rescaled to [0,100] based on Ecoregional min/max values\n\n\nscore_extriskspcat_primprod_ecoregionrescaled_equalweights\nCombined score of extinction risk per species category and primary productivity, equally weighted (and each previously rescaled [0,100] based on Ecoregional min/max values)\n\n\n\n\n\n\n\n\nOne extinction-risk metric exists per scored species category — invertebrate, fish, other, coral, bird, mammal, turtle — plus primary productivity, which carries no extinction-risk weighting.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#ecoregional-rescaling",
+    "href": "scoring.html#ecoregional-rescaling",
+    "title": "9  Scoring",
+    "section": "9.3 Ecoregional rescaling",
+    "text": "9.3 Ecoregional rescaling\nRaw cell scores vary naturally between ecoregions, through differences in species richness, oceanography and biogeography. Each metric is therefore rescaled to 0–100 within each BOEM Ecoregion:\n\\[\n\\text{score}'_{c} = \\frac{\\text{score}_{c} - \\text{score}_{min}}{\\text{score}_{max} - \\text{score}_{min}} \\times 100\n\\tag{9.3}\\]\nwith the minimum and maximum taken over that metric’s cells within the ecoregion.\n\n\n\n\n\n\nImportantScores are relative within an ecoregion, never absolute\n\n\n\nA score of 100 marks the most sensitive cell for that metric within that ecoregion — not globally. A 30 in Alaska and a 30 in the Pacific describe different ecological contexts.\nScores are therefore directly comparable among Program Areas within one ecoregion, and should not be compared across ecoregions.\n\n\nWhy rescale at all? Without it, naturally species-rich areas would almost always score highest simply for holding more species. More species may well indicate greater ecological importance — but it can equally be argued that the fewer species an ecosystem has, the more each one matters to its function and resilience. Rescaling within ecoregions keeps scores from being dominated by richness. Comparing across ecoregions would require settling that argument with a mathematical relationship between the two views, which remains a live academic debate.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#spatial-units",
+    "href": "scoring.html#spatial-units",
+    "title": "9  Scoring",
+    "section": "9.4 Spatial units",
+    "text": "9.4 Spatial units\n\n\n\n\nTable 9.2: Spatial units v2 scored, with the geometry vintage each used.\n\n\n\n\n\n\nUnit\nField\nCount\nVintage\n\n\n\n\nBOEM Ecoregion\necoregion_key\n12\necoregion_2025-06\n\n\nBOEM Planning Area\nplanarea_key\n36\nplanarea_2025-06\n\n\nBOEM Program Area\nprogramarea_key\n20\nprogramarea_2026-01\n\n\nSubregion\nsubregion_key\n4\nsubregion_2025-06\n\n\n\n\n\n\n\n\nGeometry is versioned by its own vintage rather than by release, so several releases legitimately share one boundary set — one Program Area geometry covers v2 through v8, and one ecoregion geometry covers every release. Each release’s manifest names the vintage it used, which is what lets this book draw the correct outlines for the version it documents instead of the newest ones.\n\n9.4.1 Geographic scope\nThe analysis covers 20 BOEM Program Areas from the 11th National Draft Proposed Program (2025), spanning Alaska, the Pacific and the Gulf of America. The Atlantic OCS is not part of this program cycle, so ecoregions containing no Program Area are outside the scored footprint.\nThe Gulf of America Program Areas (GAA and GAB) each span two ecoregions — Western and Central Gulf of America, and Eastern Gulf of America. Because rescaling happens before aggregation, cells are rescaled against their own ecoregion’s range, and the Program Area score is then the area-weighted mean across all its cells regardless of ecoregion. Local ecological context is preserved even where a Program Area crosses a boundary.\n\n\n\n\n\n\n\n\nFigure 9.1: BOEM Ecoregions (colored) and Program Area outlines. Ecoregion keys: CAC = California Current; CBS = Chukchi and Beaufort Seas; EBS = East Bering Sea; EGOA = Eastern Gulf of America; GOA = Gulf of Alaska; HAR = High Arctic; NECS = Northeast Continental Shelf; PIS = Pacific Island Territories; PUR = Puerto Rico and U.S. Virgin Islands; SECS = Southeast Continental Shelf; WAOR = Washington/Oregon; WCGOA = Western and Central Gulf of America. Program Area keys: ALA = Aleutian Arc; ALB = Aleutian Basin; BFT = Beaufort Sea; BOW = Bowers Basin; CEC = Central California; CHU = Chukchi Sea; COK = Cook Inlet; GAA = GOA Program Area A; GAB = GOA Program Area B; GEO = St. George Basin; GOA = Gulf of Alaska; HAR = High Arctic; HOP = Hope Basin; KOD = Kodiak; MAT = St. Matthew-Hall; NAV = Navarin Basin; NOC = Northern California; NOR = Norton Basin; SHU = Shumagin; SOC = Southern California.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#primary-productivity",
+    "href": "scoring.html#primary-productivity",
+    "title": "9  Scoring",
+    "section": "9.5 Primary productivity",
+    "text": "9.5 Primary productivity\nNet primary productivity from the VGPM satellite model enters as its own metric (primprod), without extinction-risk weighting. The raw values (metric tons C km-2 yr-1) are rescaled within each ecoregion on the same 0–100 basis as everything else.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#zone-aggregation",
+    "href": "scoring.html#zone-aggregation",
+    "title": "9  Scoring",
+    "section": "9.6 Zone aggregation",
+    "text": "9.6 Zone aggregation\nRescaled cell scores are aggregated to each spatial unit by area-weighted mean:\n\\[\n\\text{score}_{zone} = \\frac{\\sum_{c \\in zone} \\text{score}'_c \\times A_c}{\\sum_{c \\in zone} A_c}\n\\tag{9.4}\\]\nwhere \\(A_c\\) is the area of cell \\(c\\) — which is latitude-dependent on a 0.05° grid, so the weighting is not cosmetic.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#visualization",
+    "href": "scoring.html#visualization",
+    "title": "9  Scoring",
+    "section": "9.7 Visualization",
+    "text": "9.7 Visualization\n\n9.7.1 Flower plot\nThe flower plot summarizes a zone’s sensitivity profile by category, after the Ocean Health Index (Halpern et al. 2012):\n\npetal length — the rescaled score (0–100) for that category; longer means more sensitive\npetal width — that category’s weight in the composite; wider means more influence\ncentre — the weighted mean across categories\n\n\n\n\n\n\n\nFigure 9.2: Flower plots for the BOEM Program Areas, showing ecoregionally rescaled sensitivity scores by species category.\n\n\n\nIt lets a reader see at a glance which ecological elements drive sensitivity in an area. The scores app implements an interactive version.\n\n\n9.7.2 Treemap\nThe treemap shows how individual species contribute to a score, nested first by extinction-risk category and then by taxonomy, with zoom down to single species.\n\n\n\n\n\n\nFigure 9.3: Treemap of species contributions to extinction-risk scores, organized by risk category and taxonomy.\n\n\n\n\n\n\n\n\n\nFigure 9.4: Zoomed treemap showing individual species within a risk category and taxonomic group.\n\n\n\n\n\n9.7.3 Score rasters\nCell-level scores are published as Cloud-Optimized GeoTIFFs, one per metric x subregion, with the manifest carrying each raster’s URL and its build-time rescale range. The map reads those directly.\nThis replaced a tile factory that ran SQL against the database on every tile request. The rasters were verified byte-identical to the factory’s output before the switch. They are stored without overviews deliberately: the renderer decimates from full resolution per request, so a pre-built pyramid would disagree with it at low zoom.\n\n\n9.7.4 Interactive maps\nTwo Shiny applications present the results, each rendering any published release from a ?ver= parameter rather than being frozen to one:\n\nScores — composite and per-category sensitivity by zone, with flower plots and treemaps (see Appendix B)\nSpecies — individual and merged distribution models with regulatory status (see Appendix C)\n\nAppend ?ver=v3 (or any published version) to view that release. See Chapter 18.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring.html#implementation",
+    "href": "scoring.html#implementation",
+    "title": "9  Scoring",
+    "section": "9.8 Implementation",
+    "text": "9.8 Implementation\nScoring runs in the score_zones, score_cell_metrics and score_zone_metrics workflows (Chapter 15). Whole-pipeline equivalence between releases is checked by msens::pra_score_delta, which compares Program-Area scores on the species the two releases share.\n\n\n\n\nHalpern, Benjamin S., Catherine Longo, Darren Hardy, et al. 2012. “An Index to Assess the Health and Benefits of the Global Ocean.” Nature, ahead of print. https://doi.org/10.1038/nature11397.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Scoring</span>"
+    ]
+  },
+  {
+    "objectID": "scoring-walkthrough.html",
+    "href": "scoring-walkthrough.html",
+    "title": "10  Scoring Walkthrough",
+    "section": "",
+    "text": "This interactive walkthrough demonstrates how the Marine Sensitivity Toolkit calculates sensitivity scores, from input rasters through model merging, ecoregional rescaling, and final aggregation. Use the arrow keys or navigation buttons to step through the pipeline. Click any step in the top bar to jump directly to it.\nFor the underlying methodology, see Scoring and Model Merging. For source code, see the workflows index, which lists every notebook in the pipeline with its current dependency graph.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Scoring Walkthrough</span>"
+    ]
+  },
+  {
+    "objectID": "stressors.html",
+    "href": "stressors.html",
+    "title": "11  Stressors",
+    "section": "",
+    "text": "11.1 Offshore Wind Energy\nThe stressor component of the vulnerability framework (see Chapter 4) addresses the human activities that may impact marine ecosystems. This section is a placeholder for future phases of the MST, which will incorporate stressor-receptor interaction matrices to complete the full vulnerability assessment.\nEvaluation of stressors from the offshore wind industry needs to be evaluated based on human activities given the phase of development, whether pre-construction, construction, operation or decommissioning (Figure 11.1).",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Stressors</span>"
+    ]
+  },
+  {
+    "objectID": "stressors.html#offshore-wind-energy",
+    "href": "stressors.html#offshore-wind-energy",
+    "title": "11  Stressors",
+    "section": "",
+    "text": "Figure 11.1: Cumulative adverse effects of offshore wind energy development on wildlife (Goodale and Milman 2016).",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Stressors</span>"
+    ]
+  },
+  {
+    "objectID": "stressors.html#oil-gas",
+    "href": "stressors.html#oil-gas",
+    "title": "11  Stressors",
+    "section": "11.2 Oil & Gas",
+    "text": "11.2 Oil & Gas\n\n\n\n\nGoodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse Effects of Offshore Wind Energy Development on Wildlife.” Journal of Environmental Planning and Management 0 (0): 1–21. https://doi.org/10.1080/09640568.2014.973483.",
+    "crumbs": [
+      "Science",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Stressors</span>"
+    ]
+  },
+  {
+    "objectID": "software.html",
+    "href": "software.html",
+    "title": "12  Software",
+    "section": "",
+    "text": "12.1 Software Overview\nThe Marine Sensitivity Toolkit (MST) is a stack of software components for reproducibly, interactively and hierarchically generating environmental vulnerability maps and scores. Tabular data is collated across studies evaluating sensitivity of species to oil & gas and offshore wind energy development. The best available species and benthic habitat distributions are being mosaicked across the US EEZ. Scores are summarized according to subgroups within Species, Benthic Habitats and Primary Productivity, averaged into an overall score, and visualized as a flower plot, applicable to various levels of BOEM relevancy: regional, ecoregions, protraction diagrams, blocks and aliquots.\nThe software components for achieving this interactively are:\nThis toolbox is intended to primarily serve BOEM needs internally, but by being open-source and fully reproducible the hope is to enlist buy-in and even contributions from external partners, whether from other government agencies, academia, NGOs or industry.\nWe ascribe to the philosophy of sharing all code for the sake of reproducibility, transparency and efficiency (Maitner et al. 2024; Lowndes et al. 2017); i.e. the FAIR principles of Findability, Accessibility, Interoperability, and Reusability (Wilkinson et al. 2016).\nFigure 12.1: System architecture: a release is published as partitioned Parquet plus pre-rendered COGs. TiTiler serves the score rasters; zone polygons are served as static PMTiles through Caddy; the Shiny apps combine both layer types and push per-zone scores live into the polygon paint spec.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Software</span>"
+    ]
+  },
+  {
+    "objectID": "software.html#software-overview",
+    "href": "software.html#software-overview",
+    "title": "12  Software",
+    "section": "",
+    "text": "server — a Docker Compose configuration orchestrating the reverse proxy, Shiny server, APIs, TiTiler raster serving and file server;\ndatabase — a columnar, embedded analytic database (DuckDB) as the single source of truth for species distributions, per-cell scores and derived per-zone metrics;\nworkflows — Quarto notebooks to ingest source datasets (AquaMaps, IUCN, NMFS/FWS, BirdLife, WoRMS, BOEM zones), merge taxonomic authorities, and compute scores that are written back to DuckDB;\nAPIs — a custom R plumber API for data requests, TiTiler serving the published COGs, and a searchable STAC API with one Item per model;\nlibraries — re-usable documented functions as the msens R package, including the version/manifest registry that lets one application render any release, and the tile-URL helpers the applications use;\napplications — two Shiny apps (scores, species) that combine COG raster layers with static PMTiles vector layers and live-pushed choropleth paint rules, each rendering any published release from ?ver=;\ndocumentation — this Quarto book with figures, tables, glossary and references in interactive HTML or static DOCX / PDF output.\n\n\n\n\n\n12.1.1 Interactive Applications\nWe have developed a series of interactive applications to explore the data and results of the MST project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the shiny package in R (Chang et al. 2024), which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.\n\n\n12.1.2 Overcoming Challenges with Large Spatial Data\nThe MST project incorporates many large spatial datasets that are problematic to render in a typical interactive application. For instance, the most common interactive mapping R package leaflet has a 4 MB limitation for displaying rasters (see “Large Raster Warning” in Raster Images • leaflet). Vectors (points, lines and polygons) get smoothed when containing many vertices, but contiguity between polygons is lost and rendering degrades depending on the user’s connection speed.\nTo work around these limitations we use a “cloud native” stack (see also the Cloud-Optimized Geospatial Formats Guide) that transfers only the pixels / features visible in the current viewport:\n\nRaster cell values are published as pre-rendered Cloud-Optimized GeoTIFFs and delivered as small 256×256 PNG tiles by TiTiler’s stock /cog routes, which range-read only the part of the COG a tile needs.\nVector polygons (Program Areas, Ecoregions, Planning Areas, …) are served as static PMTiles archives by the Caddy file server — a single archive per layer, range-read by the browser.\nChoropleth values (per-Program-Area scores) are pushed live from DuckDB into the PMTiles paint spec via a mapbox-gl match expression, so geometry stays static but color updates as the user changes metric / subregion.\n\nLet’s take a closer look at each.\n\n12.1.2.1 Raster: pre-rendered COGs\nEach metric (e.g. extrisk_mammal) resolves, in DuckDB’s cell_metric table, to a list of (cell_id, val) rows — one per grid cell. Materializing the full raster and shipping it to the browser is not viable (several GiB), so only the tiles in view are transferred.\nScores are published as one COG per metric × subregion, written by a publishing workflow into a content-addressed store. Each release’s manifest carries the href and the build-time rescale range, so the application reads them and hands the URL to TiTiler’s stock /cog endpoints — no custom endpoint, and no database query in the tile path (Figure 12.2).\nTwo details are load-bearing:\n\nNo overviews. The renderer decimates from full resolution on each request, so a pre-built pyramid would disagree with it at low zoom.\nThe object key includes the encoding, not just the payload. Rewriting an object at a stable URL once left GDAL’s /vsicurl serving a cached header describing bytes that no longer existed: fine at z5+, HTTP 500 at z2–z4.\n\nThis replaced a custom TiTiler factory that rendered each tile by executing a validated SELECT against DuckDB and looking the result up against a pre-baked cell-id COG, with Varnish caching each tile URL for seven days. That path is retired but kept behind a flag (see Chapter 16); the two were verified to produce the same picture before the switch.\n\n\n\n\n\n\n\n\n\n\nFigure 12.2: Sequence diagram: a cell-values raster layer is rendered on-the-fly by the custom msens TiTiler factory from the DuckDB source of truth. Varnish caches identical tile URLs for 7 days.\n\n\n\n\n\nBinary overlays — the “cells outside Program Areas” mask — are published the same way, as their own single-color rasters rather than as a query.\n\n\n12.1.2.2 Vector: static PMTiles served by Caddy\nFor polygon layers (Program Areas, Ecoregions, Planning Areas, protractions, blocks, aliquots) we build PMTiles archives offline via tippecanoe and publish them as static files on the server. A PMTiles archive is a single file with an internal directory structure that lets any HTTP client issue small range requests for individual tiles; no tile server process is required — Caddy’s static file handler is all we need (Figure 12.3).\n\n\n\n\n\n\n\n\n\n\nFigure 12.3: Sequence diagram: vector layers are served as static PMTiles archives through Caddy. Each tile is a byte-range read of the archive — no tile server process is in the path.\n\n\n\n\n\nThis is a deliberate simplification from the prior architecture which used PostgreSQL + PostGIS + pg_tileserv. For our workload — polygon layers that change only when the data is rebuilt — a compiled tile server and live database query engine add latency and operational complexity for no benefit over byte-range reads of a pre-baked archive. (PostgreSQL and pg_tileserv are now commented out of docker-compose.yml entirely and are not running; see Chapter 13.)\n\n\n12.1.2.3 Choropleth: live DuckDB values + static PMTiles geometry\nThe Program Area choropleth is the interesting hybrid case. The geometry (Program Area polygons keyed by programarea_key) is static — it comes from the same PMTiles file as the polygon outlines. But the fill color depends on the currently-selected metric + subregion, which means the per-Program-Area score has to come live from DuckDB.\nThe Shiny server handles this by querying zone_metric (pre-aggregated per-zone values), building a mapbox-gl match expression that maps programarea_key → fill_color, and pushing that paint rule to the map through mapgl’s Shiny proxy. No tiles are re-rendered; only the paint specification changes (Figure 12.4).\n\n\n\n\n\n\n\n\n\n\nFigure 12.4: Sequence diagram: the Program Area choropleth. Polygon geometry is static (PMTiles from Caddy file server); per-area fill values come live from DuckDB’s zone_metric table and are pushed into mapbox-gl’s paint spec via a match expression. Switching metrics updates only the paint rule, not the tiles.\n\n\n\n\n\n\n\n12.1.2.4 Data pipeline — how the source of truth is built\nThe serving paths above all sit downstream of one pipeline: ingest workflows write per-dataset distributions, the merge workflows combine them into one surface per taxon, the scoring workflows compute cell_metric and zone_metric, and the release workflow publishes the result as partitioned Parquet plus COGs, PMTiles and a STAC catalog. The whole thing is a targets graph generated from each notebook’s own metadata, so adding a dataset means adding a notebook (Figure 12.5). See Chapter 15.\n\n\n\n\n\n\n\n\n\n\nFigure 12.5: Data pipeline: ingest workflows populate DuckDB; scoring workflows compute cell_metric and zone_metric back into DuckDB; a one-shot COG regen and offline PMTiles build produce the derived artifacts the serving tier reads.\n\n\n\n\n\n\n\n\n12.1.3 Github Repositories\n\n\nSee the MarineSensitivity organization on GitHub.\n\n\n\n\n12.1.4 Software Components\n\n\n\n\n\n\n\n\n\n\nAPIs\n\n\napplication programming interfaces (APIs)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApps\n\n\ninteractive applications using Shiny\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDatabase\n\n\nDuckDB as the authoritative store for species distribution models and derived scores\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDocs\n\n\ntechnical documentation\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLibraries\n\n\ndocumented functions as an R package\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nServer\n\n\nserver software configuration using Docker\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorkflows\n\n\nscripts for exploring plus production workflows\n\n\n\n\n\n\n\n\n\n\nNo matching items\n\n\n\n\n\n\nChang, Winston, Joe Cheng, JJ Allaire, et al. 2024. Shiny: Web Application Framework for r. https://CRAN.R-project.org/package=shiny.\n\n\nLowndes, Julia S. Stewart, Benjamin D. Best, Courtney Scarborough, et al. 2017. “Our Path to Better Science in Less Time Using Open Data Science Tools.” Nature Ecology & Evolution 1 (6): 0160. https://doi.org/10.1038/s41559-017-0160.\n\n\nMaitner, Brian, Paul Efren Santos Andrade, Luna Lei, et al. 2024. “Code Sharing in Ecology and Evolution Increases Citation Rates but Remains Uncommon.” Ecology and Evolution 14 (8): e70030. https://doi.org/10.1002/ece3.70030.\n\n\nWilkinson, Mark D., Michel Dumontier, IJsbrand Jan Aalbersberg, et al. 2016. “The FAIR Guiding Principles for Scientific Data Management and Stewardship.” Scientific Data 3 (1): 160018. https://doi.org/10.1038/sdata.2016.18.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Software</span>"
+    ]
+  },
+  {
+    "objectID": "server.html",
+    "href": "server.html",
+    "title": "13  Server",
+    "section": "",
+    "text": "13.1 Setup\nThe server is for serving up any web services outside those of Github (e.g., website, docs and R package msens) using Docker (see the docker-compose.yml; with reverse proxying from subdomains to ports by Caddy).\nThe full architecture is summarized in the Software overview. This chapter documents the concrete services running on the host and how Caddy maps subdomains to container ports.\nFor the latest instructions on launching an Amazon instance and installing the server software, see Server Setup · MarineSensitivity/server Wiki, which is pasted below for convenience…\non AWS as EC2 instance using Docker",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Server</span>"
+    ]
+  },
+  {
+    "objectID": "server.html#setup",
+    "href": "server.html#setup",
+    "title": "13  Server",
+    "section": "",
+    "text": "13.1.1 launch instance\nname: msens1:\n\nSoftware Image (AMI)\nCanonical, Ubuntu, 22.04 LTS, amd64 jammy image build on 2023-09-19 ami-0fc5d935ebf8bc3bc\nVirtual server type (instance type)\nt2.xlarge (4 vCPU, 16 GB memory)\n\nFirewall (security group)\nNew security group\nStorage (volumes)\n2 volume(s)\n\n20 GB\n/ server software, disposable\n60 GB\n/share for all data, persistent and to be backed up\n\n\n\n13.1.1.1 allocate IP address\n\nElastic IP addresses | EC2 | us-east-1 for persistent IP address\nAllocated IPv4 address: 100.25.173.0\nAssociate Elastic IP address\n\n\n\n\n13.1.2 ssh to server\npem='/Users/bbest/My Drive/private/msens_key_pair.pem'\nssh -i $pem ubuntu@msens1.marinesensitivity.org\n\n13.1.2.1 set hostname\n\nChange the hostname of your Amazon Linux instance - Amazon Elastic Compute Cloud\n\nsudo vi /etc/cloud/cloud.cfg\n# preserve_hostname: true\nsudo hostnamectl set-hostname msens1.marinesensitivity.org\nsudo reboot\n\n\n13.1.2.2 mount volume\nThe extra volume (60 GB for /share) was added during EC2 launch instance wizard, but needs to be mounted before available for use.\n\nMake an Amazon EBS volume available for use on Linux - Amazon Elastic Compute Cloud\n\ndf -H\nFilesystem      Size  Used Avail Use% Mounted on\n/dev/root        21G  2.3G   19G  11% /\ntmpfs           8.4G     0  8.4G   0% /dev/shm\ntmpfs           3.4G  898k  3.4G   1% /run\ntmpfs           5.3M     0  5.3M   0% /run/lock\n/dev/xvda15     110M  6.4M  104M   6% /boot/efi\ntmpfs           1.7G  4.1k  1.7G   1% /run/user/1000\nlsblk\nNAME     MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS\nloop0      7:0    0  24.6M  1 loop /snap/amazon-ssm-agent/7528\nloop1      7:1    0  55.7M  1 loop /snap/core18/2790\nloop2      7:2    0  63.5M  1 loop /snap/core20/2015\nloop3      7:3    0 111.9M  1 loop /snap/lxd/24322\nloop4      7:4    0  40.8M  1 loop /snap/snapd/20092\nxvda     202:0    0    20G  0 disk \n├─xvda1  202:1    0  19.9G  0 part /\n├─xvda14 202:14   0     4M  0 part \n└─xvda15 202:15   0   106M  0 part /boot/efi\nxvdb     202:16   0    60G  0 disk\nsudo file -s /dev/xvdb\n# /dev/xvdb: data\nSo no file system on /dev/xvdb yet.\nsudo mkfs -t xfs /dev/xvdb\nsudo mkdir /share\nsudo mount /dev/xvdb /share\nsudo cp /etc/fstab /etc/fstab.orig\nsudo blkid\n# /dev/xvdb: UUID=\"bc766dfb-1c42-49cf-9320-2242a2d48a2e\" BLOCK_SIZE=\"512\" TYPE=\"xfs\"\nsudo vim /etc/fstab\n# UUID=bc766dfb-1c42-49cf-9320-2242a2d48a2e  /share  xfs  defaults,nofail  0  2\n\ndf -h\nsudo umount /share ; df -h\nsudo mount -a      ; df -h\n\n\n\n13.1.3 install docker\nFollowing:\n\nStep-by-Step Guide to Install Docker on Ubuntu in AWS | by Srija Anaparthy | Medium\n\nsudo apt-get update\n#OLD: sudo apt-get install docker.io -y\nNEW: [[Migrate to docker compose]]\nsudo systemctl start docker\nsudo docker run hello-world\nsudo systemctl enable docker\ndocker --version\n# Docker version 24.0.6, build ed223bc\nsudo usermod -a -G docker $(whoami)\n\n13.1.3.1 run docker compose\n\n/Users/bbest/My Drive/private/msens_server_env-password.txt\n\nsudo chown -R ubuntu:ubuntu /share\nmkdir -p /share/github/MarineSensitivity\ncd /share/github/MarineSensitivity\n# clone server repo\ngit clone https://github.com/MarineSensitivity/server.git\ncd server\n\n# add password, used as $PASSWORD in docker-compose.yml\necho 'PASSWORD=******' &gt; .env\n\n# launch docker instances\nsudo docker-compose up -d\n\n\n\n13.1.4 Backup /share with snapshots\nPer Automate snapshot lifecycles - Amazon Elastic Compute Cloud, created two policies:\n\nbkup_msens-share_daily every 24 hrs at 09:00 UTC, max of 7\nbkup_msens-share_weekly every Monday 09:00 UTC, max of 8",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Server</span>"
+    ]
+  },
+  {
+    "objectID": "server.html#docker-compose",
+    "href": "server.html#docker-compose",
+    "title": "13  Server",
+    "section": "13.2 Docker compose",
+    "text": "13.2 Docker compose\nThe Docker compose file is used to define and run multi-container Docker applications. Here is the docker-compose.yml file for the server pasted for convenience …\nversion: \"3.9\"\n\nservices:\n  caddy:\n    container_name: caddy\n    build: ./caddy\n    ports:\n      - 80:80\n      - 443:443\n    restart: unless-stopped\n    volumes:\n      - ./caddy/Caddyfile:/etc/caddy/Caddyfile\n      - /share:/share\n      - /share/caddy/data:/data\n      - /share/caddy/config:/config\n\n  rstudio:\n    container_name: rstudio\n    build: ./rstudio\n    environment:\n      ROOT: 'true'\n      # The login is `rstudio`, and DEFAULT_USER must say so.\n      #\n      # rocker's /rocker_scripts/init_userconf.sh sets USER=${DEFAULT_USER}, but it\n      # only ever CREATES that account inside `if [ \"$USERID\" -ne 1000 ]` (or the\n      # rootless branch). At the default USERID=1000 neither runs, so the image's\n      # built-in `rstudio` user is all that exists — and line 167,\n      #   echo \"$USER:$PASSWORD\" | chpasswd\n      # then targets an account that was never created.\n      #\n      # With DEFAULT_USER: admin that failed silently on every recreate: no `admin`\n      # to log in as, and `rstudio` still carrying whatever password the image was\n      # built with, so BOTH logins were rejected while .env looked perfectly\n      # correct. Verified by comparing the .env value against the shadow hash: NO\n      # MATCH.\n      #\n      # Do NOT \"fix\" this by setting USERID to force the rename — uid 1000 is what\n      # matches host `ubuntu`, and scripts/srv_render.sh renders as `-u 1000:1000`\n      # precisely because of it.\n      DEFAULT_USER: rstudio\n      PASSWORD: ${PASSWORD}\n      ADD: shiny\n      # usage-log Sheet endpoint (Apps Script /exec) for the Shiny apps'\n      # msens::ga_js() beacon. Set MSENS_LOG_URL in the server .env alongside\n      # PASSWORD; if unset the Sheet leg is a silent no-op and only GA4 receives\n      # events. The apps hold no credential — the endpoint is the whole secret,\n      # so it belongs in .env (untracked), never in the app source.\n      MSENS_LOG_URL: ${MSENS_LOG_URL:-}\n    ports:\n      - 8787:8787  # rstudio\n      - 3838:3838  # shiny\n    restart: unless-stopped\n    volumes:\n      - /share:/share\n      - /share/shiny_apps:/srv/shiny-server\n      # Release notebooks rendered INSIDE this container publish to S3. The image\n      # carries the AWS CLI, but a CLI with no credentials just fails later and\n      # louder: `NoCredentials` at the publish step, after the build work is done.\n      # Read-only, and the container already runs as uid 1000 = host `ubuntu`,\n      # which owns these.\n      - /home/ubuntu/.aws:/home/rstudio/.aws:ro\n\n  # plumber: DuckDB-backed custom API (postgres stack retired 2026-06). Serves\n  # the OBIS H3 summary endpoint /h3 (obisindicators::obis_h3t_sql) from the same\n  # store as the h3t tile service. Caddy already routes\n  # api.marinesensitivity.org -&gt; plumber:8888. No postgis dependency: the\n  # postgres-backed endpoints degrade (see api/plumber.R lazy `con`).\n  plumber:\n    container_name: plumber\n    build: ./plumber\n    environment:\n      MSENS_OBIS_DUCKDB: /share/data/obis/obis_h3.duckdb\n    ports:\n      - 8888:8888  # api\n    volumes:\n      - /share:/share\n    restart: unless-stopped\n\n  # --- postgres stack retired (2026-06) to free resources for OBIS h3 build ---\n  # plumber:\n  #   container_name: plumber\n  #   build: ./plumber\n  #   ports:\n  #     - 8888:8888  # api\n  #   restart: unless-stopped\n  #   volumes:\n  #     - /share:/share\n  #   depends_on:\n  #     - postgis\n\n  # postgis:\n  #   container_name: postgis\n  #   image: postgis/postgis:latest\n  #   environment:\n  #     POSTGRES_DB: msens\n  #     POSTGRES_USER: admin\n  #     POSTGRES_PASSWORD: ${PASSWORD}\n  #     ANON_PASSWORD: ${ANON_PASSWORD}\n  #     PGDATA: /share/postgis/data\n  #   volumes:\n  #     - ./postgis/init.sh:/docker-entrypoint-initdb.d/init.sh\n  #     - /share:/share\n  #     - /share/postgis:/var/lib/postgresql\n  #   restart: unless-stopped\n  #   healthcheck:\n  #     test: 'exit 0'\n  #   ports:\n  #     - 5432:5432\n\n  # pgadmin:\n  #   container_name: pgadmin\n  #   image: dpage/pgadmin4:8.14\n  #   restart: always\n  #   environment:\n  #     PGADMIN_DEFAULT_EMAIL: ben@ecoquants.com\n  #     PGADMIN_DEFAULT_PASSWORD: ${PASSWORD}\n  #     PGADMIN_LISTEN_PORT: 8088\n  #   ports:\n  #     - 8088:8088\n  #   volumes:\n  #     - /share/pgadmin:/var/lib/pgadmin\n  #   depends_on:\n  #     - postgis\n\n  # pgbkups:\n  #   container_name: pgbkups\n  #   image: prodrigestivill/postgres-backup-local\n  #   restart: always\n  #   user: postgres:postgres\n  #   volumes:\n  #     - /share/postgis_backups:/backups\n  #   links:\n  #     - postgis\n  #   depends_on:\n  #     - postgis\n  #   environment:\n  #     - POSTGRES_HOST=postgis\n  #     - POSTGRES_DB=msens\n  #     - POSTGRES_USER=admin\n  #     - POSTGRES_PASSWORD=${PASSWORD}\n  #     - POSTGRES_EXTRA_OPTS=-Z6 --blobs\n  #     - SCHEDULE=@daily\n  #     - HEALTHCHECK_PORT=8088\n  #     - BACKUP_KEEP_DAYS=2\n  #     - BACKUP_KEEP_WEEKS=1\n  #     - BACKUP_KEEP_MONTHS=2\n\n  # tile:\n  #   container_name: tile\n  #   environment:\n  #     DATABASE_URL: 'postgresql://admin:${PASSWORD}@postgis:5432/msens'\n  #   image: pramsey/pg_tileserv:latest\n  #   depends_on:\n  #     - postgis\n  #   ports:\n  #     - 7800:7800\n\n  # tilecache:\n  #   container_name: tilecache\n  #   image: varnish:latest\n  #   volumes:\n  #     - /share:/share\n  #   ports:\n  #     - 6081:6081\n  #   environment:\n  #     VARNISH_BACKEND_HOST: tile\n  #     VARNISH_BACKEND_PORT: 7800\n  #     VARNISH_HTTP_PORT: 6081\n  #   restart: always\n  #   depends_on:\n  #     - \"tile\"\n  # --- end postgres stack ---\n\n  # rest:\n  #   container_name: rest\n  #   environment:\n  #     PGRST_DB_URI: 'postgresql://anon:${ANON_PASSWORD}@postgis:5432/msens'\n  #     PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000\n  #     PGRST_DB_ANON_ROLE: anon\n  #   image: postgrest/postgrest\n  #   depends_on:\n  #     - postgis\n  #   ports:\n  #     - \"3000:3000\"\n\n  # swagger:\n  #   container_name: swagger\n  #   image: swaggerapi/swagger-ui\n  #   depends_on:\n  #     - rest\n  #   ports:\n  #     - \"8080:8080\"\n  #   expose:\n  #     - \"8080\"\n  #   environment:\n  #     API_URL: https://rest.MarineSensitivity.org/\n\n  titiler:\n    container_name: titiler\n    build: ./titiler\n    environment:\n      PORT:              8000\n      # WORKERS_PER_CORE: 1\n      MSENS_CELLID_COG: /share/data/derived/r_cellid.tif\n      MSENS_DUCKDB:     /share/data/big/latest/sdm.duckdb\n      MSENS_MAX_ROWS:   \"1000000\"\n      MSENS_LRU_SIZE:   \"128\"\n    volumes:\n      - /share:/share\n    ports:\n      - \"8000:8000\"\n    restart: always\n\n  # v8 parallel serving: a tiny view-only DuckDB whose model_cell is a VIEW over the\n  # partitioned Parquet on S3 (marine-atlas/v8), rendered on the global [-180,180] cell COG.\n  # v7 titiler above stays fully live (A/B). serve.duckdb is KB — no multi-GB rsync.\n  # Stock titiler: /cog serves the precomputed COGs every app layer now uses.\n  #\n  # The custom /msens cells factory (DuckDB query -&gt; tile) is RETIRED but KEPT:\n  # set MSENS_FACTORY=1 to mount it for exploratory on-the-fly queries. It is off\n  # by default because nothing reaches it — the scores app's SQL fallback cannot\n  # fire (every metric on v1-v8 has a COG) and the species app's needed only the\n  # 192 taxa that now have merged COGs. Verified equivalent first: 100/105 tiles\n  # byte-identical, the rest differing by 3-6 px of 262,144 from float32 storage.\n  #\n  # Deliberately NOT proxied through titilecache (Varnish): a query-driven tile\n  # is not cache-friendly the way an immutable COG is, and caching an exploratory\n  # endpoint mostly serves stale answers to whoever is iterating on the query.\n  # The MSENS_* vars below stay so enabling the factory needs no other change.\n  titiler-v8:\n    container_name: titiler-v8\n    build: ./titiler\n    environment:\n      PORT:             8000\n      MSENS_CELLID_COG: /share/data/derived/r_cellid_global.tif\n      MSENS_DUCKDB:     /share/data/big/v8/serve.duckdb\n      MSENS_MAX_ROWS:   \"1000000\"\n      MSENS_LRU_SIZE:   \"128\"\n    volumes:\n      - /share:/share\n    ports:\n      - \"8001:8000\"\n    restart: always\n\n  # stac-api: a SEARCHABLE STAC API with one Item per model, complementing (not\n  # replacing) the static catalog at file.marinesensitivity.org/stac.\n  #\n  # The static catalog is dataset-level: one Item per collection whose assets are\n  # S3 PREFIXES (…/native/am_native/, which 403s) and whose bbox is the whole\n  # dataset envelope — so it can answer neither \"the asset for this model\" nor\n  # \"which models cover this area\". This serves 25,643 per-model Items with real\n  # asset hrefs and real footprints.\n  #\n  # Backend reads stac-geoparquet via DuckDB — the same Parquet-on-DuckDB shape as\n  # the rest of this stack. Items and collection.json come from the tree that\n  # workflows/publish_stac_api.qmd builds and rsyncs; PARQUET_URLS_JSON (collection\n  # id -&gt; parquet path) is passed by that notebook from parquet_urls.json, so\n  # adding a dataset needs no edit here.\n  #\n  # Pinned to an exact upstream commit built straight from GitHub — the project is\n  # marked EXPERIMENTAL by both its repo and the stac-fastapi docs (pgstac and\n  # Elasticsearch are the production-ready backends), so a moving default branch\n  # is not something to serve from. Treat this as a trial surface, not load-bearing.\n  stac-api:\n    container_name: stac-api\n    build: ./stac-api          # upstream pinned + ST_Intersects(WKB) patch; see its Dockerfile\n    environment:\n      APP_HOST:          0.0.0.0\n      APP_PORT:          \"8084\"\n      ENVIRONMENT:       production\n      WEB_CONCURRENCY:   \"4\"\n      BACKEND:           duckdb\n      STAC_FILE_PATH:    /app/stac_collections\n      PARQUET_URLS_JSON: ${PARQUET_URLS_JSON}\n    volumes:\n      # read-only: the API must never mutate the published catalog\n      - /share/data/derived/stac-api/v8:/app/stac_collections:ro\n    ports:\n      - \"8085:8084\"\n    restart: unless-stopped\n    command: bash -c \"python -m stac_fastapi.duckdb.app\"\n\n  titilecache:\n    container_name: titilecache\n    image: varnish:latest # 7.4.2  # last updated: 2023-12-26\n    volumes:\n      - /share:/share\n      - \"./varnish/titiler.vcl:/etc/varnish/default.vcl:ro\"\n    ports:\n      - 6082:6082\n    environment:\n      VARNISH_BACKEND_HOST: titiler\n      VARNISH_BACKEND_PORT: 8000\n      VARNISH_HTTP_PORT:    6082\n    command: \"-p default_keep=604800\" # 7d, matches vcl TTL\n    restart: always\n    depends_on:\n      - \"titiler\"\n\n  # h3t: OBIS biodiversity-by-hex tile factory (DuckDB SELECT -&gt; h3j JSON tiles)\n  h3t:\n    container_name: h3t\n    build: ./h3t\n    environment:\n      H3T_DBS:             \"obis:/share/data/obis/obis_h3.duckdb\"\n      H3T_DEFAULT_DB:      obis\n      H3T_MAX_ROWS:        \"50000\"\n      # common filtered maps now hit precomputed idx_h3 / idx_h3_taxon layers;\n      # these caps are the stopgap for the remaining live occ_h3 paths (year\n      # filters, multi-value / fine-rank taxa). raise the timeout above the\n      # app-side client timeout in apps/h3-db/app.R.\n      H3T_STMT_TIMEOUT_MS: \"8000\"\n      H3T_THREADS:         \"4\"      # cap serving CPU (don't peg all cores)\n      H3T_MEMORY_LIMIT:    \"6GB\"    # cap serving RAM (occ_h3 rollups can spill)\n    volumes:\n      - /share:/share\n    ports:\n      - \"8889:8889\"\n    restart: always\n\n  h3tcache:\n    container_name: h3tcache\n    image: varnish:latest # 7.4.2  # last updated: 2023-12-26\n    volumes:\n      - /share:/share\n      - \"./varnish/h3t.vcl:/etc/varnish/default.vcl:ro\"\n    ports:\n      - 6083:6083\n    environment:\n      VARNISH_BACKEND_HOST: h3t\n      VARNISH_BACKEND_PORT: 8889\n      VARNISH_HTTP_PORT:    6083\n    command: \"-p default_keep=604800\" # 7d, matches vcl TTL\n    restart: always\n    depends_on:\n      - \"h3t\"",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Server</span>"
+    ]
+  },
+  {
+    "objectID": "server.html#dns",
+    "href": "server.html#dns",
+    "title": "13  Server",
+    "section": "13.3 DNS",
+    "text": "13.3 DNS\nThe domain name server (DNS) records are managed by SquareSpace. The subdomains point to the server on Amazon at 100.25.173.0, whereas the main website is hosted by Github servers, per Managing a custom domain for your GitHub Pages site - GitHub Docs.\n\n\n\nHost\nType\nData\n\n\n\n\n@\nA\n185.199.111.153\n\n\n@\nA\n185.199.110.153\n\n\n@\nA\n185.199.109.153\n\n\n@\nA\n185.199.108.153\n\n\napi\nA\n100.25.173.0\n\n\napp\nA\n100.25.173.0\n\n\nfile\nA\n100.25.173.0\n\n\nmsens1\nA\n100.25.173.0\n\n\npgadmin\nA\n100.25.173.0\n\n\npmtiles\nA\n100.25.173.0\n\n\nrstudio\nA\n100.25.173.0\n\n\nshiny\nA\n100.25.173.0\n\n\ntile\nA\n100.25.173.0\n\n\ntilecache\nA\n100.25.173.0\n\n\ntitiler\nA\n100.25.173.0\n\n\ntitilecache\nA\n100.25.173.0\n\n\nwww\nCNAME\nmarinesensitivity.org",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Server</span>"
+    ]
+  },
+  {
+    "objectID": "server.html#caddyfile",
+    "href": "server.html#caddyfile",
+    "title": "13  Server",
+    "section": "13.4 Caddyfile",
+    "text": "13.4 Caddyfile\nThe Caddyfile parameterizes the reverse proxying between the external subdomains and the Docker’s internal ports. Here is the Caddyfile pasted for convenience …\n# docker exec caddy caddy reload --config /etc/caddy/Caddyfile\n{\n    order pmtiles_proxy before file_server\n}\n\n(cors) {\n    @origin header Origin *\n    header @origin {\n        Access-Control-Allow-Origin \"*\"\n        Access-Control-Request-Method GET\n    }\n}\n\napi.marinesensitivity.org {\n    reverse_proxy plumber:8888\n}\n\nfile.marinesensitivity.org {\n    import cors\n\n    # raw pmtiles for client-side PMTiles protocol (add_pmtiles_source)\n    handle_path /pmtiles/* {\n        root * /share/data/derived/pmtiles\n        file_server browse\n    }\n\n    # legacy versioned pmtiles routes (backwards compat for old apps)\n    handle_path /pmtiles/v4/* {\n        root * /share/data/derived/v4/pmtiles\n        file_server browse\n    }\n    handle_path /pmtiles/v3/* {\n        root * /share/data/derived/v3/pmtiles\n        file_server browse\n    }\n\n    # stac catalog (sdm extension) — static JSON tree\n    handle_path /stac/* {\n        root * /share/data/derived/stac\n        file_server browse\n    }\n\n    # versioned derived data (geoparquet, cogs, gpkg) referenced by stac assets\n    handle_path /derived/* {\n        root * /share/data/derived\n        file_server browse\n    }\n\n    # force reports to download (especially HTML which otherwise renders inline)\n    handle_path /reports/* {\n        root * /share/public/reports\n        header Content-Disposition \"attachment\"\n        file_server\n    }\n\n    handle {\n        root * /share/public\n        file_server browse {\n            precompressed zstd br gzip\n        }\n    }\n}\n\n# Browsable front door for the PUBLIC S3 bucket.\n#\n# Why this exists: S3 serves OBJECTS, not directories. A URL ending in \"/\" 404s\n# unless an object literally has that key, and anonymous ListBucket is DENIED on\n# this bucket (403 AccessDenied), so a browser cannot enumerate anything. The\n# workflows notebook publish_storage_index.qmd generates a real index.html per\n# directory; this vhost rewrites folder URLs to them:\n#\n#   storage.marinesensitivity.org/marine-atlas/v8/  -&gt; .../v8/index.html\n#   storage.marinesensitivity.org/marine-atlas/latest.txt -&gt; the object\n#\n# Named \"storage\" rather than \"s3\" so the URL survives a move to another\n# provider.\nstorage.marinesensitivity.org {\n    encode zstd gzip\n\n    log {\n        output file /share/logs/caddy/storage.log {\n            roll_size 64MiB\n            roll_keep 14\n            roll_keep_for 2160h\n        }\n        format json\n    }\n\n    # robots.txt inline, BEFORE the bucket handler, so it cannot be lost by an\n    # index regeneration. The catalog pages are welcome in search results; the\n    # objects behind them are not. Every byte is PROXIED through this server\n    # (reverse_proxy, not a redirect), and the tree is 18 GB across ~90,000\n    # objects, so a crawl would be billed as VM egress.\n    handle /robots.txt {\n        header Content-Type \"text/plain; charset=utf-8\"\n        respond `# Catalog pages: crawl away. Data objects: please do not.\nUser-agent: *\nCrawl-delay: 10\nDisallow: /*.tif$\nDisallow: /*.parquet$\nDisallow: /*.duckdb$\nDisallow: /*.pmtiles$\nDisallow: /*.gz$\nDisallow: /*.zip$\n` 200\n    }\n\n    # ONLY the published atlas. The same bucket holds backups/ -- including a\n    # multi-GB database dump -- which is technically public but must not be\n    # advertised or reachable here, even by exact path. This allow-list is the\n    # server-side half of the restriction the index generator applies.\n    @atlas path_regexp atlas ^/marine-atlas(/|$)\n    handle @atlas {\n        # folder URL -&gt; the index.html object standing in for a listing\n        @dir path_regexp dir ^(.*)/$\n        rewrite @dir {re.dir.1}/index.html\n        reverse_proxy https://s3.us-east-1.amazonaws.com {\n            header_up Host s3.us-east-1.amazonaws.com\n            rewrite /oceanmetrics.io-public{uri}\n        }\n    }\n\n    # the bare host lands on the atlas index\n    redir / /marine-atlas/ 302\n\n    # anything else: refuse, and say where to go\n    handle {\n        header Content-Type \"text/plain; charset=utf-8\"\n        respond `Not found.\n\nBrowsable: /marine-atlas/\nStart here: https://storage.marinesensitivity.org/marine-atlas/\n` 404\n    }\n}\n\npgadmin.marinesensitivity.org {\n    reverse_proxy pgadmin:8088\n}\n\n# rest.marinesensitivity.org {\n#   reverse_proxy rest:3000\n# }\n\n# searchable STAC API (one Item per model) — complements the STATIC catalog served\n# from file.marinesensitivity.org/stac, which stays exactly as it is.\nstac-api.marinesensitivity.org {\n    reverse_proxy stac-api:8084\n}\n\nrstudio.marinesensitivity.org {\n    reverse_proxy rstudio:8787\n}\n\nshiny.marinesensitivity.org {\n    reverse_proxy rstudio:3838\n}\n\napp.marinesensitivity.org {\n    # ---- MST app cutover -------------------------------------------------\n    #\n    # /scores and /species are now ONE app that renders any published release\n    # from ?ver=. Every former per-version instance redirects to it rather than\n    # 404ing, so old links, bookmarks and anything in a published report keep\n    # resolving — to the SAME release they always showed.\n    #\n    # The v7 apps were `mapgl` (scores) and `mapsp` (species); v1-v6 were\n    # `mapgl_v{n}` / `mapsp_v{n}`; v6 and v8 also had `scores_v{n}` /\n    # `species_v{n}` aliases. All of them land on /scores or /species with the\n    # version they represent.\n    #\n    # 301 (permanent): these instances are not coming back, and a permanent\n    # redirect lets browsers and crawlers stop asking.\n    @scores_ver path_regexp scv ^/(?:mapgl|scores)_(v[0-9]+[a-z]?)(?:/(.*))?$\n    redir @scores_ver /scores/?ver={re.scv.1} 301\n\n    @species_ver path_regexp spv ^/(?:mapsp|species)_(v[0-9]+[a-z]?)(?:/(.*))?$\n    redir @species_ver /species/?ver={re.spv.1} 301\n\n    # the unsuffixed v7 instances: `mapgl`/`mapsp` were what /scores and\n    # /species pointed at, so they carry v7 explicitly\n    @scores_v7 path_regexp sc7 ^/mapgl(?:/(.*))?$\n    redir @scores_v7 /scores/?ver=v7 301\n\n    @species_v7 path_regexp sp7 ^/mapsp(?:/(.*))?$\n    redir @species_v7 /species/?ver=v7 301\n\n    reverse_proxy rstudio:3838\n}\n\nshiny.oceanmetrics.io {\n    reverse_proxy rstudio:3838\n}\n\n# swagger.marinesensitivity.org {\n#   reverse_proxy swagger:8080\n# }\n\ntile.marinesensitivity.org {\n    reverse_proxy tile:7800\n}\n\ntilecache.marinesensitivity.org {\n    reverse_proxy tilecache:6081\n}\n\ntitiler.marinesensitivity.org {\n    reverse_proxy titiler:8000\n}\n\ntitiler-v8.marinesensitivity.org {\n    reverse_proxy titiler-v8:8000\n}\n\ntitilecache.marinesensitivity.org {\n    reverse_proxy titilecache:6082\n}\n\nh3t.marinesensitivity.org {\n    reverse_proxy h3t:8889\n}\n\nh3tcache.marinesensitivity.org {\n    reverse_proxy h3tcache:6083\n}\n\npmtiles.marinesensitivity.org {\n    import cors\n\n    # server-side tile decoding: ZXY + TileJSON (for QGIS, leaflet, etc.)\n    handle_path /tiles/* {\n        pmtiles_proxy {\n            bucket file:///share/data/derived/v4/pmtiles\n            # note: v3 pmtiles also available at /share/data/derived/v3/pmtiles\n            cache_size 256\n            public_url https://pmtiles.marinesensitivity.org/tiles\n        }\n    }\n}",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Server</span>"
+    ]
+  },
+  {
+    "objectID": "server.html#services",
+    "href": "server.html#services",
+    "title": "13  Server",
+    "section": "13.5 Services",
+    "text": "13.5 Services\nThe server is running the following services. Subdomains with 🔒 are internal (admin / development); others are public.\n\n13.5.1 App + data plane\n\napp / shiny\ninteractive Shiny applications — proxied to the rstudio container’s Shiny Server on internal port 3838. There are now two applications, /scores and /species, each rendering any published release from ?ver=. The former per-version instances (mapgl, mapsp, mapgl_v1…mapsp_v6, scores_v6/v8, species_v6/v8) are retired, with Caddy issuing a 301 to the equivalent ?ver= so every existing link — including any printed in a published report — still resolves to the release it always showed.\n\nShiny Server docs\nfile\nstatic file server for PMTiles archives, report downloads, reference GeoPackages — served by Caddy’s file_server directive directly from the /share bind-mount. This replaces the old pg_tileserv vector-tile path for Program Areas, Ecoregions, Planning Areas, protractions, blocks and aliquots; each layer is a single .pmtiles file that the browser range-reads for only the tiles it needs.\ntitiler + titiler-v8 🟢\nTiTiler serving the published raster assets.\nEvery map layer the applications draw is now a pre-rendered Cloud-Optimized GeoTIFF read through titiler’s stock /cog routes — score surfaces per metric × subregion, and per-model distributions. titiler-v8 runs in parallel with the v7 instance, reading a kilobyte-sized view-only DuckDB whose model_cell is a view over the partitioned Parquet on S3, so no multi-gigabyte database is copied to the server.\ntitilecache (Varnish) 🔒\nFronts the v7 titiler only. The v8 service is deliberately not proxied through it: an immutable COG is already cacheable by URL, and the one endpoint that would benefit is retired (below).\napi\ncustom R plumber API for programmatic access to DuckDB — see Chapter 16\n\n\n\n\n13.5.2 Admin\n\nrstudio 🔒\nintegrated development environment (IDE) to code and debug directly on the server.\n\nPosit RStudio Server\npgadmin 🔒 — PostgreSQL administration interface, commented out along with the PostgreSQL services it managed (see Retired, below).\n\n\n\n13.5.3 Retired\n\nThe custom /msens tile factory — kept in the image but off by default, behind MSENS_FACTORY=1.\nIt rendered a tile by executing a validated SELECT against DuckDB and looking the result up against a cell-id COG. Pre-rendered COGs replaced it: nothing reaches it any more, because every metric on every release now has a COG. The two paths were verified equivalent before the switch — 100 of 105 sample tiles byte-identical, the remainder differing by 3–6 pixels out of 262,144 from float32 storage. It remains available for exploratory on-the-fly queries.\npostgis, tile (pg_tileserv), tilecache, rest (PostgREST) and swagger — all commented out in docker-compose.yml and not running. PostgreSQL is no longer part of any serving path; the authoritative store is DuckDB, with the published release as partitioned Parquet on S3. Vector geometry is served as static PMTiles by Caddy’s file subdomain, and the pgadmin entry above is likewise vestigial.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Server</span>"
+    ]
+  },
+  {
+    "objectID": "db.html",
+    "href": "db.html",
+    "title": "14  Database",
+    "section": "",
+    "text": "14.1 Table and column naming conventions\nThe source of truth for the Marine Sensitivity Toolkit is DuckDB — a columnar, embedded analytic database. It is fast enough to answer live per-cell queries while remaining a single-file artifact that can be copied, versioned and served read-only to many processes at once.\nThe pipeline writes a working database (sdm.duckdb) on the machine that runs it; a release is the published, immutable form of that database’s tables. Since the marine-atlas release format, each version is published as partitioned Parquet on S3 under marine-atlas/{ver}/tables/, and serving reads it through a tiny view-only DuckDB (serve.duckdb, kilobytes) whose tables are views over those files — never a multi-gigabyte copy.\nEverything below is read from the release this build documents (v2), so the tables, columns and row counts are those of that version rather than of whichever version happened to be current when the page was written.\nTable 14.1: Tables published by v2, with row counts read from the release itself.\n\n\n\n\n\n\n\n\n\n\n\nTable\nRows\nPurpose\n\n\n\n\ncell\n661,372\nGrid cells of the study area, with environmental covariates and membership flags.\n\n\ntaxon\n17,561\nOne row per taxon: identity, category, extinction risk and validity flags.\n\n\nmodel\n21,382\nRegistry of every distribution model, keyed by the stable model identifier.\n\n\nmetric\n39\nMetric registry: key and description for each scored quantity.\n\n\ncell_metric\n23,381,018\nPer-cell score for each metric — the surface the maps draw.\n\n\nzone\n76\nZone registry keyed by source table, field and value, so every spatial unit shares one schema.\n\n\nzone_cell\n4,626,531\nZone membership: which cells belong to which zone.\n\n\nzone_metric\n1,540\nPre-aggregated per-zone score for each metric — what drives the choropleth.\n\n\nzone_taxon\n282,808\nPer-zone species list with each species’ contribution to the zone score.\n\n\ndataset\n7\nSource datasets, with citations, vintages and whether each fed the scores.\n\n\ntaxon_model\n36,745\nWhich models fed which taxon — the taxon to model relation.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Database</span>"
+    ]
+  },
+  {
+    "objectID": "db.html#table-and-column-naming-conventions",
+    "href": "db.html#table-and-column-naming-conventions",
+    "title": "14  Database",
+    "section": "",
+    "text": "Table names are singular and lower case.\nUnique identifier columns are suffixed with:\n\n*_id for unique integer keys (stable across rebuilds);\n*_key for unique string keys (human-readable and stable across releases);\n*_seq for auto-incrementing sequence integer keys (internal join keys, not stable across rebuilds).\n\nColumn names are singular and use snake_case.\nForeign keys use the singular form of the referenced table, followed by the primary-key suffix (_id, _key, or _seq).\n\n\n\n\n\n\n\nImportantvalue is a reserved word in DuckDB\n\n\n\nCell values are stored in a column named val, not value. The serving views expose val AS value for backward compatibility with callers written against the older schema.\n\n\n\n\n\n\n\n\n\nNoteNot published by v2\n\n\n\nmodel_asset, listing, native_asset. Sections that depend on these are omitted from this build rather than described from another release.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Database</span>"
+    ]
+  },
+  {
+    "objectID": "db.html#schema",
+    "href": "db.html#schema",
+    "title": "14  Database",
+    "section": "14.2 Schema",
+    "text": "14.2 Schema\nThe columns of each published table, read from the release:\n\n14.2.1 cell\n\n\n\nColumn\nType\n\n\n\n\ncell_id\nINTEGER\n\n\ndepth_mean\nDOUBLE\n\n\ndepth_min\nDOUBLE\n\n\ndepth_max\nDOUBLE\n\n\noxy_b_mean\nDOUBLE\n\n\noxy_mean\nDOUBLE\n\n\nprim_prod_mean\nDOUBLE\n\n\nice_con_ann\nDOUBLE\n\n\nsalinity_b_mean\nDOUBLE\n\n\nsalinity_mean\nDOUBLE\n\n\nsbt_an_mean\nDOUBLE\n\n\nsst_an_mean\nDOUBLE\n\n\nfao_area_m\nDOUBLE\n\n\narea_km2\nDOUBLE\n\n\nwidth_km2\nDOUBLE\n\n\n\n\n\n14.2.2 taxon\n\n\n\nColumn\nType\n\n\n\n\ntaxon_id\nDOUBLE\n\n\ntaxon_authority\nVARCHAR\n\n\nn_ds\nINTEGER\n\n\nam_0.05\nINTEGER\n\n\nch_nmfs\nINTEGER\n\n\nch_fws\nINTEGER\n\n\nrng_fws\nINTEGER\n\n\nsp_cat\nVARCHAR\n\n\nbl\nINTEGER\n\n\nmdl_seq\nINTEGER\n\n\nscientific_name\nVARCHAR\n\n\ncommon_name\nVARCHAR\n\n\nredlist_code\nVARCHAR\n\n\nworms_is_marine\nBOOLEAN\n\n\nworms_is_extinct\nBOOLEAN\n\n\nworms_id\nDOUBLE\n\n\nis_ok\nBOOLEAN\n\n\nrng_iucn\nINTEGER\n\n\nesa_code\nVARCHAR\n\n\nesa_source\nVARCHAR\n\n\n\n\n\n14.2.3 model\n\n\n\nColumn\nType\n\n\n\n\nmdl_seq\nINTEGER\n\n\nds_key\nVARCHAR\n\n\ntaxa\nVARCHAR\n\n\ntime_period\nVARCHAR\n\n\nregion\nVARCHAR\n\n\nmdl_type\nVARCHAR\n\n\ndescription\nVARCHAR\n\n\ndate_created\nDATE\n\n\n\n\n\n14.2.4 metric\n\n\n\nColumn\nType\n\n\n\n\nmetric_seq\nINTEGER\n\n\nmetric_key\nVARCHAR\n\n\ndescription\nVARCHAR\n\n\ndate_created\nDATE\n\n\n\n\n\n14.2.5 cell_metric\n\n\n\nColumn\nType\n\n\n\n\ncell_id\nINTEGER\n\n\nmetric_seq\nINTEGER\n\n\nvalue\nDOUBLE\n\n\n\n\n\n14.2.6 zone\n\n\n\nColumn\nType\n\n\n\n\nzone_seq\nINTEGER\n\n\ntbl\nVARCHAR\n\n\nfld\nVARCHAR\n\n\nvalue\nVARCHAR\n\n\ndate_created\nDATE\n\n\n\n\n\n14.2.7 zone_cell\n\n\n\nColumn\nType\n\n\n\n\nzone_seq\nINTEGER\n\n\ncell_id\nINTEGER\n\n\npct_covered\nINTEGER\n\n\n\n\n\n14.2.8 zone_metric\n\n\n\nColumn\nType\n\n\n\n\nzone_seq\nINTEGER\n\n\nmetric_seq\nINTEGER\n\n\nvalue\nDOUBLE\n\n\n\n\n\n14.2.9 zone_taxon\n\n\n\nColumn\nType\n\n\n\n\nzone_tbl\nVARCHAR\n\n\nzone_fld\nVARCHAR\n\n\nzone_value\nVARCHAR\n\n\nmdl_seq\nINTEGER\n\n\nsp_cat\nVARCHAR\n\n\nsp_common\nVARCHAR\n\n\nsp_scientific\nVARCHAR\n\n\ntaxon_id\nDOUBLE\n\n\ntaxon_authority\nVARCHAR\n\n\nrl_code\nVARCHAR\n\n\nrl_score\nDOUBLE\n\n\narea_km2\nDOUBLE\n\n\navg_suit\nDOUBLE\n\n\nsuit_rl\nDOUBLE\n\n\nsuit_rl_area\nDOUBLE\n\n\ncat_suit_rl_area\nDOUBLE\n\n\npct_cat\nDOUBLE\n\n\n\n\n\n14.2.10 dataset\n\n\n\nColumn\nType\n\n\n\n\nds_key\nVARCHAR\n\n\nname_short\nVARCHAR\n\n\nname_original\nVARCHAR\n\n\ndescription\nVARCHAR\n\n\ncitation\nVARCHAR\n\n\nsource_broad\nVARCHAR\n\n\nsource_detail\nVARCHAR\n\n\nregions\nVARCHAR\n\n\nresponse_type\nVARCHAR\n\n\ntaxa_groups\nVARCHAR\n\n\nyear_pub\nINTEGER\n\n\ndate_obs_beg\nDATE\n\n\ndate_obs_end\nDATE\n\n\ndate_env_beg\nDATE\n\n\ndate_env_end\nDATE\n\n\nlink_info\nVARCHAR\n\n\nlink_download\nVARCHAR\n\n\nlink_metadata\nVARCHAR\n\n\nlinks_other\nVARCHAR\n\n\nspatial_res_deg\nDOUBLE\n\n\ntemporal_res\nVARCHAR\n\n\ndate_created\nDATE\n\n\n\n\n\n14.2.11 taxon_model\n\n\n\nColumn\nType\n\n\n\n\ntaxon_id\nDOUBLE\n\n\nds_key\nVARCHAR\n\n\nmdl_seq\nINTEGER",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Database</span>"
+    ]
+  },
+  {
+    "objectID": "db.html#how-the-tables-feed-the-serving-tier",
+    "href": "db.html#how-the-tables-feed-the-serving-tier",
+    "title": "14  Database",
+    "section": "14.3 How the tables feed the serving tier",
+    "text": "14.3 How the tables feed the serving tier\n\nScore rasters — per-cell scores are published as Cloud-Optimized GeoTIFFs, one per metric × subregion, and the app reads the href and rescale range straight from the release manifest. Earlier releases rendered them by sending SQL to a tile factory per request; that path is retired (see Chapter 13).\nPer-model distributions — model_cell is published partitioned by a dense integer model id, so a tile request reads exactly one partition as a point read rather than scanning the surface.\nZone choropleths — zone_metric joined to zone gives the per-zone score; the geometry comes from PMTiles published per zone-set vintage, and the manifest names the vintage each release used. Only the paint specification changes when the reader switches metric.\nPer-cell and per-area species lists — the same rows partitioned by a spatial tile instead (cell_model), because a per-cell question against a model-partitioned surface would scan everything.\n\nSee Chapter 15 for the notebooks that build each of these tables.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Database</span>"
+    ]
+  },
+  {
+    "objectID": "workflows.html",
+    "href": "workflows.html",
+    "title": "15  Workflows",
+    "section": "",
+    "text": "15.1 The pipeline is a graph, generated from the notebooks\nWorkflows are Quarto notebooks that ingest source datasets, resolve taxonomy, merge models, compute scores and publish a release. They are the only writers of the pipeline database; everything downstream reads published artifacts.\nLinks:\nThe notebook list is deliberately not reproduced here: it is generated from the pipeline’s own metadata and changes whenever a dataset is added. What is documented here is the contract that generates it.\nThe pipeline is a targets directed acyclic graph, and the graph is not hand-maintained. Each notebook declares its own place in it, in YAML front-matter:\nThe target list is built by parsing those blocks, so adding a dataset means adding a notebook — not editing a pipeline definition that could disagree with it. The dataset: block is also the single source of truth from which the dataset registry table is consolidated; a dataset that is ingested without one fails the build loudly rather than appearing in the data with no metadata.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Workflows</span>"
+    ]
+  },
+  {
+    "objectID": "workflows.html#the-pipeline-is-a-graph-generated-from-the-notebooks",
+    "href": "workflows.html#the-pipeline-is-a-graph-generated-from-the-notebooks",
+    "title": "15  Workflows",
+    "section": "",
+    "text": "msens:\n  target_name: ingest_aquamaps\n  workflow_type: ingest\n  dependency: [build_cell_grid]\n  output: data/manifests/ingest_aquamaps.json\n  dataset: {ds_key: am, response_type: suitability, source_authority: AquaMaps,\n            temporal_interval: static, native_format: raster}",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Workflows</span>"
+    ]
+  },
+  {
+    "objectID": "workflows.html#stages",
+    "href": "workflows.html#stages",
+    "title": "15  Workflows",
+    "section": "15.2 Stages",
+    "text": "15.2 Stages\n\n\n\n\n\n\n\nStage\nWhat it does\n\n\n\n\ngrid\nBuilds the global 0.05° cell grid — the sampling unit every model is rasterized onto — with environmental covariates and study-area membership.\n\n\ningest\nOne notebook per source dataset, writing one distribution per model keyed by this release’s model id (mdl_seq). Vector ranges are rasterized by exact area coverage; rasters are interpolated onto the grid.\n\n\nmerge\nResolves every model to a common taxon, computes each taxon’s governing extinction risk, and merges the per-dataset surfaces into one surface per taxon (Chapter 8).\n\n\nscore\nComputes per-cell metrics, rescales within ecoregions, and aggregates to each spatial unit (Chapter 9).\n\n\nschema\nConsolidates the registry tables — dataset, model, taxon_model, listing — that describe what the release contains.\n\n\nrelease\nPublishes the release to S3 as partitioned Parquet, COGs, PMTiles and a STAC catalog, writes the version manifest, and (gated) deploys the serving tier.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Workflows</span>"
+    ]
+  },
+  {
+    "objectID": "workflows.html#reproducibility-rules",
+    "href": "workflows.html#reproducibility-rules",
+    "title": "15  Workflows",
+    "section": "15.3 Reproducibility rules",
+    "text": "15.3 Reproducibility rules\nThese are load-bearing, not stylistic. Each one exists because its absence caused a specific failure.\nEvery process is a chunk in a committed notebook, run by rendering to HTML. Including the parts that touch the outside world — the S3 sync, the server deploy, the app reload. Not an ad-hoc shell command. Rendering is what produces the tracked HTML output and the content-hash checkpoint; executing the code without rendering skips both, so it is a diagnostic, never a run.\nSide effects are opt-in. Anything expensive or outward-facing sits behind an environment flag that defaults to off, so a routine render cannot publish or restart anything by accident.\nThe orchestration is part of the process. A notebook parameterized by version is only half reproducible if the loop over versions lives in a throwaway shell script, so the multi-version drivers are committed too. Likewise, forcing a rebuild is a flag — never moving output directories aside by hand, which leaves no record of what was rebuilt or why.\nA version number is not proof. A notebook whose logic lives in the msens package is only as current as the installed package. The server once reported the right package version while running an older function, and seven release manifests were regenerated missing their zone tiles as a result — with nothing failing. So every behavior change gets a version bump and a changelog entry, and the container pins move with it.\nReproducibility beats uptime. Where a reproducible fix and a fast in-place workaround are both available, the reproducible one wins even at the cost of brief downtime. Drift between a running container and the image it was built from is a bug to fix immediately, not a reason to avoid rebuilding.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Workflows</span>"
+    ]
+  },
+  {
+    "objectID": "workflows.html#content-addressed-checkpoints",
+    "href": "workflows.html#content-addressed-checkpoints",
+    "title": "15  Workflows",
+    "section": "15.4 Content-addressed checkpoints",
+    "text": "15.4 Content-addressed checkpoints\nEach notebook writes a manifest recording a content hash of what it produced. A downstream stage can then tell whether its input actually changed, rather than trusting a timestamp — which is what makes a re-run cheap when nothing moved, and what makes an unexpected change visible.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Workflows</span>"
+    ]
+  },
+  {
+    "objectID": "workflows.html#guarding-the-science",
+    "href": "workflows.html#guarding-the-science",
+    "title": "15  Workflows",
+    "section": "15.5 Guarding the science",
+    "text": "15.5 Guarding the science\nScientific rules live in the msens package as documented functions, not as SQL strings inside a notebook — so a notebook calls the rule and a unit test asserts it, and the two cannot drift. Every non-trivial rule has a test with a small fixture asserting its exact expected output, and every bug that is found becomes a permanent named assertion.\nThis matters more than the aggregate checks. Whole-pipeline validation — comparing a release’s zone scores against the previous one — catches broad drift but hides rule-level breakage: one lost exclusion affected ~750 species while barely moving any aggregate score (Chapter 8).\nSee Chapter 14 for the schema these workflows produce, and Chapter 2 for what each release changed.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Workflows</span>"
+    ]
+  },
+  {
+    "objectID": "apis.html",
+    "href": "apis.html",
+    "title": "16  APIs",
+    "section": "",
+    "text": "16.1 Raster tiles: COGs, not SQL per request\nThree services sit in front of the published data:\nStatic vector data (PMTiles) is served directly by Caddy’s file server and needs no API — see Chapter 13. The published Parquet tables can also be range-read straight from S3, including by DuckDB-WASM in a browser.\nScore surfaces are published as one COG per metric × subregion, and per-model distributions as one COG per model. A release’s manifest carries each raster’s URL and its build-time rescale range, so an application reads the href and hands it to titiler’s stock /cog routes — no custom endpoint, no query in the tile path.\nThe COGs are stored without overviews, deliberately: the renderer decimates from full resolution on each request, so a pre-built pyramid would disagree with it at low zoom. Their object keys are content-addressed including the encoding, because rewriting an object at a stable URL once left /vsicurl serving a cached header for bytes that no longer existed — fine at z5+, HTTP 500 at z2–z4.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>APIs</span>"
+    ]
+  },
+  {
+    "objectID": "apis.html#the-msens-factory-retired-kept",
+    "href": "apis.html#the-msens-factory-retired-kept",
+    "title": "16  APIs",
+    "section": "16.2 The /msens factory (retired, kept)",
+    "text": "16.2 The /msens factory (retired, kept)\n\n\n\n\n\n\nImportant\n\n\n\nThe custom factory below is no longer in the serving path. It is retained in the image behind MSENS_FACTORY=1 for exploratory on-the-fly queries, and is documented here because published reports reference its endpoints.\nIt was replaced by pre-rendered COGs after verifying the two produce the same picture: of 105 sample tiles, 100 were byte-identical and the rest differed by 3–6 pixels out of 262,144, from float32 storage. Nothing reaches it now — every metric on every release has a COG.\n\n\nThe factory is a FastAPI subclass of titiler.core.factory.TilerFactory, registered at the /msens prefix on top of the default TiTiler application.\nSource: server/titiler/factory.py.\n\n16.2.1 Endpoints\nAll /msens/* routes accept a sql query parameter: a base64url-encoded SELECT returning exactly two columns, cell_id (integer) and value (numeric). The SQL is parsed with sqlglot (SELECT-only, no write ops, no dynamic I/O like read_* / httpfs / load_*), executed against a read-only DuckDB connection, and the resulting cell_id → value map is cached in-process with an LRU keyed on the canonical SQL string. A mtime parameter can be passed for cache-busting (typically the mtime of sdm.duckdb).\n\n\n\n\n\n\n\nEndpoint\nPurpose\n\n\n\n\nGET /msens/bounds\nGeographic (EPSG:4326) bounds of the cell-id COG.\n\n\nGET /msens/statistics?sql=…\n{n, min, max, mean, std, p2, p50, p98} of the SQL result — used by clients to set a stable legend rescale without fetching any tiles. Cached by Varnish.\n\n\nGET /msens/tilejson.json?sql=…&colormap=…&rescale=…\nTileJSON 2.2.0 document with the tile URL template — lets any TileJSON-aware client (QGIS, MapLibre, Mapbox GL) consume the layer.\n\n\nGET /msens/tiles/{z}/{x}/{y}.png?sql=…&colormap=…&rescale=…\nThe tile endpoint. Renders a 256×256 RGBA PNG by: (a) executing the SQL and LRU-caching the cell_id → value map; (b) reading the z/x/y window of the cell-id COG with nearest-neighbor resampling; (c) looking the value up per pixel, rescaling and colorizing; (d) returning PNG with Cache-Control: public, max-age=604800.\n\n\nGET /msens/tiles/{z}/{x}/{y}.png?sql=…&color=#rrggbb[aa]\nSingle-color mask variant: every valid (in-range, finite-value) pixel is painted with the given hex color; colormap and rescale are ignored. Used for binary overlays like “cells outside Program Areas”.\n\n\nGET /msens/debug/cog\nInspect the underlying cell-id COG (bounds, CRS, dtype, nodata, overviews, rio_tiler / rasterio versions).\n\n\nGET /msens/debug/tile/{z}/{x}/{y}\nInspect what rio_tiler.Reader.tile() returns for a given tile (cell-id range, mask valid-pixel count, top-10 cell-ids by count).\n\n\n\nTile URLs were composed via msens::cell_tile_url() with stats from msens::cell_stats(); see Chapter 17.\n\n\n16.2.2 Caching (v7 factory only)\nVarnish fronts the factory at titilecache:6082. The custom VCL (server/varnish/titiler.vcl):\n\nNormalizes query-param order via std.querysort() so semantically-identical URLs share a cache entry.\nStrips Cookie / Authorization (the factory is stateless).\nCaches 2xx responses on /msens/(tiles/|tilejson|bounds|statistics) for 7 days (grace=1h, keep=24h); errors for 60 s to prevent stampede.\nAdds X-Cache: HIT | MISS for debugging.\n\nWhen the source DuckDB regenerates, the Shiny app bumps the mtime query parameter to invalidate all cached tiles at once.\n\n\n16.2.3 Derived cell-id COG\nThe factory looks values up against a single-band uint32 cell-id COG — one per grid, since the grid changed at v8: r_cellid.tif for the v1–v7 regional grid, r_cellid_global.tif for the v8 global one.\n\n\n\n\n\n\nWarning\n\n\n\nThese are lookup images: a pixel’s value is a cell id, not a measurement. A grid’s geometry therefore cannot be inferred from the COG — use the grid registry (msens::grid_spec_for()), which is the authority on extent, size and longitude convention.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>APIs</span>"
+    ]
+  },
+  {
+    "objectID": "apis.html#custom-plumber-api",
+    "href": "apis.html#custom-plumber-api",
+    "title": "16  APIs",
+    "section": "16.3 Custom plumber API",
+    "text": "16.3 Custom plumber API\nThe plumber API at api.marinesensitivity.org covers non-tile use cases — CSV exports, species lookups by feature, on-demand PDF/DOCX report generation. Source: MarineSensitivity/api.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>APIs</span>"
+    ]
+  },
+  {
+    "objectID": "apis.html#stac",
+    "href": "apis.html#stac",
+    "title": "16  APIs",
+    "section": "16.4 STAC",
+    "text": "16.4 STAC\nEach release publishes a SpatioTemporal Asset Catalog describing its distributions and score surfaces, with a project extension for species-distribution-model metadata. Alongside the static catalog there is a searchable STAC API with one Item per model — the static catalog is dataset-level, with assets that are S3 prefixes and a bounding box covering a whole dataset, so it can answer neither “the asset for this model” nor “which models cover this area”.\nThe API backend reads stac-geoparquet through DuckDB, the same shape as the rest of the stack. It is pinned to an exact upstream commit and marked experimental upstream; treat it as a trial surface rather than load-bearing.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>APIs</span>"
+    ]
+  },
+  {
+    "objectID": "apis.html#retired-apis",
+    "href": "apis.html#retired-apis",
+    "title": "16  APIs",
+    "section": "16.5 Retired APIs",
+    "text": "16.5 Retired APIs\nRemoved from the serving path entirely — the containers are commented out in docker-compose.yml and are not running:\n\nswagger.marinesensitivity.org — PostgREST over PostgreSQL.\ntile.marinesensitivity.org — pg_tileserv vector tiles from PostGIS, superseded by static PMTiles served by Caddy’s file subdomain (see Chapter 12).",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>APIs</span>"
+    ]
+  },
+  {
+    "objectID": "libraries.html",
+    "href": "libraries.html",
+    "title": "17  Libraries",
+    "section": "",
+    "text": "17.1 Map-tile helpers (as of 0.3.4)\nBy creating an R package, we document functions and make them easily available across workflows and apps.\nFunctions read data from Chapter 14, analyze it, and visualize results. The Shiny apps in Chapter 18 consume msens::* helpers exclusively — app code never talks to the tile factory or PMTiles URL templates directly.\nThe following helpers bridge the Shiny app to the msens TiTiler factory (Chapter 16):\nThe SQL passed to cell_tile_url() and cell_stats() must return exactly two columns, cell_id (integer) and value (numeric) — see the examples in Chapter 14.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Libraries</span>"
+    ]
+  },
+  {
+    "objectID": "libraries.html#map-tile-helpers-as-of-0.3.4",
+    "href": "libraries.html#map-tile-helpers-as-of-0.3.4",
+    "title": "17  Libraries",
+    "section": "",
+    "text": "Helper\nPurpose\n\n\n\n\ncell_tile_url(sql, colormap, rescale, color, mtime, base)\nCompose an XYZ tile URL template for the factory, base64url-encoding sql and omitting colormap/rescale when color= is set (single-color mask).\n\n\ncell_stats(sql, mtime, base)\nGET /msens/statistics — returns list(n, min, max, mean, std, p2, p50, p98) for a stable legend rescale.\n\n\nadd_cell_tiles(m, tile_url, ...)\nWraps mapgl::add_raster_source() + mapgl::add_raster_layer() so the Shiny app adds a cell-values (or mask) layer to a map in one call.\n\n\nadd_cells(m, r, colors, ...) (retained)\nLegacy image-source path for static report figures that need terra SpatRaster rendering (e.g., Quarto-to-DOCX output that can’t reach the tile server).",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Libraries</span>"
+    ]
+  },
+  {
+    "objectID": "apps.html",
+    "href": "apps.html",
+    "title": "18  Apps",
+    "section": "",
+    "text": "18.1 Current Applications\nThe MST provides two interactive web applications, plus several legacy applications from earlier development phases.\nThese tools allow stakeholders, scientists, and decision-makers to understand the underlying components contributing to an area’s sensitivity to offshore energy development, supporting better planning and impact assessment.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Apps</span>"
+    ]
+  },
+  {
+    "objectID": "apps.html#current-applications",
+    "href": "apps.html#current-applications",
+    "title": "18  Apps",
+    "section": "",
+    "text": "18.1.1 Scores — mapper of aggregate sensitivity scores\nThe Scores application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:\n\nMulti-resolution viewing: toggle between cell-level (0.05° grid) and Program Area aggregations\nStudy area selection: focus on specific Program Areas or subregions\nLayer selection: view individual species category scores or composite metrics\nFlower plot: interactive summary showing scores by species category with weighted center value\nSpecies table: sortable table of species present in selected area with extinction risk details\nTreemap: hierarchical view of species contributions to sensitivity\nCSV export: download data for selected area or species\n\nUnder the hood the Scores app composes three kinds of map layer (Figure 12.1):\n\nScore raster — a pre-rendered COG per metric × subregion, whose URL and rescale range come straight from the release manifest. The browser fetches only the tiles intersecting its viewport; no full-raster transfer on load (see Figure 12.2).\n“Cells outside Program Areas” mask — a single-color overlay published the same way.\nZone choropleth — polygon geometry from a static PMTiles archive published per geometry vintage, with per-zone fill colors pushed live into the paint spec from the release’s zone_metric (see Figure 12.4).\n\nBecause every one of those is resolved from the manifest rather than hardcoded, switching ?ver= switches all three together — including drawing the boundary vintage that release actually used.\nSee Appendix B for details.\n\n\n18.1.2 Species — mapper of individual species distributions\nThe Species application enables exploration of individual species distribution models. Key features include:\n\nSpecies selection: search by common or scientific name, filter by species category\nModel display: view merged models or individual source dataset layers\nRepresentation toggle: compare the native-resolution original with the interpolated surface used in scoring\nMasking toggle: compare the expert-range-constrained merged model with the unconstrained suitability\nSpecies info panel: ESA listing, IUCN Red List category, MMPA/MBTA protection flags, extinction risk score\nDeep-linking: URL parameters support direct links to specific species\n\nSee Appendix C for details.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Apps</span>"
+    ]
+  },
+  {
+    "objectID": "apps.html#legacy-applications",
+    "href": "apps.html#legacy-applications",
+    "title": "18  Apps",
+    "section": "18.2 Legacy Applications",
+    "text": "18.2 Legacy Applications\nEarlier prototype applications from the research phase are kept in the Appendix under Applications (Legacy) for reference. They are not part of the current serving path.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Apps</span>"
+    ]
+  },
+  {
+    "objectID": "apps-guide.html",
+    "href": "apps-guide.html",
+    "title": "19  Apps User Guide",
+    "section": "",
+    "text": "19.1 Scores app\nThis guide walks through the two interactive applications — Scores (app.marinesensitivity.org/scores) and Species (app.marinesensitivity.org/species) — one control at a time. Each numbered step below mirrors a step in that app’s built-in Take a Tour (click About → Take a Tour in either app to walk the same path live), with the relevant control highlighted on the screenshot.\nFor a feature-by-feature reference instead, see the Scores and Species appendix pages.",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>Apps User Guide</span>"
+    ]
+  },
+  {
+    "objectID": "apps-guide.html#scores-app",
+    "href": "apps-guide.html#scores-app",
+    "title": "19  Apps User Guide",
+    "section": "",
+    "text": "19.1.1 1. Study Area\nPick a region to focus on. ‘Full study area’ shows all US federal waters from the Aleutians to the Caribbean and out to the Pacific Island Territories. The other choices zoom into a single subregion.\n\n\n\n\n\n\nFigure 19.1: Study Area\n\n\n\n\n\n19.1.2 2. Spatial Units\nToggle between fine-grained raster cells (0.05°) and aggregated BOEM Program Area polygons. Cell mode lets you click any pixel; Program Area mode shows pre-aggregated zone scores.\n\n\n\n\n\n\nFigure 19.2: Spatial Units\n\n\n\n\n\n19.1.3 3. Layer Selection\nChoose which sensitivity metric to display — composite score, individual species categories (bird, fish, mammal, etc.), or primary productivity. Note that some cells (Atlantic, Gulf of America, Hawaii, Puerto Rico, Pacific Islands) have scores but lie outside any v6 BOEM Program Area; they appear dimmed under a ‘Cells outside Program Areas’ overlay.\n\n\n\n\n\n\nFigure 19.3: Layer Selection\n\n\n\n\n\n19.1.4 4. Map tab\nThe Map tab is where you explore scores spatially — click cells or click Program Areas to see their scores.\n\n\n\n\n\n\nFigure 19.4: Map tab\n\n\n\n\n\n19.1.5 5. Layers control\nToggle individual map layers on and off — program area outlines, ecoregion outlines, raster cells, and the gray ‘Cells outside Program Areas’ overlay.\n\n\n\n\n\n\nFigure 19.5: Layers control\n\n\n\n\n\n19.1.6 6. Go to location\nSearch for a place name and the map will fly there — useful for jumping to a specific Program Area, port, or feature.\n\n\n\n\n\n\nFigure 19.6: Go to location\n\n\n\n\n\n19.1.7 7. Full screen\nExpand the map to fill the entire window.\n\n\n\n\n\n\nFigure 19.7: Full screen\n\n\n\n\n\n19.1.8 8. Zoom in / out\nZoom and reset the view. You can also use the mouse wheel, pinch gesture, or double-click.\n\n\n\n\n\n\nFigure 19.8: Zoom in / out\n\n\n\n\n\n19.1.9 9. Plot of Scores tab\nSwitch here to see the flower plot of aggregated sensitivity scores for the current selection, broken out by species category. Petal length = score (0–100); center number = weighted mean. Defaults to ‘All USA’ until you click a cell or click a Program Area.\n\n\n\n\n\n\nFigure 19.9: Plot of Scores tab\n\n\n\n\n\n19.1.10 10. Table of Species tab\nA sortable, downloadable table of every species in the currently selected area, with extinction-risk codes, areas, and per-category contributions.\n\n\n\n\n\n\nFigure 19.10: Table of Species tab\n\n\n\n\n\n19.1.11 11. Report tab\nGenerate a sensitivity report for one or more custom areas. Build up a list of labeled areas by drawing a polygon on the map (using the polygon tool) and/or by selecting a Program Area, then clicking ‘Add’ for each. Set a title, data version, and output format (HTML, Word, or PDF), then click ‘Generate report’.\n\n\n\n\n\n\nFigure 19.11: Report tab",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>Apps User Guide</span>"
+    ]
+  },
+  {
+    "objectID": "apps-guide.html#species-app",
+    "href": "apps-guide.html#species-app",
+    "title": "19  Apps User Guide",
+    "section": "19.2 Species app",
+    "text": "19.2 Species app\n\n19.2.1 1. Select a Species\nSearch by common or scientific name. Results are grouped by category (bird, fish, mammal, etc.).\n\n\n\n\n\n\nFigure 19.12: Select a Species\n\n\n\n\n\n19.2.2 2. Mask Selection\nChoose whether to overlay BOEM Program Area or Ecoregion boundaries on the map.\n\n\n\n\n\n\nFigure 19.13: Mask Selection\n\n\n\n\n\n19.2.3 3. Layer Selector\nThe colored bar shows which model layer is displayed. Green means the final Merged Model; orange means you are viewing a single input. Click the pills to switch layers.\n\n\n\n\n\n\nFigure 19.14: Layer Selector\n\n\n\n\n\n19.2.4 4. Species Map\nThe map shows the species distribution model. Cell values range from 1 (low sensitivity) to 100 (high sensitivity). Click cells for details.\n\n\n\n\n\n\nFigure 19.15: Species Map\n\n\n\n\n\n19.2.5 5. Species Info\nOpen the sidebar to see ESA listing, IUCN status, MMPA/MBTA flags, and extinction risk score for the selected species.\n\n\n\n\n\n\nFigure 19.16: Species Info",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>Apps User Guide</span>"
+    ]
+  },
+  {
+    "objectID": "docs.html",
+    "href": "docs.html",
+    "title": "20  Docs",
+    "section": "",
+    "text": "Technical documentation is principally in this book:\n\nmarinesensitivity.org/docs\nthe main documentation site\ngithub.com/MarineSensitivity/docs\nsource code in the Github repository\n\nBut there are also some other self-documenting resources:\n\nmarinesensitivity.org/msens\ndocumented R functions",
+    "crumbs": [
+      "Software",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Docs</span>"
+    ]
+  },
+  {
+    "objectID": "summary.html",
+    "href": "summary.html",
+    "title": "21  Summary",
+    "section": "",
+    "text": "21.1 What this release delivers\nThe Marine Sensitivity Toolkit (MST) provides a reproducible system for assessing the sensitivity of marine ecosystems to offshore energy development across US waters. This summary describes release v2; figures are read from that release.",
+    "crumbs": [
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Summary</span>"
+    ]
+  },
+  {
+    "objectID": "summary.html#what-this-release-delivers",
+    "href": "summary.html#what-this-release-delivers",
+    "title": "21  Summary",
+    "section": "",
+    "text": "17,353 valid marine species on a 0.05° grid (~4 km cells) across the US EEZ study area, of which 9,792 fall inside the 20 BOEM Program Areas, integrating 6 source datasets — continuous suitability models, regulatory habitat designations and expert range maps.\n7 scored species categories (invertebrate, fish, other, coral, bird, mammal, turtle), assigned from taxonomy rather than from the dataset a model arrived in.\nExtinction-risk scoring (1–100) folds in ESA listing, the MMPA floor (assigned by taxonomy, so no marine mammal is missed) and the MBTA floor (the FWS CFR 50 §10.13 species list, not all birds), falling back to the IUCN Red List where there is no US listing.\nModel merging produces one surface per taxon, with the expert range constraining suitability predictions rather than merely competing with them, and the governing extinction risk applied at the range cells. Sea turtles merge multiplicatively, so risk varies spatially within a species.\nEcoregional rescaling normalizes each metric to 0–100 within a BOEM Ecoregion, so scores are comparable among Program Areas in one ecoregion without being dominated by naturally species-rich waters.\nInteractive applications — Scores and Species — render any published release from a ?ver= parameter, so a reader can look at the release a report cited rather than only the newest one.",
+    "crumbs": [
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Summary</span>"
+    ]
+  },
+  {
+    "objectID": "summary.html#delivered-since-the-first-release",
+    "href": "summary.html#delivered-since-the-first-release",
+    "title": "21  Summary",
+    "section": "21.2 Delivered since the first release",
+    "text": "21.2 Delivered since the first release\nSeveral capabilities listed as future work in earlier editions of this documentation have since shipped:\n\nA DAG pipeline. The workflow is a targets graph generated from each notebook’s own metadata, so adding a dataset means adding a notebook, not editing a pipeline definition.\nCloud-Optimized GeoTIFFs and a STAC catalog. Distributions and score surfaces are published as COGs with STAC metadata, discoverable through a searchable STAC API, and the score rasters replaced an on-demand SQL-per-tile factory.\nPartitioned Parquet releases. Each version is published as Parquet on S3 and read directly, including from the browser, rather than shipped as a monolithic database file.\nOne application across all releases. The per-version application forks are retired; version is data, settled by a published manifest, not a code fork.\nWhole-range models. Distributions are captured globally rather than clipped to the study area, so a species map shows the species instead of the analysis extent.\n\nThe H3 hexagonal grid proposed earlier was evaluated and not adopted: v8 stays on a 0.05° raster grid, made global rather than regional. Interpolating suitability onto hexes added a resampling step without improving the analysis, and the raster grid aligns directly with the source environmental layers.",
+    "crumbs": [
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Summary</span>"
+    ]
+  },
+  {
+    "objectID": "summary.html#future-directions",
+    "href": "summary.html#future-directions",
+    "title": "21  Summary",
+    "section": "21.3 Future directions",
+    "text": "21.3 Future directions\n\nOBIS/GBIF validation — refine distributions against occurrence records, with temporal filters.\nDensity models — NOAA SEFSC and NCCOS density surfaces are ingested and catalogued but excluded from scoring, pending an agreed mapping from individuals km-2 onto the 0–100 suitability scale. They are flagged is_scored = FALSE so no count on these pages includes them.\nHabitat sensitivity — benthic habitats (coral reefs, seamounts, hydrothermal vents) as a component alongside species and productivity.\nStressor–receptor matrices — extend from sensitivity alone to full vulnerability by adding exposure for offshore wind, oil and gas, and other activities (see Chapter 11).\nApplication enhancements — arbitrary area selection, taxonomic-tree browsing, automatic figure generation, and scrollytelling explainers.\nInfrastructure transfer — support moving the data and applications onto BOEM infrastructure for long-term operation.",
+    "crumbs": [
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Summary</span>"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Behrenfeld, Michael J., and Paul G. Falkowski. 1997.\n“Photosynthetic Rates Derived from Satellite-Based Chlorophyll\nConcentration.” Limnology and Oceanography 42 (1): 1–20.\nhttps://doi.org/10.4319/lo.1997.42.1.0001.\n\n\nButchart, Stuart H. M., H. Resit Akçakaya, Janice Chanson, et al. 2007.\n“Improvements to the Red List Index.” PLoS ONE 2\n(1): e140. https://doi.org/10.1371/journal.pone.0000140.\n\n\nButchart, Stuart H. M., Alison J. Stattersfield, Leon A. Bennun, et al.\n2004. “Measuring Global Trends in the Status of Biodiversity: Red\nList Indices for Birds.” PLoS Biology 2 (12): e383. https://doi.org/10.1371/journal.pbio.0020383.\n\n\nChang, Winston, Joe Cheng, JJ Allaire, et al. 2024. Shiny: Web\nApplication Framework for r. https://CRAN.R-project.org/package=shiny.\n\n\nGoodale, M. Wing, and Anita Milman. 2016. “Cumulative Adverse\nEffects of Offshore Wind Energy Development on Wildlife.”\nJournal of Environmental Planning and Management 0 (0): 1–21.\nhttps://doi.org/10.1080/09640568.2014.973483.\n\n\nHalpern, Benjamin S., Catherine Longo, Darren Hardy, et al. 2012.\n“An Index to Assess the Health and Benefits of the Global\nOcean.” Nature, ahead of print. https://doi.org/10.1038/nature11397.\n\n\nHalpern, Benjamin S., Kimberly A. Selkoe, Fiorenza Micheli, and Carrie\nV. Kappel. 2007. “Evaluating and Ranking the Vulnerability of\nGlobal Marine Ecosystems to Anthropogenic Threats.”\nConservation Biology 21: 1301–15. https://doi.org/10.1111/j.1523-1739.2007.00752.x.\n\n\nHare, Jonathan A., Wendy E. Morrison, Mark W.\nNelson, et al. 2016. “A Vulnerability Assessment of Fish\nand Invertebrates to Climate Change on the Northeast u.s. Continental\nShelf.” PLoS ONE 11 (2): e0146756. https://doi.org/10.1371/journal.pone.0146756.\n\n\nIntergovernmental Panel on Climate Change. 2014. Climate Change\n2014: Impacts, Adaptation, and Vulnerability. Contribution of Working\nGroup II to the Fifth Assessment Report. Cambridge University\nPress.\n\n\nKaschner, K., K. Kesner-Reyes, C. Garilao, et al. 2019.\nAquaMaps: Predicted Range Maps for Aquatic\nSpecies. https://www.aquamaps.org.\n\n\nLowndes, Julia S. Stewart, Benjamin D. Best, Courtney Scarborough, et\nal. 2017. “Our Path to Better Science in Less Time Using Open Data\nScience Tools.” Nature Ecology & Evolution 1 (6):\n0160. https://doi.org/10.1038/s41559-017-0160.\n\n\nMair, Louise, Leon A. Bennun, Thomas M. Brooks, et\nal. 2021. “A Metric for Spatially Explicit Contributions to\nScience-Based Species Targets.” Nature Ecology &\nEvolution 5: 836–44. https://doi.org/10.1038/s41559-021-01432-0.\n\n\nMaitner, Brian, Paul Efren Santos Andrade, Luna Lei, et al. 2024.\n“Code Sharing in Ecology and Evolution Increases Citation Rates\nbut Remains Uncommon.” Ecology and Evolution 14 (8):\ne70030. https://doi.org/10.1002/ece3.70030.\n\n\nMooers, Arne Ø., Daniel P. Faith, and Wayne P. Maddison. 2008.\n“Converting Endangered Species Categories to Probabilities of\nExtinction for Phylogenetic Conservation Prioritization.”\nPLoS ONE 3 (11): e3700. https://doi.org/10.1371/journal.pone.0003700.\n\n\nMorandi, A., S. Berkman, J. Rowe, et al. 2018. Environmental\nSensitivity and Associated Risk to Habitats and Species on the Pacific\nWest Coast and Hawaii with Offshore Floating Wind Technologies. OCS\nStudy BOEM 2018-031. US Department of the Interior, Bureau of Ocean\nEnergy Management, Pacific OCS Region. https://www.boem.gov/sites/default/files/environmental-stewardship/Environmental-Studies/Pacific-Region/Studies/BOEM-2018-031-Vol1.pdf.\n\n\nNiedoroda, Alan W. 2014. Renewable Energy Space Assessment Model\n(RESA). Bureau of Ocean Energy Management.\n\n\nNOAA Fisheries. 2025. Endangered Species Act Species Range\nGeodatabase. National Oceanic; Atmospheric Administration (NOAA),\nNational Marine Fisheries Service (NMFS), Office of Protected Resources\n(OPR). https://noaa.maps.arcgis.com/home/search.html?searchTerm=turtle+dps.\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, et al. 2023. Surviving\nthe Anthropocene: The Resilience of Marine Animals to Climate\nChange. CRC Press.\n\n\nWallace, Bryan P., Zachary A. Posnik, Bryan J. Hurley, et al. 2023.\n“Marine Turtle Regional Management Units 2.0.”\nEndangered Species Research 52: 209–23. https://doi.org/10.3354/esr01243.\n\n\nWilkinson, Mark D., Michel Dumontier, IJsbrand Jan\nAalbersberg, et al. 2016. “The FAIR Guiding Principles for\nScientific Data Management and Stewardship.” Scientific\nData 3 (1): 160018. https://doi.org/10.1038/sdata.2016.18.",
+    "crumbs": [
+      "References"
+    ]
+  },
+  {
+    "objectID": "glossary.html",
+    "href": "glossary.html",
+    "title": "Glossary",
+    "section": "",
+    "text": "acclimatisation\n\nthe adjustment of an organism to environmental conditions in the field or environment rather than the laboratory without an adjustment in their genetics. Acclimatisation has been used to describe phenotypically plastic responses in natural conditions. Source: Ross et al. (2023).\n\nadaptation\n\nthe evolutionary mechanism where natural selection of traits is genetically passed on, typically over many generations, to create an organism suited to the environment. Source: [rossRoss et al. (2023)\n\nadaptive capacity\n\nthe capacity of the ecosystem or organism to improve and reorganise in response to stress such as climate change through phenotypic plasticity (acclimation, acclimatisation) or adaptation, distributional shifts, and rapid evolution of traits suited to new conditions. Source: Ross et al. (2023).\n\nBOEM\n\nBureau of Ocean Energy Management — US federal agency responsible for managing offshore energy and mineral resources on the Outer Continental Shelf.\n\nCOG\n\nCloud-Optimized GeoTIFF — a raster file format optimized for efficient access over HTTP, enabling range requests for partial reads.\n\nDuckDB\n\nan embedded analytical database engine used for storing and querying species distribution models, extinction risk scores, and sensitivity metrics.\n\necoregion\n\na BOEM-defined ecological region used as the spatial unit for rescaling sensitivity scores to enable meaningful cross-region comparison.\n\nepigenetics\n\nthe modification of phenotype plasticity of an organism through altered gene expression without an alteration to the DNA sequence. ‘Epi’ means above the DNA and includes DNA methylation, modification of histones, and non-coding RNA. Source: Ross et al. (2023).\n\nESA\n\nEndangered Species Act (1973) — US federal law providing protections for species listed as Endangered or Threatened by NMFS or FWS.\n\nexposure\n\nthe magnitude of the change in the environment\n\nfecundity\n\nthe maximum physiological potential reproductive output of an organism to produce offspring (reproductive output). This differs from fertility, which is the number of offspring born. Source: Ross et al. (2023)\n\nMBON\n\nMarine Biodiversity Observation Network; see MarineBON.org\n\nMBTA\n\nMigratory Bird Treaty Act (1918) — US federal law protecting migratory birds, including most seabird species. MBTA-protected species receive a minimum spatial floor score of 10.\n\nMMPA\n\nMarine Mammal Protection Act (1972) — US federal law protecting all marine mammals in US waters. MMPA-protected species receive a minimum spatial floor score of 20.\n\nMST\n\nMarine Sensitivity Toolkit — the cloud-native system developed for BOEM to assess marine ecosystem sensitivity to offshore energy development.\n\nOCSLA\n\nOuter Continental Shelf Lands Act — US federal law governing the management of offshore resources, including the mandate to consider environmental sensitivity and marine productivity.\n\nresilience\n\nthe capacity of an ecosystem, society, or organism to absorb disturbance and reorganise while undergoing change so as to retain essentially the same function, structure, identity, and feedbacks. Resilience reflects the degree to which a complex adaptive system is determined by its capacity to reorganise and adapt in order to avoid being disturbed again. Source: Ross et al. (2023).\n\nSDM\n\nSpecies Distribution Model — a statistical or environmental envelope model predicting the spatial distribution of a species based on environmental variables.\n\nsensitivity\n\nthe magnitude of response to the change\n\nstressor\n\nthe stimulus that causes stress to an organism\n\nvulnerability\n\ncombination of exposure and sensitivity\n\n\n\n\n\n\nRoss, Pauline M., Elliot Scanes, Maria Byrne, et al. 2023. Surviving the Anthropocene: The Resilience of Marine Animals to Climate Change. CRC Press.",
+    "crumbs": [
+      "Appendices",
+      "Glossary"
+    ]
+  },
+  {
+    "objectID": "apps/scores.html",
+    "href": "apps/scores.html",
+    "title": "Appendix A — Scores — mapper of aggregate sensitivity scores",
+    "section": "",
+    "text": "B Scores",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
+    ]
+  },
+  {
+    "objectID": "apps/scores.html#overview",
+    "href": "apps/scores.html#overview",
+    "title": "Appendix A — Scores — mapper of aggregate sensitivity scores",
+    "section": "B.1 Overview",
+    "text": "B.1 Overview\nThe Scores application (app.marinesensitivity.org/scores) is the primary interactive tool for exploring composite marine sensitivity scores. It renders any published release from a ?ver= parameter — ?ver=v3 shows v3 — defaulting to the promoted release when none is given. It enables users to visualize extinction risk weighted species presence at multiple spatial resolutions, with integrated flower plot and treemap summaries.\nFigure B.1 shows the global view of cell-level sensitivity scores across all US waters. The sidebar provides controls for study area, spatial units (raster cells or program areas), and layer selection.\n\n\n\n\n\n\nFigure B.1: The Scores application displaying cell-level sensitivity scores across US waters. The sidebar provides controls for study area selection, spatial resolution (raster cells vs. program areas), and layer choice. The globe view shows scores from 0 (blue) to 89 (red) with MapBox basemap.\n\n\n\nFigure B.2 shows the flower plot panel that appears when a program area is selected. Here, the Southern California program area displays a weighted mean score of 29, with petals representing species categories (bird, coral, fish, invertebrate, mammal, other, turtle) and primary productivity.\n\n\n\n\n\n\nFigure B.2: The Scores application showing the flower plot panel for Southern California. Petal length represents each category’s rescaled sensitivity score; petal width represents its weight. The center value (29) is the weighted mean across all categories.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
+    ]
+  },
+  {
+    "objectID": "apps/scores.html#features",
+    "href": "apps/scores.html#features",
+    "title": "Appendix A — Scores — mapper of aggregate sensitivity scores",
+    "section": "B.2 Features",
+    "text": "B.2 Features\n\nB.2.1 Map Display\n\nCell-level view: 0.05° grid cells colored by sensitivity score for the selected metric\nProgram area view: aggregated scores by BOEM Program Area, with boundaries overlaid\nBase maps: multiple MapBox base layers (satellite, streets, light, dark)\nStudy area selection: click a program area to focus the view and update summary panels\n\n\n\nB.2.2 Sensitivity Metrics\nThe map can display any of the following layers:\n\nComposite extinction risk (weighted sum across all species categories)\nIndividual category scores, one per scored species category in the release being viewed\nPrimary productivity\n\nAll scores are ecoregionally rescaled to [0–100] for meaningful cross-region comparison (see Chapter 9).\n\n\nB.2.3 Flower Plot\nSelecting a program area displays a flower plot summarizing the sensitivity profile:\n\nEach petal represents a species category\nPetal length = rescaled sensitivity score (0–100)\nPetal width = category weight\nCenter value = weighted mean across categories\n\n\n\nB.2.4 Species Table\nA sortable table of all valid species present in the selected area, showing:\n\nScientific and common name\nSpecies category\nESA listing, IUCN Red List status\nMMPA/MBTA protection flags\nExtinction risk score\n\n\n\nB.2.5 Data Export\nUsers can download CSV files of scores and species lists for the selected program area or custom area of interest.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
+    ]
+  },
+  {
+    "objectID": "apps/scores.html#generating-screenshots",
+    "href": "apps/scores.html#generating-screenshots",
+    "title": "Appendix A — Scores — mapper of aggregate sensitivity scores",
+    "section": "B.3 Generating Screenshots",
+    "text": "B.3 Generating Screenshots",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
+    ]
+  },
+  {
+    "objectID": "apps/scores.html#source-code",
+    "href": "apps/scores.html#source-code",
+    "title": "Appendix A — Scores — mapper of aggregate sensitivity scores",
+    "section": "B.4 Source Code",
+    "text": "B.4 Source Code\nscores/app.R on the apps repository’s main branch. There is one checkout, not one per release: the version is data, resolved from the published manifest, so the per-version forks (mapgl, mapgl_v1…v6, scores_v6, scores_v8) are retired and their URLs 301 to /scores/?ver=….",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
+    ]
+  },
+  {
+    "objectID": "apps/species.html",
+    "href": "apps/species.html",
+    "title": "Appendix B — Species — mapper of individual species distributions",
+    "section": "",
+    "text": "C Species",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
+    ]
+  },
+  {
+    "objectID": "apps/species.html#overview",
+    "href": "apps/species.html#overview",
+    "title": "Appendix B — Species — mapper of individual species distributions",
+    "section": "C.1 Overview",
+    "text": "C.1 Overview\nThe Species application (app.marinesensitivity.org/species) enables exploration of individual species distribution models. Like the Scores app it renders any published release from a ?ver= parameter. Users can view merged and source-level models, compare masked vs. unmasked distributions, and access detailed species regulatory status information.\nFigure C.1 shows the merged distribution model for the blue whale (Balaenoptera musculus). The map displays cell values from 1 (low suitability, blue) to 100 (high suitability, red) across all US program areas where the species occurs.\n\n\n\n\n\n\nFigure C.1: The Species application showing the merged distribution model for blue whale (Balaenoptera musculus). Cell values range from 1 (low suitability) to 100 (high suitability). The species selector dropdown allows searching by common or scientific name with category prefix.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
+    ]
+  },
+  {
+    "objectID": "apps/species.html#features",
+    "href": "apps/species.html#features",
+    "title": "Appendix B — Species — mapper of individual species distributions",
+    "section": "C.2 Features",
+    "text": "C.2 Features\n\nC.2.1 Species Selection\n\nSearch: find species by common name or scientific name\nCategory filter: narrow results by species category, as defined in the release being viewed\nAlphabetical browsing: scroll through species lists within each category\n\n\n\nC.2.2 Model Display\n\nMerged model: the final merged distribution showing MAX values across all source datasets, with masking and spatial floors applied\nSource datasets: toggle individual source layers (AquaMaps, NMFS CH, FWS CH, FWS Range, BirdLife, IUCN Range) to see each dataset’s contribution\nIUCN masking toggle: compare the unmasked AquaMaps SDM with the masked merged model to visualize the effect of range constraints\n\n\n\nC.2.3 Species Info Panel\nDetailed information for the selected species:\n\nScientific name and common name\nSpecies category (bird, fish, mammal, etc.)\nESA listing status (Endangered, Threatened, or not listed)\nIUCN Red List category\nMMPA protection flag\nMBTA protection flag\nComputed extinction risk score (1–100)\nNumber of source datasets contributing to the merged model\n\n\n\nC.2.4 Deep-Linking\nThe application supports URL parameters for direct linking to specific species, enabling bookmarking and sharing of specific views:\nhttps://shiny.marinesensitivity.org/species/?species=Balaenoptera+musculus",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
+    ]
+  },
+  {
+    "objectID": "apps/species.html#generating-screenshots",
+    "href": "apps/species.html#generating-screenshots",
+    "title": "Appendix B — Species — mapper of individual species distributions",
+    "section": "C.3 Generating Screenshots",
+    "text": "C.3 Generating Screenshots",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
+    ]
+  },
+  {
+    "objectID": "apps/species.html#source-code",
+    "href": "apps/species.html#source-code",
+    "title": "Appendix B — Species — mapper of individual species distributions",
+    "section": "C.4 Source Code",
+    "text": "C.4 Source Code\nspecies/app.R on the apps repository’s main branch — one checkout serving every release, not one per version.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
+    ]
+  },
+  {
+    "objectID": "apps/aoi.html",
+    "href": "apps/aoi.html",
+    "title": "Areas of Interest",
+    "section": "",
+    "text": "Map high resolution Areas of Interest (using vector tiles) for visualization (and later summarization).\n\n website\n code",
+    "crumbs": [
+      "Appendices",
+      "Applications (Legacy)",
+      "Areas of Interest"
+    ]
+  },
+  {
+    "objectID": "apps/bird_hotspots.html",
+    "href": "apps/bird_hotspots.html",
+    "title": "Bird Hotspots",
+    "section": "",
+    "text": "Bird hotspots application showing hotspot probability for species present given drawn Area of Interest.\n\n website\n code",
+    "crumbs": [
+      "Appendices",
+      "Applications (Legacy)",
+      "Bird Hotspots"
+    ]
+  },
+  {
+    "objectID": "apps/map.html",
+    "href": "apps/map.html",
+    "title": "Regional Map",
+    "section": "",
+    "text": "Basic interactive map of BOEM regions.\n\n website\n code",
+    "crumbs": [
+      "Appendices",
+      "Applications (Legacy)",
+      "Regional Map"
+    ]
+  },
+  {
+    "objectID": "apps/scores_0.html",
+    "href": "apps/scores_0.html",
+    "title": "Scores Explorer",
+    "section": "",
+    "text": "Calculate scores based on sensitivity metric – for now, extinction risk across taxonomic groups.\n\n website\n code",
+    "crumbs": [
+      "Appendices",
+      "Applications (Legacy)",
+      "Scores Explorer"
+    ]
+  },
+  {
+    "objectID": "apps/sdm.html",
+    "href": "apps/sdm.html",
+    "title": "Distributions, Vector",
+    "section": "",
+    "text": "Show species distributions with high resolution vectors (as vector tiles).\n\n website\n code",
+    "crumbs": [
+      "Appendices",
+      "Applications (Legacy)",
+      "Distributions, Vector"
+    ]
+  },
+  {
+    "objectID": "apps/sdm-cog.html",
+    "href": "apps/sdm-cog.html",
+    "title": "Distributions, Raster",
+    "section": "",
+    "text": "Show species distributions with high resolution rasters as cloud-optimized GeoTIFFs (COGs).\n\n website\n code",
+    "crumbs": [
+      "Appendices",
+      "Applications (Legacy)",
+      "Distributions, Raster"
+    ]
+  },
+  {
+    "objectID": "apps/vmap.html",
+    "href": "apps/vmap.html",
+    "title": "Vulnerability Mapper",
+    "section": "",
+    "text": "Combine species distribution models (raster) and vulnerability metrics (tables) to identify areas of high conservation concern.\n\n website\n code",
+    "crumbs": [
+      "Appendices",
+      "Applications (Legacy)",
+      "Vulnerability Mapper"
+    ]
+  }
+]

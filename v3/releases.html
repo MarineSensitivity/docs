@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; Releases – Marine Sensitivity</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./releases/v1.html" rel="next">
+<link href="./intro.html" rel="prev">
+<link href="./images/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google tag (gtag.js) — GA4 property 413466008 -->
+<!--
+  ONE measurement ID across every MarineSensitivity product (see the homepage
+  repo's _analytics.html for why). Products are separated in reporting by
+  `content_group`; this book reports as 'docs'.
+
+  This replaces the `google-analytics:` key, which cannot set content_group and
+  would double-count page views if both were enabled.
+-->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-9HW6L751XG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-9HW6L751XG', { content_group: 'docs' });
+
+  // Quarto's `downloads: [pdf, docx]` buttons are plain anchors — the gtag
+  // config above counts the page view but not the download, so track them
+  // explicitly. Delegated so it survives Quarto's client-side navigation.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    var m = href.match(/\.(pdf|docx|epub|csv|zip|gpkg|tif|parquet)(\?|$)/i);
+    if (!m) return;
+    gtag('event', 'file_download', {
+      content_group: 'docs',
+      file_extension: m[1].toLowerCase(),
+      file_name: href.split('/').pop().slice(0, 100),
+      link_text: (a.textContent || '').trim().slice(0, 100)
+    });
+  }, true);
+</script>
+<!--
+  Documentation version switcher.
+
+  One book documented eight model releases, so a reader could not tell which
+  version a page described, and a citation to the v4 methods had nowhere to
+  point. Docs are now published per release under /{ver}/, and this widget moves
+  between them.
+
+  It reads the SAME versions.json that drives the pipeline and the apps, so the
+  three cannot disagree about what exists. The bucket serves it with
+  `Access-Control-Allow-Origin: *`, so the fetch works from the browser.
+
+  The page's own version comes from its URL, not from a build-time injection:
+  the published layout is /{ver}/..., so the path is the source of truth and
+  cannot drift from where the file actually sits. If anything fails — offline,
+  registry unreachable, an unversioned preview render — the widget simply does
+  not appear, because a docs page must never fail to render over its own chrome.
+-->
+<script>
+(function () {
+  var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
+
+  function parsePath() {
+    var m = location.pathname.match(/^(.*?\/)(v\d+[a-z]?)(\/.*)?$/);
+    if (!m) return null;
+    return { prefix: m[1], ver: m[2], rest: m[3] || "/" };
+  }
+
+  function label(v) {
+    var s = v.ver;
+    if (v.status === "prerelease") s += " (pre-release)";
+    else if (v.status === "retired") s += " (retired)";
+    return v.title ? s + " — " + v.title : s;
+  }
+
+  // The script is injected into <head>, so on a fast/cached load the fetch can
+  // resolve BEFORE the body exists -- and mounting into a null host silently
+  // does nothing. Observed exactly that: the switcher appeared on the index but
+  // not on an inner page whose registry response came from cache.
+  function whenReady(fn) {
+    if (document.readyState === "loading")
+      document.addEventListener("DOMContentLoaded", fn, { once: true });
+    else fn();
+  }
+
+  function mount(el) {
+    // the book sidebar is the natural home; fall back to the footer, then body
+    var host = document.querySelector("#quarto-margin-sidebar")
+            || document.querySelector("#quarto-sidebar")
+            || document.querySelector(".nav-footer")
+            || document.body;
+    host.insertBefore(el, host.firstChild);
+  }
+
+  var here = parsePath();
+  if (!here) return;   // unversioned (local preview) — nothing to switch between
+
+  fetch(REGISTRY, { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (j) {
+      var versions = (j && j.versions) || j;
+      if (!versions || !versions.length) return;
+
+      versions = versions.slice().sort(function (a, b) {
+        return String(b.released || b.ver).localeCompare(String(a.released || a.ver));
+      });
+
+      var wrap = document.createElement("div");
+      wrap.className = "docs-version-switcher";
+      wrap.style.cssText = "margin:0.75rem 0;font-size:0.85rem;";
+
+      var lab = document.createElement("label");
+      lab.textContent = "Docs version";
+      lab.style.cssText = "display:block;font-weight:600;margin-bottom:0.25rem;";
+      lab.setAttribute("for", "docs-version-select");
+
+      var sel = document.createElement("select");
+      sel.id = "docs-version-select";
+      sel.className = "form-select form-select-sm";
+
+      versions.forEach(function (v) {
+        var o = document.createElement("option");
+        o.value = v.ver;
+        o.textContent = label(v);
+        if (v.ver === here.ver) o.selected = true;
+        sel.appendChild(o);
+      });
+
+      // A release exists in the registry long before its DOCS are built -- today
+      // only v8 is published, so offering v1-v7 as live options would hand the
+      // reader a 404. Probe each one and mark the unbuilt ones, rather than
+      // maintaining a second list that would drift from what is actually there.
+      versions.forEach(function (v) {
+        if (v.ver === here.ver) return;
+        fetch(here.prefix + v.ver + "/", { method: "HEAD" })
+          .then(function (r) {
+            if (r.ok) return;
+            var o = sel.querySelector("option[value='" + v.ver + "']");
+            if (o) { o.disabled = true; o.textContent = label(v) + " — docs not published"; }
+          })
+          .catch(function () {
+            var o = sel.querySelector("option[value='" + v.ver + "']");
+            if (o) { o.disabled = true; o.textContent = label(v) + " — docs not published"; }
+          });
+      });
+
+      sel.addEventListener("change", function () {
+        // keep the reader on the SAME page in the other version; if that page
+        // did not exist then, the server 404s and they can climb to its index —
+        // better than always dumping them at the top of an unfamiliar book
+        location.href = here.prefix + sel.value + here.rest;
+      });
+
+      wrap.appendChild(lab);
+      wrap.appendChild(sel);
+      whenReady(function () { mount(wrap); });
+    })
+    .catch(function () { /* registry unreachable: show nothing */ });
+})();
+</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./releases.html">Releases</a></li><li class="breadcrumb-item"><a href="./releases.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Releases</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Marine Sensitivity</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/MarineSensitivity/docs/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Marine-Sensitivity.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Marine-Sensitivity.docx">
+              <i class="bi bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Releases</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./releases.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Releases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./releases/v1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">v1 — Planning Areas</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Science</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./science.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Science</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data Sources</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./taxonomy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Taxonomy</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./extinction-risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Extinction Risk</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./model-merging.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Merging</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Scoring</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scoring-walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Scoring Walkthrough</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stressors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Stressors</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./server.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Server</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./db.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Database</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Workflows</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">APIs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./libraries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Libraries</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Apps</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps-guide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Apps User Guide</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Applications (Current)</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/species.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Applications (Legacy)</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/aoi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Areas of Interest</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/bird_hotspots.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bird Hotspots</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Regional Map</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/scores_0.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scores Explorer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/sdm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, Vector</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/sdm-cog.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, Raster</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/vmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vulnerability Mapper</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#every-release-at-a-glance" id="toc-every-release-at-a-glance" class="nav-link active" data-scroll-target="#every-release-at-a-glance"><span class="header-section-number">2.1</span> Every release at a glance</a></li>
+  <li><a href="#history" id="toc-history" class="nav-link" data-scroll-target="#history"><span class="header-section-number">2.2</span> History</a>
+  <ul class="collapse">
+  <li><a href="#v8-marine-atlas" id="toc-v8-marine-atlas" class="nav-link" data-scroll-target="#v8-marine-atlas"><span class="header-section-number">2.2.1</span> v8 — Marine Atlas</a></li>
+  <li><a href="#v7-validity-decoupled-from-program-areas" id="toc-v7-validity-decoupled-from-program-areas" class="nav-link" data-scroll-target="#v7-validity-decoupled-from-program-areas"><span class="header-section-number">2.2.2</span> v7 — validity decoupled from Program Areas</a></li>
+  <li><a href="#v6-expert-ranges-outside-the-us-eez" id="toc-v6-expert-ranges-outside-the-us-eez" class="nav-link" data-scroll-target="#v6-expert-ranges-outside-the-us-eez"><span class="header-section-number">2.2.3</span> v6 — expert ranges outside the US EEZ</a></li>
+  <li><a href="#v5-mmpa-floor-for-fws-managed-marine-mammals" id="toc-v5-mmpa-floor-for-fws-managed-marine-mammals" class="nav-link" data-scroll-target="#v5-mmpa-floor-for-fws-managed-marine-mammals"><span class="header-section-number">2.2.4</span> v5 — MMPA floor for FWS-managed marine mammals</a></li>
+  <li><a href="#v4b-the-multiplicative-turtle-merge" id="toc-v4b-the-multiplicative-turtle-merge" class="nav-link" data-scroll-target="#v4b-the-multiplicative-turtle-merge"><span class="header-section-number">2.2.5</span> v4b — the multiplicative turtle merge</a></li>
+  <li><a href="#v4-swot-sea-turtle-ranges" id="toc-v4-swot-sea-turtle-ranges" class="nav-link" data-scroll-target="#v4-swot-sea-turtle-ranges"><span class="header-section-number">2.2.6</span> v4 — SWOT sea turtle ranges</a></li>
+  <li><a href="#v3-merged-models-and-extinction-risk" id="toc-v3-merged-models-and-extinction-risk" class="nav-link" data-scroll-target="#v3-merged-models-and-extinction-risk"><span class="header-section-number">2.2.7</span> v3 — merged models and extinction risk</a></li>
+  <li><a href="#v2-program-areas" id="toc-v2-program-areas" class="nav-link" data-scroll-target="#v2-program-areas"><span class="header-section-number">2.2.8</span> v2 — Program Areas</a></li>
+  <li><a href="#v1-planning-areas" id="toc-v1-planning-areas" class="nav-link" data-scroll-target="#v1-planning-areas"><span class="header-section-number">2.2.9</span> v1 — Planning Areas</a></li>
+  </ul></li>
+  <li><a href="#reading-an-older-release" id="toc-reading-an-older-release" class="nav-link" data-scroll-target="#reading-an-older-release"><span class="header-section-number">2.3</span> Reading an older release</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/releases.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./releases.html">Releases</a></li><li class="breadcrumb-item"><a href="./releases.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Releases</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-releases" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Releases</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This book is published <strong>once per release</strong>. The page you are reading documents <strong>v3</strong>, and every figure in it comes from that release’s own published tables — so a v3 page reports v3’s numbers, not the newest ones. Use the version switcher in the sidebar to move between builds.</p>
+<p>This page is the exception: it reads <em>all</em> releases, because the comparison is exactly what a single-version page cannot show.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>v3 — Merged models + extinction risk
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Released 2026-02-01. This is <strong>retired</strong> — superseded, but still published and still readable.</p>
+</div>
+</div>
+<section id="every-release-at-a-glance" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="every-release-at-a-glance"><span class="header-section-number">2.1</span> Every release at a glance</h2>
+<div class="cell">
+<div id="tbl-releases" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-releases-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2.1: Published releases. Species counts are read from each release’s own <code>taxon</code> table and are <strong>not</strong> comparable across releases, because the definition of a valid species changed at v3 and again at v7 (see below).
+</figcaption>
+<div aria-describedby="tbl-releases-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 31%">
+<col style="width: 7%">
+<col style="width: 11%">
+<col style="width: 14%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Released</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Title</th>
+<th style="text-align: right;">Datasets</th>
+<th style="text-align: right;">Valid species</th>
+<th style="text-align: right;">In Program Areas</th>
+<th style="text-align: left;">Grid</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">v8</td>
+<td style="text-align: left;">2026-07-28</td>
+<td style="text-align: left;">prerelease</td>
+<td style="text-align: left;">Marine Atlas</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">17,112</td>
+<td style="text-align: right;">9,632</td>
+<td style="text-align: left;"><code>global05</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">v7</td>
+<td style="text-align: left;">2026-06-12</td>
+<td style="text-align: left;">released</td>
+<td style="text-align: left;">Validity decoupled from Program Areas</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">16,153</td>
+<td style="text-align: right;">9,230</td>
+<td style="text-align: left;"><code>usa05</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">v6</td>
+<td style="text-align: left;">2026-04-09</td>
+<td style="text-align: left;">retired</td>
+<td style="text-align: left;">IUCN range outside US EEZ</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">9,424</td>
+<td style="text-align: right;">9,226</td>
+<td style="text-align: left;"><code>usa05</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">v5</td>
+<td style="text-align: left;">2026-03-24</td>
+<td style="text-align: left;">retired</td>
+<td style="text-align: left;">MMPA spatial floor</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">9,795</td>
+<td style="text-align: right;">9,597</td>
+<td style="text-align: left;"><code>usa05</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">v4b</td>
+<td style="text-align: left;">2026-03-19</td>
+<td style="text-align: left;">retired</td>
+<td style="text-align: left;">Turtle multiplicative merge</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">9,795</td>
+<td style="text-align: right;">9,597</td>
+<td style="text-align: left;"><code>usa05</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">v4</td>
+<td style="text-align: left;">2026-03-01</td>
+<td style="text-align: left;">retired</td>
+<td style="text-align: left;">SWOT sea turtles</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">9,795</td>
+<td style="text-align: right;">9,597</td>
+<td style="text-align: left;"><code>usa05</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>v3</strong></td>
+<td style="text-align: left;">2026-02-01</td>
+<td style="text-align: left;">retired</td>
+<td style="text-align: left;">Merged models + extinction risk</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">9,795</td>
+<td style="text-align: right;">9,621</td>
+<td style="text-align: left;"><code>usa05</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">v2</td>
+<td style="text-align: left;">2026-01-01</td>
+<td style="text-align: left;">retired</td>
+<td style="text-align: left;">Program Areas</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">17,353</td>
+<td style="text-align: right;">9,792</td>
+<td style="text-align: left;"><code>usa05</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">v1</td>
+<td style="text-align: left;">2023-09-01</td>
+<td style="text-align: left;">retired</td>
+<td style="text-align: left;">Planning Areas</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">17,379</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: left;"><code>usa05</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Why the species count is not a trend line
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The count moves for three different reasons, only one of which is “more data”:</p>
+<ul>
+<li><strong>v3</strong> tightened the taxonomy — resolving every source name to a canonical identity, dropping non-marine and extinct taxa — which cut the count roughly in half.</li>
+<li><strong>v6</strong> removed species whose expert range lies entirely outside US waters, whose apparent US presence was an artifact of environmental-envelope prediction.</li>
+<li><strong>v7</strong> stopped requiring Program-Area overlap for validity. Nothing was added; the definition changed, and the count went up accordingly.</li>
+</ul>
+<p>Read the column as “what this release considered valid”, never as a measurement of biodiversity that changed between releases.</p>
+</div>
+</div>
+<div class="cell">
+<div id="tbl-releases-tech" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-releases-tech-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2.2: What each release published, read from its manifest.
+</figcaption>
+<div aria-describedby="tbl-releases-tech-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 73%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Model id</th>
+<th style="text-align: right;">Metrics</th>
+<th style="text-align: left;">Spatial units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">v8</td>
+<td style="text-align: left;"><code>mdl_key</code></td>
+<td style="text-align: right;">17</td>
+<td style="text-align: left;">Ecoregions (12), Program Areas (20), Subregions (5)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">v7</td>
+<td style="text-align: left;"><code>mdl_seq</code></td>
+<td style="text-align: right;">17</td>
+<td style="text-align: left;">Ecoregions (12), Planning Areas (36), Program Areas (20), Subregions (5)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">v6</td>
+<td style="text-align: left;"><code>mdl_seq</code></td>
+<td style="text-align: right;">17</td>
+<td style="text-align: left;">Ecoregions (12), Planning Areas (36), Program Areas (20), Subregions (4)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">v5</td>
+<td style="text-align: left;"><code>mdl_seq</code></td>
+<td style="text-align: right;">17</td>
+<td style="text-align: left;">Ecoregions (12), Planning Areas (36), Program Areas (20), Subregions (4)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">v4b</td>
+<td style="text-align: left;"><code>mdl_seq</code></td>
+<td style="text-align: right;">17</td>
+<td style="text-align: left;">Ecoregions (12), Planning Areas (36), Program Areas (20), Subregions (4)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">v4</td>
+<td style="text-align: left;"><code>mdl_seq</code></td>
+<td style="text-align: right;">17</td>
+<td style="text-align: left;">Ecoregions (12), Planning Areas (36), Program Areas (20), Subregions (4)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">v3</td>
+<td style="text-align: left;"><code>mdl_seq</code></td>
+<td style="text-align: right;">17</td>
+<td style="text-align: left;">Ecoregions (12), Planning Areas (36), Program Areas (20), Subregions (4)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">v2</td>
+<td style="text-align: left;"><code>mdl_seq</code></td>
+<td style="text-align: right;">19</td>
+<td style="text-align: left;">Ecoregions (12), Planning Areas (36), Program Areas (20), Subregions (4)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">v1</td>
+<td style="text-align: left;"><code>mdl_seq</code></td>
+<td style="text-align: right;">19</td>
+<td style="text-align: left;">Ecoregions (12), Planning Areas (36), Subregions (4)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="history" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="history"><span class="header-section-number">2.2</span> History</h2>
+<section id="v8-marine-atlas" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="v8-marine-atlas"><span class="header-section-number">2.2.1</span> v8 — Marine Atlas</h3>
+<p>A ground-up rebuild as a global <strong>Marine Atlas</strong>.</p>
+<ul>
+<li><strong>Whole-range global ingest.</strong> Every species is modeled across its <em>entire</em> global range on a shared global 0.05° ocean grid, with no land mask and no Program-Area gate, so a distribution map shows the species rather than the analysis extent. “How marine” becomes a <em>derived</em> measurement rather than a filter applied up front.</li>
+<li><strong>Seabird de-duplication.</strong> A BirdLife ↔︎ WoRMS crosswalk merges each bird’s BirdLife, USFWS and AquaMaps inputs into a <em>single</em> taxon; v7 split some seabirds across two (Marbled Murrelet, Brown Pelican among them), double-counting them. Correcting it lowers seabird-heavy Program Areas in Alaska and the Pacific by several points, with overall Program-Area correlation to v7 of 0.94.</li>
+<li><strong>Taxonomy-driven categories.</strong> Categories come from WoRMS class and phylum rather than keyword matching, which removed the catch-all <code>other</code> bucket and surfaced <code>primary_producer</code>. Non-turtle reptiles and amphibians are excluded from scoring.</li>
+<li><strong>Original <em>and</em> interpolated distributions.</strong> Each source model is published in two representations — the native-resolution original and the 0.05° interpolated surface used in scoring — catalogued in STAC and toggleable in the species app.</li>
+<li><strong>Partitioned Parquet on S3.</strong> Releases are published as partitioned, content-addressed Parquet with COGs, PMTiles and a STAC catalog, replacing per-dataset archives and a monolithic database file.</li>
+<li><strong>A stable model identifier.</strong> <code>mdl_key</code> (<code>am|Fis-29291</code>, <code>ms_merge|WORMS:137209</code>) replaces the auto-increment <code>mdl_seq</code>, which renumbered on every rebuild and so broke every saved link to a model.</li>
+<li><strong>A different grid.</strong> v8 moves from a regional grid on 0–360 longitudes to a global one on −180 to 180, so <strong><code>cell_id</code> denotes a different place</strong> than it did in v1–v7.</li>
+</ul>
+</section>
+<section id="v7-validity-decoupled-from-program-areas" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="v7-validity-decoupled-from-program-areas"><span class="header-section-number">2.2.2</span> v7 — validity decoupled from Program Areas</h3>
+<p>Earlier releases silently required a species to overlap a current BOEM Program Area to count as valid, which hid biodiversity outside the program cycle’s footprint. Validity now means a taxonomically valid species with a modeled distribution anywhere in the study area, restoring the set from 9,424 to 16,153 — of which 9,230 fall within the 20 Program Areas. Program-Area membership became a spatial query rather than a species-level filter. Scores were recomputed over the full set with negligible effect: 18 of 20 Program Areas unchanged, and only Gulf of America GAB (−0.04) and GAA (−0.00) shifted at all.</p>
+</section>
+<section id="v6-expert-ranges-outside-the-us-eez" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="v6-expert-ranges-outside-the-us-eez"><span class="header-section-number">2.2.3</span> v6 — expert ranges outside the US EEZ</h3>
+<p>Excluded 371 species (343 fish, 20 invertebrates, 6 corals, 2 mammals) whose IUCN expert ranges fall entirely outside the US EEZ; their AquaMaps predictions in US waters were edge-of-range artifacts with near-zero suitability. Also ingested three missing marine-mammal IUCN ranges (<em>Phoca vitulina</em>, <em>Trichechus manatus</em>, <em>Pusa hispida</em>) from a more complete download. Effect on Program-Area scores was negligible.</p>
+<p>This exclusion was later lost in the v8 rewrite and restored; it now has a named regression test, because ~750 species were affected while aggregate scores barely moved — precisely the kind of error a whole-pipeline check cannot see (<a href="model-merging.html" class="quarto-xref"><span>Chapter 8</span></a>).</p>
+</section>
+<section id="v5-mmpa-floor-for-fws-managed-marine-mammals" class="level3" data-number="2.2.4">
+<h3 data-number="2.2.4" class="anchored" data-anchor-id="v5-mmpa-floor-for-fws-managed-marine-mammals"><span class="header-section-number">2.2.4</span> v5 — MMPA floor for FWS-managed marine mammals</h3>
+<p>Fixed the MMPA spatial floor for marine mammals managed by FWS rather than NMFS — walrus, polar bear, sea otter, manatee, dugong — which had been missing the protection flag because it was derived from the NMFS Species Directory alone. Later releases assign the flag by taxonomy instead, so no marine mammal can be missed (<a href="extinction-risk.html" class="quarto-xref"><span>Chapter 7</span></a>).</p>
+</section>
+<section id="v4b-the-multiplicative-turtle-merge" class="level3" data-number="2.2.5">
+<h3 data-number="2.2.5" class="anchored" data-anchor-id="v4b-the-multiplicative-turtle-merge"><span class="header-section-number">2.2.5</span> v4b — the multiplicative turtle merge</h3>
+<p>Introduced the second modeling approach, for sea turtles only: instead of taking a maximum and applying a scalar extinction-risk weight at scoring time, the SWOT+DPS extinction-risk <strong>raster</strong> is multiplied into the suitability surface during merging, so risk varies spatially within a species — matching the fact that NOAA Fisheries lists Distinct Population Segments separately. Critical habitat overrides with a maximum. Affected taxa are flagged <code>is_er_spatial</code> and pass <code>er_score = 100</code> through at scoring so the risk is not counted twice.</p>
+<p>This was the point at which the MST had <strong>two</strong> merge strategies rather than one, and it went undocumented for two releases (see <a href="model-merging.html" class="quarto-xref"><span>Chapter 8</span></a>).</p>
+</section>
+<section id="v4-swot-sea-turtle-ranges" class="level3" data-number="2.2.6">
+<h3 data-number="2.2.6" class="anchored" data-anchor-id="v4-swot-sea-turtle-ranges"><span class="header-section-number">2.2.6</span> v4 — SWOT sea turtle ranges</h3>
+<p>Replaced the overly extensive IUCN sea turtle range maps with the more realistic <a href="http://seamap.env.duke.edu/swot">State of the World’s Sea Turtles</a> global distributions, and applied NOAA Distinct Population Segment polygons carrying ESA listing status to distinguish Endangered from Threatened populations. The result is a more restrictive distribution dominated by ESA risk values.</p>
+</section>
+<section id="v3-merged-models-and-extinction-risk" class="level3" data-number="2.2.7">
+<h3 data-number="2.2.7" class="anchored" data-anchor-id="v3-merged-models-and-extinction-risk"><span class="header-section-number">2.2.7</span> v3 — merged models and extinction risk</h3>
+<p>Program Areas for the National OCS Plan, and ecoregional rescaling. Source datasets merged from continuous suitability models through to binary range maps, with masking where a global IUCN range exists. Introduced species sensitivity weighting from national ESA or global IUCN extinction risk, together with MMPA and MBTA protection. Sea turtles were split out of <code>reptile</code> into their own category.</p>
+</section>
+<section id="v2-program-areas" class="level3" data-number="2.2.8">
+<h3 data-number="2.2.8" class="anchored" data-anchor-id="v2-program-areas"><span class="header-section-number">2.2.8</span> v2 — Program Areas</h3>
+<p>Transition to the 2026 Program Areas. Individual model layers, a model-merging pipeline, and cloud-optimized GeoTIFF storage.</p>
+</section>
+<section id="v1-planning-areas" class="level3" data-number="2.2.9">
+<h3 data-number="2.2.9" class="anchored" data-anchor-id="v1-planning-areas"><span class="header-section-number">2.2.9</span> v1 — Planning Areas</h3>
+<p>Planning Areas across the US EEZ, AquaMaps-based species distributions, flower plots for multi-taxa visualization, and species tables with conservation status. See <a href="releases/v1.html" class="quarto-xref"><span>Chapter 3</span></a> for the full v1 methodology as delivered in the 2025 final report.</p>
+</section>
+</section>
+<section id="reading-an-older-release" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="reading-an-older-release"><span class="header-section-number">2.3</span> Reading an older release</h2>
+<p>Every release remains published and readable:</p>
+<ul>
+<li><strong>Documentation</strong> — this book, at <code>/{version}/</code>; the sidebar switcher moves between builds and marks any version whose docs are not built.</li>
+<li><strong>Applications</strong> — <a href="https://app.marinesensitivity.org/scores/?ver=v3"><code>/scores/?ver=v3</code></a> and <a href="https://app.marinesensitivity.org/species/?ver=v3"><code>/species/?ver=v3</code></a>, substituting any published version. The per-version application forks are retired; their old URLs 301 to the equivalent <code>?ver=</code>, so links printed in earlier reports still resolve to the release they always showed.</li>
+<li><strong>Data</strong> — <code>marine-atlas/{version}/tables/*.parquet</code> on S3, readable directly by DuckDB (including in a browser) without downloading a database.</li>
+</ul>
+<p><strong>Promotion is deliberate and separate from publishing.</strong> Writing data does not make a release current: the pointer that applications follow by default is only rewritten under an explicit flag, and may only name a released — never a pre-release — version. It currently names <strong>v7</strong>.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./intro.html" class="pagination-link" aria-label="Introduction">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./releases/v1.html" class="pagination-link" aria-label="v1 — Planning Areas">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">v1 — Planning Areas</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© <a href="https://bbest.github.io/cv/" target="_blank">Ben Best</a>, <a href="https://www.boem.gov/environment/environmental-studies/environmental-studies-information" target="_blank">BOEM-ESP</a></p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/releases.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org/" target="_blank">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

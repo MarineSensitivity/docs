@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="server software configuration using Docker">
+
+<title>13&nbsp; Server – Marine Sensitivity</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./db.html" rel="next">
+<link href="./software.html" rel="prev">
+<link href="./images/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google tag (gtag.js) — GA4 property 413466008 -->
+<!--
+  ONE measurement ID across every MarineSensitivity product (see the homepage
+  repo's _analytics.html for why). Products are separated in reporting by
+  `content_group`; this book reports as 'docs'.
+
+  This replaces the `google-analytics:` key, which cannot set content_group and
+  would double-count page views if both were enabled.
+-->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-9HW6L751XG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-9HW6L751XG', { content_group: 'docs' });
+
+  // Quarto's `downloads: [pdf, docx]` buttons are plain anchors — the gtag
+  // config above counts the page view but not the download, so track them
+  // explicitly. Delegated so it survives Quarto's client-side navigation.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    var m = href.match(/\.(pdf|docx|epub|csv|zip|gpkg|tif|parquet)(\?|$)/i);
+    if (!m) return;
+    gtag('event', 'file_download', {
+      content_group: 'docs',
+      file_extension: m[1].toLowerCase(),
+      file_name: href.split('/').pop().slice(0, 100),
+      link_text: (a.textContent || '').trim().slice(0, 100)
+    });
+  }, true);
+</script>
+<!--
+  Documentation version switcher.
+
+  One book documented eight model releases, so a reader could not tell which
+  version a page described, and a citation to the v4 methods had nowhere to
+  point. Docs are now published per release under /{ver}/, and this widget moves
+  between them.
+
+  It reads the SAME versions.json that drives the pipeline and the apps, so the
+  three cannot disagree about what exists. The bucket serves it with
+  `Access-Control-Allow-Origin: *`, so the fetch works from the browser.
+
+  The page's own version comes from its URL, not from a build-time injection:
+  the published layout is /{ver}/..., so the path is the source of truth and
+  cannot drift from where the file actually sits. If anything fails — offline,
+  registry unreachable, an unversioned preview render — the widget simply does
+  not appear, because a docs page must never fail to render over its own chrome.
+-->
+<script>
+(function () {
+  var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
+
+  function parsePath() {
+    var m = location.pathname.match(/^(.*?\/)(v\d+[a-z]?)(\/.*)?$/);
+    if (!m) return null;
+    return { prefix: m[1], ver: m[2], rest: m[3] || "/" };
+  }
+
+  function label(v) {
+    var s = v.ver;
+    if (v.status === "prerelease") s += " (pre-release)";
+    else if (v.status === "retired") s += " (retired)";
+    return v.title ? s + " — " + v.title : s;
+  }
+
+  // The script is injected into <head>, so on a fast/cached load the fetch can
+  // resolve BEFORE the body exists -- and mounting into a null host silently
+  // does nothing. Observed exactly that: the switcher appeared on the index but
+  // not on an inner page whose registry response came from cache.
+  function whenReady(fn) {
+    if (document.readyState === "loading")
+      document.addEventListener("DOMContentLoaded", fn, { once: true });
+    else fn();
+  }
+
+  function mount(el) {
+    // the book sidebar is the natural home; fall back to the footer, then body
+    var host = document.querySelector("#quarto-margin-sidebar")
+            || document.querySelector("#quarto-sidebar")
+            || document.querySelector(".nav-footer")
+            || document.body;
+    host.insertBefore(el, host.firstChild);
+  }
+
+  var here = parsePath();
+  if (!here) return;   // unversioned (local preview) — nothing to switch between
+
+  fetch(REGISTRY, { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (j) {
+      var versions = (j && j.versions) || j;
+      if (!versions || !versions.length) return;
+
+      versions = versions.slice().sort(function (a, b) {
+        return String(b.released || b.ver).localeCompare(String(a.released || a.ver));
+      });
+
+      var wrap = document.createElement("div");
+      wrap.className = "docs-version-switcher";
+      wrap.style.cssText = "margin:0.75rem 0;font-size:0.85rem;";
+
+      var lab = document.createElement("label");
+      lab.textContent = "Docs version";
+      lab.style.cssText = "display:block;font-weight:600;margin-bottom:0.25rem;";
+      lab.setAttribute("for", "docs-version-select");
+
+      var sel = document.createElement("select");
+      sel.id = "docs-version-select";
+      sel.className = "form-select form-select-sm";
+
+      versions.forEach(function (v) {
+        var o = document.createElement("option");
+        o.value = v.ver;
+        o.textContent = label(v);
+        if (v.ver === here.ver) o.selected = true;
+        sel.appendChild(o);
+      });
+
+      // A release exists in the registry long before its DOCS are built -- today
+      // only v8 is published, so offering v1-v7 as live options would hand the
+      // reader a 404. Probe each one and mark the unbuilt ones, rather than
+      // maintaining a second list that would drift from what is actually there.
+      versions.forEach(function (v) {
+        if (v.ver === here.ver) return;
+        fetch(here.prefix + v.ver + "/", { method: "HEAD" })
+          .then(function (r) {
+            if (r.ok) return;
+            var o = sel.querySelector("option[value='" + v.ver + "']");
+            if (o) { o.disabled = true; o.textContent = label(v) + " — docs not published"; }
+          })
+          .catch(function () {
+            var o = sel.querySelector("option[value='" + v.ver + "']");
+            if (o) { o.disabled = true; o.textContent = label(v) + " — docs not published"; }
+          });
+      });
+
+      sel.addEventListener("change", function () {
+        // keep the reader on the SAME page in the other version; if that page
+        // did not exist then, the server 404s and they can climb to its index —
+        // better than always dumping them at the top of an unfamiliar book
+        location.href = here.prefix + sel.value + here.rest;
+      });
+
+      wrap.appendChild(lab);
+      wrap.appendChild(sel);
+      whenReady(function () { mount(wrap); });
+    })
+    .catch(function () { /* registry unreachable: show nothing */ });
+})();
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./server.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Server</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Marine Sensitivity</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/MarineSensitivity/docs/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Marine-Sensitivity.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Marine-Sensitivity.docx">
+              <i class="bi bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Releases</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./releases.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Releases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./releases/v1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">v1 — Planning Areas</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Science</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./science.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Science</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data Sources</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./taxonomy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Taxonomy</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./extinction-risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Extinction Risk</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./model-merging.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Merging</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Scoring</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scoring-walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Scoring Walkthrough</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stressors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Stressors</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./server.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Server</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./db.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Database</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Workflows</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">APIs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./libraries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Libraries</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Apps</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps-guide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Apps User Guide</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Applications (Current)</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/species.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Applications (Legacy)</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/aoi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Areas of Interest</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/bird_hotspots.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bird Hotspots</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Regional Map</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/scores_0.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scores Explorer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/sdm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, Vector</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/sdm-cog.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, Raster</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/vmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vulnerability Mapper</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">13.1</span> Setup</a>
+  <ul class="collapse">
+  <li><a href="#launch-instance" id="toc-launch-instance" class="nav-link" data-scroll-target="#launch-instance"><span class="header-section-number">13.1.1</span> launch instance</a></li>
+  <li><a href="#ssh-to-server" id="toc-ssh-to-server" class="nav-link" data-scroll-target="#ssh-to-server"><span class="header-section-number">13.1.2</span> ssh to server</a></li>
+  <li><a href="#install-docker" id="toc-install-docker" class="nav-link" data-scroll-target="#install-docker"><span class="header-section-number">13.1.3</span> install docker</a></li>
+  <li><a href="#backup-share-with-snapshots" id="toc-backup-share-with-snapshots" class="nav-link" data-scroll-target="#backup-share-with-snapshots"><span class="header-section-number">13.1.4</span> Backup <code>/share</code> with snapshots</a></li>
+  </ul></li>
+  <li><a href="#docker-compose" id="toc-docker-compose" class="nav-link" data-scroll-target="#docker-compose"><span class="header-section-number">13.2</span> Docker compose</a></li>
+  <li><a href="#dns" id="toc-dns" class="nav-link" data-scroll-target="#dns"><span class="header-section-number">13.3</span> DNS</a></li>
+  <li><a href="#caddyfile" id="toc-caddyfile" class="nav-link" data-scroll-target="#caddyfile"><span class="header-section-number">13.4</span> Caddyfile</a></li>
+  <li><a href="#services" id="toc-services" class="nav-link" data-scroll-target="#services"><span class="header-section-number">13.5</span> Services</a>
+  <ul class="collapse">
+  <li><a href="#app-data-plane" id="toc-app-data-plane" class="nav-link" data-scroll-target="#app-data-plane"><span class="header-section-number">13.5.1</span> App + data plane</a></li>
+  <li><a href="#admin" id="toc-admin" class="nav-link" data-scroll-target="#admin"><span class="header-section-number">13.5.2</span> Admin</a></li>
+  <li><a href="#retired" id="toc-retired" class="nav-link" data-scroll-target="#retired"><span class="header-section-number">13.5.3</span> Retired</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/server.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./server.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Server</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-server" class="quarto-section-identifier"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Server</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The server is for serving up any web services outside those of Github (e.g., <a href="https://marinesensitivity.org/">website</a>, <a href="https://marinesensitivity.org/docs">docs</a> and R package <a href="https://marinesensitivity.org/msens">msens</a>) using <a href="https://www.docker.com/">Docker</a> (see the <a href="https://github.com/MarineSensitivity/server/blob/main/docker-compose.yml">docker-compose.yml</a>; with reverse proxying from subdomains to ports by <a href="https://caddyserver.com">Caddy</a>).</p>
+<p>The full architecture is summarized in the <a href="./software.html">Software overview</a>. This chapter documents the concrete services running on the host and how Caddy maps subdomains to container ports.</p>
+<!--
+![Testing architecture.](diagrams/architecture.svg){#fig-arch}
+
+![Testing with mmd to png for fa-example.](diagrams/fa-example_big.png){#fig-fa-example}
+-->
+<section id="setup" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">13.1</span> Setup</h2>
+<p>For the latest instructions on launching an Amazon instance and installing the server software, see <a href="https://github.com/MarineSensitivity/server/wiki/Server-Setup">Server Setup · MarineSensitivity/server Wiki</a>, which is pasted below for convenience…</p>
+<p><em>on AWS as EC2 instance using Docker</em></p>
+<section id="launch-instance" class="level3" data-number="13.1.1">
+<h3 data-number="13.1.1" class="anchored" data-anchor-id="launch-instance"><span class="header-section-number">13.1.1</span> launch instance</h3>
+<p>name: <strong>msens1</strong>:</p>
+<ul>
+<li>Software Image (AMI)<br>
+Canonical, <strong>Ubuntu</strong>, 22.04 LTS, amd64 jammy image build on 2023-09-19 ami-0fc5d935ebf8bc3bc</li>
+<li>Virtual server type (instance type)<br>
+<strong>t2.xlarge</strong> (4 vCPU, 16 GB memory)<br>
+</li>
+<li>Firewall (security group)<br>
+New security group</li>
+<li>Storage (volumes)<br>
+2 volume(s)
+<ul>
+<li><strong>20 GB</strong><br>
+<code>/</code> server software, disposable</li>
+<li><strong>60 GB</strong><br>
+<code>/share</code> for all data, persistent and to be backed up</li>
+</ul></li>
+</ul>
+<section id="allocate-ip-address" class="level4" data-number="13.1.1.1">
+<h4 data-number="13.1.1.1" class="anchored" data-anchor-id="allocate-ip-address"><span class="header-section-number">13.1.1.1</span> allocate IP address</h4>
+<ul>
+<li><p><a href="https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#Addresses:">Elastic IP addresses | EC2 | us-east-1</a> for persistent IP address</p></li>
+<li><p>Allocated IPv4 address: <code>100.25.173.0</code></p></li>
+<li><p>Associate Elastic IP address</p></li>
+</ul>
+</section>
+</section>
+<section id="ssh-to-server" class="level3" data-number="13.1.2">
+<h3 data-number="13.1.2" class="anchored" data-anchor-id="ssh-to-server"><span class="header-section-number">13.1.2</span> ssh to server</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">pem</span><span class="op">=</span><span class="st">'/Users/bbest/My Drive/private/msens_key_pair.pem'</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-i</span> <span class="va">$pem</span> ubuntu@msens1.marinesensitivity.org</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="set-hostname" class="level4" data-number="13.1.2.1">
+<h4 data-number="13.1.2.1" class="anchored" data-anchor-id="set-hostname"><span class="header-section-number">13.1.2.1</span> set hostname</h4>
+<ul>
+<li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/set-hostname.html">Change the hostname of your Amazon Linux instance - Amazon Elastic Compute Cloud</a></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> vi /etc/cloud/cloud.cfg</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># preserve_hostname: true</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> hostnamectl set-hostname msens1.marinesensitivity.org</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="mount-volume" class="level4" data-number="13.1.2.2">
+<h4 data-number="13.1.2.2" class="anchored" data-anchor-id="mount-volume"><span class="header-section-number">13.1.2.2</span> mount volume</h4>
+<p>The extra volume (60 GB for <code>/share</code>) was added during EC2 launch instance wizard, but needs to be mounted before available for use.</p>
+<ul>
+<li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html">Make an Amazon EBS volume available for use on Linux - Amazon Elastic Compute Cloud</a></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-H</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        21G  2.3G   19G  11% /
+tmpfs           8.4G     0  8.4G   0% /dev/shm
+tmpfs           3.4G  898k  3.4G   1% /run
+tmpfs           5.3M     0  5.3M   0% /run/lock
+/dev/xvda15     110M  6.4M  104M   6% /boot/efi
+tmpfs           1.7G  4.1k  1.7G   1% /run/user/1000</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lsblk</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>NAME     MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+loop0      7:0    0  24.6M  1 loop /snap/amazon-ssm-agent/7528
+loop1      7:1    0  55.7M  1 loop /snap/core18/2790
+loop2      7:2    0  63.5M  1 loop /snap/core20/2015
+loop3      7:3    0 111.9M  1 loop /snap/lxd/24322
+loop4      7:4    0  40.8M  1 loop /snap/snapd/20092
+xvda     202:0    0    20G  0 disk 
+├─xvda1  202:1    0  19.9G  0 part /
+├─xvda14 202:14   0     4M  0 part 
+└─xvda15 202:15   0   106M  0 part /boot/efi
+xvdb     202:16   0    60G  0 disk</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> file <span class="at">-s</span> /dev/xvdb</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># /dev/xvdb: data</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>So no file system on <code>/dev/xvdb</code> yet.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mkfs <span class="at">-t</span> xfs /dev/xvdb</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mkdir /share</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mount /dev/xvdb /share</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cp /etc/fstab /etc/fstab.orig</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> blkid</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># /dev/xvdb: UUID="bc766dfb-1c42-49cf-9320-2242a2d48a2e" BLOCK_SIZE="512" TYPE="xfs"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> vim /etc/fstab</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># UUID=bc766dfb-1c42-49cf-9320-2242a2d48a2e  /share  xfs  defaults,nofail  0  2</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-h</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> umount /share <span class="kw">;</span> <span class="fu">df</span> <span class="at">-h</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mount <span class="at">-a</span>      <span class="kw">;</span> <span class="fu">df</span> <span class="at">-h</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="install-docker" class="level3" data-number="13.1.3">
+<h3 data-number="13.1.3" class="anchored" data-anchor-id="install-docker"><span class="header-section-number">13.1.3</span> install docker</h3>
+<p>Following:</p>
+<ul>
+<li><a href="https://medium.com/@srijaanaparthy/step-by-step-guide-to-install-docker-on-ubuntu-in-aws-a39746e5a63d">Step-by-Step Guide to Install Docker on Ubuntu in AWS | by Srija Anaparthy | Medium</a></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#OLD: sudo apt-get install docker.io -y</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>NEW: [[Migrate to <code>docker compose</code>]]</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl start docker</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> docker run hello-world</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable docker</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> <span class="at">--version</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Docker version 24.0.6, build ed223bc</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> usermod <span class="at">-a</span> <span class="at">-G</span> docker <span class="va">$(</span><span class="fu">whoami</span><span class="va">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="run-docker-compose" class="level4" data-number="13.1.3.1">
+<h4 data-number="13.1.3.1" class="anchored" data-anchor-id="run-docker-compose"><span class="header-section-number">13.1.3.1</span> run docker compose</h4>
+<ul>
+<li>/Users/bbest/My Drive/private/<a href="https://drive.google.com/open?id=17B3djETDU8SVwGvJdZ3rp7TKtX8w0cfl&amp;usp=drive_fs"><code>msens_server_env-password.txt</code></a></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> chown <span class="at">-R</span> ubuntu:ubuntu /share</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> /share/github/MarineSensitivity</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /share/github/MarineSensitivity</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># clone server repo</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/MarineSensitivity/server.git</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> server</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># add password, used as $PASSWORD in docker-compose.yml</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'PASSWORD=******'</span> <span class="op">&gt;</span> .env</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># launch docker instances</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> docker-compose up <span class="at">-d</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="backup-share-with-snapshots" class="level3" data-number="13.1.4">
+<h3 data-number="13.1.4" class="anchored" data-anchor-id="backup-share-with-snapshots"><span class="header-section-number">13.1.4</span> Backup <code>/share</code> with snapshots</h3>
+<p>Per <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-ami-policy.html#create-snap-policy">Automate snapshot lifecycles - Amazon Elastic Compute Cloud</a>, created two policies:</p>
+<ul>
+<li><strong>bkup_msens-share_daily</strong> every 24 hrs at 09:00 UTC, max of 7</li>
+<li><strong>bkup_msens-share_weekly</strong> every Monday 09:00 UTC, max of 8</li>
+</ul>
+</section>
+</section>
+<section id="docker-compose" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="docker-compose"><span class="header-section-number">13.2</span> Docker compose</h2>
+<p>The Docker compose file is used to define and run multi-container Docker applications. Here is the <a href="https://github.com/MarineSensitivity/server/blob/main/docker-compose.yml"><code>docker-compose.yml</code></a> file for the server pasted for convenience …</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="st">"3.9"</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">services</span><span class="kw">:</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">caddy</span><span class="kw">:</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> caddy</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./caddy</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 80:80</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 443:443</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> unless-stopped</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> ./caddy/Caddyfile:/etc/caddy/Caddyfile</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share/caddy/data:/data</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share/caddy/config:/config</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rstudio</span><span class="kw">:</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> rstudio</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./rstudio</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">ROOT</span><span class="kw">:</span><span class="at"> </span><span class="st">'true'</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co">      # The login is `rstudio`, and DEFAULT_USER must say so.</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co">      #</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="co">      # rocker's /rocker_scripts/init_userconf.sh sets USER=${DEFAULT_USER}, but it</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co">      # only ever CREATES that account inside `if [ "$USERID" -ne 1000 ]` (or the</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="co">      # rootless branch). At the default USERID=1000 neither runs, so the image's</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="co">      # built-in `rstudio` user is all that exists — and line 167,</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="co">      #   echo "$USER:$PASSWORD" | chpasswd</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="co">      # then targets an account that was never created.</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co">      #</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="co">      # With DEFAULT_USER: admin that failed silently on every recreate: no `admin`</span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a><span class="co">      # to log in as, and `rstudio` still carrying whatever password the image was</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="co">      # built with, so BOTH logins were rejected while .env looked perfectly</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="co">      # correct. Verified by comparing the .env value against the shadow hash: NO</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="co">      # MATCH.</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="co">      #</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a><span class="co">      # Do NOT "fix" this by setting USERID to force the rename — uid 1000 is what</span></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a><span class="co">      # matches host `ubuntu`, and scripts/srv_render.sh renders as `-u 1000:1000`</span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="co">      # precisely because of it.</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">DEFAULT_USER</span><span class="kw">:</span><span class="at"> rstudio</span></span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PASSWORD</span><span class="kw">:</span><span class="at"> ${PASSWORD}</span></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">ADD</span><span class="kw">:</span><span class="at"> shiny</span></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a><span class="co">      # usage-log Sheet endpoint (Apps Script /exec) for the Shiny apps'</span></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="co">      # msens::ga_js() beacon. Set MSENS_LOG_URL in the server .env alongside</span></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a><span class="co">      # PASSWORD; if unset the Sheet leg is a silent no-op and only GA4 receives</span></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a><span class="co">      # events. The apps hold no credential — the endpoint is the whole secret,</span></span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a><span class="co">      # so it belongs in .env (untracked), never in the app source.</span></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_LOG_URL</span><span class="kw">:</span><span class="at"> ${MSENS_LOG_URL:-}</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 8787:8787</span><span class="co">  # rstudio</span></span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 3838:3838</span><span class="co">  # shiny</span></span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> unless-stopped</span></span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share/shiny_apps:/srv/shiny-server</span></span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a><span class="co">      # Release notebooks rendered INSIDE this container publish to S3. The image</span></span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a><span class="co">      # carries the AWS CLI, but a CLI with no credentials just fails later and</span></span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a><span class="co">      # louder: `NoCredentials` at the publish step, after the build work is done.</span></span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a><span class="co">      # Read-only, and the container already runs as uid 1000 = host `ubuntu`,</span></span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a><span class="co">      # which owns these.</span></span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /home/ubuntu/.aws:/home/rstudio/.aws:ro</span></span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a><span class="co">  # plumber: DuckDB-backed custom API (postgres stack retired 2026-06). Serves</span></span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a><span class="co">  # the OBIS H3 summary endpoint /h3 (obisindicators::obis_h3t_sql) from the same</span></span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a><span class="co">  # store as the h3t tile service. Caddy already routes</span></span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a><span class="co">  # api.marinesensitivity.org -&gt; plumber:8888. No postgis dependency: the</span></span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a><span class="co">  # postgres-backed endpoints degrade (see api/plumber.R lazy `con`).</span></span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">plumber</span><span class="kw">:</span></span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> plumber</span></span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./plumber</span></span>
+<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_OBIS_DUCKDB</span><span class="kw">:</span><span class="at"> /share/data/obis/obis_h3.duckdb</span></span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 8888:8888</span><span class="co">  # api</span></span>
+<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> unless-stopped</span></span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a><span class="co">  # --- postgres stack retired (2026-06) to free resources for OBIS h3 build ---</span></span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a><span class="co">  # plumber:</span></span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a><span class="co">  #   container_name: plumber</span></span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a><span class="co">  #   build: ./plumber</span></span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a><span class="co">  #   ports:</span></span>
+<span id="cb13-84"><a href="#cb13-84" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - 8888:8888  # api</span></span>
+<span id="cb13-85"><a href="#cb13-85" aria-hidden="true" tabindex="-1"></a><span class="co">  #   restart: unless-stopped</span></span>
+<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a><span class="co">  #   volumes:</span></span>
+<span id="cb13-87"><a href="#cb13-87" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - /share:/share</span></span>
+<span id="cb13-88"><a href="#cb13-88" aria-hidden="true" tabindex="-1"></a><span class="co">  #   depends_on:</span></span>
+<span id="cb13-89"><a href="#cb13-89" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - postgis</span></span>
+<span id="cb13-90"><a href="#cb13-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-91"><a href="#cb13-91" aria-hidden="true" tabindex="-1"></a><span class="co">  # postgis:</span></span>
+<span id="cb13-92"><a href="#cb13-92" aria-hidden="true" tabindex="-1"></a><span class="co">  #   container_name: postgis</span></span>
+<span id="cb13-93"><a href="#cb13-93" aria-hidden="true" tabindex="-1"></a><span class="co">  #   image: postgis/postgis:latest</span></span>
+<span id="cb13-94"><a href="#cb13-94" aria-hidden="true" tabindex="-1"></a><span class="co">  #   environment:</span></span>
+<span id="cb13-95"><a href="#cb13-95" aria-hidden="true" tabindex="-1"></a><span class="co">  #     POSTGRES_DB: msens</span></span>
+<span id="cb13-96"><a href="#cb13-96" aria-hidden="true" tabindex="-1"></a><span class="co">  #     POSTGRES_USER: admin</span></span>
+<span id="cb13-97"><a href="#cb13-97" aria-hidden="true" tabindex="-1"></a><span class="co">  #     POSTGRES_PASSWORD: ${PASSWORD}</span></span>
+<span id="cb13-98"><a href="#cb13-98" aria-hidden="true" tabindex="-1"></a><span class="co">  #     ANON_PASSWORD: ${ANON_PASSWORD}</span></span>
+<span id="cb13-99"><a href="#cb13-99" aria-hidden="true" tabindex="-1"></a><span class="co">  #     PGDATA: /share/postgis/data</span></span>
+<span id="cb13-100"><a href="#cb13-100" aria-hidden="true" tabindex="-1"></a><span class="co">  #   volumes:</span></span>
+<span id="cb13-101"><a href="#cb13-101" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - ./postgis/init.sh:/docker-entrypoint-initdb.d/init.sh</span></span>
+<span id="cb13-102"><a href="#cb13-102" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - /share:/share</span></span>
+<span id="cb13-103"><a href="#cb13-103" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - /share/postgis:/var/lib/postgresql</span></span>
+<span id="cb13-104"><a href="#cb13-104" aria-hidden="true" tabindex="-1"></a><span class="co">  #   restart: unless-stopped</span></span>
+<span id="cb13-105"><a href="#cb13-105" aria-hidden="true" tabindex="-1"></a><span class="co">  #   healthcheck:</span></span>
+<span id="cb13-106"><a href="#cb13-106" aria-hidden="true" tabindex="-1"></a><span class="co">  #     test: 'exit 0'</span></span>
+<span id="cb13-107"><a href="#cb13-107" aria-hidden="true" tabindex="-1"></a><span class="co">  #   ports:</span></span>
+<span id="cb13-108"><a href="#cb13-108" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - 5432:5432</span></span>
+<span id="cb13-109"><a href="#cb13-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-110"><a href="#cb13-110" aria-hidden="true" tabindex="-1"></a><span class="co">  # pgadmin:</span></span>
+<span id="cb13-111"><a href="#cb13-111" aria-hidden="true" tabindex="-1"></a><span class="co">  #   container_name: pgadmin</span></span>
+<span id="cb13-112"><a href="#cb13-112" aria-hidden="true" tabindex="-1"></a><span class="co">  #   image: dpage/pgadmin4:8.14</span></span>
+<span id="cb13-113"><a href="#cb13-113" aria-hidden="true" tabindex="-1"></a><span class="co">  #   restart: always</span></span>
+<span id="cb13-114"><a href="#cb13-114" aria-hidden="true" tabindex="-1"></a><span class="co">  #   environment:</span></span>
+<span id="cb13-115"><a href="#cb13-115" aria-hidden="true" tabindex="-1"></a><span class="co">  #     PGADMIN_DEFAULT_EMAIL: ben@ecoquants.com</span></span>
+<span id="cb13-116"><a href="#cb13-116" aria-hidden="true" tabindex="-1"></a><span class="co">  #     PGADMIN_DEFAULT_PASSWORD: ${PASSWORD}</span></span>
+<span id="cb13-117"><a href="#cb13-117" aria-hidden="true" tabindex="-1"></a><span class="co">  #     PGADMIN_LISTEN_PORT: 8088</span></span>
+<span id="cb13-118"><a href="#cb13-118" aria-hidden="true" tabindex="-1"></a><span class="co">  #   ports:</span></span>
+<span id="cb13-119"><a href="#cb13-119" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - 8088:8088</span></span>
+<span id="cb13-120"><a href="#cb13-120" aria-hidden="true" tabindex="-1"></a><span class="co">  #   volumes:</span></span>
+<span id="cb13-121"><a href="#cb13-121" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - /share/pgadmin:/var/lib/pgadmin</span></span>
+<span id="cb13-122"><a href="#cb13-122" aria-hidden="true" tabindex="-1"></a><span class="co">  #   depends_on:</span></span>
+<span id="cb13-123"><a href="#cb13-123" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - postgis</span></span>
+<span id="cb13-124"><a href="#cb13-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-125"><a href="#cb13-125" aria-hidden="true" tabindex="-1"></a><span class="co">  # pgbkups:</span></span>
+<span id="cb13-126"><a href="#cb13-126" aria-hidden="true" tabindex="-1"></a><span class="co">  #   container_name: pgbkups</span></span>
+<span id="cb13-127"><a href="#cb13-127" aria-hidden="true" tabindex="-1"></a><span class="co">  #   image: prodrigestivill/postgres-backup-local</span></span>
+<span id="cb13-128"><a href="#cb13-128" aria-hidden="true" tabindex="-1"></a><span class="co">  #   restart: always</span></span>
+<span id="cb13-129"><a href="#cb13-129" aria-hidden="true" tabindex="-1"></a><span class="co">  #   user: postgres:postgres</span></span>
+<span id="cb13-130"><a href="#cb13-130" aria-hidden="true" tabindex="-1"></a><span class="co">  #   volumes:</span></span>
+<span id="cb13-131"><a href="#cb13-131" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - /share/postgis_backups:/backups</span></span>
+<span id="cb13-132"><a href="#cb13-132" aria-hidden="true" tabindex="-1"></a><span class="co">  #   links:</span></span>
+<span id="cb13-133"><a href="#cb13-133" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - postgis</span></span>
+<span id="cb13-134"><a href="#cb13-134" aria-hidden="true" tabindex="-1"></a><span class="co">  #   depends_on:</span></span>
+<span id="cb13-135"><a href="#cb13-135" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - postgis</span></span>
+<span id="cb13-136"><a href="#cb13-136" aria-hidden="true" tabindex="-1"></a><span class="co">  #   environment:</span></span>
+<span id="cb13-137"><a href="#cb13-137" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - POSTGRES_HOST=postgis</span></span>
+<span id="cb13-138"><a href="#cb13-138" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - POSTGRES_DB=msens</span></span>
+<span id="cb13-139"><a href="#cb13-139" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - POSTGRES_USER=admin</span></span>
+<span id="cb13-140"><a href="#cb13-140" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - POSTGRES_PASSWORD=${PASSWORD}</span></span>
+<span id="cb13-141"><a href="#cb13-141" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - POSTGRES_EXTRA_OPTS=-Z6 --blobs</span></span>
+<span id="cb13-142"><a href="#cb13-142" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - SCHEDULE=@daily</span></span>
+<span id="cb13-143"><a href="#cb13-143" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - HEALTHCHECK_PORT=8088</span></span>
+<span id="cb13-144"><a href="#cb13-144" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - BACKUP_KEEP_DAYS=2</span></span>
+<span id="cb13-145"><a href="#cb13-145" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - BACKUP_KEEP_WEEKS=1</span></span>
+<span id="cb13-146"><a href="#cb13-146" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - BACKUP_KEEP_MONTHS=2</span></span>
+<span id="cb13-147"><a href="#cb13-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-148"><a href="#cb13-148" aria-hidden="true" tabindex="-1"></a><span class="co">  # tile:</span></span>
+<span id="cb13-149"><a href="#cb13-149" aria-hidden="true" tabindex="-1"></a><span class="co">  #   container_name: tile</span></span>
+<span id="cb13-150"><a href="#cb13-150" aria-hidden="true" tabindex="-1"></a><span class="co">  #   environment:</span></span>
+<span id="cb13-151"><a href="#cb13-151" aria-hidden="true" tabindex="-1"></a><span class="co">  #     DATABASE_URL: 'postgresql://admin:${PASSWORD}@postgis:5432/msens'</span></span>
+<span id="cb13-152"><a href="#cb13-152" aria-hidden="true" tabindex="-1"></a><span class="co">  #   image: pramsey/pg_tileserv:latest</span></span>
+<span id="cb13-153"><a href="#cb13-153" aria-hidden="true" tabindex="-1"></a><span class="co">  #   depends_on:</span></span>
+<span id="cb13-154"><a href="#cb13-154" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - postgis</span></span>
+<span id="cb13-155"><a href="#cb13-155" aria-hidden="true" tabindex="-1"></a><span class="co">  #   ports:</span></span>
+<span id="cb13-156"><a href="#cb13-156" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - 7800:7800</span></span>
+<span id="cb13-157"><a href="#cb13-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-158"><a href="#cb13-158" aria-hidden="true" tabindex="-1"></a><span class="co">  # tilecache:</span></span>
+<span id="cb13-159"><a href="#cb13-159" aria-hidden="true" tabindex="-1"></a><span class="co">  #   container_name: tilecache</span></span>
+<span id="cb13-160"><a href="#cb13-160" aria-hidden="true" tabindex="-1"></a><span class="co">  #   image: varnish:latest</span></span>
+<span id="cb13-161"><a href="#cb13-161" aria-hidden="true" tabindex="-1"></a><span class="co">  #   volumes:</span></span>
+<span id="cb13-162"><a href="#cb13-162" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - /share:/share</span></span>
+<span id="cb13-163"><a href="#cb13-163" aria-hidden="true" tabindex="-1"></a><span class="co">  #   ports:</span></span>
+<span id="cb13-164"><a href="#cb13-164" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - 6081:6081</span></span>
+<span id="cb13-165"><a href="#cb13-165" aria-hidden="true" tabindex="-1"></a><span class="co">  #   environment:</span></span>
+<span id="cb13-166"><a href="#cb13-166" aria-hidden="true" tabindex="-1"></a><span class="co">  #     VARNISH_BACKEND_HOST: tile</span></span>
+<span id="cb13-167"><a href="#cb13-167" aria-hidden="true" tabindex="-1"></a><span class="co">  #     VARNISH_BACKEND_PORT: 7800</span></span>
+<span id="cb13-168"><a href="#cb13-168" aria-hidden="true" tabindex="-1"></a><span class="co">  #     VARNISH_HTTP_PORT: 6081</span></span>
+<span id="cb13-169"><a href="#cb13-169" aria-hidden="true" tabindex="-1"></a><span class="co">  #   restart: always</span></span>
+<span id="cb13-170"><a href="#cb13-170" aria-hidden="true" tabindex="-1"></a><span class="co">  #   depends_on:</span></span>
+<span id="cb13-171"><a href="#cb13-171" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - "tile"</span></span>
+<span id="cb13-172"><a href="#cb13-172" aria-hidden="true" tabindex="-1"></a><span class="co">  # --- end postgres stack ---</span></span>
+<span id="cb13-173"><a href="#cb13-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-174"><a href="#cb13-174" aria-hidden="true" tabindex="-1"></a><span class="co">  # rest:</span></span>
+<span id="cb13-175"><a href="#cb13-175" aria-hidden="true" tabindex="-1"></a><span class="co">  #   container_name: rest</span></span>
+<span id="cb13-176"><a href="#cb13-176" aria-hidden="true" tabindex="-1"></a><span class="co">  #   environment:</span></span>
+<span id="cb13-177"><a href="#cb13-177" aria-hidden="true" tabindex="-1"></a><span class="co">  #     PGRST_DB_URI: 'postgresql://anon:${ANON_PASSWORD}@postgis:5432/msens'</span></span>
+<span id="cb13-178"><a href="#cb13-178" aria-hidden="true" tabindex="-1"></a><span class="co">  #     PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000</span></span>
+<span id="cb13-179"><a href="#cb13-179" aria-hidden="true" tabindex="-1"></a><span class="co">  #     PGRST_DB_ANON_ROLE: anon</span></span>
+<span id="cb13-180"><a href="#cb13-180" aria-hidden="true" tabindex="-1"></a><span class="co">  #   image: postgrest/postgrest</span></span>
+<span id="cb13-181"><a href="#cb13-181" aria-hidden="true" tabindex="-1"></a><span class="co">  #   depends_on:</span></span>
+<span id="cb13-182"><a href="#cb13-182" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - postgis</span></span>
+<span id="cb13-183"><a href="#cb13-183" aria-hidden="true" tabindex="-1"></a><span class="co">  #   ports:</span></span>
+<span id="cb13-184"><a href="#cb13-184" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - "3000:3000"</span></span>
+<span id="cb13-185"><a href="#cb13-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-186"><a href="#cb13-186" aria-hidden="true" tabindex="-1"></a><span class="co">  # swagger:</span></span>
+<span id="cb13-187"><a href="#cb13-187" aria-hidden="true" tabindex="-1"></a><span class="co">  #   container_name: swagger</span></span>
+<span id="cb13-188"><a href="#cb13-188" aria-hidden="true" tabindex="-1"></a><span class="co">  #   image: swaggerapi/swagger-ui</span></span>
+<span id="cb13-189"><a href="#cb13-189" aria-hidden="true" tabindex="-1"></a><span class="co">  #   depends_on:</span></span>
+<span id="cb13-190"><a href="#cb13-190" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - rest</span></span>
+<span id="cb13-191"><a href="#cb13-191" aria-hidden="true" tabindex="-1"></a><span class="co">  #   ports:</span></span>
+<span id="cb13-192"><a href="#cb13-192" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - "8080:8080"</span></span>
+<span id="cb13-193"><a href="#cb13-193" aria-hidden="true" tabindex="-1"></a><span class="co">  #   expose:</span></span>
+<span id="cb13-194"><a href="#cb13-194" aria-hidden="true" tabindex="-1"></a><span class="co">  #     - "8080"</span></span>
+<span id="cb13-195"><a href="#cb13-195" aria-hidden="true" tabindex="-1"></a><span class="co">  #   environment:</span></span>
+<span id="cb13-196"><a href="#cb13-196" aria-hidden="true" tabindex="-1"></a><span class="co">  #     API_URL: https://rest.MarineSensitivity.org/</span></span>
+<span id="cb13-197"><a href="#cb13-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-198"><a href="#cb13-198" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">titiler</span><span class="kw">:</span></span>
+<span id="cb13-199"><a href="#cb13-199" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> titiler</span></span>
+<span id="cb13-200"><a href="#cb13-200" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./titiler</span></span>
+<span id="cb13-201"><a href="#cb13-201" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-202"><a href="#cb13-202" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PORT</span><span class="kw">:</span><span class="at">              </span><span class="dv">8000</span></span>
+<span id="cb13-203"><a href="#cb13-203" aria-hidden="true" tabindex="-1"></a><span class="co">      # WORKERS_PER_CORE: 1</span></span>
+<span id="cb13-204"><a href="#cb13-204" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_CELLID_COG</span><span class="kw">:</span><span class="at"> /share/data/derived/r_cellid.tif</span></span>
+<span id="cb13-205"><a href="#cb13-205" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_DUCKDB</span><span class="kw">:</span><span class="at">     /share/data/big/latest/sdm.duckdb</span></span>
+<span id="cb13-206"><a href="#cb13-206" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_MAX_ROWS</span><span class="kw">:</span><span class="at">   </span><span class="st">"1000000"</span></span>
+<span id="cb13-207"><a href="#cb13-207" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_LRU_SIZE</span><span class="kw">:</span><span class="at">   </span><span class="st">"128"</span></span>
+<span id="cb13-208"><a href="#cb13-208" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-209"><a href="#cb13-209" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-210"><a href="#cb13-210" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-211"><a href="#cb13-211" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8000:8000"</span></span>
+<span id="cb13-212"><a href="#cb13-212" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb13-213"><a href="#cb13-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-214"><a href="#cb13-214" aria-hidden="true" tabindex="-1"></a><span class="co">  # v8 parallel serving: a tiny view-only DuckDB whose model_cell is a VIEW over the</span></span>
+<span id="cb13-215"><a href="#cb13-215" aria-hidden="true" tabindex="-1"></a><span class="co">  # partitioned Parquet on S3 (marine-atlas/v8), rendered on the global [-180,180] cell COG.</span></span>
+<span id="cb13-216"><a href="#cb13-216" aria-hidden="true" tabindex="-1"></a><span class="co">  # v7 titiler above stays fully live (A/B). serve.duckdb is KB — no multi-GB rsync.</span></span>
+<span id="cb13-217"><a href="#cb13-217" aria-hidden="true" tabindex="-1"></a><span class="co">  # Stock titiler: /cog serves the precomputed COGs every app layer now uses.</span></span>
+<span id="cb13-218"><a href="#cb13-218" aria-hidden="true" tabindex="-1"></a><span class="co">  #</span></span>
+<span id="cb13-219"><a href="#cb13-219" aria-hidden="true" tabindex="-1"></a><span class="co">  # The custom /msens cells factory (DuckDB query -&gt; tile) is RETIRED but KEPT:</span></span>
+<span id="cb13-220"><a href="#cb13-220" aria-hidden="true" tabindex="-1"></a><span class="co">  # set MSENS_FACTORY=1 to mount it for exploratory on-the-fly queries. It is off</span></span>
+<span id="cb13-221"><a href="#cb13-221" aria-hidden="true" tabindex="-1"></a><span class="co">  # by default because nothing reaches it — the scores app's SQL fallback cannot</span></span>
+<span id="cb13-222"><a href="#cb13-222" aria-hidden="true" tabindex="-1"></a><span class="co">  # fire (every metric on v1-v8 has a COG) and the species app's needed only the</span></span>
+<span id="cb13-223"><a href="#cb13-223" aria-hidden="true" tabindex="-1"></a><span class="co">  # 192 taxa that now have merged COGs. Verified equivalent first: 100/105 tiles</span></span>
+<span id="cb13-224"><a href="#cb13-224" aria-hidden="true" tabindex="-1"></a><span class="co">  # byte-identical, the rest differing by 3-6 px of 262,144 from float32 storage.</span></span>
+<span id="cb13-225"><a href="#cb13-225" aria-hidden="true" tabindex="-1"></a><span class="co">  #</span></span>
+<span id="cb13-226"><a href="#cb13-226" aria-hidden="true" tabindex="-1"></a><span class="co">  # Deliberately NOT proxied through titilecache (Varnish): a query-driven tile</span></span>
+<span id="cb13-227"><a href="#cb13-227" aria-hidden="true" tabindex="-1"></a><span class="co">  # is not cache-friendly the way an immutable COG is, and caching an exploratory</span></span>
+<span id="cb13-228"><a href="#cb13-228" aria-hidden="true" tabindex="-1"></a><span class="co">  # endpoint mostly serves stale answers to whoever is iterating on the query.</span></span>
+<span id="cb13-229"><a href="#cb13-229" aria-hidden="true" tabindex="-1"></a><span class="co">  # The MSENS_* vars below stay so enabling the factory needs no other change.</span></span>
+<span id="cb13-230"><a href="#cb13-230" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">titiler-v8</span><span class="kw">:</span></span>
+<span id="cb13-231"><a href="#cb13-231" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> titiler-v8</span></span>
+<span id="cb13-232"><a href="#cb13-232" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./titiler</span></span>
+<span id="cb13-233"><a href="#cb13-233" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-234"><a href="#cb13-234" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PORT</span><span class="kw">:</span><span class="at">             </span><span class="dv">8000</span></span>
+<span id="cb13-235"><a href="#cb13-235" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_CELLID_COG</span><span class="kw">:</span><span class="at"> /share/data/derived/r_cellid_global.tif</span></span>
+<span id="cb13-236"><a href="#cb13-236" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_DUCKDB</span><span class="kw">:</span><span class="at">     /share/data/big/v8/serve.duckdb</span></span>
+<span id="cb13-237"><a href="#cb13-237" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_MAX_ROWS</span><span class="kw">:</span><span class="at">   </span><span class="st">"1000000"</span></span>
+<span id="cb13-238"><a href="#cb13-238" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MSENS_LRU_SIZE</span><span class="kw">:</span><span class="at">   </span><span class="st">"128"</span></span>
+<span id="cb13-239"><a href="#cb13-239" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-240"><a href="#cb13-240" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-241"><a href="#cb13-241" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-242"><a href="#cb13-242" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8001:8000"</span></span>
+<span id="cb13-243"><a href="#cb13-243" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb13-244"><a href="#cb13-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-245"><a href="#cb13-245" aria-hidden="true" tabindex="-1"></a><span class="co">  # stac-api: a SEARCHABLE STAC API with one Item per model, complementing (not</span></span>
+<span id="cb13-246"><a href="#cb13-246" aria-hidden="true" tabindex="-1"></a><span class="co">  # replacing) the static catalog at file.marinesensitivity.org/stac.</span></span>
+<span id="cb13-247"><a href="#cb13-247" aria-hidden="true" tabindex="-1"></a><span class="co">  #</span></span>
+<span id="cb13-248"><a href="#cb13-248" aria-hidden="true" tabindex="-1"></a><span class="co">  # The static catalog is dataset-level: one Item per collection whose assets are</span></span>
+<span id="cb13-249"><a href="#cb13-249" aria-hidden="true" tabindex="-1"></a><span class="co">  # S3 PREFIXES (…/native/am_native/, which 403s) and whose bbox is the whole</span></span>
+<span id="cb13-250"><a href="#cb13-250" aria-hidden="true" tabindex="-1"></a><span class="co">  # dataset envelope — so it can answer neither "the asset for this model" nor</span></span>
+<span id="cb13-251"><a href="#cb13-251" aria-hidden="true" tabindex="-1"></a><span class="co">  # "which models cover this area". This serves 25,643 per-model Items with real</span></span>
+<span id="cb13-252"><a href="#cb13-252" aria-hidden="true" tabindex="-1"></a><span class="co">  # asset hrefs and real footprints.</span></span>
+<span id="cb13-253"><a href="#cb13-253" aria-hidden="true" tabindex="-1"></a><span class="co">  #</span></span>
+<span id="cb13-254"><a href="#cb13-254" aria-hidden="true" tabindex="-1"></a><span class="co">  # Backend reads stac-geoparquet via DuckDB — the same Parquet-on-DuckDB shape as</span></span>
+<span id="cb13-255"><a href="#cb13-255" aria-hidden="true" tabindex="-1"></a><span class="co">  # the rest of this stack. Items and collection.json come from the tree that</span></span>
+<span id="cb13-256"><a href="#cb13-256" aria-hidden="true" tabindex="-1"></a><span class="co">  # workflows/publish_stac_api.qmd builds and rsyncs; PARQUET_URLS_JSON (collection</span></span>
+<span id="cb13-257"><a href="#cb13-257" aria-hidden="true" tabindex="-1"></a><span class="co">  # id -&gt; parquet path) is passed by that notebook from parquet_urls.json, so</span></span>
+<span id="cb13-258"><a href="#cb13-258" aria-hidden="true" tabindex="-1"></a><span class="co">  # adding a dataset needs no edit here.</span></span>
+<span id="cb13-259"><a href="#cb13-259" aria-hidden="true" tabindex="-1"></a><span class="co">  #</span></span>
+<span id="cb13-260"><a href="#cb13-260" aria-hidden="true" tabindex="-1"></a><span class="co">  # Pinned to an exact upstream commit built straight from GitHub — the project is</span></span>
+<span id="cb13-261"><a href="#cb13-261" aria-hidden="true" tabindex="-1"></a><span class="co">  # marked EXPERIMENTAL by both its repo and the stac-fastapi docs (pgstac and</span></span>
+<span id="cb13-262"><a href="#cb13-262" aria-hidden="true" tabindex="-1"></a><span class="co">  # Elasticsearch are the production-ready backends), so a moving default branch</span></span>
+<span id="cb13-263"><a href="#cb13-263" aria-hidden="true" tabindex="-1"></a><span class="co">  # is not something to serve from. Treat this as a trial surface, not load-bearing.</span></span>
+<span id="cb13-264"><a href="#cb13-264" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">stac-api</span><span class="kw">:</span></span>
+<span id="cb13-265"><a href="#cb13-265" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> stac-api</span></span>
+<span id="cb13-266"><a href="#cb13-266" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./stac-api</span><span class="co">          # upstream pinned + ST_Intersects(WKB) patch; see its Dockerfile</span></span>
+<span id="cb13-267"><a href="#cb13-267" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-268"><a href="#cb13-268" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">APP_HOST</span><span class="kw">:</span><span class="at">          </span><span class="fl">0.0.0.0</span></span>
+<span id="cb13-269"><a href="#cb13-269" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">APP_PORT</span><span class="kw">:</span><span class="at">          </span><span class="st">"8084"</span></span>
+<span id="cb13-270"><a href="#cb13-270" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">ENVIRONMENT</span><span class="kw">:</span><span class="at">       production</span></span>
+<span id="cb13-271"><a href="#cb13-271" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">WEB_CONCURRENCY</span><span class="kw">:</span><span class="at">   </span><span class="st">"4"</span></span>
+<span id="cb13-272"><a href="#cb13-272" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">BACKEND</span><span class="kw">:</span><span class="at">           duckdb</span></span>
+<span id="cb13-273"><a href="#cb13-273" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">STAC_FILE_PATH</span><span class="kw">:</span><span class="at">    /app/stac_collections</span></span>
+<span id="cb13-274"><a href="#cb13-274" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PARQUET_URLS_JSON</span><span class="kw">:</span><span class="at"> ${PARQUET_URLS_JSON}</span></span>
+<span id="cb13-275"><a href="#cb13-275" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-276"><a href="#cb13-276" aria-hidden="true" tabindex="-1"></a><span class="co">      # read-only: the API must never mutate the published catalog</span></span>
+<span id="cb13-277"><a href="#cb13-277" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share/data/derived/stac-api/v8:/app/stac_collections:ro</span></span>
+<span id="cb13-278"><a href="#cb13-278" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-279"><a href="#cb13-279" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8085:8084"</span></span>
+<span id="cb13-280"><a href="#cb13-280" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> unless-stopped</span></span>
+<span id="cb13-281"><a href="#cb13-281" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">command</span><span class="kw">:</span><span class="at"> bash -c "python -m stac_fastapi.duckdb.app"</span></span>
+<span id="cb13-282"><a href="#cb13-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-283"><a href="#cb13-283" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">titilecache</span><span class="kw">:</span></span>
+<span id="cb13-284"><a href="#cb13-284" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> titilecache</span></span>
+<span id="cb13-285"><a href="#cb13-285" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> varnish:latest</span><span class="co"> # 7.4.2  # last updated: 2023-12-26</span></span>
+<span id="cb13-286"><a href="#cb13-286" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-287"><a href="#cb13-287" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-288"><a href="#cb13-288" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"./varnish/titiler.vcl:/etc/varnish/default.vcl:ro"</span></span>
+<span id="cb13-289"><a href="#cb13-289" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-290"><a href="#cb13-290" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 6082:6082</span></span>
+<span id="cb13-291"><a href="#cb13-291" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-292"><a href="#cb13-292" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_HOST</span><span class="kw">:</span><span class="at"> titiler</span></span>
+<span id="cb13-293"><a href="#cb13-293" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">8000</span></span>
+<span id="cb13-294"><a href="#cb13-294" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_HTTP_PORT</span><span class="kw">:</span><span class="at">    </span><span class="dv">6082</span></span>
+<span id="cb13-295"><a href="#cb13-295" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">command</span><span class="kw">:</span><span class="at"> </span><span class="st">"-p default_keep=604800"</span><span class="co"> # 7d, matches vcl TTL</span></span>
+<span id="cb13-296"><a href="#cb13-296" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb13-297"><a href="#cb13-297" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb13-298"><a href="#cb13-298" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"titiler"</span></span>
+<span id="cb13-299"><a href="#cb13-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-300"><a href="#cb13-300" aria-hidden="true" tabindex="-1"></a><span class="co">  # h3t: OBIS biodiversity-by-hex tile factory (DuckDB SELECT -&gt; h3j JSON tiles)</span></span>
+<span id="cb13-301"><a href="#cb13-301" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">h3t</span><span class="kw">:</span></span>
+<span id="cb13-302"><a href="#cb13-302" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> h3t</span></span>
+<span id="cb13-303"><a href="#cb13-303" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./h3t</span></span>
+<span id="cb13-304"><a href="#cb13-304" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-305"><a href="#cb13-305" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_DBS</span><span class="kw">:</span><span class="at">             </span><span class="st">"obis:/share/data/obis/obis_h3.duckdb"</span></span>
+<span id="cb13-306"><a href="#cb13-306" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_DEFAULT_DB</span><span class="kw">:</span><span class="at">      obis</span></span>
+<span id="cb13-307"><a href="#cb13-307" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_MAX_ROWS</span><span class="kw">:</span><span class="at">        </span><span class="st">"50000"</span></span>
+<span id="cb13-308"><a href="#cb13-308" aria-hidden="true" tabindex="-1"></a><span class="co">      # common filtered maps now hit precomputed idx_h3 / idx_h3_taxon layers;</span></span>
+<span id="cb13-309"><a href="#cb13-309" aria-hidden="true" tabindex="-1"></a><span class="co">      # these caps are the stopgap for the remaining live occ_h3 paths (year</span></span>
+<span id="cb13-310"><a href="#cb13-310" aria-hidden="true" tabindex="-1"></a><span class="co">      # filters, multi-value / fine-rank taxa). raise the timeout above the</span></span>
+<span id="cb13-311"><a href="#cb13-311" aria-hidden="true" tabindex="-1"></a><span class="co">      # app-side client timeout in apps/h3-db/app.R.</span></span>
+<span id="cb13-312"><a href="#cb13-312" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_STMT_TIMEOUT_MS</span><span class="kw">:</span><span class="at"> </span><span class="st">"8000"</span></span>
+<span id="cb13-313"><a href="#cb13-313" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_THREADS</span><span class="kw">:</span><span class="at">         </span><span class="st">"4"</span><span class="co">      # cap serving CPU (don't peg all cores)</span></span>
+<span id="cb13-314"><a href="#cb13-314" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_MEMORY_LIMIT</span><span class="kw">:</span><span class="at">    </span><span class="st">"6GB"</span><span class="co">    # cap serving RAM (occ_h3 rollups can spill)</span></span>
+<span id="cb13-315"><a href="#cb13-315" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-316"><a href="#cb13-316" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-317"><a href="#cb13-317" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-318"><a href="#cb13-318" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8889:8889"</span></span>
+<span id="cb13-319"><a href="#cb13-319" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb13-320"><a href="#cb13-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-321"><a href="#cb13-321" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">h3tcache</span><span class="kw">:</span></span>
+<span id="cb13-322"><a href="#cb13-322" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> h3tcache</span></span>
+<span id="cb13-323"><a href="#cb13-323" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> varnish:latest</span><span class="co"> # 7.4.2  # last updated: 2023-12-26</span></span>
+<span id="cb13-324"><a href="#cb13-324" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-325"><a href="#cb13-325" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-326"><a href="#cb13-326" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"./varnish/h3t.vcl:/etc/varnish/default.vcl:ro"</span></span>
+<span id="cb13-327"><a href="#cb13-327" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-328"><a href="#cb13-328" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 6083:6083</span></span>
+<span id="cb13-329"><a href="#cb13-329" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-330"><a href="#cb13-330" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_HOST</span><span class="kw">:</span><span class="at"> h3t</span></span>
+<span id="cb13-331"><a href="#cb13-331" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">8889</span></span>
+<span id="cb13-332"><a href="#cb13-332" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_HTTP_PORT</span><span class="kw">:</span><span class="at">    </span><span class="dv">6083</span></span>
+<span id="cb13-333"><a href="#cb13-333" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">command</span><span class="kw">:</span><span class="at"> </span><span class="st">"-p default_keep=604800"</span><span class="co"> # 7d, matches vcl TTL</span></span>
+<span id="cb13-334"><a href="#cb13-334" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb13-335"><a href="#cb13-335" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb13-336"><a href="#cb13-336" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"h3t"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="dns" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="dns"><span class="header-section-number">13.3</span> DNS</h2>
+<p>The domain name server (DNS) records are managed by <a href="https://account.squarespace.com/domains">SquareSpace</a>. The subdomains point to the server on Amazon at <code>100.25.173.0</code>, whereas the main website is hosted by Github servers, per <a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site">Managing a custom domain for your GitHub Pages site - GitHub Docs</a>.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Host</th>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>@</td>
+<td>A</td>
+<td>185.199.111.153</td>
+</tr>
+<tr class="even">
+<td>@</td>
+<td>A</td>
+<td>185.199.110.153</td>
+</tr>
+<tr class="odd">
+<td>@</td>
+<td>A</td>
+<td>185.199.109.153</td>
+</tr>
+<tr class="even">
+<td>@</td>
+<td>A</td>
+<td>185.199.108.153</td>
+</tr>
+<tr class="odd">
+<td>api</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="even">
+<td>app</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="odd">
+<td>file</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="even">
+<td>msens1</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="odd">
+<td>pgadmin</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="even">
+<td>pmtiles</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="odd">
+<td>rstudio</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="even">
+<td>shiny</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="odd">
+<td>tile</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="even">
+<td>tilecache</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="odd">
+<td>titiler</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="even">
+<td>titilecache</td>
+<td>A</td>
+<td>100.25.173.0</td>
+</tr>
+<tr class="odd">
+<td>www</td>
+<td>CNAME</td>
+<td>marinesensitivity.org</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="caddyfile" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="caddyfile"><span class="header-section-number">13.4</span> Caddyfile</h2>
+<p>The Caddyfile parameterizes the reverse proxying between the external subdomains and the Docker’s internal ports. Here is the <a href="https://github.com/MarineSensitivity/server/blob/main/caddy/Caddyfile"><code>Caddyfile</code></a> pasted for convenience …</p>
+<pre class="caddyfile"><code># docker exec caddy caddy reload --config /etc/caddy/Caddyfile
+{
+    order pmtiles_proxy before file_server
+}
+
+(cors) {
+    @origin header Origin *
+    header @origin {
+        Access-Control-Allow-Origin "*"
+        Access-Control-Request-Method GET
+    }
+}
+
+api.marinesensitivity.org {
+    reverse_proxy plumber:8888
+}
+
+file.marinesensitivity.org {
+    import cors
+
+    # raw pmtiles for client-side PMTiles protocol (add_pmtiles_source)
+    handle_path /pmtiles/* {
+        root * /share/data/derived/pmtiles
+        file_server browse
+    }
+
+    # legacy versioned pmtiles routes (backwards compat for old apps)
+    handle_path /pmtiles/v4/* {
+        root * /share/data/derived/v4/pmtiles
+        file_server browse
+    }
+    handle_path /pmtiles/v3/* {
+        root * /share/data/derived/v3/pmtiles
+        file_server browse
+    }
+
+    # stac catalog (sdm extension) — static JSON tree
+    handle_path /stac/* {
+        root * /share/data/derived/stac
+        file_server browse
+    }
+
+    # versioned derived data (geoparquet, cogs, gpkg) referenced by stac assets
+    handle_path /derived/* {
+        root * /share/data/derived
+        file_server browse
+    }
+
+    # force reports to download (especially HTML which otherwise renders inline)
+    handle_path /reports/* {
+        root * /share/public/reports
+        header Content-Disposition "attachment"
+        file_server
+    }
+
+    handle {
+        root * /share/public
+        file_server browse {
+            precompressed zstd br gzip
+        }
+    }
+}
+
+# Browsable front door for the PUBLIC S3 bucket.
+#
+# Why this exists: S3 serves OBJECTS, not directories. A URL ending in "/" 404s
+# unless an object literally has that key, and anonymous ListBucket is DENIED on
+# this bucket (403 AccessDenied), so a browser cannot enumerate anything. The
+# workflows notebook publish_storage_index.qmd generates a real index.html per
+# directory; this vhost rewrites folder URLs to them:
+#
+#   storage.marinesensitivity.org/marine-atlas/v8/  -&gt; .../v8/index.html
+#   storage.marinesensitivity.org/marine-atlas/latest.txt -&gt; the object
+#
+# Named "storage" rather than "s3" so the URL survives a move to another
+# provider.
+storage.marinesensitivity.org {
+    encode zstd gzip
+
+    log {
+        output file /share/logs/caddy/storage.log {
+            roll_size 64MiB
+            roll_keep 14
+            roll_keep_for 2160h
+        }
+        format json
+    }
+
+    # robots.txt inline, BEFORE the bucket handler, so it cannot be lost by an
+    # index regeneration. The catalog pages are welcome in search results; the
+    # objects behind them are not. Every byte is PROXIED through this server
+    # (reverse_proxy, not a redirect), and the tree is 18 GB across ~90,000
+    # objects, so a crawl would be billed as VM egress.
+    handle /robots.txt {
+        header Content-Type "text/plain; charset=utf-8"
+        respond `# Catalog pages: crawl away. Data objects: please do not.
+User-agent: *
+Crawl-delay: 10
+Disallow: /*.tif$
+Disallow: /*.parquet$
+Disallow: /*.duckdb$
+Disallow: /*.pmtiles$
+Disallow: /*.gz$
+Disallow: /*.zip$
+` 200
+    }
+
+    # ONLY the published atlas. The same bucket holds backups/ -- including a
+    # multi-GB database dump -- which is technically public but must not be
+    # advertised or reachable here, even by exact path. This allow-list is the
+    # server-side half of the restriction the index generator applies.
+    @atlas path_regexp atlas ^/marine-atlas(/|$)
+    handle @atlas {
+        # folder URL -&gt; the index.html object standing in for a listing
+        @dir path_regexp dir ^(.*)/$
+        rewrite @dir {re.dir.1}/index.html
+        reverse_proxy https://s3.us-east-1.amazonaws.com {
+            header_up Host s3.us-east-1.amazonaws.com
+            rewrite /oceanmetrics.io-public{uri}
+        }
+    }
+
+    # the bare host lands on the atlas index
+    redir / /marine-atlas/ 302
+
+    # anything else: refuse, and say where to go
+    handle {
+        header Content-Type "text/plain; charset=utf-8"
+        respond `Not found.
+
+Browsable: /marine-atlas/
+Start here: https://storage.marinesensitivity.org/marine-atlas/
+` 404
+    }
+}
+
+pgadmin.marinesensitivity.org {
+    reverse_proxy pgadmin:8088
+}
+
+# rest.marinesensitivity.org {
+#   reverse_proxy rest:3000
+# }
+
+# searchable STAC API (one Item per model) — complements the STATIC catalog served
+# from file.marinesensitivity.org/stac, which stays exactly as it is.
+stac-api.marinesensitivity.org {
+    reverse_proxy stac-api:8084
+}
+
+rstudio.marinesensitivity.org {
+    reverse_proxy rstudio:8787
+}
+
+shiny.marinesensitivity.org {
+    reverse_proxy rstudio:3838
+}
+
+app.marinesensitivity.org {
+    # ---- MST app cutover -------------------------------------------------
+    #
+    # /scores and /species are now ONE app that renders any published release
+    # from ?ver=. Every former per-version instance redirects to it rather than
+    # 404ing, so old links, bookmarks and anything in a published report keep
+    # resolving — to the SAME release they always showed.
+    #
+    # The v7 apps were `mapgl` (scores) and `mapsp` (species); v1-v6 were
+    # `mapgl_v{n}` / `mapsp_v{n}`; v6 and v8 also had `scores_v{n}` /
+    # `species_v{n}` aliases. All of them land on /scores or /species with the
+    # version they represent.
+    #
+    # 301 (permanent): these instances are not coming back, and a permanent
+    # redirect lets browsers and crawlers stop asking.
+    @scores_ver path_regexp scv ^/(?:mapgl|scores)_(v[0-9]+[a-z]?)(?:/(.*))?$
+    redir @scores_ver /scores/?ver={re.scv.1} 301
+
+    @species_ver path_regexp spv ^/(?:mapsp|species)_(v[0-9]+[a-z]?)(?:/(.*))?$
+    redir @species_ver /species/?ver={re.spv.1} 301
+
+    # the unsuffixed v7 instances: `mapgl`/`mapsp` were what /scores and
+    # /species pointed at, so they carry v7 explicitly
+    @scores_v7 path_regexp sc7 ^/mapgl(?:/(.*))?$
+    redir @scores_v7 /scores/?ver=v7 301
+
+    @species_v7 path_regexp sp7 ^/mapsp(?:/(.*))?$
+    redir @species_v7 /species/?ver=v7 301
+
+    reverse_proxy rstudio:3838
+}
+
+shiny.oceanmetrics.io {
+    reverse_proxy rstudio:3838
+}
+
+# swagger.marinesensitivity.org {
+#   reverse_proxy swagger:8080
+# }
+
+tile.marinesensitivity.org {
+    reverse_proxy tile:7800
+}
+
+tilecache.marinesensitivity.org {
+    reverse_proxy tilecache:6081
+}
+
+titiler.marinesensitivity.org {
+    reverse_proxy titiler:8000
+}
+
+titiler-v8.marinesensitivity.org {
+    reverse_proxy titiler-v8:8000
+}
+
+titilecache.marinesensitivity.org {
+    reverse_proxy titilecache:6082
+}
+
+h3t.marinesensitivity.org {
+    reverse_proxy h3t:8889
+}
+
+h3tcache.marinesensitivity.org {
+    reverse_proxy h3tcache:6083
+}
+
+pmtiles.marinesensitivity.org {
+    import cors
+
+    # server-side tile decoding: ZXY + TileJSON (for QGIS, leaflet, etc.)
+    handle_path /tiles/* {
+        pmtiles_proxy {
+            bucket file:///share/data/derived/v4/pmtiles
+            # note: v3 pmtiles also available at /share/data/derived/v3/pmtiles
+            cache_size 256
+            public_url https://pmtiles.marinesensitivity.org/tiles
+        }
+    }
+}
+</code></pre>
+</section>
+<section id="services" class="level2" data-number="13.5">
+<h2 data-number="13.5" class="anchored" data-anchor-id="services"><span class="header-section-number">13.5</span> Services</h2>
+<p>The server is running the following services. Subdomains with 🔒 are internal (admin / development); others are public.</p>
+<section id="app-data-plane" class="level3" data-number="13.5.1">
+<h3 data-number="13.5.1" class="anchored" data-anchor-id="app-data-plane"><span class="header-section-number">13.5.1</span> App + data plane</h3>
+<ul>
+<li><p><a href="https://app.marinesensitivity.org"><strong>app</strong></a> / <a href="https://shiny.marinesensitivity.org"><strong>shiny</strong></a><br>
+<em>interactive Shiny applications</em> — proxied to the <code>rstudio</code> container’s Shiny Server on internal port 3838. There are now <strong>two</strong> applications, <code>/scores</code> and <code>/species</code>, each rendering any published release from <code>?ver=</code>. The former per-version instances (<code>mapgl</code>, <code>mapsp</code>, <code>mapgl_v1</code>…<code>mapsp_v6</code>, <code>scores_v6</code>/<code>v8</code>, <code>species_v6</code>/<code>v8</code>) are retired, with Caddy issuing a <strong>301 to the equivalent <code>?ver=</code></strong> so every existing link — including any printed in a published report — still resolves to the release it always showed.<br>
+<img src="figures/server/shiny.png" class="img-fluid" width="300"><br>
+<a href="https://shiny.posit.co/">Shiny Server docs</a></p></li>
+<li><p><a href="https://file.marinesensitivity.org"><strong>file</strong></a><br>
+<em>static file server for PMTiles archives, report downloads, reference GeoPackages</em> — served by Caddy’s <code>file_server</code> directive directly from the <code>/share</code> bind-mount. This replaces the old <code>pg_tileserv</code> vector-tile path for Program Areas, Ecoregions, Planning Areas, protractions, blocks and aliquots; each layer is a single <code>.pmtiles</code> file that the browser range-reads for only the tiles it needs.</p></li>
+<li><p><a href="https://titiler.marinesensitivity.org"><strong>titiler</strong></a> + <strong>titiler-v8</strong> 🟢<br>
+<em><a href="https://developmentseed.org/titiler/">TiTiler</a> serving the published raster assets.</em><br>
+Every map layer the applications draw is now a <strong>pre-rendered Cloud-Optimized GeoTIFF</strong> read through titiler’s stock <code>/cog</code> routes — score surfaces per metric × subregion, and per-model distributions. <code>titiler-v8</code> runs in parallel with the v7 instance, reading a kilobyte-sized view-only DuckDB whose <code>model_cell</code> is a <em>view</em> over the partitioned Parquet on S3, so no multi-gigabyte database is copied to the server.</p></li>
+<li><p><strong>titilecache</strong> (Varnish) 🔒<br>
+Fronts the v7 <code>titiler</code> only. The v8 service is deliberately <strong>not</strong> proxied through it: an immutable COG is already cacheable by URL, and the one endpoint that would benefit is retired (below).</p></li>
+<li><p><a href="https://api.marinesensitivity.org"><strong>api</strong></a><br>
+<em>custom R <a href="https://www.rplumber.io"><code>plumber</code></a> API</em> for programmatic access to DuckDB — see <a href="apis.html" class="quarto-xref"><span>Chapter 16</span></a><br>
+<img src="figures/server/api.png" class="img-fluid" width="300"></p></li>
+</ul>
+</section>
+<section id="admin" class="level3" data-number="13.5.2">
+<h3 data-number="13.5.2" class="anchored" data-anchor-id="admin"><span class="header-section-number">13.5.2</span> Admin</h3>
+<ul>
+<li><p><a href="https://rstudio.marinesensitivity.org"><strong>rstudio</strong></a> 🔒<br>
+<em>integrated development environment (IDE) to code and debug directly on the server.</em><br>
+<img src="figures/server/rstudio.png" class="img-fluid" width="300"><br>
+<a href="https://posit.co/products/open-source/rstudio-server/">Posit RStudio Server</a></p></li>
+<li><p><strong>pgadmin</strong> 🔒 — <em>PostgreSQL administration interface</em>, commented out along with the PostgreSQL services it managed (see Retired, below).</p></li>
+</ul>
+</section>
+<section id="retired" class="level3" data-number="13.5.3">
+<h3 data-number="13.5.3" class="anchored" data-anchor-id="retired"><span class="header-section-number">13.5.3</span> Retired</h3>
+<ul>
+<li><p><strong>The custom <code>/msens</code> tile factory</strong> — kept in the image but <strong>off by default</strong>, behind <code>MSENS_FACTORY=1</code>.<br>
+It rendered a tile by executing a validated SELECT against DuckDB and looking the result up against a cell-id COG. Pre-rendered COGs replaced it: nothing reaches it any more, because every metric on every release now has a COG. The two paths were verified equivalent before the switch — 100 of 105 sample tiles byte-identical, the remainder differing by 3–6 pixels out of 262,144 from float32 storage. It remains available for exploratory on-the-fly queries.</p></li>
+<li><p><strong>postgis</strong>, <strong>tile</strong> (<code>pg_tileserv</code>), <strong>tilecache</strong>, <strong>rest</strong> (PostgREST) and <strong>swagger</strong> — all <strong>commented out</strong> in <code>docker-compose.yml</code> and <strong>not running</strong>. PostgreSQL is no longer part of any serving path; the authoritative store is DuckDB, with the published release as partitioned Parquet on S3. Vector geometry is served as static PMTiles by Caddy’s <code>file</code> subdomain, and the <code>pgadmin</code> entry above is likewise vestigial.</p></li>
+</ul>
+<p><i class="fa-solid fa-ellipsis-h" aria-label="ellipsis-h"></i> <!-- init fontawesome to get in mermaid diagrams --></p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./software.html" class="pagination-link" aria-label="Software">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Software</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./db.html" class="pagination-link" aria-label="Database">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Database</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© <a href="https://bbest.github.io/cv/" target="_blank">Ben Best</a>, <a href="https://www.boem.gov/environment/environmental-studies/environmental-studies-information" target="_blank">BOEM-ESP</a></p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/server.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org/" target="_blank">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
