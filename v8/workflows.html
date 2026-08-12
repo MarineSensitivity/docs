@@ -8,7 +8,7 @@
 
 <meta name="description" content="scripts for exploring plus production workflows">
 
-<title>13&nbsp; Workflows – Marine Sensitivity</title>
+<title>15&nbsp; Workflows – Marine Sensitivity</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -243,7 +278,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./workflows.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Workflows</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./workflows.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Workflows</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -320,7 +355,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Science</span></a>
+ <span class="menu-text">Releases</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -328,50 +363,14 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./science.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Science</span></span></a>
+  <a href="./releases.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Releases</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./data-sources.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data Sources</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./taxonomy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Taxonomy</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./extinction-risk.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Extinction Risk</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./model-merging.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Merging</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./scoring.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Scoring</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./scoring-walkthrough.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Scoring Walkthrough</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./stressors.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Stressors</span></span></a>
+  <a href="./releases/v1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">v1 — Planning Areas</span></span></a>
   </div>
 </li>
       </ul>
@@ -379,7 +378,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Software</span></a>
+ <span class="menu-text">Science</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -387,56 +386,115 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./science.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Science</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data Sources</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./taxonomy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Taxonomy</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./extinction-risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Extinction Risk</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./model-merging.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Merging</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Scoring</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scoring-walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Scoring Walkthrough</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stressors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Stressors</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./software.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Software</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Software</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./server.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Server</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Server</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./db.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Database</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Database</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./workflows.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Workflows</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Workflows</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">APIs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">APIs</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./libraries.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Libraries</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Libraries</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Apps</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Apps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Apps User Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Apps User Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./docs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
   </div>
 </li>
       </ul>
@@ -444,7 +502,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -455,13 +513,13 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text">Appendices</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link">
@@ -470,13 +528,13 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
  <span class="menu-text">Applications (Current)</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
@@ -493,13 +551,13 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
  <span class="menu-text">Applications (Legacy)</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/aoi.html" class="sidebar-item-text sidebar-link">
@@ -520,8 +578,8 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+  <a href="./apps/scores_0.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scores Explorer</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -556,18 +614,20 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#ingest-workflows-populate-sdm.duckdb" id="toc-ingest-workflows-populate-sdm.duckdb" class="nav-link active" data-scroll-target="#ingest-workflows-populate-sdm.duckdb"><span class="header-section-number">13.1</span> Ingest workflows (populate <code>sdm.duckdb</code>)</a></li>
-  <li><a href="#scoring-workflow-cell_metric-zone_metric" id="toc-scoring-workflow-cell_metric-zone_metric" class="nav-link" data-scroll-target="#scoring-workflow-cell_metric-zone_metric"><span class="header-section-number">13.2</span> Scoring workflow (<code>cell_metric</code> + <code>zone_metric</code>)</a></li>
-  <li><a href="#derived-artifacts-for-the-serving-tier" id="toc-derived-artifacts-for-the-serving-tier" class="nav-link" data-scroll-target="#derived-artifacts-for-the-serving-tier"><span class="header-section-number">13.3</span> Derived artifacts for the serving tier</a></li>
+  <li><a href="#the-pipeline-is-a-graph-generated-from-the-notebooks" id="toc-the-pipeline-is-a-graph-generated-from-the-notebooks" class="nav-link active" data-scroll-target="#the-pipeline-is-a-graph-generated-from-the-notebooks"><span class="header-section-number">15.1</span> The pipeline is a graph, generated from the notebooks</a></li>
+  <li><a href="#stages" id="toc-stages" class="nav-link" data-scroll-target="#stages"><span class="header-section-number">15.2</span> Stages</a></li>
+  <li><a href="#reproducibility-rules" id="toc-reproducibility-rules" class="nav-link" data-scroll-target="#reproducibility-rules"><span class="header-section-number">15.3</span> Reproducibility rules</a></li>
+  <li><a href="#content-addressed-checkpoints" id="toc-content-addressed-checkpoints" class="nav-link" data-scroll-target="#content-addressed-checkpoints"><span class="header-section-number">15.4</span> Content-addressed checkpoints</a></li>
+  <li><a href="#guarding-the-science" id="toc-guarding-the-science" class="nav-link" data-scroll-target="#guarding-the-science"><span class="header-section-number">15.5</span> Guarding the science</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/workflows.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./workflows.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Workflows</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software.html">Software</a></li><li class="breadcrumb-item"><a href="./workflows.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Workflows</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span id="sec-workflows" class="quarto-section-identifier"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Workflows</span></span></h1>
+<h1 class="title"><span id="sec-workflows" class="quarto-section-identifier"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Workflows</span></span></h1>
 </div>
 
 
@@ -584,66 +644,84 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Workflows are scripts — mostly <a href="https://quarto.org">Quarto</a> notebooks — that ingest source datasets, merge taxonomic authorities, compute scores, and build the derived artifacts consumed by the serving tier. They are the only writers of <code>sdm.duckdb</code>; everything downstream (Shiny apps, the TiTiler factory, the <code>plumber</code> API) reads it in read-only mode.</p>
+<p>Workflows are <a href="https://quarto.org">Quarto</a> notebooks that ingest source datasets, resolve taxonomy, merge models, compute scores and publish a release. They are the only writers of the pipeline database; everything downstream reads published artifacts.</p>
 <p>Links:</p>
 <ul>
-<li><a href="https://marinesensitivity.org/workflows/">marinesensitivity.org/workflows</a> — rendered HTML</li>
+<li><a href="https://marinesensitivity.org/workflows/">marinesensitivity.org/workflows</a> — every notebook, rendered, with the current dependency graph</li>
 <li><a href="https://github.com/MarineSensitivity/workflows">github.com/MarineSensitivity/workflows</a> — source</li>
 </ul>
-<p>See <a href="software.html#fig-data-pipeline" class="quarto-xref">Figure&nbsp;<span>10.5</span></a> for a visual summary and <a href="db.html" class="quarto-xref"><span>Chapter 12</span></a> for the target schema.</p>
-<section id="ingest-workflows-populate-sdm.duckdb" class="level2" data-number="13.1">
-<h2 data-number="13.1" class="anchored" data-anchor-id="ingest-workflows-populate-sdm.duckdb"><span class="header-section-number">13.1</span> Ingest workflows (populate <code>sdm.duckdb</code>)</h2>
-<p>Each source dataset has a dedicated <code>ingest_*.qmd</code> that writes rows to <code>cell_metric</code>, <code>model_cell</code>, <code>taxon</code>, <code>dataset</code> and related tables:</p>
+<p>The notebook list is deliberately <strong>not</strong> reproduced here: it is generated from the pipeline’s own metadata and changes whenever a dataset is added. What is documented here is the contract that generates it.</p>
+<section id="the-pipeline-is-a-graph-generated-from-the-notebooks" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="the-pipeline-is-a-graph-generated-from-the-notebooks"><span class="header-section-number">15.1</span> The pipeline is a graph, generated from the notebooks</h2>
+<p>The pipeline is a <a href="https://books.ropensci.org/targets/"><code>targets</code></a> directed acyclic graph, and the graph is <strong>not hand-maintained</strong>. Each notebook declares its own place in it, in YAML front-matter:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">msens</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">target_name</span><span class="kw">:</span><span class="at"> ingest_aquamaps</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">workflow_type</span><span class="kw">:</span><span class="at"> ingest</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">dependency</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">build_cell_grid</span><span class="kw">]</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">output</span><span class="kw">:</span><span class="at"> data/manifests/ingest_aquamaps.json</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">dataset</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="fu">ds_key</span><span class="kw">:</span><span class="at"> am</span><span class="kw">,</span><span class="at"> </span><span class="fu">response_type</span><span class="kw">:</span><span class="at"> suitability</span><span class="kw">,</span><span class="at"> </span><span class="fu">source_authority</span><span class="kw">:</span><span class="at"> AquaMaps</span><span class="kw">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">temporal_interval</span><span class="kw">:</span><span class="at"> static</span><span class="kw">,</span><span class="at"> </span><span class="fu">native_format</span><span class="kw">:</span><span class="at"> raster</span><span class="kw">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The target list is built by parsing those blocks, so <strong>adding a dataset means adding a notebook</strong> — not editing a pipeline definition that could disagree with it. The <code>dataset:</code> block is also the single source of truth from which the <code>dataset</code> registry table is consolidated; a dataset that is ingested without one fails the build loudly rather than appearing in the data with no metadata.</p>
+</section>
+<section id="stages" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="stages"><span class="header-section-number">15.2</span> Stages</h2>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 66%">
+</colgroup>
 <thead>
 <tr class="header">
-<th>Workflow</th>
-<th>Source</th>
+<th style="text-align: left;">Stage</th>
+<th style="text-align: left;">What it does</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>ingest_aquamaps_to_sdm_duckdb.qmd</code></td>
-<td><a href="https://www.aquamaps.org">AquaMaps</a> predictions (∼16,800 models)</td>
+<td style="text-align: left;"><strong>grid</strong></td>
+<td style="text-align: left;">Builds the global 0.05° cell grid — the sampling unit every model is rasterized onto — with environmental covariates and study-area membership.</td>
 </tr>
 <tr class="even">
-<td><code>ingest_sdm-nc.qmd</code>, <code>ingest_sdm-gm.qmd</code></td>
-<td>NOAA/GEBCO cetacean + sea-turtle distribution models</td>
+<td style="text-align: left;"><strong>ingest</strong></td>
+<td style="text-align: left;">One notebook per source dataset, writing one distribution per model keyed by this release’s model id (<code>mdl_key</code>). Vector ranges are rasterized by exact area coverage; rasters are interpolated onto the grid.</td>
 </tr>
 <tr class="odd">
-<td><code>ingest_taxon.qmd</code></td>
-<td>Unified taxonomy from <a href="https://www.marinespecies.org">WoRMS</a>, <a href="https://ebird.org">eBird</a></td>
+<td style="text-align: left;"><strong>merge</strong></td>
+<td style="text-align: left;">Resolves every model to a common taxon, computes each taxon’s governing extinction risk, and merges the per-dataset surfaces into one surface per taxon (<a href="model-merging.html" class="quarto-xref"><span>Chapter 8</span></a>).</td>
 </tr>
 <tr class="even">
-<td><code>ingest_nmfs-fws-listings.qmd</code>, <code>ingest_iucn*.qmd</code></td>
-<td>Conservation status (ESA listings, IUCN Red List)</td>
+<td style="text-align: left;"><strong>score</strong></td>
+<td style="text-align: left;">Computes per-cell metrics, rescales within ecoregions, and aggregates to each spatial unit (<a href="scoring.html" class="quarto-xref"><span>Chapter 9</span></a>).</td>
 </tr>
 <tr class="odd">
-<td><code>ingest_prot.qmd</code>, <code>ingest_blocks.qmd</code>, <code>ingest_mregions.qmd</code></td>
-<td>Spatial zones (protractions, blocks, marine regions)</td>
+<td style="text-align: left;"><strong>schema</strong></td>
+<td style="text-align: left;">Consolidates the registry tables — <code>dataset</code>, <code>model</code>, <code>taxon_model</code>, <code>listing</code> — that describe what the release contains.</td>
 </tr>
 <tr class="even">
-<td><code>merge_models.qmd</code></td>
-<td>Authority merging — unified <code>taxon</code> table, <code>taxon_model</code> junction, merged <code>mdl_seq</code> per species</td>
+<td style="text-align: left;"><strong>release</strong></td>
+<td style="text-align: left;">Publishes the release to S3 as partitioned Parquet, COGs, PMTiles and a STAC catalog, writes the version manifest, and (gated) deploys the serving tier.</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="scoring-workflow-cell_metric-zone_metric" class="level2" data-number="13.2">
-<h2 data-number="13.2" class="anchored" data-anchor-id="scoring-workflow-cell_metric-zone_metric"><span class="header-section-number">13.2</span> Scoring workflow (<code>cell_metric</code> + <code>zone_metric</code>)</h2>
-<ul>
-<li><strong><code>calc_scores.qmd</code></strong> — the primary scoring pipeline. Loads <code>sdm.duckdb</code> read-write, computes extinction-risk metrics by species category (e.g., <code>extrisk_bird</code>, <code>extrisk_fish</code>, <code>extrisk_mammal</code>), writes rows to <code>cell_metric</code>, and aggregates into <code>zone_metric</code> for both Program Area and subregion zones. Also exports helper caches (<code>taxon.csv</code>, <code>layers_v6.csv</code>, <code>flower_default_subregions.csv</code>) used by the Shiny apps at startup.</li>
-<li><strong><code>update_scores.qmd</code></strong> — targeted remap when the score scale changes (e.g., the 2026 migration from the old 70/90 critical-habitat scale to the unified <code>er_score</code> EN=100 / TN=50 / LC=1 scale).</li>
-</ul>
+<section id="reproducibility-rules" class="level2" data-number="15.3">
+<h2 data-number="15.3" class="anchored" data-anchor-id="reproducibility-rules"><span class="header-section-number">15.3</span> Reproducibility rules</h2>
+<p>These are load-bearing, not stylistic. Each one exists because its absence caused a specific failure.</p>
+<p><strong>Every process is a chunk in a committed notebook, run by rendering to HTML.</strong> Including the parts that touch the outside world — the S3 sync, the server deploy, the app reload. Not an ad-hoc shell command. Rendering is what produces the tracked HTML output and the content-hash checkpoint; executing the code without rendering skips both, so it is a diagnostic, never a run.</p>
+<p><strong>Side effects are opt-in.</strong> Anything expensive or outward-facing sits behind an environment flag that defaults to off, so a routine render cannot publish or restart anything by accident.</p>
+<p><strong>The orchestration is part of the process.</strong> A notebook parameterized by version is only half reproducible if the loop <em>over</em> versions lives in a throwaway shell script, so the multi-version drivers are committed too. Likewise, forcing a rebuild is a flag — never moving output directories aside by hand, which leaves no record of what was rebuilt or why.</p>
+<p><strong>A version number is not proof.</strong> A notebook whose logic lives in the <code>msens</code> package is only as current as the <em>installed</em> package. The server once reported the right package version while running an older function, and seven release manifests were regenerated missing their zone tiles as a result — with nothing failing. So every behavior change gets a version bump <em>and</em> a changelog entry, and the container pins move with it.</p>
+<p><strong>Reproducibility beats uptime.</strong> Where a reproducible fix and a fast in-place workaround are both available, the reproducible one wins even at the cost of brief downtime. Drift between a running container and the image it was built from is a bug to fix immediately, not a reason to avoid rebuilding.</p>
 </section>
-<section id="derived-artifacts-for-the-serving-tier" class="level2" data-number="13.3">
-<h2 data-number="13.3" class="anchored" data-anchor-id="derived-artifacts-for-the-serving-tier"><span class="header-section-number">13.3</span> Derived artifacts for the serving tier</h2>
-<p>Two one-shot build steps produce the binary artifacts that sit next to <code>sdm.duckdb</code> on <code>/share</code>:</p>
-<ul>
-<li><strong><code>server/titiler/scripts/make_cellid_cog.py</code></strong> — one-shot script that reads band 1 of the source multi-band raster (<code>r_bio-oracle_planarea.tif</code>, stored in 0–360° longitude convention for contiguous US EEZ coverage across the Pacific), casts NaN → 0 + float32 → uint32, wraps longitudes to standard −180..180°, and writes a single-band tiled GeoTIFF at <code>/share/data/derived/r_cellid.tif</code>. No overviews — nearest-neighbor reads at native resolution are fast enough for z ≤ 4 and interpolating overviews would corrupt integer cell ids.</li>
-<li><strong>PMTiles builds</strong> — offline <code>tippecanoe</code> runs over the source GeoPackages (<code>ply_programareas_2026</code>, <code>ply_ecoregions_2025</code>, <code>ply_planareas_2025</code>, …) produce <code>.pmtiles</code> archives, published to <code>/share/pmtiles/</code> and served by Caddy at <code>file.marinesensitivity.org/pmtiles/&lt;layer&gt;.pmtiles</code>.</li>
-</ul>
-<p>Re-run either when the underlying data changes; the Shiny app’s <code>mtime</code> cache-busting parameter (tied to <code>sdm.duckdb</code>’s mtime) invalidates cached tiles automatically when the DB is rebuilt.</p>
+<section id="content-addressed-checkpoints" class="level2" data-number="15.4">
+<h2 data-number="15.4" class="anchored" data-anchor-id="content-addressed-checkpoints"><span class="header-section-number">15.4</span> Content-addressed checkpoints</h2>
+<p>Each notebook writes a manifest recording a <strong>content hash</strong> of what it produced. A downstream stage can then tell whether its input actually changed, rather than trusting a timestamp — which is what makes a re-run cheap when nothing moved, and what makes an unexpected change visible.</p>
+</section>
+<section id="guarding-the-science" class="level2" data-number="15.5">
+<h2 data-number="15.5" class="anchored" data-anchor-id="guarding-the-science"><span class="header-section-number">15.5</span> Guarding the science</h2>
+<p>Scientific rules live in the <code>msens</code> package as documented functions, not as SQL strings inside a notebook — so a notebook <em>calls</em> the rule and a unit test <em>asserts</em> it, and the two cannot drift. Every non-trivial rule has a test with a small fixture asserting its exact expected output, and every bug that is found becomes a permanent named assertion.</p>
+<p>This matters more than the aggregate checks. Whole-pipeline validation — comparing a release’s zone scores against the previous one — catches broad drift but hides rule-level breakage: one lost exclusion affected ~750 species while barely moving any aggregate score (<a href="model-merging.html" class="quarto-xref"><span>Chapter 8</span></a>).</p>
+<p>See <a href="db.html" class="quarto-xref"><span>Chapter 14</span></a> for the schema these workflows produce, and <a href="releases.html" class="quarto-xref"><span>Chapter 2</span></a> for what each release changed.</p>
 
 
 </section>
@@ -1052,12 +1130,12 @@ ul.task-list li input[type="checkbox"] {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./db.html" class="pagination-link" aria-label="Database">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Database</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Database</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./apis.html" class="pagination-link" aria-label="APIs">
-        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">APIs</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">APIs</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
