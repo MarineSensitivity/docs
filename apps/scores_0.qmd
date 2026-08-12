@@ -1,6 +1,6 @@
 ---
 description: "Calculate scores based on sensitivity metric -- for now, extinction risk across taxonomic groups."
-image: "/figures/apps/scores.png"
+image: "/figures/apps/scores_0.png"
 url: "https://shiny.marinesensitivity.org/scores/"
 url-code: "https://github.com/MarineSensitivity/apps/tree/main/scores"
 categories: 
