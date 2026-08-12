@@ -5,11 +5,49 @@ on:
 
 name: Quarto Publish
 
+# One BOOK per MST release. The book source is parameterized by DOCS_VER
+# (libs/versioned.R), so a single render produces the documentation for exactly
+# one release, reading its numbers from that release's own published tables.
+#
+# Before this, one build mixed FOUR versions -- VERSION said v8, the maps drew v4
+# geometry, db.qmd reported v6 row counts and the statistics came from an
+# unversioned API with a hardcoded v7 fallback. Rebuilding a v4 doc set printed v8
+# numbers under a v4 label, which is worse than a stale figure because it reads as
+# authoritative.
+
 jobs:
+  # Which releases exist is DATA, not a list maintained here: the same
+  # versions.json the apps and the pipeline read. Publishing v9 means publishing a
+  # release, not editing this file.
+  versions:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+    steps:
+      - name: Resolve the published versions
+        id: set
+        run: |
+          set -euo pipefail
+          URL=https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json
+          curl -sf --max-time 60 "$URL" -o versions.json
+          # assert the PAYLOAD parses, never just curl's exit status: S3 answers a
+          # wrong-region request with a 301 whose body is 448 bytes of error XML,
+          # and `curl -sf` calls that success.
+          jq -e '.versions | length > 0' versions.json > /dev/null
+          M=$(jq -c '[.versions[].ver]' versions.json)
+          echo "versions: $M"
+          echo "matrix=$M" >> "$GITHUB_OUTPUT"
+
   build-deploy:
+    needs: versions
     runs-on: macOS-latest
     permissions:
       contents: write
+    strategy:
+      fail-fast: false      # one release failing must not withhold the other eight
+      max-parallel: 2       # they all publish to the same branch
+      matrix:
+        ver: ${{ fromJson(needs.versions.outputs.matrix) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -36,68 +74,111 @@ jobs:
         with:
           cache-version: 2
 
-      # The MST release this build documents. Bump VERSION in the same change
-      # that documents a new release; CI publishes to gh-pages/{VERSION}/.
-      - name: Read docs version
-        id: ver
-        run: echo "ver=$(tr -d '[:space:]' < VERSION)" >> "$GITHUB_OUTPUT"
-
-      - name: Render
+      - name: Render ${{ matrix.ver }}
         uses: quarto-dev/quarto-actions/render@v2
         env:
           QUARTO_CHROMIUM_HEADLESS_MODE: new
+          DOCS_VER: ${{ matrix.ver }}
+
+      # Assert the build actually IS the version it claims, before publishing it.
+      # A DOCS_VER that failed to reach the render would silently publish the
+      # VERSION-file default into ${{ matrix.ver }}/ -- the exact cross-version
+      # bleed this whole design exists to prevent.
+      - name: Verify the build documents ${{ matrix.ver }}
+        run: |
+          set -euo pipefail
+          grep -q "documents release" _book/intro.html || {
+            echo "intro.html does not carry the release sentence" >&2; exit 1; }
+          grep -q ">${{ matrix.ver }}</strong>" _book/intro.html \
+            || grep -q "documents release .*${{ matrix.ver }}" _book/intro.html \
+            || { echo "intro.html does not name ${{ matrix.ver }}" >&2; exit 1; }
 
       # NOT quarto-actions/publish: it REPLACES the whole gh-pages branch, so
       # publishing v8 would delete v7. peaceiris with keep_files writes into
       # {version}/ and leaves its siblings alone, which is what makes the docs
       # versioned at all.
-      - name: Publish this version
+      - name: Publish ${{ matrix.ver }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./_book
-          destination_dir: ${{ steps.ver.outputs.ver }}
+          destination_dir: ${{ matrix.ver }}
           keep_files: true
 
-      # / redirects to the version named by the atlas registry's latest.txt --
-      # the SAME pointer the apps resolve, so docs and data cannot disagree about
-      # which release is current. Written as its own tiny publish so it does not
-      # depend on the book render.
-      - name: Point / at the promoted release
+  # The root is a redirect and nothing else. It runs after every version so the
+  # directory it points at exists.
+  root:
+    needs: [versions, build-deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+
+      - name: Point / at the promoted release, and prune the flat root
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          THIS_VER: ${{ steps.ver.outputs.ver }}
         run: |
           set -euo pipefail
+
+          # / redirects to the version named by the atlas registry's latest.txt --
+          # the SAME pointer the apps resolve, so docs and data cannot disagree
+          # about which release is current.
           LATEST=$(curl -sf --max-time 60 \
             https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/latest.txt \
             | tr -d '[:space:]')
-          [ -n "$LATEST" ] || { echo "could not resolve latest.txt" >&2; exit 1; }
+          # payload check, not exit-status check (see the versions job)
+          echo "$LATEST" | grep -Eq '^v[0-9]+[a-z]?$' \
+            || { echo "latest.txt did not return a version: '$LATEST'" >&2; exit 1; }
 
           # latest.txt names the promoted DATA release, which may not have docs
-          # built yet -- today it is v7 while this book documents v8. Redirecting
-          # at it blindly would 404. Check gh-pages for that directory and fall
-          # back to the version just published.
-          TARGET="$LATEST"
-          if ! gh api "repos/${GITHUB_REPOSITORY}/contents/${LATEST}?ref=gh-pages" >/dev/null 2>&1; then
-            echo "no docs published for $LATEST yet; / will point at $THIS_VER"
-            TARGET="$THIS_VER"
+          # built. Fall back to the newest version directory that does exist,
+          # rather than redirecting at a 404.
+          if [ ! -d "$LATEST" ]; then
+            echo "no docs published for $LATEST; falling back"
+            LATEST=$(ls -d v*/ 2>/dev/null | tr -d '/' | sort -V | tail -1)
+            [ -n "$LATEST" ] || { echo "no version directories at all" >&2; exit 1; }
           fi
-          LATEST="$TARGET"
           echo "root redirect target: $LATEST"
-          mkdir -p _root
-          cat > _root/index.html <<HTML
+
+          # Prune the flat, unversioned build: 486 files frozen at a single point
+          # in time, still crawlable, and describing a version they never named.
+          # Two competing copies in search results is worse than a 404.
+          #
+          # Deletes only TOP-LEVEL entries that are neither a version directory
+          # nor part of the root itself. Version directories are matched on the
+          # registry's own grammar, so a new release is never mistaken for cruft.
+          KEEP='^(index\.html|robots\.txt|\.nojekyll|\.git|CNAME|v[0-9]+[a-z]?)$'
+          PRUNED=0
+          for f in $(ls -A); do
+            if ! echo "$f" | grep -Eq "$KEEP"; then
+              echo "  pruning $f"
+              git rm -rq --ignore-unmatch -- "$f"
+              PRUNED=$((PRUNED+1))
+            fi
+          done
+          echo "pruned $PRUNED top-level entries"
+
+          cat > index.html <<HTML
           <!doctype html><meta charset="utf-8">
           <title>Marine Sensitivity documentation</title>
           <link rel="canonical" href="./$LATEST/">
           <meta http-equiv="refresh" content="0; url=./$LATEST/">
           <p>Redirecting to the current documentation (<a href="./$LATEST/">$LATEST</a>)&hellip;</p>
           HTML
-          printf 'User-agent: *\nAllow: /\n' > _root/robots.txt
+          printf 'User-agent: *\nAllow: /\n' > robots.txt
 
-      - name: Publish the root redirect
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_root
-          keep_files: true
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html robots.txt
+          if git diff --cached --quiet && [ "$PRUNED" -eq 0 ]; then
+            echo "root already current"
+          else
+            git commit -m "docs: root redirect -> $LATEST; prune $PRUNED flat-root entries"
+            git push
+          fi

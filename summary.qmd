@@ -1,38 +1,50 @@
 # Summary
 
+The Marine Sensitivity Toolkit (MST) provides a reproducible system for assessing the sensitivity of marine ecosystems to offshore energy development across US waters. This summary describes release **`r doc_ver()`**; figures are read from that release.
+
+## What this release delivers
+
 ```{r}
-#| include: false
-source(here::here("stats.R"))
+#| label: summary-findings
+#| output: asis
+
+cats <- doc_sp_cats()
+cat("- **", doc_stat("valid_species"), " valid marine species** on a 0.05° grid (~4 km cells) across the ",
+    "US EEZ study area", sep = "")
+if (doc_can("programareas")) cat(", of which **", doc_stat("species_program_areas"),
+    "** fall inside the **", doc_stat("n_program_areas"), " BOEM Program Areas**", sep = "")
+cat(", integrating **", doc_stat("n_datasets"), " source datasets** — continuous suitability models, ",
+    "regulatory habitat designations and expert range maps.\n", sep = "")
+cat("- **", sum(cats$scored), " scored species categories** (",
+    paste0("`", cats$sp_cat[cats$scored], "`", collapse = ", "), "), assigned from taxonomy rather ",
+    "than from the dataset a model arrived in.\n", sep = "")
 ```
 
-The Marine Sensitivity Toolkit (MST) provides a comprehensive, reproducible system for assessing the sensitivity of marine ecosystems to offshore energy development across US waters.
+- **Extinction-risk scoring** (1–100) folds in ESA listing, the MMPA floor (assigned by taxonomy, so no marine mammal is missed) and the MBTA floor (the FWS CFR 50 §10.13 species list, not all birds), falling back to the IUCN Red List where there is no US listing.
 
-## Key Findings
+- **Model merging** produces one surface per taxon, with the **expert range constraining** suitability predictions rather than merely competing with them, and the governing extinction risk applied at the range cells. Sea turtles merge multiplicatively, so risk varies spatially within a species.
 
-- **`r n_fmt(mst_stats$valid_species)` valid marine species** mapped at 0.05° resolution (~4 km cells) across the full US EEZ study area (**`r n_fmt(mst_stats$species_program_areas)`** within the **`r mst_stats$n_program_areas` BOEM Program Areas**), integrating data from 7 source datasets including AquaMaps SDMs, NMFS and FWS regulatory designations, BirdLife seabird ranges, and IUCN range maps
+- **Ecoregional rescaling** normalizes each metric to 0–100 within a BOEM Ecoregion, so scores are comparable among Program Areas in one ecoregion without being dominated by naturally species-rich waters.
 
-- **Extinction risk scoring** (1--100 scale) incorporates protections under the Endangered Species Act (ESA), Marine Mammal Protection Act (MMPA), and Migratory Bird Treaty Act (MBTA), ensuring that federally protected species are properly weighted in the sensitivity analysis
+- **Interactive applications** — Scores and Species — render **any published release** from a `?ver=` parameter, so a reader can look at the release a report cited rather than only the newest one.
 
-- **Model merging** combines multiple distribution datasets per species using a MAX-value approach, constrained by spatial masks from IUCN/Critical Habitat ranges and enhanced with MMPA (floor=20) and MBTA (floor=10) spatial minimums
+## Delivered since the first release
 
-- **Ecoregional rescaling** normalizes sensitivity scores to a [0--100%] range within each BOEM ecoregion, enabling meaningful cross-region comparison despite natural differences in species richness between tropical and polar waters
+Several capabilities listed as future work in earlier editions of this documentation have since shipped:
 
-- **Interactive tools** (Scores and Species applications) provide decision makers and scientists with accessible interfaces for exploring sensitivity patterns, individual species distributions, and score breakdowns at multiple spatial scales
+- **A DAG pipeline.** The workflow is a `targets` graph generated from each notebook's own metadata, so adding a dataset means adding a notebook, not editing a pipeline definition.
+- **Cloud-Optimized GeoTIFFs and a STAC catalog.** Distributions and score surfaces are published as COGs with STAC metadata, discoverable through a searchable STAC API, and the score rasters replaced an on-demand SQL-per-tile factory.
+- **Partitioned Parquet releases.** Each version is published as Parquet on S3 and read directly, including from the browser, rather than shipped as a monolithic database file.
+- **One application across all releases.** The per-version application forks are retired; version is data, settled by a published manifest, not a code fork.
+- **Whole-range models.** Distributions are captured globally rather than clipped to the study area, so a species map shows the species instead of the analysis extent.
 
-## Future Directions
+The **H3 hexagonal grid** proposed earlier was evaluated and **not adopted**: v8 stays on a 0.05° raster grid, made global rather than regional. Interpolating suitability onto hexes added a resampling step without improving the analysis, and the raster grid aligns directly with the source environmental layers.
 
-Several enhancements are planned for future phases of the MST:
+## Future directions
 
-- **OBIS/GBIF validation**: refine species distributions using occurrence data from the Ocean Biodiversity Information System and Global Biodiversity Information Facility with temporal filters
-
-- **H3 hexagonal grid**: explore Uber's H3 hierarchical hexagonal indexing system for multi-resolution spatial analysis, replacing the current latitude-longitude grid
-
-- **Cloud-Optimized GeoTIFFs (COGs) and STAC catalogs**: export raster data as COGs with SpatioTemporal Asset Catalog metadata for interoperability with geospatial platforms
-
-- **DAG pipeline**: implement a formal directed acyclic graph (DAG) workflow using the `targets` R package for automated, reproducible data processing
-
-- **Stressor-receptor matrices**: expand from sensitivity-only assessment to full vulnerability analysis by integrating exposure data for offshore wind, oil & gas, and other marine activities (see @sec-stressors)
-
-- **Enhanced applications**: arbitrary area selection tools, taxonomic tree browsing, automatic high-quality static figure generation, and story-map/scrollytelling explainer interfaces
-
-- **Infrastructure transfer**: support transition of data and applications to BOEM server infrastructure for long-term operational deployment
+- **OBIS/GBIF validation** — refine distributions against occurrence records, with temporal filters.
+- **Density models** — NOAA SEFSC and NCCOS density surfaces are ingested and catalogued but excluded from scoring, pending an agreed mapping from individuals km^-2^ onto the 0–100 suitability scale. They are flagged `is_scored = FALSE` so no count on these pages includes them.
+- **Habitat sensitivity** — benthic habitats (coral reefs, seamounts, hydrothermal vents) as a component alongside species and productivity.
+- **Stressor–receptor matrices** — extend from sensitivity alone to full vulnerability by adding exposure for offshore wind, oil and gas, and other activities (see @sec-stressors).
+- **Application enhancements** — arbitrary area selection, taxonomic-tree browsing, automatic figure generation, and scrollytelling explainers.
+- **Infrastructure transfer** — support moving the data and applications onto BOEM infrastructure for long-term operation.

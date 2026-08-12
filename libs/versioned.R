@@ -1,0 +1,413 @@
+# versioned.R — one book source, rendered per MST release
+# initiated by .Rprofile (alongside functions.R)
+#
+# The apps render nine releases from one codebase via `?ver=`; this makes the docs
+# do the same via `DOCS_VER`. Before it, ONE build mixed FOUR versions:
+#
+#   docs/VERSION       v8   drove only the publish path — no .qmd ever read it
+#   libs/functions.R   v4   the ecoregion/programarea PMTiles the maps actually drew
+#   db.qmd             v6   paths and the "Rows (v6)" table header
+#   stats.R            —    an UNVERSIONED api.marinesensitivity.org/stats.json,
+#                           falling back to hardcoded v7 numbers
+#
+# So rebuilding a v4 doc set printed v8 numbers under a v4 label: worse than a
+# stale figure, because it reads as authoritative. Every number on every page now
+# comes from THAT version's published tables.
+#
+# Design rules, mirroring msens/R/version.R:
+#  - NEVER fall back to another version's numbers. A missing figure renders as a
+#    visible placeholder; it does not silently borrow v8's.
+#  - capability and table presence come from the release's own manifest, so a v1
+#    build OMITS a section rather than describing behaviour v1 never had.
+#  - column names are resolved by msens::sdm_cols(), not re-derived here — a
+#    second copy of that rule is how a v3 page ends up printing `is_valid_usa`.
+
+# ---- which version is this build? --------------------------------------------
+
+#' The version this build documents: env `DOCS_VER`, else the `VERSION` file.
+#' Validated against the published registry, so a typo fails loudly at render.
+doc_ver <- local({
+  cached <- NULL
+  function(refresh = FALSE) {
+    if (!is.null(cached) && !refresh) return(cached)
+    v <- trimws(Sys.getenv("DOCS_VER", ""))
+    if (!nzchar(v)) v <- trimws(readLines(here::here("VERSION"), warn = FALSE)[1])
+    if (!grepl("^v[0-9]+[a-z]?$", v))
+      stop("DOCS_VER / VERSION does not name a release: '", v, "'", call. = FALSE)
+    cached <<- v
+    v
+  }
+})
+
+#' That version's manifest — the contract describing what it published.
+doc_manifest <- local({
+  cached <- NULL
+  function(refresh = FALSE) {
+    if (!is.null(cached) && !refresh) return(cached)
+    cached <<- msens::atlas_manifest(doc_ver(), refresh = refresh)
+    cached
+  }
+})
+
+#' The whole registry (all releases), for the Releases timeline.
+doc_versions <- local({
+  cached <- NULL
+  function() {
+    if (is.null(cached)) cached <<- msens::atlas_versions()
+    cached
+  }
+})
+
+#' Row for this version in the registry (title, status, released).
+doc_version_row <- function(ver = doc_ver()) {
+  d <- doc_versions()
+  d[match(ver, d$ver), , drop = FALSE]
+}
+
+# ---- capability + table gates -------------------------------------------------
+
+#' Does this release declare a capability? Unknown capabilities are FALSE.
+doc_can <- function(what) msens::manifest_can(doc_manifest(), what)
+
+#' Did this release publish a given table? Presence, never assumption.
+doc_has <- function(tbl) tbl %in% names(doc_manifest()$tables)
+
+#' Names of the tables this release published.
+doc_tables <- function() names(doc_manifest()$tables)
+
+# ---- reading this version's published tables ----------------------------------
+
+# One DuckDB connection per render, configured for path-style S3 over HTTPS
+# (the bucket name contains dots, which breaks virtual-hosted-style TLS).
+.doc_con <- local({
+  con <- NULL
+  function() {
+    if (!is.null(con) && DBI::dbIsValid(con)) return(con)
+    con <<- DBI::dbConnect(duckdb::duckdb())
+    DBI::dbExecute(con, "INSTALL httpfs; LOAD httpfs;")
+    DBI::dbExecute(con, "SET s3_url_style='path'; SET s3_region='us-east-1';")
+    con
+  }
+})
+
+#' A published table of THIS version, as a data frame.
+#'
+#' Reads the URL the manifest declares — so a table the release never published
+#' errors here rather than silently resolving to some other version's file.
+#' `sql` may reference the table by name.
+doc_tbl <- function(tbl, sql = NULL) {
+  m <- doc_manifest()
+  if (!tbl %in% names(m$tables))
+    stop(sprintf("%s does not publish `%s` (has: %s) — gate this section on doc_has()",
+                 doc_ver(), tbl, paste(names(m$tables), collapse = ", ")), call. = FALSE)
+  src <- sprintf("read_parquet('%s')", m$tables[[tbl]])
+  q   <- if (is.null(sql)) sprintf("SELECT * FROM %s", src)
+         else gsub(sprintf("\\b%s\\b", tbl), src, sql)
+  DBI::dbGetQuery(.doc_con(), q)
+}
+
+#' Column names + types of a published table, without reading it.
+doc_cols <- function(tbl) {
+  m <- doc_manifest()
+  DBI::dbGetQuery(.doc_con(), sprintf(
+    "DESCRIBE SELECT * FROM read_parquet('%s')", m$tables[[tbl]]))
+}
+
+#' Row count of a published table.
+doc_nrow <- function(tbl) doc_tbl(tbl, sprintf("SELECT count(*) AS n FROM %s", tbl))$n
+
+# ---- computed statistics ------------------------------------------------------
+
+# Which column carries which concept in THIS release is msens's rule, resolved by
+# introspection. Answered against a connection carrying just this version's views.
+.doc_keys <- local({
+  cached <- NULL
+  function() {
+    if (!is.null(cached)) return(cached)
+    con <- .doc_con(); m <- doc_manifest()
+    for (t in intersect(c("taxon", "model"), names(m$tables)))
+      DBI::dbExecute(con, sprintf(
+        "CREATE OR REPLACE TEMP VIEW %s AS SELECT * FROM read_parquet('%s')", t, m$tables[[t]]))
+    cached <<- msens::sdm_cols(con, mc_tbl = NULL)
+    cached
+  }
+})
+
+#' Statistics for THIS version, computed from its own published tables.
+#'
+#' Returns `NA` for anything the release cannot answer (rather than a number from
+#' elsewhere); `doc_stat_fmt()` renders that as a visible placeholder.
+doc_stats <- local({
+  cached <- NULL
+  function(refresh = FALSE) {
+    if (!is.null(cached) && !refresh) return(cached)
+    m <- doc_manifest()
+    out <- list(ver = doc_ver(), status = m$status, grid_id = m$grid_id)
+
+    k <- tryCatch(.doc_keys(), error = function(e) NULL)
+    valid_sql <- if (is.null(k)) NULL else {
+      # v1-v7's is_ok already baked in the marine/category cull; v8's
+      # is_valid_usa means only "has >=1 merged cell in US waters", so scoring
+      # eligibility there also needs is_marine (msens::sdm_cols() reports it).
+      paste0("WHERE ", k$valid, if (!is.na(k$marine)) paste0(" AND ", k$marine) else "")
+    }
+
+    out$total_taxa <- tryCatch(doc_nrow("taxon"), error = function(e) NA_integer_)
+    out$valid_species <- tryCatch(
+      doc_tbl("taxon", sprintf("SELECT count(*) AS n FROM taxon %s", valid_sql))$n,
+      error = function(e) NA_integer_)
+
+    # Program-Area subset: a SPATIAL question, answered by the zone tables, never
+    # by the validity flag (conflating the two is what v7 fixed). zone_taxon
+    # carries zone_fld/zone_value + taxon_authority/taxon_id on every release, so
+    # one query serves all nine. Counted on the (authority, id) PAIR: the two
+    # namespaces (WORMS, BOTW) renumber independently, so counting bare ids
+    # collides birds with invertebrates.
+    out$species_program_areas <- tryCatch({
+      if (!doc_can("programareas") || !doc_has("zone_taxon")) NA_integer_ else
+        doc_tbl("zone_taxon", paste(
+          "SELECT count(DISTINCT taxon_authority || ':' || taxon_id) AS n",
+          "FROM zone_taxon WHERE zone_fld = 'programarea_key'"))$n
+    }, error = function(e) NA_integer_)
+
+    zn <- tryCatch(doc_manifest()$zones, error = function(e) NULL)
+    cnt <- function(f) if (is.data.frame(zn) && f %in% zn$fld) as.integer(zn$n[zn$fld == f][1]) else NA_integer_
+    out$n_program_areas <- cnt("programarea_key")
+    out$n_ecoregions    <- cnt("ecoregion_key")
+    out$n_subregions    <- cnt("subregion_key")
+    out$n_planning_areas <- cnt("planarea_key")
+
+    # datasets: registered vs actually used by the scores (msens::dataset_is_scored)
+    ds <- tryCatch(doc_datasets(), error = function(e) NULL)
+    out$n_datasets_registered <- if (is.null(ds)) NA_integer_ else nrow(ds)
+    out$n_datasets <- if (is.null(ds)) NA_integer_ else sum(ds$is_scored & ds$ds_key != "ms_merge")
+    out$n_cells <- tryCatch(doc_nrow("cell"), error = function(e) NA_integer_)
+    out$n_models <- tryCatch(doc_nrow("model"), error = function(e) NA_integer_)
+    cached <<- out
+    out
+  }
+})
+
+#' This version's `dataset` table, with `is_scored` guaranteed.
+#'
+#' `is_scored` distinguishes datasets that fed the scores from ones merely
+#' registered — v8 ingests `gm` + `nc` but excludes them from the merge, so the
+#' registry reads as 11 inputs where 8 produced the numbers. v8 now stamps the
+#' column; earlier releases get it derived from their own `taxon_model` edges by
+#' the same msens rule.
+doc_datasets <- local({
+  cached <- NULL
+  function() {
+    if (!is.null(cached)) return(cached)
+    d <- doc_tbl("dataset")
+    if (!"is_scored" %in% names(d)) {
+      tm_ds <- if (doc_has("taxon_model")) {
+        tm <- doc_tbl("taxon_model")
+        if ("ds_key" %in% names(tm)) tm$ds_key else NULL
+      } else NULL
+      d$is_scored <- msens::dataset_is_scored(d$ds_key, tm_ds)
+    }
+    cached <<- d
+    d
+  }
+})
+
+# ---- species categories -------------------------------------------------------
+
+#' Species categories in this release, and whether each is SCORED.
+#'
+#' "Scored" is introspected, not listed: a category is scored iff the release
+#' published an `extrisk_{cat}` metric for it. That distinction is real and it
+#' moves between releases — v1 scored `reptile`; v3 onward carry reptile taxa but
+#' score none of them, having split sea turtles into their own `turtle` category;
+#' v8 drops the `other` bucket entirely and adds `primary_producer`. Reading it
+#' from the metric registry means the table cannot claim a category is scored in a
+#' release that never produced a metric for it.
+doc_sp_cats <- local({
+  cached <- NULL
+  function() {
+    if (!is.null(cached)) return(cached)
+    k <- .doc_keys()
+    valid <- paste0(k$valid, if (!is.na(k$marine)) paste0(" AND ", k$marine) else "")
+    d <- doc_tbl("taxon", sprintf(
+      "SELECT sp_cat, count(*) AS n_taxa, sum(CASE WHEN %s THEN 1 ELSE 0 END) AS n_valid
+         FROM taxon WHERE sp_cat IS NOT NULL GROUP BY 1 ORDER BY 3 DESC, 2 DESC", valid))
+    keys <- tryCatch(doc_tbl("metric", "SELECT DISTINCT metric_key FROM metric")$metric_key,
+                     error = function(e) character(0))
+    d$scored <- paste0("extrisk_", d$sp_cat) %in% keys
+    cached <<- d
+    d
+  }
+})
+
+# ---- the validity funnel ------------------------------------------------------
+
+#' Cumulative effect of each validity gate this release's own columns can express.
+#'
+#' Deliberately NOT a transcription of the pipeline's internal steps: it applies
+#' the gates in order to the release's published `taxon` table and reports what
+#' survives. A gate whose column the release does not carry is OMITTED rather than
+#' guessed, so the table never implies a filter that version did not apply.
+doc_funnel <- function() {
+  k    <- .doc_keys()
+  cols <- doc_cols("taxon")$column_name
+  has  <- function(x) all(x %in% cols)
+
+  # (label, predicate) applied cumulatively; NULL predicate = no filter
+  steps <- list(list("Source taxa (all datasets)", NULL))
+  if (has("taxon_id"))
+    steps <- c(steps, list(list("Resolved to a taxon id", "taxon_id IS NOT NULL")))
+  if (has(k$tkey))
+    steps <- c(steps, list(list("Has a merged distribution",
+                                sprintf("%s IS NOT NULL", k$tkey))))
+  ext <- c(if (has("worms_is_extinct")) "coalesce(worms_is_extinct, FALSE) = FALSE",
+           if (has("redlist_code")) "coalesce(redlist_code, '') <> 'EX'",
+           if (has("iucn_code"))    "coalesce(iucn_code, '') <> 'EX'")
+  if (length(ext))
+    steps <- c(steps, list(list("Not extinct", paste(ext, collapse = " AND "))))
+  if (!is.na(k$marine))
+    steps <- c(steps, list(list("Marine (family + percent-marine cull)", k$marine)))
+  else if (has("worms_is_marine"))
+    # birds are resolved through BirdLife, not WoRMS, so a NULL WoRMS marine flag
+    # on a BOTW taxon is "not assessed", not "not marine" — treating it as failure
+    # would drop every seabird at this step
+    steps <- c(steps, list(list("Marine (WoRMS, or a BirdLife bird)",
+      "(coalesce(worms_is_marine, FALSE) OR taxon_authority = 'botw')")))
+  where <- character(0); rows <- list()
+  for (s in steps) {
+    if (!is.null(s[[2]])) where <- c(where, s[[2]])
+    n <- doc_tbl("taxon", sprintf("SELECT count(*) AS n FROM taxon%s",
+      if (length(where)) paste0(" WHERE ", paste(where, collapse = " AND ")) else ""))$n
+    rows[[length(rows) + 1]] <- data.frame(step = s[[1]], remaining = n)
+  }
+
+  # The final row is the release's OWN validity flag applied to the whole table,
+  # NOT the conjunction of the diagnostic gates above it — because it is not that
+  # conjunction. v7's `is_ok` bakes in rules the published columns cannot express,
+  # so ANDing it onto the accumulated clause lands 4 short of the release's own
+  # answer. A funnel whose last row disagrees with the headline count on the same
+  # page is worse than no funnel, so this row is the authority and the assertion
+  # below is what keeps it that way.
+  auth <- paste0(k$valid, if (!is.na(k$marine)) paste0(" AND ", k$marine) else "")
+  n_valid <- doc_tbl("taxon", sprintf("SELECT count(*) AS n FROM taxon WHERE %s", auth))$n
+  rows[[length(rows) + 1]] <- data.frame(
+    step = sprintf("Valid for scoring (the release's `%s`)", k$valid), remaining = n_valid)
+
+  out <- do.call(rbind, rows)
+  stopifnot("funnel does not end at the release's own valid-species count" =
+              identical(as.numeric(n_valid), as.numeric(doc_stats()$valid_species)))
+  out$removed <- c(0, head(out$remaining, -1) - tail(out$remaining, -1))
+  out
+}
+
+# ---- the release timeline -----------------------------------------------------
+
+#' One row per published release, for the Releases timeline.
+#'
+#' Reads EVERY release's manifest and published `taxon` table, not just this
+#' build's — which is the point: the comparison is the thing the per-version pages
+#' cannot show. Each figure still comes from the release it describes.
+#'
+#' Deliberately lean: the manifest answers most of it (grid, id field, tables,
+#' capabilities, spatial units), so only the species counts need a Parquet read.
+doc_releases <- local({
+  cached <- NULL
+  function() {
+    if (!is.null(cached)) return(cached)
+    reg <- doc_versions()
+    con <- .doc_con()
+    rows <- lapply(seq_len(nrow(reg)), function(i) {
+      v <- reg$ver[i]
+      m <- tryCatch(msens::atlas_manifest(v), error = function(e) NULL)
+      if (is.null(m)) return(NULL)
+      tb  <- names(m$tables)
+      # resolve this release's own column names through the package rule
+      for (t in intersect(c("taxon", "model"), tb))
+        DBI::dbExecute(con, sprintf(
+          "CREATE OR REPLACE TEMP VIEW %s AS SELECT * FROM read_parquet('%s')", t, m$tables[[t]]))
+      k <- tryCatch(msens::sdm_cols(con, mc_tbl = NULL), error = function(e) NULL)
+      q <- function(sql) tryCatch(DBI::dbGetQuery(con, sql)$n, error = function(e) NA_real_)
+      valid <- if (is.null(k)) NA_real_ else q(sprintf(
+        "SELECT count(*) n FROM taxon WHERE %s%s", k$valid,
+        if (!is.na(k$marine)) paste0(" AND ", k$marine) else ""))
+      pra <- if (!"zone_taxon" %in% tb || !isTRUE(m$capabilities$programareas)) NA_real_ else q(sprintf(
+        "SELECT count(DISTINCT taxon_authority || ':' || taxon_id) n FROM read_parquet('%s')
+          WHERE zone_fld = 'programarea_key'", m$tables[["zone_taxon"]]))
+      ds <- tryCatch({
+        d <- DBI::dbGetQuery(con, sprintf(
+          "SELECT * FROM read_parquet('%s')", m$tables[["dataset"]]))
+        tmds <- if ("taxon_model" %in% tb) tryCatch(
+          DBI::dbGetQuery(con, sprintf("SELECT DISTINCT ds_key FROM read_parquet('%s')",
+                                       m$tables[["taxon_model"]]))$ds_key,
+          error = function(e) NULL) else NULL
+        sc <- if ("is_scored" %in% names(d)) d$is_scored else
+          msens::dataset_is_scored(d$ds_key, tmds)
+        sum(sc & d$ds_key != "ms_merge")
+      }, error = function(e) NA_real_)
+      zn <- m$zones
+      unit <- if (is.data.frame(zn) && nrow(zn)) {
+        nm <- c(programarea_key = "Program Areas", planarea_key = "Planning Areas",
+                ecoregion_key = "Ecoregions", subregion_key = "Subregions")
+        paste(sprintf("%s (%s)", nm[zn$fld], zn$n), collapse = ", ")
+      } else ""
+      data.frame(
+        ver = v, status = reg$status[i],
+        released = as.character(reg$released[i]),
+        title = if ("title" %in% names(reg)) reg$title[i] else "",
+        grid = m$grid_id, id_field = m$id_field,
+        n_datasets = ds, valid_species = valid, species_pra = pra,
+        n_metrics = if (is.data.frame(m$metrics)) length(unique(m$metrics$metric_key)) else NA_real_,
+        units = unit, stringsAsFactors = FALSE)
+    })
+    cached <<- do.call(rbind, Filter(Negate(is.null), rows))
+    cached
+  }
+})
+
+# ---- formatting ---------------------------------------------------------------
+
+#' Integer with thousands separator: 16153 -> "16,153". Vectorised.
+#'
+#' Anything not a finite number renders as a VISIBLE placeholder rather than
+#' `NA` — the point being that a reader can see a figure is missing for this
+#' release, instead of it silently reading as a real value.
+n_fmt <- function(x) {
+  if (!length(x)) return(character(0))
+  v <- suppressWarnings(as.numeric(x))
+  ifelse(is.na(v) | !is.finite(v),
+         "[not published for this version]",
+         formatC(as.integer(v), format = "d", big.mark = ","))
+}
+
+#' A statistic for this version, formatted — or a VISIBLE placeholder.
+#'
+#' Never a number borrowed from another release: an obviously-missing figure is
+#' recoverable, a plausible wrong one is not.
+doc_stat <- function(key) {
+  s <- doc_stats()
+  if (!key %in% names(s)) return("[unknown statistic]")
+  v <- s[[key]]
+  if (is.character(v)) v else n_fmt(v)
+}
+
+# ---- zone geometry (PMTiles), by vintage --------------------------------------
+
+#' PMTiles URL for a spatial unit in THIS version, from the manifest.
+#'
+#' Replaces `ver <- "v4"` in functions.R, which drew v4 outlines on every build
+#' regardless of the version being documented. `zone_set_key` is a VINTAGE, so one
+#' tileset legitimately serves several releases — which is why the manifest, not
+#' the version string, is the right source.
+doc_zone_pmtiles <- function(fld) {
+  z <- doc_manifest()$zones
+  if (!is.data.frame(z) || !nrow(z) || !"pmtiles" %in% names(z)) return(NA_character_)
+  i <- match(fld, z$fld)
+  if (is.na(i)) return(NA_character_)
+  z$pmtiles[i]
+}
+
+#' Spatial units this version scored, as a data frame (`fld`, `n`, `pmtiles`).
+doc_zones <- function() {
+  z <- doc_manifest()$zones
+  if (is.data.frame(z)) z else data.frame()
+}

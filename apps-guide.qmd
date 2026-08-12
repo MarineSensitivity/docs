@@ -37,7 +37,7 @@ steps    <- if (file.exists(manifest)) jsonlite::read_json(manifest) else list()
 apps_dir  <- Sys.getenv(
   "MSENS_APPS_DIR",
   unset = normalizePath(file.path(here::here(), "..", "apps"), mustWork = FALSE))
-app_files <- file.path(apps_dir, c("mapgl", "mapsp"), "app.R")
+app_files <- file.path(apps_dir, c("scores", "species"), "app.R")
 stale     <- file.exists(manifest) &&
   any(file.exists(app_files) & file.mtime(app_files) > file.mtime(manifest))
 ```

@@ -26,12 +26,12 @@ The **Marine Sensitivity Toolkit** (MST) is a stack of software components for r
 
 The software components for achieving this interactively are:
 
-1. **server** — a Docker Compose configuration orchestrating the reverse proxy, Shiny server, APIs, custom TiTiler tile factory + Varnish cache, and file server;
+1. **server** — a Docker Compose configuration orchestrating the reverse proxy, Shiny server, APIs, TiTiler raster serving and file server;
 2. **database** — a columnar, embedded analytic database ([**DuckDB**](https://duckdb.org)) as the single source of truth for species distributions, per-cell scores and derived per-zone metrics;
 3. **workflows** — Quarto notebooks to ingest source datasets (AquaMaps, IUCN, NMFS/FWS, BirdLife, WoRMS, BOEM zones), merge taxonomic authorities, and compute scores that are written back to DuckDB;
-4. **APIs** — a custom R [`plumber`](https://www.rplumber.io) API for data requests and a custom [**TiTiler**](https://developmentseed.org/titiler/) factory that renders on-the-fly raster PNG tiles from arbitrary DuckDB queries, cached by Varnish;
-5. **libraries** — re-usable documented functions as the [`msens`](https://github.com/MarineSensitivities/msens) R package, including the tile-URL helpers (`cell_tile_url()`, `cell_stats()`, `add_cell_tiles()`) that the Shiny apps use to talk to the factory;
-6. **applications** — interactive Shiny apps (`scores`, `species`, …) that combine the raster tile factory with static [PMTiles](https://protomaps.com/docs/pmtiles/) vector layers and live-pushed choropleth paint rules;
+4. **APIs** — a custom R [`plumber`](https://www.rplumber.io) API for data requests, [**TiTiler**](https://developmentseed.org/titiler/) serving the published COGs, and a searchable STAC API with one Item per model;
+5. **libraries** — re-usable documented functions as the [`msens`](https://github.com/MarineSensitivities/msens) R package, including the version/manifest registry that lets one application render any release, and the tile-URL helpers the applications use;
+6. **applications** — two Shiny apps (`scores`, `species`) that combine COG raster layers with static [PMTiles](https://protomaps.com/docs/pmtiles/) vector layers and live-pushed choropleth paint rules, each rendering **any published release** from `?ver=`;
 7. **documentation** — this Quarto book with figures, tables, glossary and references in interactive HTML or static DOCX / PDF output.
 
 This toolbox is intended to primarily serve BOEM needs internally, but by being open-source and fully reproducible the hope is to enlist buy-in and even contributions from external partners, whether from other government agencies, academia, NGOs or industry.
@@ -40,7 +40,7 @@ We ascribe to the philosophy of sharing all code for the sake of reproducibility
 
 ```{mermaid}
 %%| label: fig-architecture
-%%| fig-cap: "System architecture: DuckDB is the authoritative store for cell-level species/score data. A custom TiTiler factory renders those cell values on-the-fly into PNG tiles (cached by Varnish); Program Area / Ecoregion polygons are served as static PMTiles through Caddy; the Shiny apps combine both layer types and push per-Program-Area scores live from DuckDB into the polygon paint spec."
+%%| fig-cap: "System architecture: a release is published as partitioned Parquet plus pre-rendered COGs. TiTiler serves the score rasters; zone polygons are served as static PMTiles through Caddy; the Shiny apps combine both layer types and push per-zone scores live into the polygon paint spec."
 %%| file: diagrams/architecture.mmd
 %%| fig-width: 7
 ```
@@ -55,23 +55,24 @@ The MST project incorporates many large spatial datasets that are problematic to
 
 To work around these limitations we use a "cloud native" stack (see also the [Cloud-Optimized Geospatial Formats Guide](https://guide.cloudnativegeo.org/)) that transfers only the pixels / features visible in the current viewport:
 
-- **Raster cell values** are rendered on-the-fly from DuckDB by a custom TiTiler factory, cached by Varnish, and delivered as small `256×256` PNG tiles.
+- **Raster cell values** are published as pre-rendered Cloud-Optimized GeoTIFFs and delivered as small `256×256` PNG tiles by TiTiler's stock `/cog` routes, which range-read only the part of the COG a tile needs.
 - **Vector polygons** (Program Areas, Ecoregions, Planning Areas, …) are served as static [PMTiles](https://protomaps.com/docs/pmtiles/) archives by the Caddy file server — a single archive per layer, range-read by the browser.
 - **Choropleth values** (per-Program-Area scores) are pushed live from DuckDB into the PMTiles paint spec via a `mapbox-gl` `match` expression, so geometry stays static but color updates as the user changes metric / subregion.
 
 Let's take a closer look at each.
 
-#### Raster: DuckDB cell values rendered via a custom TiTiler factory
+#### Raster: pre-rendered COGs
 
-Each metric (e.g., `extrisk_mammal`) resolves, in DuckDB's `cell_metric` table, to a list of `(cell_id, value)` rows — one row per 0.05°-resolution grid cell in the US EEZ. To show these in the browser we would historically have to materialize the full raster (∼4 GiB for the whole EEZ) and ship it over the wire.
+Each metric (e.g. `extrisk_mammal`) resolves, in DuckDB's `cell_metric` table, to a list of `(cell_id, val)` rows — one per grid cell. Materializing the full raster and shipping it to the browser is not viable (several GiB), so only the tiles in view are transferred.
 
-Instead we keep the values in DuckDB and extract **only** the tiles the user's browser is asking for. The Shiny app builds a small SELECT, base64-encodes it and embeds it in the tile URL template. On tile request, our custom [TiTiler](https://developmentseed.org/titiler/) factory:
+Scores are published as **one COG per metric × subregion**, written by a publishing workflow into a content-addressed store. Each release's manifest carries the href and the build-time rescale range, so the application reads them and hands the URL to TiTiler's stock `/cog` endpoints — no custom endpoint, and no database query in the tile path (@fig-raster).
 
-1. validates the SQL (SELECT-only, via `sqlglot`) and executes it once per unique query, LRU-caching the resulting `cell_id → value` map in-process;
-2. reads the tile's window of integer cell ids from a pre-baked single-band cell-id COG (`r_cellid.tif`) via **nearest-neighbor** resampling, so integer ids are never interpolated;
-3. looks the value up for every pixel, applies rescale + colormap, and returns a PNG.
+Two details are load-bearing:
 
-[Varnish](https://varnish-cache.org) sits in front of the factory and caches each tile URL for 7 days, so once a tile has been rendered for a given SQL + colormap + rescale combination, every subsequent viewer is served from cache in sub-millisecond time (@fig-raster). A `mtime` query parameter tied to the source DuckDB's modification time automatically busts the cache when the DB is rebuilt.
+- **No overviews.** The renderer decimates from full resolution on each request, so a pre-built pyramid would disagree with it at low zoom.
+- **The object key includes the encoding, not just the payload.** Rewriting an object at a stable URL once left GDAL's `/vsicurl` serving a cached header describing bytes that no longer existed: fine at z5+, HTTP 500 at z2–z4.
+
+This replaced a **custom TiTiler factory** that rendered each tile by executing a validated SELECT against DuckDB and looking the result up against a pre-baked cell-id COG, with Varnish caching each tile URL for seven days. That path is retired but kept behind a flag (see @sec-apis); the two were verified to produce the same picture before the switch.
 
 ```{mermaid}
 %%| label: fig-raster
@@ -80,7 +81,7 @@ Instead we keep the values in DuckDB and extract **only** the tiles the user's b
 %%| fig-width: 7
 ```
 
-The same factory also supports a single-color "mask" render — the "Cells outside Program Areas" overlay in `mapgl` is built this way: a SQL that returns all cells with metric data *not* in any Program Area zone, rendered with `color=#222222` (no colormap, no rescale) as a semi-transparent dark overlay.
+Binary overlays — the "cells outside Program Areas" mask — are published the same way, as their own single-color rasters rather than as a query.
 
 #### Vector: static PMTiles served by Caddy
 
@@ -93,7 +94,7 @@ For polygon layers (Program Areas, Ecoregions, Planning Areas, protractions, blo
 %%| fig-width: 7
 ```
 
-This is a deliberate simplification from the prior architecture which used PostgreSQL + PostGIS + [pg_tileserv](https://github.com/CrunchyData/pg_tileserv). For our workload — polygon layers that change only when the data is rebuilt — a compiled tile server and live database query engine add latency and operational complexity for no benefit over byte-range reads of a pre-baked archive. (The PostgreSQL service remains in `docker-compose.yml` for compatibility with a few legacy apps; see @sec-server.)
+This is a deliberate simplification from the prior architecture which used PostgreSQL + PostGIS + [pg_tileserv](https://github.com/CrunchyData/pg_tileserv). For our workload — polygon layers that change only when the data is rebuilt — a compiled tile server and live database query engine add latency and operational complexity for no benefit over byte-range reads of a pre-baked archive. (PostgreSQL and `pg_tileserv` are now commented out of `docker-compose.yml` entirely and are not running; see @sec-server.)
 
 #### Choropleth: live DuckDB values + static PMTiles geometry
 
@@ -110,7 +111,7 @@ The Shiny server handles this by querying `zone_metric` (pre-aggregated per-zone
 
 #### Data pipeline — how the source of truth is built
 
-The three serving paths above all sit downstream of the same data pipeline: ingest workflows populate DuckDB from ∼7 source datasets (AquaMaps, IUCN, NMFS/FWS, BirdLife, WoRMS/eBird taxa, BOEM zones, …); `calc_scores.qmd` computes per-cell and per-zone metrics back into DuckDB; and a one-shot `make_cellid_cog.py` bakes the cell-id COG consumed by the TiTiler factory. PMTiles archives are built offline from the same zone geopackages used to populate the `zone` table (@fig-data-pipeline).
+The serving paths above all sit downstream of one pipeline: ingest workflows write per-dataset distributions, the merge workflows combine them into one surface per taxon, the scoring workflows compute `cell_metric` and `zone_metric`, and the release workflow publishes the result as partitioned Parquet plus COGs, PMTiles and a STAC catalog. The whole thing is a `targets` graph generated from each notebook's own metadata, so adding a dataset means adding a notebook (@fig-data-pipeline). See @sec-workflows.
 
 ```{mermaid}
 %%| label: fig-data-pipeline

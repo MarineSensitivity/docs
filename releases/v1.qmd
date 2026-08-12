@@ -1,0 +1,132 @@
+---
+description: "v1 methodology as delivered in the 2025 BOEM final report"
+---
+
+# v1 — Planning Areas {#sec-release-v1}
+
+v1 was the first delivered version of the Marine Sensitivity Toolkit, reported to BOEM's Environmental Studies Program under contract 140M0123P0018 as the *Marine Sensitivity Toolkit* final report (2025).
+
+It is documented here in its own right because several of its choices — the conceptual framing, the extinction-risk weighting and its justification, and the honest account of what ecoregional rescaling does and does not preserve — remain the foundation of every later release, and because reports and decisions cite it.
+
+::: {.callout-note}
+## What this page is, and is not
+
+This is the **methodology** of v1. Numbers are deliberately omitted: the counts in the 2025 report are snapshots of a build that has since been superseded, and reprinting them here would set them beside computed figures elsewhere in this book as if the two were equally current. For v1's counts as published, see the [Releases](../releases.qmd) table, which reads them from the v1 release itself.
+
+The report also retains, as a matter of record, figures it identifies as incorrect. Those are not carried forward.
+:::
+
+## Conceptual framework
+
+Vulnerability ($V$) is a function of exposure ($E$), sensitivity ($S$) and adaptive capacity ($A$):
+
+$$
+V = f(E, S, A)
+$$ {#eq-v1-vesa}
+
+This decomposition is the standard framing in ecological risk and climate-vulnerability assessment [@ipcc2014; @halpern2007; @hare2016]. The more exposed and sensitive an area is — and the less able it is to recover — the more vulnerable it is to impacts from offshore activities.
+
+For spatial implementation, the vulnerability of a cell $v_c$ is the sum across all species in a taxonomic group $S_g$ of the product of the species' presence in the cell $p_{sc}$ and a species weight $w_s$, the risk of that species going extinct:
+
+$$
+v_c = \sum_{s=1}^{S_g} p_{sc} \cdot w_s
+$$ {#eq-v1-cell}
+
+where $p_{sc}$ is presence probability or suitability (0–1) and $w_s$ is how at-risk that species is of going extinct (0–1, ranging from Least Concern at 0.2 to Critically Endangered at 1).
+
+In plain terms: if a cell has many species that are both likely to be present and at high risk of extinction, it gets a higher sensitivity score. This is how places where rare or threatened species concentrate are found.
+
+### Where exposure and adaptive capacity sit
+
+The implemented score resolves the **sensitivity** and **adaptive-capacity** terms jointly, and leaves **exposure** to be supplied by the decision being evaluated.
+
+Extinction risk serves as an integrated proxy for both because the IUCN and ESA listing criteria assess population size, rate of decline, range restriction and fragmentation — the same properties that govern whether a population can absorb an added impact and recover from it.
+
+This is a deliberate simplification, and the principal structural limitation of v1: adaptive capacity cannot be varied independently of sensitivity, and traits that distinguish recovery potential *within* a risk category — generation time, fecundity, dispersal, habitat specialization — are not represented. Separating the terms would mean adding activity-specific exposure layers (spill-trajectory probability, lease-block footprints, modeled noise fields) and letting them interact with trait-based adaptive-capacity attributes drawn from established marine vulnerability protocols [@hare2016].
+
+## Extinction-risk weighting, and why these numbers
+
+IUCN Red List categories and ESA status codes were standardized to numeric risk weights: CR = 1.0, EN = 0.8, VU and ESA Threatened = 0.6, NT = 0.4, LC = 0.2. Where a species had several assessments the most recent was used; where statuses conflicted across regions the precautionary principle applied, taking the higher risk category.
+
+These weights are a rescaling of the IUCN **equal-steps** weighting used for the Red List Index [@butchart2004; @butchart2007] and for the Species Threat Abatement and Restoration (STAR) metric [@mair2021], which maps LC = 0, NT = 1, VU = 2, EN = 3, CR = 4. Dividing by five and shifting Least Concern from 0 to 0.2 yields the multipliers above.
+
+STAR is the closest published analogue to the MST score: an additive, spatially explicit sum of species presence weighted by extinction risk.
+
+**Least Concern is deliberately given non-zero weight** so that overall biological richness remains part of the sensitivity signal — consistent with the statutory language — rather than the score being driven entirely by the small fraction of species that are threatened. A Critically Endangered species still carries five times the weight of a Least Concern one.
+
+Equal-steps weighting is the most widely used convention but not the only defensible one. Extinction-probability weightings [@butchart2007; @mooers2008] are strongly convex and would concentrate nearly all weight on CR and EN species. Because the transformation can affect rank order [@mooers2008], a sensitivity analysis comparing area rankings under equal-steps, extinction-probability and equal (richness-only) weightings is a recommended next step.
+
+## Scoring
+
+**Step 1 — cell-level scoring.** For each 0.05° cell the raw score $v_c$ is the sum of presence × extinction-risk weight across the species in a taxonomic group.
+
+**Step 2 — ecoregional rescaling.** Raw cell scores are rescaled to 0–100 within each BOEM Ecoregion, using the minimum and maximum observed inside that ecoregion for the component being scored.
+
+**Step 3 — Planning Area aggregation.** Rescaled cell scores are aggregated by **area-weighted** average: each cell contributes in proportion to the fraction of its area falling inside the Planning Area, so larger low-latitude cells do not outweigh smaller high-latitude ones.
+
+### Worked example
+
+A simplified Planning Area with three equal-area cells in an ecoregion whose fish scores run from 65 to 974:
+
+| Cell | Raw fish score | Rescaled | Cell area (km²) | Weight |
+|:-----|---------------:|---------:|----------------:|-------:|
+| A | 200 | $(200-65)/(974-65)\times100 = 15$ | 25 | 0.33 |
+| B | 600 | $(600-65)/(974-65)\times100 = 59$ | 25 | 0.33 |
+| C | 400 | $(400-65)/(974-65)\times100 = 37$ | 25 | 0.33 |
+
+The Planning Area fish score is $15\times0.33 + 59\times0.33 + 37\times0.33 = 37$ — meaning the Planning Area sits 37% of the way between the lowest and highest fish scores observed in its ecoregion.
+
+### What ecoregional rescaling does and does not preserve
+
+Rescaling within ecoregions is a deliberate analytical choice with a cost that should be explicit.
+
+Because min–max rescaling is **monotonic**, it preserves the complete ordering of cells and Planning Areas *within* an ecoregion: no within-region comparison is affected. What it removes is the difference in **absolute magnitude between** ecoregions. A score of 80 in the Gulf of America and a score of 80 in the Arctic both denote "high relative to that region", not equal absolute sensitivity, and the difference in raw species richness between those regions is by design not visible in the rescaled value.
+
+The rationale is that the raw score is count-like — it increases with the number of species modeled in a cell — and is therefore governed by the latitudinal richness gradient. Without rescaling, nearly every subtropical Planning Area would outrank nearly every Arctic one, and the result would approximate a map of model density rather than of conservation concern. Within-region normalization is also consistent with the prior RESA methodology [@niedoroda2014].
+
+Two consequences follow for interpretation:
+
+1. **Rescaled scores are not a national ranking.** Comparing areas across ecoregions compares each to its own regional context.
+2. **The endpoints are observed extrema**, so a single outlier cell can set the 100 for an entire ecoregion and compress every other score in it. Robust percentile endpoints (1st/99th) are recommended in their place.
+
+Because absolute magnitude is management-relevant information, reporting raw scores alongside the rescaled ones — together with a nationally rescaled variant and the rank correlation between the two rankings — would let the effect of the normalization on rank order be assessed directly rather than assumed.
+
+## Grid and projection
+
+The analysis grid is **geographic (WGS84) rather than projected**, because every input dataset — AquaMaps half-degree cells, Bio-ORACLE reference layers, the VIIRS productivity grid, and IUCN/BirdLife range polygons — is distributed on a regular latitude/longitude grid. Analyzing in geographic coordinates resamples each input once rather than twice, avoiding blurred suitability surfaces and displaced range boundaries; and no single equal-area projection serves both the Gulf of America and the Aleutians well.
+
+Area distortion is therefore corrected **arithmetically rather than by projection**: cell area is computed on the sphere, and every cell-to-area aggregation is weighted by that true area and by the cell's fractional overlap with the Planning Area — making the reported statistics equal-area in effect. Maps are drawn in region-appropriate equal-area projections **for display only**; no analysis is performed in a display projection.
+
+## Marine relevance in v1
+
+In v1 a **spatial inclusion rule** was applied — every model whose distribution intersected the study area was ingested — without an independent test of whether the species is marine.
+
+This admits a small number of non-marine species with coastal range polygons; the introduced White-winged Parakeet (*Brotogeris versicolurus*) in southern Florida is one. Because such species are almost always Least Concern and occupy few cells, the effect on scores is negligible, but their presence in the species viewer is not defensible.
+
+Subsequent versions apply an explicit marine-relevance filter: birds are scored only if they belong to a marine or coastal family **and** at least 5% of their whole global range falls over ocean, with a curated include/exclude list for edge cases.
+
+::: {.callout-important}
+The standard **WoRMS `isMarine` flag cannot be used** for this purpose, because seabirds are largely absent from that register. This is the reason the later filter is built from family membership and a measured percentage rather than from the obvious flag — see @sec-is-marine.
+:::
+
+## Sources in v1
+
+v1's distributions came principally from AquaMaps global species distribution models, downscaled from their native 0.5° half-degree cells to 0.05° by bilinear interpolation, together with BirdLife range maps for birds.
+
+::: {.callout-note}
+## AquaMaps vintage
+
+The 2025 report cites AquaMaps in two ways — a retrieval date in the Methods and "AquaMaps 2019" in the conclusions — which reads as a contradiction. It is not.
+
+The **model release is AquaMaps Version 10/2019**, which is what the release registry records and what the data itself carries; the later date is when that release was *retrieved*. No newer AquaMaps release has been ingested, and the suitability surfaces have not changed.
+:::
+
+Presence values follow external convention where one exists and are assigned by the study where one does not. Continuous suitability models are used as published, without modification. Expert range maps take a 50% presence value, following the convention for extent-of-occurrence polygons, which assert presence *somewhere* within the boundary rather than throughout it. Designated Critical Habitat takes a higher value reflecting the stronger occupancy evidence implied by a legal designation — an assumption of the study rather than an external standard, and identified as such.
+
+## Primary productivity
+
+Net primary productivity was computed with the Vertically Generalized Production Model [@behrenfeld1997] from VIIRS satellite data for the most recently completed decade. Monthly NPP was averaged annually, then a ten-year mean and standard deviation computed, downsampled to the analysis grid by bilinear interpolation, and converted to metric tons C km^-2^ yr^-1^.
+
+## Successor releases
+
+v1 scored **Planning Areas**; the 2026 program cycle introduced **Program Areas**, which v2 adopted. Later releases changed the taxonomy, the merge and the definition of a valid species — see [Releases](../releases.qmd) for what changed and when, and read this page as the record of what v1 did.

@@ -1,61 +1,71 @@
 # Extinction Risk {#sec-extinction-risk}
 
-Extinction risk scoring translates a species' conservation status into a numeric weight that reflects its vulnerability to population-level impacts. The MST integrates protections from three US federal regulatory frameworks and the international IUCN Red List to assign each species a score from 1 to 100.
+```{r}
+#| include: false
+library(dplyr)
+tcols   <- doc_cols("taxon")$column_name
+has_er  <- "er_score" %in% tcols
+k       <- .doc_keys()
+valid   <- paste0(k$valid, if (!is.na(k$marine)) paste0(" AND ", k$marine) else "")
+```
 
-::: {.callout-tip}
-## Interactive Walkthrough
+Extinction-risk scoring turns a species' conservation status into a numeric weight, so that a cell holding rare or threatened species scores higher than one holding common ones. The MST combines three US federal frameworks with the international IUCN Red List into a single score from 1 to 100.
 
-The [Scoring Walkthrough](scoring-walkthrough.qmd) includes a visual comparison of ESA vs. IUCN scoring frameworks and shows how extinction risk weights are applied to species suitability values.
-:::
+```{r}
+#| label: er-absent
+#| output: asis
 
-## Regulatory Framework
+if (!has_er) cat(
+  "::: {.callout-warning}\n## Not published by ", doc_ver(), "\n\n",
+  "This release's `taxon` table carries no `er_score` column, so the per-species weights ",
+  "below cannot be shown for it. The framework is described; the counts are not, because ",
+  "this release does not publish them.\n:::\n\n", sep = "")
+```
+
+## Regulatory framework
 
 ### Endangered Species Act (ESA)
 
-The [Endangered Species Act](https://www.fws.gov/law/endangered-species-act) (1973) provides protections for species listed as Endangered (EN) or Threatened (TN) by either NMFS (for marine species) or FWS (for terrestrial/coastal species).
+The [Endangered Species Act](https://www.fws.gov/law/endangered-species-act) (1973) protects species listed as **Endangered (EN)** or **Threatened (TN)** by NMFS (marine species) or FWS (terrestrial and coastal species). ESA listing is the strongest signal available and drives the score for US-listed species.
 
-- **Endangered (EN)**: species in danger of extinction throughout all or a significant portion of its range
-- **Threatened (TN)**: species likely to become endangered within the foreseeable future
+### Marine Mammal Protection Act (MMPA) — assigned by taxonomy
 
-ESA listings are the primary driver of extinction risk scores for US-listed species, with Endangered receiving the maximum score (100) and Threatened receiving a score of 50.
+The [Marine Mammal Protection Act](https://www.fisheries.noaa.gov/topic/laws-policies#marine-mammal-protection-act) (1972) protects **all** marine mammals in US waters regardless of ESA status, so the MST assigns it **by taxonomy**: every taxon in WoRMS class **Mammalia**, matched on AphiaID.
 
-### Marine Mammal Protection Act (MMPA)
+This is deliberate. Deriving the flag from the NMFS Species Directory instead — as earlier releases did — captures only the managed stocks listed there, roughly 70 against the ~137 marine-mammal taxa the analysis actually carries, and it silently omitted the FWS-managed species entirely (walrus, polar bear, sea otter, manatee, dugong). Taxonomy is the complete test because the statute is written in taxonomic terms.
 
-The [Marine Mammal Protection Act](https://www.fisheries.noaa.gov/topic/laws-policies#marine-mammal-protection-act) (1972) protects **all marine mammals** in US waters regardless of their ESA status. This includes whales, dolphins, porpoises, seals, sea lions, walruses, sea otters, polar bears, and manatees.
+The floor is **20**, higher than the MBTA's, because the MMPA imposes a stronger statutory standard: it affirmatively requires marine mammal populations to be maintained at Optimum Sustainable Population levels and mandates recovery, whereas the MBTA is primarily a prohibitive take statute. Marine mammals also tend to have lower reproductive rates and longer recovery times than most seabirds.
 
-Because MMPA provides blanket protection, all marine mammals receive a **minimum spatial floor score of 20** in cells where they are present — even species classified as Least Concern under IUCN. This ensures that the legal protection afforded to marine mammals is reflected in the sensitivity analysis.
+### Migratory Bird Treaty Act (MBTA) — an explicit species list, not all birds
 
-The MMPA floor is intentionally higher than the MBTA floor because the MMPA imposes a stronger statutory standard: it affirmatively requires that all marine mammal populations be maintained at Optimum Sustainable Population levels and mandates active population recovery, whereas the MBTA is primarily a prohibitive take statute. Marine mammals also tend to have lower reproductive rates and longer recovery times than most seabirds, making them intrinsically more sensitive to disturbance.
+The [Migratory Bird Treaty Act](https://www.fws.gov/law/migratory-bird-treaty-act-1918) (1918) protects **migratory birds native to the United States and its territories** — which is an explicit list, not a taxonomic class.
 
-### Migratory Bird Treaty Act (MBTA)
+::: {.callout-important}
+## The MBTA floor is the FWS **CFR 50 §10.13** list, not all Aves
 
-The [Migratory Bird Treaty Act](https://www.fws.gov/law/migratory-bird-treaty-act-1918) (1918) protects migratory birds, which includes most seabird species. Similar to MMPA, all migratory birds receive a **minimum spatial floor score of 10** in cells where they are present.
+A bird absent from 10.13 — a non-US or non-migratory species — receives **no** MBTA floor. Treating "bird" as equivalent to "MBTA-protected" would apply a US statutory floor to species the statute does not cover, inflating their weight in US waters.
+
+Note also that most 10.13 birds are terrestrial. The list sets the *value* of the birds that reach scoring; what keeps terrestrial birds out of the score in the first place is the marine-relevance cull (see @sec-is-marine).
+:::
 
 ### IUCN Red List
 
-The [IUCN Red List of Threatened Species](https://www.iucnredlist.org) provides internationally recognized conservation status assessments used for species not listed under US federal laws:
+For species with no US federal listing, the score falls back to the [IUCN Red List](https://www.iucnredlist.org) category: Critically Endangered (CR), Endangered (EN), Vulnerable (VU), Near Threatened (NT), Least Concern (LC) and Data Deficient (DD).
 
-| Category | Abbreviation | Description |
-|:---------|:-------------|:------------|
-| Critically Endangered | CR | extremely high risk of extinction in the wild |
-| Endangered | EN | very high risk of extinction in the wild |
-| Vulnerable | VU | high risk of extinction in the wild |
-| Near Threatened | NT | close to qualifying for a threatened category |
-| Least Concern | LC | widespread and abundant |
-| Data Deficient | DD | inadequate information to assess |
+::: {.callout-note}
+`TN` is an **ESA** status (Threatened), not an IUCN one — IUCN uses `NT` for Near Threatened. `msens::compute_er_score()` **errors** on a code such as `IUCN:TN` rather than scoring it through a default, because a silently-defaulted code is a wrong weight that nothing surfaces.
+:::
 
-: IUCN Red List categories used in extinction risk scoring. {#tbl-iucn-categories}
+## Scoring
 
-## Scoring Methodology
+Scores are computed by `msens::compute_er_score()`, on two tracks.
 
-Extinction risk scores are computed by `msens::compute_er_score()`, which implements a two-track scoring system depending on whether the species is listed under US federal law.
+### US-listed species
 
-### US-listed Species
-
-For species with NMFS or FWS ESA listings, the score is the **maximum** across three components:
+For a species with an ESA listing, or MMPA or MBTA protection, the score is the **maximum** of the applicable components:
 
 $$
-\text{er\_score} = \max(\text{ESA base}, \text{MMPA floor}, \text{MBTA floor})
+\text{er\_score} = \max(\text{ESA base},\; \text{MMPA floor},\; \text{MBTA floor})
 $$ {#eq-er-us}
 
 | Component | Score |
@@ -63,25 +73,23 @@ $$ {#eq-er-us}
 | ESA Endangered (EN) | 100 |
 | ESA Threatened (TN) | 50 |
 | ESA not listed (LC) | 1 |
-| MMPA protected | 20 |
-| MBTA protected | 10 |
+| MMPA protected (all Mammalia) | 20 |
+| MBTA protected (CFR 50 §10.13) | 10 |
 
-: US-listed species scoring components. The final score is the MAX across applicable components. {#tbl-er-us}
+: Components for a US-listed species; the final score is the maximum across those that apply. {#tbl-er-us}
 
-**Examples**:
+Worked examples:
 
-- ESA Endangered whale (MMPA): max(100, 20) = **100**
-- ESA Threatened seabird (MMPA + MBTA): max(50, 20, 10) = **50**
-- Non-ESA marine mammal (MMPA only): max(1, 20) = **20**
-- Non-ESA migratory bird (MBTA only): max(1, 10) = **10**
+- ESA Endangered whale (also MMPA): $\max(100, 20) = \mathbf{100}$
+- ESA Threatened seabird on the 10.13 list: $\max(50, 10) = \mathbf{50}$
+- Marine mammal with no ESA listing: $\max(1, 20) = \mathbf{20}$
+- 10.13 migratory bird with no ESA listing: $\max(1, 10) = \mathbf{10}$
 
-### Species not federally listed (IUCN)
+A species carrying an MMPA or MBTA floor is routed onto this track **even when it has no ESA listing**, which is what guarantees the floor is actually applied rather than being lost to the IUCN track.
 
-Species not federally listed or mentioned by NMFS ([Species Directory | NOAA Fisheries](https://www.fisheries.noaa.gov/species-directory)
-) or FWS ([Species | U.S. Fish & Wildlife Service](https://www.fws.gov/species)
-) fall back to an extinction risk score based on their IUCN Red List category:
+### Species with no US listing
 
-| IUCN Category | Score |
+| IUCN category | Score |
 |:--------------|------:|
 | Critically Endangered (CR) | 50 |
 | Endangered (EN) | 25 |
@@ -89,27 +97,60 @@ Species not federally listed or mentioned by NMFS ([Species Directory | NOAA Fis
 | Near Threatened (NT) | 2 |
 | Least Concern / Data Deficient / other | 1 |
 
-: IUCN-based extinction risk scores for US species not listed or mentioned by NMFS or FWS
+: IUCN-based scores for species not listed by NMFS or FWS. {#tbl-er-iucn}
 
-Species with no matching extinction risk code (i.e., unmatched taxa) receive a default score of **1**.
+The IUCN scale is deliberately lower than the ESA one: a US statutory listing is a stronger, jurisdiction-specific statement about a species in US waters than an international assessment.
 
-### Scale Note
+Species with no matching code at all receive the baseline of **1**.
 
-Scores range from 1 to 100, representing a percentage scale (1--100%). Integer storage is used for computational efficiency; conceptually the scale represents a 0--1 probability-like weight where 100 = 1.0 (maximum extinction risk) and 1 = 0.01 (minimum baseline).
+### The governing score, and where it is applied
+
+A taxon may carry several conservation codes at once — one per contributing dataset — and they can disagree, or be stale. The pipeline therefore computes one **governing** score per taxon: the most protective across its datasets, with a **US national listing overriding the IUCN category**, plus the statutory floors.
+
+That governing score is applied **at merge time**, to the range cells — the point at which a species' presence in a cell should carry its governing risk rather than whatever code the source dataset happened to record. Scoring then reads values that already reflect it.
+
+```{r}
+#| label: tbl-er-dist
+#| tbl-cap: !expr paste0("Distribution of the governing `er_score` across ", doc_ver(), "'s valid species.")
+
+if (has_er) {
+  d <- doc_tbl("taxon", sprintf(
+    "SELECT er_score, count(*) AS n FROM taxon WHERE %s AND er_score IS NOT NULL
+      GROUP BY 1 ORDER BY 1 DESC", valid))
+  knitr::kable(
+    data.frame(`er_score` = d$er_score,
+               Species    = n_fmt(d$n),
+               Share      = sprintf("%.1f%%", 100 * d$n / sum(d$n)),
+               check.names = FALSE, row.names = NULL),
+    align = c("r", "r", "r"))
+}
+```
+
+```{r}
+#| label: er-floors
+#| output: asis
+
+if (has_er && all(c("is_mmpa", "is_mbta") %in% tcols)) {
+  d <- doc_tbl("taxon", sprintf(
+    "SELECT sum(CASE WHEN is_mmpa THEN 1 ELSE 0 END) AS mmpa,
+            sum(CASE WHEN is_mbta THEN 1 ELSE 0 END) AS mbta,
+            count(*) AS n FROM taxon WHERE %s", valid))
+  cat("Of ", doc_ver(), "'s ", n_fmt(d$n), " valid species, **", n_fmt(d$mmpa),
+      "** carry the MMPA floor and **", n_fmt(d$mbta), "** the MBTA floor.\n\n", sep = "")
+}
+```
+
+## Scale
+
+Scores run from 1 to 100 and represent a percentage-like weight — 100 being maximum risk and 1 the baseline. Integers are used for storage efficiency; conceptually the scale is a 0–1 weight multiplied by 100.
 
 ## Implementation
 
-The scoring function is implemented in the `msens` R package:
-
 ```r
 msens::compute_er_score(
-  extrisk_code,          # e.g., "NMFS:EN", "FWS:TN", "IUCN:CR"
-  is_mmpa = FALSE,       # MMPA protection flag
-  is_mbta = FALSE        # MBTA protection flag
-)
+  extrisk_code,      # "NMFS:EN", "FWS:TN", "IUCN:CR", ...
+  is_mmpa = FALSE,   # MMPA protection (all WoRMS Mammalia)
+  is_mbta = FALSE)   # MBTA protection (FWS CFR 50 §10.13)
 ```
 
-The `extrisk_code` field follows the format `AUTHORITY:STATUS` where:
-
-- **Authority**: `NMFS`, `FWS`, or `IUCN`
-- **Status**: ESA codes (`EN`, `TN`, `LC`) or IUCN codes (`CR`, `EN`, `VU`, `NT`, `LC`, `DD`)
+`extrisk_code` is `AUTHORITY:STATUS`, where the authority is `NMFS`, `FWS` or `IUCN`, and the status is an ESA code (`EN`, `TN`, `LC`) or an IUCN code (`CR`, `EN`, `VU`, `NT`, `LC`, `DD`). Any other combination is an error, not a default.

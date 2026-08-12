@@ -4,9 +4,11 @@ description: "individual species distribution mapping application"
 categories: [current]
 ---
 
+# Species {#sec-app-species}
+
 ## Overview
 
-The **Species** application ([app.marinesensitivity.org/species](https://shiny.marinesensitivity.org/species/)) enables exploration of individual species distribution models within the MST database. Users can view merged and source-level models, compare masked vs. unmasked distributions, and access detailed species regulatory status information.
+The **Species** application ([app.marinesensitivity.org/species](https://app.marinesensitivity.org/species/)) enables exploration of individual species distribution models. Like the Scores app it renders **any published release** from a `?ver=` parameter. Users can view merged and source-level models, compare masked vs. unmasked distributions, and access detailed species regulatory status information.
 
 @fig-species-blue-whale shows the merged distribution model for the blue whale (*Balaenoptera musculus*). The map displays cell values from 1 (low suitability, blue) to 100 (high suitability, red) across all US program areas where the species occurs.
 
@@ -17,7 +19,7 @@ The **Species** application ([app.marinesensitivity.org/species](https://shiny.m
 ### Species Selection
 
 - **Search**: find species by common name or scientific name
-- **Category filter**: narrow results by species category (bird, coral, fish, invertebrate, mammal, reptile/turtle)
+- **Category filter**: narrow results by species category, as defined in the release being viewed
 - **Alphabetical browsing**: scroll through species lists within each category
 
 ### Model Display
@@ -64,4 +66,4 @@ webshot2::webshot(
 
 ## Source Code
 
-The application source code is at: [`apps/mapsp/app.R`](https://github.com/MarineSensitivity/apps/tree/main/mapsp)
+[`species/app.R`](https://github.com/MarineSensitivity/apps/tree/main/species) on the `apps` repository's `main` branch — one checkout serving every release, not one per version.

@@ -8,7 +8,13 @@ editor_options:
 
 # Apps {#sec-apps}
 
-The MST provides two primary interactive web applications for exploring sensitivity data, plus several legacy applications from earlier development phases.
+The MST provides two interactive web applications, plus several legacy applications from earlier development phases.
+
+::: {.callout-note}
+## One application, every release
+
+Both apps render **any published release** from a `?ver=` parameter — `?ver=v3` shows v3 — defaulting to the promoted release when none is given. There is no per-version fork: the version is data, settled by the release's published manifest, so a fix reaches every version at once. The 18 former per-version instances are retired, and their URLs redirect permanently to the equivalent `?ver=`, so links printed in earlier reports still resolve to the release they always showed.
+:::
 
 These tools allow stakeholders, scientists, and decision-makers to understand the underlying components contributing to an area's sensitivity to offshore energy development, supporting better planning and impact assessment.
 
@@ -26,26 +32,29 @@ The [Scores](https://app.marinesensitivity.org/scores/) application is the prima
 - **Treemap**: hierarchical view of species contributions to sensitivity
 - **CSV export**: download data for selected area or species
 
-Under the hood, the Scores app composes three types of map layers — all driven from the same DuckDB source of truth (@fig-architecture):
+Under the hood the Scores app composes three kinds of map layer (@fig-architecture):
 
-- **Cell-values raster** — on-the-fly PNG tiles from the msens TiTiler factory. The Shiny server builds the SELECT via `cell_sql(metric_key, subregion_key)`, fetches the stats for a stable legend via `msens::cell_stats()`, and passes the tile URL template to `msens::add_cell_tiles()`. The browser fetches only the tiles intersecting its current viewport; Varnish caches each tile for 7 days. No ∼4 GB full-raster transfer on initial load (see @fig-raster).
-- **"Cells outside Program Areas" mask** — same factory, single-color `color=#222222` render path, with a SQL returning `cell_metric` cells **not** in any `zone` row where `fld='programarea_key'`.
-- **Program Area choropleth** — when the user switches unit to Program Area, polygon geometry comes from a static PMTiles file served by Caddy; per-area fill colors come live from DuckDB's `zone_metric` table via a `mapbox-gl` `match` expression pushed through the Shiny proxy (see @fig-choropleth).
+- **Score raster** — a pre-rendered COG per metric × subregion, whose URL and rescale range come straight from the release manifest. The browser fetches only the tiles intersecting its viewport; no full-raster transfer on load (see @fig-raster).
+- **"Cells outside Program Areas" mask** — a single-color overlay published the same way.
+- **Zone choropleth** — polygon geometry from a static PMTiles archive published per geometry **vintage**, with per-zone fill colors pushed live into the paint spec from the release's `zone_metric` (see @fig-choropleth).
 
-See [Appendix: scores](apps/scores.qmd) for details.
+Because every one of those is resolved from the manifest rather than hardcoded, switching `?ver=` switches all three together — including drawing the boundary vintage that release actually used.
+
+See @sec-app-scores for details.
 
 ### Species — mapper of individual species distributions
 
-The [Species](https://shiny.marinesensitivity.org/mapsp/) application enables exploration of individual species distribution models. Key features include:
+The [Species](https://app.marinesensitivity.org/species/) application enables exploration of individual species distribution models. Key features include:
 
 - **Species selection**: search by common or scientific name, filter by species category
 - **Model display**: view merged models or individual source dataset layers
-- **IUCN masking toggle**: compare masked vs. unmasked distributions
+- **Representation toggle**: compare the native-resolution original with the interpolated surface used in scoring
+- **Masking toggle**: compare the expert-range-constrained merged model with the unconstrained suitability
 - **Species info panel**: ESA listing, IUCN Red List category, MMPA/MBTA protection flags, extinction risk score
 - **Deep-linking**: URL parameters support direct links to specific species
 
-See [Appendix: species](apps/species.qmd) for details.
+See @sec-app-species for details.
 
 ## Legacy Applications
 
-Earlier versions of the MST included several prototype applications developed during the research phase. These are documented in the Appendix under [Applications (Legacy)](apps/aoi.qmd) for reference.
+Earlier prototype applications from the research phase are kept in the Appendix under Applications (Legacy) for reference. They are not part of the current serving path.

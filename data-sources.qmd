@@ -2,124 +2,163 @@
 
 ```{r}
 #| include: false
-source(here::here("stats.R"))
+library(dplyr)
+
+ds  <- doc_datasets()
+mdl <- tryCatch(doc_tbl("model", "SELECT ds_key, count(*) AS n_models FROM model GROUP BY 1"),
+                error = function(e) NULL)
+if (!is.null(mdl)) ds <- left_join(ds, mdl, by = "ds_key")
+
+col <- function(d, nm, default = NA) if (nm %in% names(d)) d[[nm]] else rep(default, nrow(d))
+lbl <- function(d) coalesce(as.character(col(d, "name_display")), as.character(col(d, "name_short")))
+
+# datasets that actually fed the scores, excluding the merged output itself
+src    <- ds |> filter(is_scored, ds_key != "ms_merge")
+# registered but unused: ingested and catalogued, contributing to no score
+unused <- ds |> filter(!is_scored)
 ```
 
-The MST integrates species distribution data from 8 source datasets plus 1 derived merged dataset, all stored in a DuckDB database at 0.05° resolution (~4 km cells). Each dataset provides spatial predictions of species occurrence, ranging from continuous suitability models (AquaMaps) to habitats associated with a core area, critical habitat or distinct population segment (NMFS, FWS, SWOT+DPS) to those based on simple range maps (BirdLife, IUCN, FWS).
+The MST integrates species distributions from **`r nrow(src)` source datasets**, merged into one surface per taxon (`ms_merge`). Each source predicts where a species occurs, and they differ in kind: continuous suitability models (AquaMaps), habitats tied to a core area, critical habitat or distinct population segment (NMFS, FWS, SWOT+DPS), and expert range maps (BirdLife, IUCN, FWS).
 
-## Dataset Overview
+::: {.callout-note}
+The counts and citations on this page are read from **`r doc_ver()`**'s own published `dataset` table, so they describe that release rather than the current one. Earlier releases integrated fewer sources: the table below *is* the answer for this version.
+:::
 
-@tbl-datasets summarizes all 9 datasets in the MST database.
+## Dataset overview
 
-| Dataset Key | Display Name | Cell Value Encoding | Is Mask | Sort |
-|:------------|:-------------|:--------------------|:--------|-----:|
-| `am_0.05`   | AquaMaps SDM | Continuous suitability 0--100% | No | 1 |
-| `ca_nmfs`   | NMFS Core Area | Core: 100% | Yes | 2 |
-| `ch_nmfs`   | NMFS Critical Habitat | EN: 100%, TN: 50% | Yes | 3 |
-| `ch_fws`    | FWS Critical Habitat | EN: 100%, TN: 50% | Yes | 4 |
-| `rng_fws`   | FWS Range | EN: 100%, TN: 50%, LC: 1% | Yes | 5 |
-| `bl`        | BirdLife Range | CR: 50%, EN: 25%, VU: 5%, NT: 2%, LC: 1% | Yes | 6 |
-| `rng_iucn`  | IUCN Range | CR: 50%, EN: 25%, VU: 5%, NT: 2%, LC: 1% | Yes | 7 |
-| `rng_turtle_swot_dps` | SWOT+DPS Turtle Range | EN: 100%, TN: 50% | Yes | 8 |
-| `ms_merge`  | Merged Model | MAX across source datasets | No | 0 |
+```{r}
+#| label: tbl-datasets
+#| tbl-cap: !expr paste0("Source datasets in ", doc_ver(), ". *Mask* datasets constrain a taxon's merged distribution to its known range as well as contributing values. *Models* counts the distributions the release registered for that dataset.")
 
-: Summary of the 9 datasets in the MST database. Cell values represent species presence probability or suitability as a percentage (1--100%). Datasets marked `Is Mask = Yes` can also serve as spatial masks during model merging. {#tbl-datasets}
+tab <- ds |> filter(is_scored)
+tab <- tab[order(coalesce(as.numeric(col(tab, "sort_order")), 99)), ]
+knitr::kable(
+  data.frame(
+    `Dataset key` = paste0("`", tab$ds_key, "`"),
+    Name          = lbl(tab),
+    `Cell values` = coalesce(as.character(col(tab, "value_info")), ""),
+    Mask          = ifelse(is.na(col(tab, "is_mask")), "—", ifelse(col(tab, "is_mask"), "Yes", "No")),
+    Models        = ifelse(is.na(col(tab, "n_models")), "—",
+                           formatC(as.numeric(col(tab, "n_models")), format = "d", big.mark = ",")),
+    check.names = FALSE, row.names = NULL),
+  align = c("l", "l", "l", "c", "r"))
+```
 
-The **sort order** determines priority during model merging: datasets with continuous predictions (AquaMaps) are considered first, followed by progressively coarser range maps. The merged model (`ms_merge`) takes the MAX value across all available source datasets for each species in each cell.
+```{r}
+#| label: ds-unused
+#| output: asis
 
-## Source Datasets
+# Registered is not used. Saying so here is the difference between "9 datasets"
+# and "9 datasets, 8 of which produced the numbers on every other page."
+if (nrow(unused)) cat(
+  "::: {.callout-important}\n## Registered but not scored\n\n",
+  doc_ver(), " also catalogues ",
+  paste0("**", lbl(unused), "** (`", unused$ds_key, "`)", collapse = " and "),
+  ". These are ingested and published, but they are **not** part of the merge and contribute to no score — ",
+  "their density units (individuals km^-2^) have no agreed mapping onto the 0--100 suitability scale the ",
+  "merge operates on. They are excluded from every count on this page, and from `dataset.is_scored`.\n:::\n",
+  sep = "")
+```
 
-### AquaMaps SDM (`am_0.05`) {#sec-aquamaps}
+The **merged model** (`ms_merge`) is the derived output rather than a source: for each taxon it takes the maximum value across that taxon's source datasets in each cell, constrained to the taxon's expert range where one exists (see @sec-model-merging).
 
-[AquaMaps](https://www.aquamaps.org) provides standardized species distribution models (SDMs) for over 17,000 marine species based on environmental envelope models [@kaschner2019]. Each species model defines habitat suitability as a function of depth, temperature, salinity, primary productivity, ice concentration, and distance from land.
+## The sources
 
-- **Species count**: ~17,550 models
-- **Native resolution**: 0.5° (c-squares), downscaled to 0.05° using bilinear interpolation
-- **Cell values**: continuous suitability from 0--100%
-- **Coverage**: global ocean
+```{r}
+#| label: ds-sections
+#| output: asis
 
-AquaMaps serves as the foundational dataset for most species, providing the highest spatial resolution and broadest taxonomic coverage.
+# Generated from the registry, so a dataset cannot be described here with a
+# vintage, citation or link the release does not actually carry. The
+# interpretive notes that follow are hand-written, because *why* a dataset is
+# used the way it is is not a fact any table holds.
+fmt_link <- function(url, text) if (is.na(url) || !nzchar(url)) NULL else
+  sprintf("[%s](%s)", text, url)
 
-### NMFS Core Area (`ca_nmfs`) {#sec-nmfs-core}
+for (i in order(coalesce(as.numeric(col(src, "sort_order")), 99))) {
+  d <- src[i, ]
+  cat("\n### ", lbl(d), " (`", d$ds_key, "`)\n\n", sep = "")
 
-Core areas delineated by the National Marine Fisheries Service [NMFS; @nmfs_core2019] identify regions of concentrated use for species under NMFS jurisdiction.
+  desc <- as.character(col(d, "description"))
+  if (!is.na(desc) && nzchar(desc)) cat(desc, "\n\n", sep = "")
 
-- **Species count**: limited to species with designated core areas
-- **Cell values**: 100% within core area boundaries
-- **Role**: contributes to merged model as a mask dataset
+  bits <- c(
+    if (!is.na(col(d, "n_models"))) sprintf("**Models**: %s",
+      formatC(as.numeric(col(d, "n_models")), format = "d", big.mark = ",")),
+    if (!is.na(col(d, "response_type"))) sprintf("**Response**: %s", col(d, "response_type")),
+    if (!is.na(col(d, "value_info")) && nzchar(as.character(col(d, "value_info"))))
+      sprintf("**Cell values**: %s", col(d, "value_info")),
+    if (!is.na(col(d, "regions"))) sprintf("**Coverage**: %s", col(d, "regions")),
+    if (!is.na(col(d, "taxa_groups"))) sprintf("**Taxa**: %s", col(d, "taxa_groups")),
+    if (!is.na(col(d, "is_mask"))) sprintf("**Role**: %s",
+      if (isTRUE(col(d, "is_mask"))) "contributes values **and** constrains the merged range"
+      else "contributes values"))
+  if (length(bits)) cat("- ", paste(bits, collapse = "\n- "), "\n\n", sep = "")
 
-### NMFS Critical Habitat (`ch_nmfs`) {#sec-nmfs-ch}
+  cit <- as.character(col(d, "citation"))
+  if (!is.na(cit) && nzchar(cit)) cat("> ", cit, "\n\n", sep = "")
 
-Critical habitat designated under the Endangered Species Act (ESA) by NMFS for marine species [@nmfs_ch2025].
+  links <- Filter(Negate(is.null), list(
+    fmt_link(as.character(col(d, "link_info")),     "Source"),
+    fmt_link(as.character(col(d, "link_download")), "Download"),
+    fmt_link(as.character(col(d, "link_metadata")), "Metadata")))
+  if (length(links)) cat(paste(unlist(links), collapse = " · "), "\n\n")
+}
+```
 
-- **Species count**: 34 species
-- **Cell values**: Endangered species = 100%, Threatened species = 50%
-- **Role**: dual function — contributes cell values AND forms part of the spatial mask for model merging
+## Notes on individual sources
 
-### FWS Critical Habitat (`ch_fws`) {#sec-fws-ch}
+### AquaMaps vintage
 
-Critical habitat designated under the ESA by the U.S. Fish and Wildlife Service [FWS; @fws_ch2025] for marine and coastal species.
+AquaMaps is the foundational dataset for most taxa: environmental-envelope models of habitat suitability as a function of depth, temperature, salinity, primary productivity, ice concentration and distance from land [@kaschner2019]. The **model vintage is AquaMaps Version 10/2019** — the release named in the citation above, and the one the registry records as its environmental end date. Later dates that appear alongside AquaMaps in project records are *retrieval* dates for that same 2019 release, not a newer one; the underlying suitability surfaces have not changed.
 
-- **Species count**: 29 species
-- **Cell values**: Endangered species = 100%, Threatened species = 50%
-- **Role**: dual function — contributes cell values AND forms part of the spatial mask
+Models are native to a 0.5° grid (c-squares) and are interpolated onto the analysis grid **bilinearly**, implemented as a precomputed weight join rather than a per-species raster resample. Source cells that are absent contribute zero, so a distribution fades to zero within about one cell of its edge rather than ending on a hard step.
 
-### FWS Range (`rng_fws`) {#sec-fws-range}
+### Sea turtles: why a dedicated range dataset
 
-Current range maps maintained by FWS for ESA-listed marine and coastal species [@fws_range2025].
+Sea turtle distributions from AquaMaps and from IUCN range maps were both too broad, extending well beyond where the species actually occur. Several species also carry **different ESA protection in different parts of their range**, through NOAA Fisheries Distinct Population Segments (DPS) — which a single global range map cannot express.
 
-- **Species count**: 106 species
-- **Cell values**: Endangered = 100%, Threatened = 50%, Least Concern = 1%
-- **Role**: mask dataset, providing spatial extent for species not covered by AquaMaps
+The SWOT+DPS dataset replaces the IUCN range as the global mask for all six sea turtle species, combining SWOT Global Distributions [@wallace2023] for realistic range polygons with the NOAA Fisheries ESA Species Range Geodatabase [@noaafisheries2025dps] for DPS listing status. Where DPS data exist (Loggerhead, Green, Olive Ridley), Endangered DPS areas take the Endangered value and the remainder of the SWOT range the Threatened value; for species Endangered throughout (Leatherback, Hawksbill, Kemp's Ridley) the entire range takes the Endangered value.
 
-### BirdLife Range (`bl`) {#sec-birdlife}
+### Range maps as masks
 
-Expert-reviewed range maps from [BirdLife International's Birds of the World](https://www.birdlife.org) [BOTW; @birdlife2024] dataset, representing the most authoritative global seabird distribution data.
+Datasets marked *Mask* do double duty: they contribute cell values **and** define the spatial extent a taxon's merged distribution may occupy. This is what stops an environmental-envelope model from asserting presence far outside a species' known range — see @sec-model-merging.
 
-- **Species count**: 573 seabird species
-- **Cell values**: scaled by IUCN Red List category — CR: 50%, EN: 25%, VU: 5%, NT: 2%, LC: 1%
-- **Role**: mask dataset, providing spatial constraints for seabird species
-- **Note**: BirdLife range maps are expert-delineated polygons; cell values reflect conservation status rather than habitat suitability
+## Standard grid
 
-### IUCN Range (`rng_iucn`) {#sec-iucn-range}
+```{r}
+#| label: grid-spec
+#| output: asis
 
-Range maps from the [IUCN Red List of Threatened Species](https://www.iucnredlist.org) spatial data [@iucn2025], covering a broad array of marine taxa.
+# from the GRID REGISTRY, not the manifest's own copy: only v8 embeds a `grid`
+# block, so reading the manifest alone leaves every earlier version with no grid
+# description at all
+gid <- doc_manifest()$grid_id
+g   <- tryCatch(msens::grid_spec_for(gid), error = function(e) NULL)
+if (!is.null(g)) {
+  lon <- if (isTRUE(g$lon360)) "0--360" else "−180 to 180"
+  cat(sprintf(
+    paste0("All datasets are aligned to the **`%s`** grid (%s): %s × %s cells of %s° at ",
+           "%s longitudes. At mid-latitudes a cell is roughly 4 × 4 km (~16 km^2^). ",
+           "Every cell carries a `cell_id`, which is what joins spatial data to every ",
+           "table in the database.\n\n"),
+    gid, msens::grid_registry()[gid, "label"],
+    formatC(as.numeric(g$nc), format = "d", big.mark = ","),
+    formatC(as.numeric(g$nr), format = "d", big.mark = ","), g$resx, lon))
+}
+cat(sprintf("This release carries **%s** cells.\n\n", doc_stat("n_cells")))
+```
 
-- **Cell values**: scaled by IUCN Red List category — CR: 50%, EN: 25%, VU: 5%, NT: 2%, LC: 1%
-- **Role**: mask dataset, providing spatial extent for species with IUCN range data
+::: {.callout-warning}
+## `cell_id` means a different place on different grids
 
-### SWOT+DPS Turtle Range (`rng_turtle_swot_dps`) {#sec-swot-dps}
+The grid changed at v8, from a regional grid on 0--360 longitudes to a global grid on −180 to 180. **A given `cell_id` therefore denotes an entirely different location in v7 and in v8.** Cell ids are meaningful only together with the `grid_id` the manifest declares, and the cell-id rasters are lookup images — a grid's geometry cannot be inferred from one.
+:::
 
-Sea turtle distributions from the original AquaMaps and IUCN range maps were overly broad, extending well beyond where species actually occur. Furthermore, several sea turtle species have differential ESA protection across their range according to NOAA Fisheries Distinct Population Segments (DPS).
+## Primary productivity {#sec-primary-productivity}
 
-This dataset replaces the IUCN range map as the **global spatial mask** for all 6 sea turtle species. It combines two data sources:
+Primary productivity is an explicit statutory consideration: Section 18(a)(2) of the 1978 OCSLA Amendments requires the Department of the Interior to weigh "the relative environmental sensitivity and marine productivity of different areas of the OCS" in the timing and location of OCS activities.
 
-- **SWOT Global Distributions** from the [State of the World's Sea Turtles](https://www.seaturtlestatus.org/online-map-data) [@wallace2023], which define more realistic species range polygons.
-- **NMFS Distinct Population Segments** (DPS) from the NOAA Fisheries ESA Species Range Geodatabase [@noaafisheries2025dps], which identify sub-populations listed as Endangered under the ESA.
+We use satellite-derived net primary productivity (NPP) from the Vertically Generalized Production Model [VGPM; @behrenfeld1997] produced by [Oregon State's Ocean Productivity Lab](http://sites.science.oregonstate.edu/ocean.productivity), based on VIIRS data for 2014--2023. Values are converted to metric tons C km^-2^ yr^-1^ and averaged over the period. NPP enters scoring as its own metric, without extinction-risk weighting (see @sec-scoring).
 
-For species with DPS data (Loggerhead CC, Green CM, Olive Ridley LO): Endangered DPS areas are coded at 100%, and the remainder of the SWOT range is coded as Threatened at 50%. For purely Endangered species (Leatherback DC, Hawksbill EI, Kemp's Ridley LK): the entire SWOT range is coded at 100%.
-
-- **Species count**: 6 sea turtle species
-- **Cell values**: Endangered = 100%, Threatened = 50%
-- **Role**: mask dataset — replaces `rng_iucn` as the global mask for turtles, producing more restrictive distributions dominated by ESA risk values
-See workflow: [ingest_turtles-swot-dps](https://marinesensitivity.org/workflows/ingest_turtles-swot-dps.html).
-
-## Merged Model (`ms_merge`)
-
-The merged model is the derived output of the model merging pipeline (see @sec-model-merging). For each of the `r n_fmt(mst_stats$valid_species)` valid species, cell values are computed as:
-
-1. **MAX** across all source dataset values for that species in each cell
-2. **Masked** to the spatial extent defined by IUCN, NMFS CH, and FWS CH ranges (when available)
-3. **Floored** at minimum values for MMPA-protected species (20%) and MBTA-protected species (10%)
-
-## Standard Grid
-
-All datasets are aligned to a standard **0.05° × 0.05°** latitude-longitude grid covering US waters within BOEM Program Areas. At mid-latitudes, each cell represents approximately 4 × 4 km (16 km²). The grid is stored as a reference raster with unique `cell_id` values, enabling efficient joins between spatial data and tabular attributes in DuckDB.
-
-## Primary Productivity {#sec-primary-productivity}
-
-Primary productivity is specified in the explicit mandate for BOEM's management, per the Outer Continental Shelf Lands Act (OCSLA), Section 18(a)(2) of the OCSLA Amendments of 1978 specifying 8 factors the USDOI must consider in the timing and location of OCS oil and gas activities, including "the relative environmental sensitivity and marine productivity of different areas of the OCS."
-
-We use satellite-derived net primary productivity (NPP) from the Vertically Generalized Production Model [VGPM; @behrenfeld1997] product from [Oregon State's Ocean Productivity Lab](http://sites.science.oregonstate.edu/ocean.productivity), based on VIIRS satellite data for 2014--2023. Values are converted to metric tons C km^-2^ yr^-1^ and averaged across the time period.
-
-![Primary productivity throughout the continental United States averaged across months of 2021, as measured by Oregon State's Vertically Generalized Production Model (VGPM). Expansion is anticipated across the entire US EEZ and for more recent years.](figures/vgpm2021_offhab.jpg){#fig-vgpm}
+![Primary productivity throughout the continental United States averaged across months of 2021, as measured by Oregon State's Vertically Generalized Production Model (VGPM).](figures/vgpm2021_offhab.jpg){#fig-vgpm}

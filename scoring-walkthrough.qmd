@@ -9,6 +9,6 @@ format:
 
 This interactive walkthrough demonstrates how the Marine Sensitivity Toolkit calculates sensitivity scores, from input rasters through model merging, ecoregional rescaling, and final aggregation. Use the arrow keys or navigation buttons to step through the pipeline. Click any step in the top bar to jump directly to it.
 
-For the underlying methodology, see [Scoring](scoring.qmd) and [Model Merging](model-merging.qmd). For source code, see the [merge_models](https://marinesensitivity.org/workflows/merge_models.html) and [calc_scores](https://marinesensitivity.org/workflows/calc_scores.html) workflows.
+For the underlying methodology, see [Scoring](scoring.qmd) and [Model Merging](model-merging.qmd). For source code, see the [workflows index](https://marinesensitivity.org/workflows/), which lists every notebook in the pipeline with its current dependency graph.
 
 {{< include _scoring-walkthrough-app.html >}}

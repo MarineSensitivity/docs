@@ -2,17 +2,34 @@
 
 ```{r}
 #| include: false
-source(here::here("stats.R"))
+# knitr evaluates inline `r ...` only in a document that has at least one code
+# chunk. Without this, the doc_*() calls below render as LITERAL TEXT — which is
+# exactly what happened when the old stats.R setup chunk was removed.
 ```
 
-The **Marine Sensitivity Toolkit** (MST) is a cloud-native system developed for the Bureau of Ocean Energy Management (BOEM) to assess the sensitivity of marine ecosystems to offshore energy development. It integrates `r n_fmt(mst_stats$valid_species)` species distribution models with extinction risk assessments across US waters (`r n_fmt(mst_stats$species_program_areas)` of which fall within the `r mst_stats$n_program_areas` BOEM Program Areas of the current program cycle).
 
-![Overview of the MST methodology: species distribution models from 7 source datasets are merged, weighted by extinction risk scores (incorporating ESA, MMPA, MBTA, and IUCN protections), rescaled by ecoregion, and aggregated to management zones for visualization.](figures/overview-methods.svg){#fig-overview-preface}
+The **Marine Sensitivity Toolkit** (MST) is a cloud-native system developed for the Bureau of Ocean Energy Management (BOEM) to assess the sensitivity of marine ecosystems to offshore energy development.
+
+```{r}
+#| label: index-headline
+#| output: asis
+cat("It integrates ", doc_stat("valid_species"),
+    " species distribution models with extinction risk assessments across US waters", sep = "")
+if (doc_can("programareas")) cat(" (", doc_stat("species_program_areas"),
+    " of which fall within the ", doc_stat("n_program_areas"),
+    " BOEM Program Areas of the current program cycle)", sep = "")
+cat(".\n\n")
+```
+
+
+![Overview of the MST methodology: species distribution models from the source datasets are merged, weighted by extinction risk scores (incorporating ESA, MMPA, MBTA, and IUCN protections), rescaled by ecoregion, and aggregated to management zones for visualization.](figures/overview-methods.svg){#fig-overview-preface}
 
 ### Interactive Apps
 
-- [**Composite Scores**](https://app.marinesensitivity.org/scores/) — explore sensitivity scores across BOEM Program Areas with flower plot summaries
-- [**Species Distribution**](https://app.marinesensitivity.org/species/) — view individual species distribution models and habitat suitability maps
+- [**Composite Scores**](https://app.marinesensitivity.org/scores/) — sensitivity scores by zone, with flower-plot summaries
+- [**Species Distribution**](https://app.marinesensitivity.org/species/) — individual species distribution models and habitat suitability
+
+Both render **any published release**: append `?ver=v3` (or any version) to view that one.
 - [**Scoring Walkthrough**](scoring-walkthrough.qmd) — step through the scoring pipeline interactively, from input rasters to final scores
 
 ### Documentation

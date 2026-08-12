@@ -27,15 +27,16 @@ apps_dir <- Sys.getenv(
   "MSENS_APPS_DIR",
   unset = normalizePath(file.path(here::here(), "..", "apps"), mustWork = FALSE))
 
-# urls are the live, deployed apps. verify these match the current deploy.
+# urls are the live, deployed apps. Post-cutover there is ONE app per role serving
+# every release from ?ver=; `mapgl`/`mapsp` were the v7-era directory names and are gone.
 apps <- list(
   scores = list(
     name  = "Scores",
-    app_r = file.path(apps_dir, "mapgl", "app.R"),
+    app_r = file.path(apps_dir, "scores", "app.R"),
     url   = "https://app.marinesensitivity.org/scores/"),
   species = list(
     name  = "Species",
-    app_r = file.path(apps_dir, "mapsp", "app.R"),
+    app_r = file.path(apps_dir, "species", "app.R"),
     url   = "https://app.marinesensitivity.org/species/"))
 
 fig_dir  <- here::here("figures", "apps-guide")

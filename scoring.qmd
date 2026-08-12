@@ -1,82 +1,140 @@
 # Scoring {#sec-scoring}
 
-The scoring methodology translates merged species distribution models and extinction risk weights into cell-level sensitivity metrics, which are then rescaled and aggregated to management zones for decision support.
+```{r}
+#| include: false
+library(dplyr)
+cats  <- doc_sp_cats()
+zones <- doc_zones()
+```
+
+Scoring turns merged species distributions and extinction-risk weights into per-cell sensitivity metrics, which are then rescaled within ecoregions and aggregated to management zones.
 
 ::: {.callout-tip}
-## Interactive Walkthrough
+## Interactive walkthrough
 
-See the [Scoring Walkthrough](scoring-walkthrough.qmd) for an animated, step-by-step visualization of this pipeline — from input rasters through MAX merge, ecoregional rescaling, and component averaging.
+The [Scoring Walkthrough](scoring-walkthrough.qmd) animates this pipeline — input rasters, merge, ecoregional rescaling and component averaging, step by step.
 :::
 
-## Cell-Level Scoring
+## Cell-level scoring
 
-For each grid cell, sensitivity is computed as the extinction risk weighted sum of species presence within each species category (@eq-cell-score):
+For each cell, sensitivity is the extinction-risk-weighted sum of species presence within a species category:
 
 $$
 \text{score}_{c,g} = \sum_{s=1}^{S_g} \frac{\text{er\_score}_s \times v_{s,c}}{100}
 $$ {#eq-cell-score}
 
-where:
+where $\text{score}_{c,g}$ is the score for cell $c$ and category $g$; $\text{er\_score}_s$ is species $s$'s extinction-risk weight (1–100, @sec-extinction-risk); $v_{s,c}$ is the merged model value for that species in that cell (0–100, @sec-model-merging); and $S_g$ is the number of valid species in the category. Dividing by 100 returns the product to a 0–100 scale.
 
-- $\text{score}_{c,g}$ = sensitivity score for cell $c$ and species category $g$
-- $\text{er\_score}_s$ = extinction risk score for species $s$ (1--100; see @sec-extinction-risk)
-- $v_{s,c}$ = merged model value for species $s$ in cell $c$ (0--100%; see @sec-model-merging)
-- $S_g$ = number of valid species in category $g$
+In plain terms: for every cell the MST adds up the contributions of the species found there. A cell holding many species that are both likely present and at high risk scores higher — which is how places where rare or threatened species concentrate are identified.
 
-Division by 100 converts the product from a 0--10,000 range back to a 0--100 scale.
+### Sea turtles are the exception
 
-In plain terms, for each cell in the ocean the MST adds up the sensitivity contributions of all species found there. If a cell has many species that are both likely to be present and at high risk of extinction, it gets a higher sensitivity score. This helps identify places where rare or threatened species are concentrated.
-
-### Two Scoring Approaches
-
-The formula above applies to **most species** (fish, birds, mammals, corals, invertebrates, other), where `er_score` is a **scalar** value per species (1--100) and `v` is the MAX-merged suitability value.
-
-For **sea turtles**, extinction risk is already embedded in the merged model values via the multiplicative merge (see @sec-model-merging, Step 2b). In this case the scoring formula simplifies to:
+For turtles, extinction risk is already inside the merged values via the multiplicative merge (@sec-model-merging), so the formula collapses to a plain sum:
 
 $$
 \text{score}_{c,g} = \sum_{s=1}^{S_g} v_{merged,s,c}
 $$ {#eq-cell-score-turtle}
 
-because `er_score = 100` is used as a pass-through multiplier (dividing by 100 cancels it out). The spatially varying extinction risk from the SWOT+DPS raster is already encoded in $v_{merged}$, so cells within an Endangered DPS contribute higher values than cells within a Threatened DPS, even for the same species and suitability level.
+`er_score = 100` acts as a pass-through multiplier that cancels against the division. Cells inside an Endangered DPS therefore contribute more than cells inside a Threatened one, for the same species at the same suitability.
 
-## Metric Keys
+## Metrics
 
-Cell-level scores are stored as named metrics in the DuckDB database:
+```{r}
+#| label: tbl-metrics
+#| tbl-cap: !expr paste0("Cell-level metrics published by ", doc_ver(), ". Each has an ecoregionally rescaled counterpart, and the composite is their equally weighted mean.")
 
-| Metric Key | Description |
-|:-----------|:------------|
-| `extrisk_bird` | extinction risk score for birds |
-| `extrisk_coral` | extinction risk score for corals |
-| `extrisk_fish` | extinction risk score for fishes |
-| `extrisk_invertebrate` | extinction risk score for invertebrates |
-| `extrisk_mammal` | extinction risk score for marine mammals |
-| `extrisk_reptile` | extinction risk score for reptiles/turtles |
-| `extrisk_other` | extinction risk score for other marine organisms |
-| `primprod` | primary productivity (VGPM, metric tons C km^-2^ yr^-1^) |
+m <- doc_manifest()$metrics
+if (is.data.frame(m) && nrow(m)) {
+  mm <- m |> distinct(metric_key, .keep_all = TRUE) |> arrange(metric_key)
+  knitr::kable(
+    data.frame(Metric      = paste0("`", mm$metric_key, "`"),
+               Description = if ("description" %in% names(mm)) mm$description else "",
+               check.names = FALSE, row.names = NULL),
+    align = c("l", "l"))
+}
+```
 
-: Cell-level metric keys stored in the MST database. {#tbl-metrics}
+```{r}
+#| label: metrics-note
+#| output: asis
 
-## Ecoregional Rescaling
+sc <- cats$sp_cat[cats$scored]
+cat("One extinction-risk metric exists per **scored** species category — ",
+    paste0("`", sc, "`", collapse = ", "),
+    " — plus primary productivity, which carries no extinction-risk weighting.\n\n", sep = "")
+```
 
-Raw cell scores vary naturally across ecoregions due to differences in species richness, oceanographic conditions, and biogeographic patterns. To enable meaningful comparison, each metric is rescaled to a [0--100] range within each BOEM Ecoregion:
+## Ecoregional rescaling
+
+Raw cell scores vary naturally between ecoregions, through differences in species richness, oceanography and biogeography. Each metric is therefore rescaled to 0–100 **within each BOEM Ecoregion**:
 
 $$
 \text{score}'_{c} = \frac{\text{score}_{c} - \text{score}_{min}}{\text{score}_{max} - \text{score}_{min}} \times 100
 $$ {#eq-ecoregion-rescale}
 
-where $\text{score}_{min}$ and $\text{score}_{max}$ are the minimum and maximum cell values for that metric within the Ecoregion.
+with the minimum and maximum taken over that metric's cells within the ecoregion.
 
-**Scores are relative within Ecoregions, not absolute.** A score of 100 represents the most sensitive 0.05° cell for a given metric within a given BOEM Ecoregion---not globally. The final score is an equally weighted average of these ecoregionally rescaled metrics. This means that a score of 30 in Alaska reflects a different ecological context than a score of 30 in the Pacific.
+::: {.callout-important}
+## Scores are relative within an ecoregion, never absolute
 
-**Why rescale by Ecoregion?** Without this step, areas with naturally higher numbers of species (like upwelling zones in the Pacific) would almost always receive the highest scores, simply because they have more species. While more species may indicate greater ecological importance, it could also be argued that the fewer species in an ecosystem, the more important each is to its function and resilience. Rescaling by Ecoregion prevents scores from being overwhelmed by species-rich areas. However, comparing *across* Ecoregions would require developing a mathematical relationship between these competing arguments for sensitivity---one that is still a source of earnest academic debate. For this reason, **scores are directly comparable among Program Areas within the same Ecoregion, but should not be compared across Ecoregions**.
+A score of 100 marks the most sensitive cell for that metric **within that ecoregion** — not globally. A 30 in Alaska and a 30 in the Pacific describe different ecological contexts.
 
-### Geographic Scope
+Scores are therefore directly comparable **among Program Areas within one ecoregion**, and should **not** be compared across ecoregions.
+:::
 
-The current analysis covers 20 BOEM Program Areas from the 11th National Draft Proposed Program (2025) spanning Alaska, the Pacific, and the Gulf of America (@fig-map-ecoregions-scoring). The Atlantic OCS region is not included in this program cycle, so ecoregions without Program Areas (e.g., Northeast Continental Shelf, Southeast Continental Shelf, Washington/Oregon) are excluded from the analysis. Species whose distributions do not overlap with any Program Area will not appear in the interactive mapping applications.
+**Why rescale at all?** Without it, naturally species-rich areas would almost always score highest simply for holding more species. More species may well indicate greater ecological importance — but it can equally be argued that the fewer species an ecosystem has, the more each one matters to its function and resilience. Rescaling within ecoregions keeps scores from being dominated by richness. Comparing *across* ecoregions would require settling that argument with a mathematical relationship between the two views, which remains a live academic debate.
 
-### Cross-Ecoregion Program Areas
+## Spatial units
 
-The Gulf of America Program Areas---GOA Program Area A (GAA) and GOA Program Area B (GAB)---span parts of two Ecoregions: Western and Central Gulf of America (WCGOA) and Eastern Gulf of America (EGOA). Because cell scores are rescaled within each Ecoregion before aggregation, cells in GAA that fall within the WCGOA Ecoregion are rescaled relative to WCGOA min/max values, while cells within EGOA use EGOA min/max values. The aggregated Program Area score is then the area-weighted average across all constituent cells, regardless of which Ecoregion they belong to. This approach ensures that the rescaling reflects local ecological context even when a Program Area spans Ecoregion boundaries. See `calc_scores.qmd` for implementation details.
+```{r}
+#| label: tbl-zones
+#| tbl-cap: !expr paste0("Spatial units ", doc_ver(), " scored, with the geometry vintage each used.")
+
+if (nrow(zones)) {
+  nm <- c(programarea_key = "BOEM Program Area", ecoregion_key = "BOEM Ecoregion",
+          subregion_key = "Subregion", planarea_key = "BOEM Planning Area")
+  knitr::kable(
+    data.frame(
+      Unit    = ifelse(zones$fld %in% names(nm), nm[zones$fld], zones$fld),
+      Field   = paste0("`", zones$fld, "`"),
+      Count   = n_fmt(zones$n),
+      Vintage = if ("zone_set_key" %in% names(zones)) paste0("`", zones$zone_set_key, "`") else "—",
+      check.names = FALSE, row.names = NULL),
+    align = c("l", "l", "r", "l"))
+}
+```
+
+```{r}
+#| label: zones-note
+#| output: asis
+
+if (doc_can("planareas") && !doc_can("programareas")) cat(
+  "::: {.callout-note}\n## Planning Areas, not Program Areas\n\n",
+  doc_ver(), " predates the BOEM Program Areas of the 2026 program cycle and scores **Planning ",
+  "Areas** instead. Sections elsewhere in this book that discuss Program Areas do not apply to ",
+  "this release.\n:::\n\n", sep = "")
+
+cat("Geometry is versioned by its own **vintage** rather than by release, so several releases ",
+    "legitimately share one boundary set — one Program Area geometry covers v2 through v8, and ",
+    "one ecoregion geometry covers every release. Each release's manifest names the vintage it ",
+    "used, which is what lets this book draw the correct outlines for the version it documents ",
+    "instead of the newest ones.\n\n", sep = "")
+```
+
+### Geographic scope
+
+```{r}
+#| label: scope
+#| output: asis
+
+if (doc_can("programareas")) cat(
+  "The analysis covers **", doc_stat("n_program_areas"), " BOEM Program Areas** from the 11th ",
+  "National Draft Proposed Program (2025), spanning Alaska, the Pacific and the Gulf of America. ",
+  "The Atlantic OCS is not part of this program cycle, so ecoregions containing no Program Area ",
+  "are outside the scored footprint.\n\n", sep = "")
+```
+
+The Gulf of America Program Areas (GAA and GAB) each span two ecoregions — Western and Central Gulf of America, and Eastern Gulf of America. Because rescaling happens *before* aggregation, cells are rescaled against their own ecoregion's range, and the Program Area score is then the area-weighted mean across all its cells regardless of ecoregion. Local ecological context is preserved even where a Program Area crosses a boundary.
 
 ```{r}
 #| label: fig-map-ecoregions-scoring
@@ -84,62 +142,68 @@ The Gulf of America Program Areas---GOA Program Area A (GAA) and GOA Program Are
 map_ecoregions()
 ```
 
-## Primary Productivity Scoring
+## Primary productivity
 
-Net primary productivity (NPP) from the VGPM satellite model is included as a separate metric (`primprod`) that does not undergo extinction risk weighting. Instead, the raw NPP values (metric tons C km^-2^ yr^-1^) are directly rescaled within each ecoregion using the same [0--100] normalization.
+Net primary productivity from the VGPM satellite model enters as its own metric (`primprod`), without extinction-risk weighting. The raw values (metric tons C km^-2^ yr^-1^) are rescaled within each ecoregion on the same 0–100 basis as everything else.
 
-## Zone Aggregation
+## Zone aggregation
 
-Rescaled cell scores are aggregated to three spatial levels using area-weighted averaging:
-
-1. **Program Areas**: the 20 BOEM planning regions used for offshore energy management
-2. **Subregions**: intermediate spatial groupings (e.g., Atlantic, Gulf of America, Pacific, Alaska)
-3. **Ecoregions**: BOEM-defined ecological regions used as the rescaling baseline
-
-For each zone, the aggregated score is:
+Rescaled cell scores are aggregated to each spatial unit by area-weighted mean:
 
 $$
 \text{score}_{zone} = \frac{\sum_{c \in zone} \text{score}'_c \times A_c}{\sum_{c \in zone} A_c}
 $$ {#eq-zone-agg}
 
-where $A_c$ is the area of cell $c$ (accounting for latitude-dependent cell size in the 0.05° grid).
+where $A_c$ is the area of cell $c$ — which is latitude-dependent on a 0.05° grid, so the weighting is not cosmetic.
 
 ## Visualization
 
-### Flower Plot
+### Flower plot
 
-The flower plot provides an intuitive summary of sensitivity scores by species category, inspired by the Ocean Health Index [@halpern2012] visualization approach:
+The flower plot summarizes a zone's sensitivity profile by category, after the Ocean Health Index [@halpern2012]:
 
-- **Petal length** represents the rescaled sensitivity score (0--100) for each species category — longer petals indicate higher sensitivity
-- **Petal width** represents the weight of each category contributing to the overall score — wider petals have more influence on the center score
-- **Center value** shows the weighted mean across all categories
+- **petal length** — the rescaled score (0–100) for that category; longer means more sensitive
+- **petal width** — that category's weight in the composite; wider means more influence
+- **centre** — the weighted mean across categories
 
-@fig-flower-programareas shows flower plots for all 20 BOEM Program Areas. Each flower summarizes the sensitivity profile of one program area with petals for Bird, Coral, Fish, Invertebrate, Mammal, Other, Turtle, and Primary Production. Alaska program areas (e.g., HOP, COK, GOA) show dominant Fish and Mammal petals, while Gulf areas (GAB, CEC, MAT) show stronger Invertebrate and Coral contributions.
+![Flower plots for the BOEM Program Areas, showing ecoregionally rescaled sensitivity scores by species category.](figures/flower-plot_programareas.png){#fig-flower-programareas}
 
-![Flower plots for all 20 BOEM Program Areas showing ecoregionally rescaled sensitivity scores by species category. Petal length reflects the category score; petal width reflects its weight. Center values are the weighted mean across categories.](figures/flower-plot_programareas.png){#fig-flower-programareas}
-
-The flower plot lets decision-makers quickly spot which ecological elements drive sensitivity in an area, aiding better planning and impact assessment.
-
-The flower plot is implemented as an interactive `ggiraph` visualization using polar coordinates in R (`ggplot2 + coord_polar()`), with tooltips showing detailed score breakdowns on hover. The `plot_flower()` function in `calc_scores.qmd` generates static versions for reports, while the mapgl web application implements an interactive JavaScript version for responsive rendering (see @fig-mapgl-flower).
+It lets a reader see at a glance which ecological elements drive sensitivity in an area. The scores app implements an interactive version.
 
 ### Treemap
 
-The treemap provides a detailed, hierarchical view of species contributions to sensitivity scores (@fig-treemap):
+The treemap shows how individual species contribute to a score, nested first by extinction-risk category and then by taxonomy, with zoom down to single species.
 
-- Audience: scientists and analysts
-- Shows the contribution of each species to the overall score within a pixel or management zone
-- Elements are hierarchical: first by extinction risk category, then by taxonomic classification
-- Interactive zooming allows drilling down to individual species contributions
+![Treemap of species contributions to extinction-risk scores, organized by risk category and taxonomy.](figures/treeamap_extrisk-taxa.png){#fig-treemap}
 
-![Treemap visualization showing species contributions to extinction risk scores, hierarchically organized by risk category and taxonomy.](figures/treeamap_extrisk-taxa.png){#fig-treemap}
+![Zoomed treemap showing individual species within a risk category and taxonomic group.](figures/treeamap_extrisk-taxa_zoom.png){#fig-treemap-zoom}
 
-Zooming into a specific category reveals individual species contributions:
+### Score rasters
 
-![Zoomed treemap showing individual species within a specific risk category and taxonomic group.](figures/treeamap_extrisk-taxa_zoom.png){#fig-treemap-zoom}
+```{r}
+#| label: cogs
+#| output: asis
 
-### Interactive Maps
+if (doc_can("score_cogs")) cat(
+"Cell-level scores are published as **Cloud-Optimized GeoTIFFs**, one per metric x subregion, with
+the manifest carrying each raster's URL and its build-time rescale range. The map reads those
+directly.
 
-The primary visualization tools are two Shiny web applications:
+This replaced a tile factory that ran SQL against the database on every tile request. The rasters
+were verified byte-identical to the factory's output before the switch. They are stored **without
+overviews** deliberately: the renderer decimates from full resolution per request, so a
+pre-built pyramid would disagree with it at low zoom.\n\n", sep = "")
+```
 
-- **[Scores](https://app.marinesensitivity.org/scores/)**: general sensitivity mapping app showing composite scores by program area with flower plots and treemaps (see [Appendix: mapgl](apps/mapgl.qmd))
-- **[Species](https://app.marinesensitivity.org/species/)**: species distribution viewer showing individual and merged models with regulatory status information (see [Appendix: mapsp](apps/mapsp.qmd))
+### Interactive maps
+
+Two Shiny applications present the results, each rendering **any published release** from a `?ver=` parameter rather than being frozen to one:
+
+- **[Scores](https://app.marinesensitivity.org/scores/)** — composite and per-category sensitivity by zone, with flower plots and treemaps (see @sec-app-scores)
+- **[Species](https://app.marinesensitivity.org/species/)** — individual and merged distribution models with regulatory status (see @sec-app-species)
+
+Append `?ver=v3` (or any published version) to view that release. See @sec-apps.
+
+## Implementation
+
+Scoring runs in the `score_zones`, `score_cell_metrics` and `score_zone_metrics` workflows (@sec-workflows). Whole-pipeline equivalence between releases is checked by `msens::pra_score_delta`, which compares Program-Area scores on the species the two releases share.

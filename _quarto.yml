@@ -50,6 +50,10 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
+    - part: Releases
+      chapters:
+        - releases.qmd
+        - releases/v1.qmd
     - part: Science
       chapters:
         - science.qmd
@@ -84,7 +88,7 @@ book:
         - apps/aoi.qmd
         - apps/bird_hotspots.qmd
         - apps/map.qmd
-        - apps/scores.qmd
+        - apps/scores_0.qmd
         - apps/sdm.qmd
         - apps/sdm-cog.qmd
         - apps/vmap.qmd

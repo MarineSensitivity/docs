@@ -74,16 +74,19 @@ The server is running the following services. Subdomains with 🔒 are internal 
 ### App + data plane
 
 -   [**app**](https://app.marinesensitivity.org) / [**shiny**](https://shiny.marinesensitivity.org)\
-    *interactive Shiny applications* (`scores`, `species`, ...) — proxied to the `rstudio` container's Shiny Server on internal port 3838\
+    *interactive Shiny applications* — proxied to the `rstudio` container's Shiny Server on internal port 3838. There are now **two** applications, `/scores` and `/species`, each rendering any published release from `?ver=`. The former per-version instances (`mapgl`, `mapsp`, `mapgl_v1`…`mapsp_v6`, `scores_v6`/`v8`, `species_v6`/`v8`) are retired, with Caddy issuing a **301 to the equivalent `?ver=`** so every existing link — including any printed in a published report — still resolves to the release it always showed.\
     ![](figures/server/shiny.png){width="300"}\
     [Shiny Server docs](https://shiny.posit.co/)
 
 -   [**file**](https://file.marinesensitivity.org)\
     *static file server for PMTiles archives, report downloads, reference GeoPackages* — served by Caddy's `file_server` directive directly from the `/share` bind-mount. This replaces the old `pg_tileserv` vector-tile path for Program Areas, Ecoregions, Planning Areas, protractions, blocks and aliquots; each layer is a single `.pmtiles` file that the browser range-reads for only the tiles it needs.
 
--   [**titiler**](https://titiler.marinesensitivity.org) + [**titilecache**](https://titilecache.marinesensitivity.org) 🔒🟢\
-    *custom msens [TiTiler](https://developmentseed.org/titiler/) factory fronted by a [Varnish](https://varnish-cache.org) cache.*\
-    The factory exposes `/msens/*` routes that execute a validated SELECT against DuckDB, look the result up against a pre-baked cell-id COG, and return on-the-fly colorized PNG tiles (see @sec-apis). `titilecache` keys on the full URL (including base64 SQL) and caches each tile for 7 days with `default_keep=604800`; the custom VCL (`server/varnish/titiler.vcl`) normalizes query-param order via `std.querysort()` so semantically-identical URLs share a cache entry, strips cookies / authorization (the factory is stateless), and adds an `X-Cache: HIT | MISS` debug header.
+-   [**titiler**](https://titiler.marinesensitivity.org) + **titiler-v8** 🟢\
+    *[TiTiler](https://developmentseed.org/titiler/) serving the published raster assets.*\
+    Every map layer the applications draw is now a **pre-rendered Cloud-Optimized GeoTIFF** read through titiler's stock `/cog` routes — score surfaces per metric × subregion, and per-model distributions. `titiler-v8` runs in parallel with the v7 instance, reading a kilobyte-sized view-only DuckDB whose `model_cell` is a *view* over the partitioned Parquet on S3, so no multi-gigabyte database is copied to the server.
+
+-   **titilecache** (Varnish) 🔒\
+    Fronts the v7 `titiler` only. The v8 service is deliberately **not** proxied through it: an immutable COG is already cacheable by URL, and the one endpoint that would benefit is retired (below).
 
 -   [**api**](https://api.marinesensitivity.org)\
     *custom R [`plumber`](https://www.rplumber.io) API* for programmatic access to DuckDB — see @sec-apis\
@@ -96,19 +99,13 @@ The server is running the following services. Subdomains with 🔒 are internal 
     ![](figures/server/rstudio.png){width="300"}\
     [Posit RStudio Server](https://posit.co/products/open-source/rstudio-server/)
 
--   [**pgadmin**](https://pgadmin.marinesensitivity.org) 🔒\
-    *PostgreSQL database administration interface* — used for legacy apps that still connect to PostgreSQL (see below).\
-    ![](figures/server/pgadmin.png){width="300"}\
-    [pgAdmin](https://www.pgadmin.org/)
+-   **pgadmin** 🔒 — *PostgreSQL administration interface*, commented out along with the PostgreSQL services it managed (see Retired, below).
 
-### Legacy (carried for backward-compat; not in the critical path)
+### Retired
 
-As of 2026-04, the new raster tile path (`titiler` + `titilecache`) and PMTiles-via-`file` replace what was previously handled by PostgreSQL + `pg_tileserv`. The **authoritative store is now DuckDB** (`/share/data/big/latest/sdm.duckdb`). The following services remain in `docker-compose.yml` only for backward compatibility with a small set of pre-2026 apps (`indicators`, `bird_hotspots`) that still read from PostgreSQL. New app code should target DuckDB + the TiTiler factory + PMTiles.
+-   **The custom `/msens` tile factory** — kept in the image but **off by default**, behind `MSENS_FACTORY=1`.\
+    It rendered a tile by executing a validated SELECT against DuckDB and looking the result up against a cell-id COG. Pre-rendered COGs replaced it: nothing reaches it any more, because every metric on every release now has a COG. The two paths were verified equivalent before the switch — 100 of 105 sample tiles byte-identical, the remainder differing by 3–6 pixels out of 262,144 from float32 storage. It remains available for exploratory on-the-fly queries.
 
--   **postgis** (`postgis/postgis:latest`, internal 5432)\
-    *PostgreSQL + PostGIS* — formerly the primary spatial database; now read by legacy apps only.
--   **tile** (`pramsey/pg_tileserv:latest`, internal 7800) + **tilecache** (Varnish, 6081)\
-    *vector tiles from PostGIS tables* — superseded by static PMTiles served by Caddy.
--   **rest** and **swagger** — PostgREST + Swagger UI, both **commented out** in `docker-compose.yml`.
+-   **postgis**, **tile** (`pg_tileserv`), **tilecache**, **rest** (PostgREST) and **swagger** — all **commented out** in `docker-compose.yml` and **not running**. PostgreSQL is no longer part of any serving path; the authoritative store is DuckDB, with the published release as partitioned Parquet on S3. Vector geometry is served as static PMTiles by Caddy's `file` subdomain, and the `pgadmin` entry above is likewise vestigial.
 
 {{< fa ellipsis-h >}} <!-- init fontawesome to get in mermaid diagrams -->

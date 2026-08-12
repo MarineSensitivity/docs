@@ -2,105 +2,186 @@
 
 ```{r}
 #| include: false
-source(here::here("stats.R"))
+library(dplyr)
+cats <- doc_sp_cats()
 ```
 
-Integrating species distribution data from 7 source datasets requires resolving taxonomic identities across multiple naming systems. The MST uses a multi-authority matching pipeline to ensure each species is uniquely identified, enabling accurate merging of models from different data providers.
+Integrating distribution data from several providers requires resolving taxonomic identity across naming systems, so that models of the same species merge rather than being counted as different species. The MST uses a multi-authority matching pipeline in which every source name resolves to one canonical identifier.
 
-## Taxonomic Authorities
+## Two taxonomic namespaces
 
-The following authorities are loaded into a reference database (`spp.duckdb`) for taxonomic reconciliation:
+Taxa resolve into **one of two** authorities, not one:
 
-| Authority | Description | Key Identifier |
-|:----------|:------------|:---------------|
-| [WoRMS](https://www.marinespecies.org) | World Register of Marine Species — authoritative list for marine taxa | `worms_id` (AphiaID) |
-| [GBIF](https://www.gbif.org) | Global Biodiversity Information Facility Backbone Taxonomy (~6.3M taxa) | `gbif_id` |
-| [ITIS](https://www.itis.gov) | Integrated Taxonomic Information System — US federal standard | `itis_tsn` |
-| [IUCN Red List](https://www.iucnredlist.org) | International Union for Conservation of Nature — conservation assessments | `iucn_id` |
-| [BirdLife BOTW](https://www.birdlife.org) | Birds of the World — authoritative for seabird taxonomy | `botw_id` |
+- **Birds → BirdLife (`BOTW:{sisid}`)**. WoRMS coverage of birds is poor and its `isMarine` flag is unreliable for seabirds, so birds are *not* resolved through WoRMS.
+- **Everything else → WoRMS (`WORMS:{aphia_id}`)**, resolved from the scientific name via the ITIS↔WoRMS crosswalk, then exact WoRMS matching, then the WoRMS REST API for the remainder.
 
-: Taxonomic authorities used in the MST for species name resolution. {#tbl-tax-authorities}
+A merged model is keyed by that identity — `ms_merge|WORMS:137209`, `ms_merge|BOTW:22694927` — which is also why species must be counted on the **(authority, id) pair**: the two namespaces number independently, so counting bare ids collides birds with invertebrates.
 
-## ID Resolution Cascade
+## Taxonomic authorities
 
-Species identifiers are resolved through a cascading lookup process:
+| Authority | Role | Key |
+|:----------|:-----|:----|
+| [WoRMS](https://www.marinespecies.org) | World Register of Marine Species — canonical identity for all non-bird marine taxa, and the source of the class/phylum used to assign a species category | `worms_id` (AphiaID) |
+| [BirdLife BOTW](https://www.birdlife.org) | Birds of the World — canonical identity and ranges for birds | `botw_id` (SIS ID) |
+| [GBIF](https://www.gbif.org) | Backbone taxonomy, used as a crosswalk into WoRMS | `gbif_id` |
+| [ITIS](https://www.itis.gov) | US federal standard; the first match attempted where a source supplies a TSN | `itis_tsn` |
+| [IUCN Red List](https://www.iucnredlist.org) | Conservation status, and expert range maps | `iucn_id` |
 
-1. **ITIS TSN match**: if the source dataset provides an ITIS Taxonomic Serial Number, use the ITIS-to-WoRMS crosswalk for direct matching
-2. **WoRMS crosswalk**: look up accepted WoRMS AphiaID via the GBIF backbone, which integrates WoRMS as the marine taxonomy source
-3. **Scientific name match**: for records without matching identifiers, attempt exact scientific name matching against WoRMS accepted names
-4. **API lookup**: for remaining unresolved names, query the WoRMS REST API (`wm_records_name()`) for fuzzy matching
+: Taxonomic authorities used for name resolution. {#tbl-tax-authorities}
 
-At each stage, deprecated names are resolved to their accepted synonyms, and the `taxonomicStatus` field is used to determine the preferred name.
+At each stage deprecated names resolve to their accepted synonyms, with the original source name kept alongside the accepted one.
 
-## Species Categories
+## Species categories
 
-Valid species are classified into 7 categories based on their taxonomic position:
+```{r}
+#| label: tbl-species-categories
+#| tbl-cap: !expr paste0("Species categories in ", doc_ver(), ". *Scored* is read from the metric registry — a category is scored only where the release published an `extrisk_{cat}` metric for it. *Valid* counts the taxa eligible for scoring.")
 
-| Category | Description | Examples |
-|:---------|:------------|:--------|
-| bird | Seabirds and shorebirds | albatross, petrel, tern, pelican |
-| coral | Reef-building and deep-sea corals | stony coral, soft coral, black coral |
-| fish | Bony and cartilaginous fishes | grouper, shark, ray, tuna |
-| invertebrate | Non-coral marine invertebrates | crab, lobster, sea urchin, squid |
-| mammal | Marine mammals | whale, dolphin, seal, manatee |
-| reptile | Sea turtles | loggerhead, green, leatherback |
-| other | Uncategorized marine organisms | worms, tunicates, and bryozoans |
+knitr::kable(
+  data.frame(
+    Category = paste0("`", cats$sp_cat, "`"),
+    Taxa     = formatC(cats$n_taxa,  format = "d", big.mark = ","),
+    Valid    = formatC(cats$n_valid, format = "d", big.mark = ","),
+    Scored   = ifelse(cats$scored, "Yes", "**No**"),
+    check.names = FALSE, row.names = NULL),
+  align = c("l", "r", "r", "c"))
+```
 
-: Species categories used in the MST for scoring and visualization. {#tbl-species-categories}
+```{r}
+#| label: cats-notes
+#| output: asis
 
-## Data Quality
+unscored <- cats$sp_cat[!cats$scored]
+if (length(unscored)) cat(
+  "Categories present in the taxonomy but **not scored** in ", doc_ver(), ": ",
+  paste0("`", unscored, "`", collapse = ", "),
+  ". They are carried in the taxon table — the identity is real — but no metric ",
+  "aggregates them, so they contribute nothing to any score.\n\n", sep = "")
 
-### Duplicate Resolution
+if (!"other" %in% cats$sp_cat) cat(
+  "There is **no `other` bucket** in this release: every taxon lands in a named ",
+  "category assigned from its WoRMS class/phylum, or from BirdLife for birds.\n\n", sep = "")
+```
 
-Multiple source datasets may provide models for the same species. The taxonomic matching step identifies duplicates by resolving all source names to canonical WoRMS or BirdLife identifiers. When a species appears in multiple datasets, the model merging pipeline (see @sec-model-merging) takes the MAX value across all sources rather than treating them as separate species.
+```{r}
+#| label: cats-callout
+#| output: asis
 
-### Synonym Handling
+# What is true about categories differs BY RELEASE, so this is assembled from the
+# release's own category set rather than written once and printed everywhere.
+# Static v8 prose here put `primary_producer` on a v3 page, where the category
+# does not exist and `other` still does.
+have <- cats$sp_cat
+cat("::: {.callout-note}
+## How categories are assigned
 
-Taxonomic names change over time as species are reclassified. The pipeline handles this by:
+")
+if ("primary_producer" %in% have) cat(
+  "The category comes from **taxonomy**, not from the dataset a model arrived in: WoRMS class ",
+  "and phylum for non-birds, BirdLife membership for birds.
 
-- resolving all names through `acceptedNameUsageID` in each authority
-- tracking the original source name alongside the accepted name
-- flagging deprecated WoRMS IDs and updating them to current accepted IDs
+", sep = "")
+if ("turtle" %in% have) cat(
+  "- **Sea turtles are their own category (`turtle`)**, separated from `reptile` so that the ",
+  "multiplicative turtle merge and the turtle metric have somewhere to live ",
+  "(see @sec-model-merging). Non-turtle reptiles — sea snakes, marine iguanas — remain in the ",
+  "taxonomy but are not scored.
+", sep = "")
+if ("primary_producer" %in% have) cat(
+  "- **`primary_producer`** (macroalgae, seagrasses and other photosynthesisers) is a category in ",
+  "its own right. Taxa missing from the bulk WoRMS download — chiefly AlgaeBase names — are ",
+  "fetched individually from the WoRMS API and cached, rather than being swept into a bucket.
+",
+  sep = "")
+if ("other" %in% have) cat(
+  "- **`other`** collects taxa this release's assignment could not place. It is a symptom rather ",
+  "than a category, and later releases removed the need for it by assigning from the taxonomic ",
+  "hierarchy instead — see [Releases](releases.qmd).
+", sep = "")
+cat(":::
 
-### Valid Species Filter (`is_ok`)
+")
+```
 
-The source datasets together contain roughly **`r n_fmt(mst_stats$total_taxa)` taxa** — dominated by the ~17,000 marine species modeled globally by AquaMaps, plus the regulatory and range-map datasets. Not all are appropriate for the sensitivity analysis. A taxon is flagged **valid** (`is_ok = TRUE`) only when it meets *every* one of the following criteria:
+## Marine relevance {#sec-is-marine}
 
-- **Taxonomically accepted & marine**: a resolved WoRMS/BirdLife identity with an accepted (or alternative-representation) status, classified as marine (WoRMS `isMarine`, or BirdLife seabird), and not extinct (WoRMS `isExtinct` or IUCN Red List `EX`); non-turtle reptiles (e.g., sea snakes) are excluded.
-- **Has a mapped distribution**: the merged model resolves to at least one grid cell with a value — a few stale, empty model records are excluded so the valid count matches the species actually mapped.
-- **Expert range intersects the US EEZ**: where an IUCN expert range map exists, it must overlap US waters. Species whose global range falls entirely outside the US EEZ are dropped even if AquaMaps predicts suitable habitat there, since those are edge-of-range model artifacts not supported by expert assessment.
+Not every taxon in the source data belongs in a *marine* sensitivity analysis, and the obvious test does not work.
 
-**Program-Area overlap is *not* a validity criterion.** A species is valid if it has a modeled distribution anywhere in the study area; whether it falls within one of the BOEM Program Areas is determined later by a spatial (zone) query, not by the `is_ok` flag. This was introduced in **v7** — earlier versions silently required Program-Area overlap, which conflated "valid" with "occurs in a Program Area" and hid biodiversity outside the current program cycle (see below).
+**WoRMS `isMarine` fails for birds.** Birds are resolved through BirdLife, so most have no WoRMS record at all, and those that do are inconsistently flagged; relying on it would drop nearly every seabird. Earlier releases sidestepped this with a purely **spatial** test — a taxon counted as marine if its distribution overlapped the study area — which admits any coastal or inland bird whose range happens to reach the coast.
 
-This filter currently yields **`r n_fmt(mst_stats$valid_species)` valid species** across the full study area (the US EEZ), of which **`r n_fmt(mst_stats$species_program_areas)`** have modeled distributions within the **`r mst_stats$n_program_areas` BOEM Program Areas** of the current program cycle. These figures are pulled live from the [`/stats.json`](https://api.marinesensitivity.org/stats.json) endpoint for the current database version (`r mst_stats$version`).
+```{r}
+#| label: marine-cull
+#| output: asis
 
-::: {.callout-note collapse="true"}
-## How the valid-species count has changed across versions
+if (!is.na(.doc_keys()$marine)) {
+  cat(
+"This release applies an explicit **marine-relevance cull** to birds, combining two tests
+with a curation list:
 
-The definition of "valid species" has tightened over time, so the headline count is **not** directly comparable across versions:
+1. the species belongs to a **marine or coastal family** (an explicit allow-list of families), **and**
+2. its **whole global range** is at least 5% marine, measured as the share of its range cells
+   that are ocean.
 
-- **v5 (~9,819)** — valid after taxonomic filtering, before excluding IUCN ranges outside the US EEZ.
-- **v6 (9,424)** — after excluding ~371 species whose IUCN ranges fall entirely outside the US EEZ. This count *also* silently required overlap with a BOEM Program Area, conflating "valid" with "occurs in a Program Area."
-- **v7 (`r n_fmt(mst_stats$valid_species)`)** — the Program-Area requirement was removed, so the count reflects the full study-area biodiversity (the ~17,000-species universe minus the taxonomic and range exclusions). The **`r n_fmt(mst_stats$species_program_areas)`** within the Program Areas is now reported separately as a spatial subset rather than baked into the flag.
-:::
+Curated CSVs add and remove individual species where the rule gets it wrong. The measurement is
+taken over the **entire** range rather than the US portion, so a bird is judged on what it is,
+not on where the study area happens to cut it. Sub-pixel islands are a known confounder — at
+0.05° a small island can make a strictly terrestrial species look partly marine — which is what
+the family allow-list guards against.\n\n", sep = "")
+} else {
+  cat(
+"This release predates the explicit marine-relevance cull. Marine status comes from WoRMS
+`isMarine`, with birds admitted through BirdLife instead, so the bird counts on this page are
+broader than in later releases.\n\n", sep = "")
+}
+```
 
-### From source taxa to valid species
-
-The table below traces the cumulative effect of each `is_ok` gate — applied in the order used by the merge pipeline — showing the number of species **removed** at each step and the number **remaining**, from the full pool of source-dataset taxa down to the valid species, then the spatial subset that falls within the BOEM Program Areas. The largest reductions are species with no merged distribution (those whose IUCN expert range falls entirely outside the US EEZ produce zero cells) and non-marine taxa. Counts are pulled live for the current database version (`r mst_stats$version`).
+## From source taxa to valid species
 
 ```{r}
 #| label: tbl-filter-funnel
-#| tbl-cap: "Cumulative `is_ok` filter funnel: species removed and remaining at each validity gate, then the within-Program-Area spatial subset. Pulled live from the API for the current database version."
-.f <- mst_stats$funnel
+#| tbl-cap: !expr paste0("Validity gates applied cumulatively to ", doc_ver(), "'s published `taxon` table. The final row applies the release's own validity flag to the whole table — it is the authoritative count, and not simply the conjunction of the diagnostic gates above it.")
+
+f <- doc_funnel()
 knitr::kable(
   data.frame(
-    `Filter step`       = .f$filter,
-    Removed             = ifelse(.f$removed == 0, "—", paste0("−", n_fmt(.f$removed))),
-    `Species remaining` = n_fmt(.f$remaining),
-    check.names         = FALSE),
+    `Filter step`    = f$step,
+    Removed          = ifelse(f$removed <= 0, "—", paste0("−", n_fmt(f$removed))),
+    `Taxa remaining` = n_fmt(f$remaining),
+    check.names = FALSE, row.names = NULL),
   align = c("l", "r", "r"))
 ```
 
-## Key Function
+This yields **`r doc_stat("valid_species")` valid species** across the study area.
 
-The taxonomic matching is implemented in `msens::match_taxa()`, which orchestrates the ID resolution cascade and returns a unified taxon table with cross-referenced identifiers from all authorities.
+```{r}
+#| label: pra-subset
+#| output: asis
+
+if (doc_can("programareas")) cat(
+  "Of those, **", doc_stat("species_program_areas"), "** have modeled distributions inside the **",
+  doc_stat("n_program_areas"), " BOEM Program Areas** of the current program cycle. That is a ",
+  "**spatial** result, obtained by asking the zone tables which species occur there — not a ",
+  "property of the validity flag.\n\n", sep = "")
+```
+
+::: {.callout-important}
+## Validity is not the same question as "occurs in a Program Area"
+
+Through v6 the validity flag silently *required* overlap with a BOEM Program Area, conflating "this is a real, mapped marine species" with "this species happens to fall inside the areas of the current program cycle" — and so hiding biodiversity outside that cycle. From **v7** the two are separate: validity means the taxon has a modeled distribution in the study area, and Program-Area membership is a zone query answered afterwards.
+
+This is why the headline count is **not comparable across releases**: it rose sharply at v7 without a single species being added, because the definition changed. Per-release counts are on the [Releases](releases.qmd) page.
+:::
+
+## Data quality
+
+### Duplicate resolution
+
+Several datasets may supply a model for the same species. Resolving every source name to one canonical identifier is what makes those models merge — taking the maximum per cell — instead of appearing as separate species and counting the taxon more than once in every score.
+
+### Synonym handling
+
+Names change as taxa are reclassified. The pipeline resolves through `acceptedNameUsageID` in each authority, keeps the original source name alongside the accepted one, and updates deprecated identifiers to their current accepted form.
+
+## Implementation
+
+Name resolution is `msens::match_taxa()`, which runs the identifier cascade and returns the unified taxon table. Category assignment, the marine cull and the validity flags are applied in the `merge_taxon` workflow (see @sec-workflows).

@@ -7,38 +7,71 @@ editor_options:
 
 # Workflows {#sec-workflows}
 
-Workflows are scripts — mostly [Quarto](https://quarto.org) notebooks — that ingest source datasets, merge taxonomic authorities, compute scores, and build the derived artifacts consumed by the serving tier. They are the only writers of `sdm.duckdb`; everything downstream (Shiny apps, the TiTiler factory, the `plumber` API) reads it in read-only mode.
+```{r}
+#| include: false
+# knitr evaluates inline `r ...` only in a document that has at least one code
+# chunk — without this the doc_manifest() call in the Stages table below renders
+# as literal text, with no error.
+```
+
+Workflows are [Quarto](https://quarto.org) notebooks that ingest source datasets, resolve taxonomy, merge models, compute scores and publish a release. They are the only writers of the pipeline database; everything downstream reads published artifacts.
 
 Links:
 
-- [marinesensitivity.org/workflows](https://marinesensitivity.org/workflows/) — rendered HTML
+- [marinesensitivity.org/workflows](https://marinesensitivity.org/workflows/) — every notebook, rendered, with the current dependency graph
 - [github.com/MarineSensitivity/workflows](https://github.com/MarineSensitivity/workflows) — source
 
-See @fig-data-pipeline for a visual summary and @sec-db for the target schema.
+The notebook list is deliberately **not** reproduced here: it is generated from the pipeline's own metadata and changes whenever a dataset is added. What is documented here is the contract that generates it.
 
-## Ingest workflows (populate `sdm.duckdb`)
+## The pipeline is a graph, generated from the notebooks
 
-Each source dataset has a dedicated `ingest_*.qmd` that writes rows to `cell_metric`, `model_cell`, `taxon`, `dataset` and related tables:
+The pipeline is a [`targets`](https://books.ropensci.org/targets/) directed acyclic graph, and the graph is **not hand-maintained**. Each notebook declares its own place in it, in YAML front-matter:
 
-| Workflow | Source |
-|---|---|
-| `ingest_aquamaps_to_sdm_duckdb.qmd` | [AquaMaps](https://www.aquamaps.org) predictions (∼16,800 models) |
-| `ingest_sdm-nc.qmd`, `ingest_sdm-gm.qmd` | NOAA/GEBCO cetacean + sea-turtle distribution models |
-| `ingest_taxon.qmd` | Unified taxonomy from [WoRMS](https://www.marinespecies.org), [eBird](https://ebird.org) |
-| `ingest_nmfs-fws-listings.qmd`, `ingest_iucn*.qmd` | Conservation status (ESA listings, IUCN Red List) |
-| `ingest_prot.qmd`, `ingest_blocks.qmd`, `ingest_mregions.qmd` | Spatial zones (protractions, blocks, marine regions) |
-| `merge_models.qmd` | Authority merging — unified `taxon` table, `taxon_model` junction, merged `mdl_seq` per species |
+``` yaml
+msens:
+  target_name: ingest_aquamaps
+  workflow_type: ingest
+  dependency: [build_cell_grid]
+  output: data/manifests/ingest_aquamaps.json
+  dataset: {ds_key: am, response_type: suitability, source_authority: AquaMaps,
+            temporal_interval: static, native_format: raster}
+```
 
-## Scoring workflow (`cell_metric` + `zone_metric`)
+The target list is built by parsing those blocks, so **adding a dataset means adding a notebook** — not editing a pipeline definition that could disagree with it. The `dataset:` block is also the single source of truth from which the `dataset` registry table is consolidated; a dataset that is ingested without one fails the build loudly rather than appearing in the data with no metadata.
 
-- **`calc_scores.qmd`** — the primary scoring pipeline. Loads `sdm.duckdb` read-write, computes extinction-risk metrics by species category (e.g., `extrisk_bird`, `extrisk_fish`, `extrisk_mammal`), writes rows to `cell_metric`, and aggregates into `zone_metric` for both Program Area and subregion zones. Also exports helper caches (`taxon.csv`, `layers_v6.csv`, `flower_default_subregions.csv`) used by the Shiny apps at startup.
-- **`update_scores.qmd`** — targeted remap when the score scale changes (e.g., the 2026 migration from the old 70/90 critical-habitat scale to the unified `er_score` EN=100 / TN=50 / LC=1 scale).
+## Stages
 
-## Derived artifacts for the serving tier
+| Stage | What it does |
+|:------|:-------------|
+| **grid** | Builds the global 0.05° cell grid — the sampling unit every model is rasterized onto — with environmental covariates and study-area membership. |
+| **ingest** | One notebook per source dataset, writing one distribution per model keyed by this release's model id (`` `r doc_manifest()$id_field` ``). Vector ranges are rasterized by exact area coverage; rasters are interpolated onto the grid. |
+| **merge** | Resolves every model to a common taxon, computes each taxon's governing extinction risk, and merges the per-dataset surfaces into one surface per taxon (@sec-model-merging). |
+| **score** | Computes per-cell metrics, rescales within ecoregions, and aggregates to each spatial unit (@sec-scoring). |
+| **schema** | Consolidates the registry tables — `dataset`, `model`, `taxon_model`, `listing` — that describe what the release contains. |
+| **release** | Publishes the release to S3 as partitioned Parquet, COGs, PMTiles and a STAC catalog, writes the version manifest, and (gated) deploys the serving tier. |
 
-Two one-shot build steps produce the binary artifacts that sit next to `sdm.duckdb` on `/share`:
+## Reproducibility rules
 
-- **`server/titiler/scripts/make_cellid_cog.py`** — one-shot script that reads band 1 of the source multi-band raster (`r_bio-oracle_planarea.tif`, stored in 0–360° longitude convention for contiguous US EEZ coverage across the Pacific), casts NaN → 0 + float32 → uint32, wraps longitudes to standard −180..180°, and writes a single-band tiled GeoTIFF at `/share/data/derived/r_cellid.tif`. No overviews — nearest-neighbor reads at native resolution are fast enough for z ≤ 4 and interpolating overviews would corrupt integer cell ids.
-- **PMTiles builds** — offline `tippecanoe` runs over the source GeoPackages (`ply_programareas_2026`, `ply_ecoregions_2025`, `ply_planareas_2025`, …) produce `.pmtiles` archives, published to `/share/pmtiles/` and served by Caddy at `file.marinesensitivity.org/pmtiles/<layer>.pmtiles`.
+These are load-bearing, not stylistic. Each one exists because its absence caused a specific failure.
 
-Re-run either when the underlying data changes; the Shiny app's `mtime` cache-busting parameter (tied to `sdm.duckdb`'s mtime) invalidates cached tiles automatically when the DB is rebuilt.
+**Every process is a chunk in a committed notebook, run by rendering to HTML.** Including the parts that touch the outside world — the S3 sync, the server deploy, the app reload. Not an ad-hoc shell command. Rendering is what produces the tracked HTML output and the content-hash checkpoint; executing the code without rendering skips both, so it is a diagnostic, never a run.
+
+**Side effects are opt-in.** Anything expensive or outward-facing sits behind an environment flag that defaults to off, so a routine render cannot publish or restart anything by accident.
+
+**The orchestration is part of the process.** A notebook parameterized by version is only half reproducible if the loop *over* versions lives in a throwaway shell script, so the multi-version drivers are committed too. Likewise, forcing a rebuild is a flag — never moving output directories aside by hand, which leaves no record of what was rebuilt or why.
+
+**A version number is not proof.** A notebook whose logic lives in the `msens` package is only as current as the *installed* package. The server once reported the right package version while running an older function, and seven release manifests were regenerated missing their zone tiles as a result — with nothing failing. So every behavior change gets a version bump *and* a changelog entry, and the container pins move with it.
+
+**Reproducibility beats uptime.** Where a reproducible fix and a fast in-place workaround are both available, the reproducible one wins even at the cost of brief downtime. Drift between a running container and the image it was built from is a bug to fix immediately, not a reason to avoid rebuilding.
+
+## Content-addressed checkpoints
+
+Each notebook writes a manifest recording a **content hash** of what it produced. A downstream stage can then tell whether its input actually changed, rather than trusting a timestamp — which is what makes a re-run cheap when nothing moved, and what makes an unexpected change visible.
+
+## Guarding the science
+
+Scientific rules live in the `msens` package as documented functions, not as SQL strings inside a notebook — so a notebook *calls* the rule and a unit test *asserts* it, and the two cannot drift. Every non-trivial rule has a test with a small fixture asserting its exact expected output, and every bug that is found becomes a permanent named assertion.
+
+This matters more than the aggregate checks. Whole-pipeline validation — comparing a release's zone scores against the previous one — catches broad drift but hides rule-level breakage: one lost exclusion affected ~750 species while barely moving any aggregate score (@sec-model-merging).
+
+See @sec-db for the schema these workflows produce, and @sec-releases for what each release changed.

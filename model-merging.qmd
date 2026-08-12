@@ -2,149 +2,155 @@
 
 ```{r}
 #| include: false
-source(here::here("stats.R"))
+library(dplyr)
+mdl_key_style <- doc_manifest()$id_field == "mdl_key"
 ```
 
-Each species may have distribution data in multiple source datasets (see @sec-data-sources). The model merging pipeline combines these into a single merged model per species, applying spatial masking and minimum floor values to reflect regulatory protections.
+A taxon may have distribution data in several source datasets. Merging combines them into **one surface per taxon**, applying the taxon's governing extinction risk and constraining the result to where experts say the species actually occurs.
 
 ::: {.callout-tip}
-## Interactive Walkthrough
+## Interactive walkthrough
 
-The [Scoring Walkthrough](scoring-walkthrough.qmd) visualizes the merge process interactively — see how MAX merge, spatial masking, and regulatory floors transform input rasters step by step.
+The [Scoring Walkthrough](scoring-walkthrough.qmd) animates this — maximum merge, range masking and the regulatory floors, step by step from input rasters.
 :::
 
-## Pipeline Overview
+## The rule, in one place
 
-The merge pipeline processes each valid species through the following steps:
+The merge rules are **`msens::merge_sql()`** and **`msens::turtle_sql()`** — SQL held in the package rather than inside a notebook. The merge notebook executes them and the unit tests assert them against synthetic fixtures, one per taxon category, so the pipeline and its tests cannot drift apart. Changing a rule in a way that breaks a documented case fails the tests.
+
+## Pipeline
 
 ```{mermaid}
 %%| label: fig-merge-pipeline
-%%| fig-cap: "Model merging pipeline for a single species."
+%%| fig-cap: "Merging one taxon's source models into a single surface."
 %%| fig-width: 6
 flowchart TD
-  A["Gather all models<br>for species across<br>8 source datasets"] --> B["Take MAX value<br>per cell across<br>all datasets"]
-  B --> C{"Range mask exists?<br>(IUCN, SWOT+DPS,<br>or CH)"}
-  C -->|Yes| D["Apply spatial mask<br>(constrain to<br>range extent)"]
-  C -->|No| E["Keep unmasked<br>distribution"]
-  D --> F{"MMPA<br>protected?"}
+  A["Gather this taxon's models<br>across all source datasets"] --> T{"Sea turtle?"}
+  T -->|Yes| M["Multiply DPS extinction-risk<br>surface by suitability"]
+  T -->|No| B{"Has an expert range<br>anywhere in the world?"}
+  B -->|Yes| C["Range footprint valued at<br>max(governing er_score,<br>AquaMaps at those cells)"]
+  B -->|No| D["Raw AquaMaps footprint<br>(no expert range to constrain it)"]
+  M --> E["Critical habitat<br>overrides with a max"]
+  C --> F["Persist to the<br>merged surface"]
+  D --> F
   E --> F
-  F -->|Yes| G["Apply floor:<br>pmax(value, 20)"]
-  F -->|No| H{"MBTA<br>protected?"}
-  G --> I["Persist to<br>model + model_cell<br>tables"]
-  H -->|Yes| J["Apply floor:<br>pmax(value, 10)"]
-  H -->|No| I
-  J --> I
 ```
 
-### Step 1: Gather Source Models
+### Step 1 — gather the taxon's models
 
-For each species (identified by `taxa_id`), the pipeline queries all available models across the 8 source datasets. A species may have:
+Every model resolving to the same taxon is collected: an AquaMaps suitability surface, any regulatory habitat or range designation (NMFS, FWS), a BirdLife or IUCN range map, and for sea turtles a SWOT+DPS range.
 
-- an AquaMaps SDM (continuous suitability)
-- one or more regulatory range/habitat designations (NMFS, FWS)
-- a BirdLife or IUCN range map
-- a SWOT+DPS range map (sea turtles only)
+### Step 2 — the expert range constrains AquaMaps
 
-### Step 2: MAX Across Datasets
+This is the heart of the merge, and it is not a plain maximum.
 
-For each grid cell, the merged value is the **maximum** suitability across all source datasets:
+Where a taxon **has an expert range**, the merged surface is the **range footprint**, valued at the maximum of the taxon's governing `er_score` and the AquaMaps value *at those cells*:
 
 $$
-v_{merged,c} = \max(v_{am,c},\; v_{ca,c},\; v_{ch,c},\; v_{rng,c},\; v_{bl,c},\; v_{iucn,c})
-$$ {#eq-merge-max}
+v_{c} = \max\!\big(\text{er\_score},\; v_{am,c}\big) \qquad c \in \text{range}
+$$ {#eq-merge-range}
 
-This ensures that the most informative (highest confidence) prediction is used. For example, if AquaMaps predicts 30% suitability but NMFS has designated the cell as critical habitat for an endangered species (100%), the merged value is 100%.
+AquaMaps values **beyond** the range are masked away. An environmental-envelope model will happily predict suitable habitat far outside where a species is known to occur; the expert range is what stops that prediction becoming an assertion of presence.
 
-### Step 2b: Turtle Multiplicative Merge
+Where a taxon has **no expert range anywhere**, there is nothing to constrain it against, so its raw AquaMaps footprint is kept as-is.
 
-For **sea turtles** (6 species), the merge uses a multiplicative approach instead of simple MAX. The SWOT+DPS dataset provides a spatially varying extinction risk (ER) surface where cell values encode the ESA listing status of the Distinct Population Segment (DPS) that overlaps each cell (Endangered = 100, Threatened = 50). This ER surface is multiplied with the suitability surface (from AquaMaps or other SDMs) during merging:
+::: {.callout-important}
+## "Has a range" is a **global** question, not a local one
+
+Whether a taxon counts as range-constrained is decided on its range **anywhere in the world**, not on whether that range reaches the study area.
+
+That distinction is the entire mechanism for excluding species whose expert range lies wholly outside US waters. Such a species has an expert range, so it takes the range-constrained path; its range ∩ US is empty, so it contributes **no US cells**. Deciding instead on "has a range *in the US*" would push those same species onto the unconstrained AquaMaps path and re-admit roughly **750** of them — river dolphins such as *Sotalia guianensis* among them — on the strength of edge-of-range model artifacts that expert assessment places nowhere near the US.
+
+This was a v6 fix, lost in the v8 rewrite and since restored. It is now a named regression test.
+:::
+
+### Step 3 — two surfaces, not one
+
+```{r}
+#| label: two-surfaces
+#| output: asis
+
+if (mdl_key_style) {
+  cat(
+"Since v8 the merge emits **two** surfaces from the same rules, because they answer different
+questions:
+
+- a **global** surface (expert range ∪ the taxon's whole AquaMaps footprint) — the honest
+  whole-range merged model, which is what the species maps draw;
+- a **US scoring** surface — the range-constrained, US-clipped result described above, which is
+  what the scores are computed from.
+
+Earlier releases produced only the second, so a species map showed the analysis extent rather
+than the species. Keeping both means the picture is not silently trimmed to the study area.\n\n",
+sep = "")
+}
+```
+
+### Step 4 — sea turtles multiply instead of taking a maximum
+
+For the six sea turtle species, extinction risk **varies across the range**: NOAA Fisheries lists Distinct Population Segments separately, so the same species can be Endangered in one region and Threatened in another. A single scalar weight cannot express that.
+
+So the turtle merge multiplies the DPS extinction-risk surface by the suitability surface:
 
 $$
-v_{merged,c} = \max\!\Big(1,\; \mathrm{round}\!\Big(\frac{v_{er,c} \times v_{suit,c}}{100}\Big)\Big)
+v_{c} = \max\!\Big(1,\; \mathrm{round}\Big(\frac{v_{er,c} \times v_{suit,c}}{100}\Big)\Big)
 $$ {#eq-merge-turtle}
 
-where:
+Critical-habitat designations then override with a maximum, so a designated cell is never scored below its designation.
 
-- $v_{er,c}$ = extinction risk value from SWOT+DPS raster (EN: 100, TN: 50)
-- $v_{suit,c}$ = suitability value from AquaMaps SDM (1--100)
-
-Critical habitat cells (NMFS or FWS designated) override via MAX — if the critical habitat value exceeds the multiplicative product, the higher value is used.
-
-Because extinction risk is already embedded in the merged values, these species receive `er_score = 100` at scoring time as a pass-through multiplier (flagged via `is_er_spatial`). This contrasts with the standard approach where all species receive a single scalar extinction risk weight applied during scoring (see @sec-scoring).
+Because risk is already inside the merged values, turtles receive `er_score = 100` at scoring time as a pass-through multiplier (flagged `is_er_spatial`), which cancels in the division by 100 rather than double-counting.
 
 ::: {.callout-note}
-## Two modeling approaches
+## Two merge strategies
 
-The MST uses two distinct merge strategies:
-
-- **Standard (most species)**: MAX across input rasters, then multiply by a **scalar** extinction risk score at scoring time
-- **Turtles only**: Multiply suitability raster by an **extinction risk raster** during merging, embedding spatially varying ER directly in the merged model
-
-See the [Scoring Walkthrough](scoring-walkthrough.qmd) for an animated side-by-side comparison.
+- **Most taxa** — range-constrained maximum, then a **scalar** extinction-risk weight at scoring time.
+- **Sea turtles** — an extinction-risk **raster** multiplied into the merged model, so risk varies spatially within the species.
 :::
 
-### Step 3: Spatial Masking
+## Where extinction risk enters
 
-When a range map or designated habitat exists for a species, the merged model is **constrained to the spatial extent** of these mask datasets. The mask is formed as the union of all available `is_mask = TRUE` datasets for that species.
+The governing `er_score` (@sec-extinction-risk) is applied **at merge time**, valuing the range cells — the point at which a species' presence in a cell should carry its governing risk rather than whatever code the contributing dataset happened to record. Applying it later, at scoring, would lose that: the merged surface would carry source-specific codes that may be stale or out of jurisdiction.
 
-For most taxa, the IUCN range map serves as the global mask. For **sea turtles**, the SWOT+DPS dataset (`rng_turtle_swot_dps`; see @sec-swot-dps) replaces the IUCN range as the global mask, providing more realistic distributions based on expert-reviewed SWOT polygons with ESA-based DPS status encoding. NMFS Critical Habitat and FWS Critical Habitat also contribute to the mask when designated.
+## The statutory floors
 
-This prevents the AquaMaps SDM (which often has broad environmental envelope predictions) from extending species presence far beyond their known range. Cells outside the mask are set to zero (species absent). This ensures that suitable habitat is not included outside known ranges, so that model predictions align with expert knowledge of where species actually occur.
+The MMPA (20) and MBTA (10) floors are part of the governing `er_score`, not a separate pass over the cells. A marine mammal's range cells therefore carry at least 20 wherever it is present, and a CFR 50 §10.13 migratory bird at least 10 — see @sec-extinction-risk for how each flag is assigned, and why the MBTA one is a species list rather than "all birds".
 
-::: {.callout-important}
-## v6 fix: species with ranges outside the US EEZ
+## Persisted output
 
-Species whose IUCN expert range polygon produces zero cells when rasterized to the US EEZ grid now receive a 0-cell `rng_iucn` entry in the database (rather than being silently skipped during ingestion). The merge clips AquaMaps predictions against this empty mask, producing zero merged cells, and the species is flagged `is_ok=FALSE`. This excluded 371 species (343 fish, 20 invertebrates, 6 corals, 2 mammals) that had spurious AquaMaps edge-of-range predictions in US waters despite IUCN expert assessment placing them entirely outside the US EEZ. The quantitative impact on Program Area scores is negligible because the removed species had near-zero suitability values.
-:::
+```{r}
+#| label: merge-outputs
+#| output: asis
 
-### Step 4: MMPA Spatial Floor
+idf <- doc_manifest()$id_field
+cat("The merged result is stored as:\n\n",
+"- **`model`** — one row per merged model, keyed by `", idf, "`.\n",
+"- **`model_cell`** — one row per model × cell, holding the merged value in `val`.\n\n", sep = "")
+if (mdl_key_style) {
+  cat(
+"`mdl_key` is a **stable** identifier of the form `{dataset}|{species}` — `am|Fis-29291`,
+`ms_merge|WORMS:137209`. It replaced an auto-increment id that renumbered on every rebuild,
+which broke every saved link to a model.\n\n", sep = "")
+}
+```
 
-For species protected under the Marine Mammal Protection Act (all marine mammals), a spatial minimum floor is applied:
+## Validity after merging
 
-$$
-v_{c} = \max(v_{merged,c},\; 20)
-$$ {#eq-mmpa-floor}
+A taxon is flagged valid once merging has run, on the criteria in @sec-taxonomy — chiefly that it resolved to a taxon, is marine and not extinct, and has at least one merged cell in the study area. Program-Area overlap is **not** among them from v7 onward; it is a spatial question answered later.
 
-This ensures that every cell where a marine mammal is present has a minimum value of 20%, reflecting the legal protection that MMPA affords regardless of ESA status. This includes both NMFS-managed species (whales, dolphins, seals, sea lions) and FWS-managed species (walrus, polar bear, sea otter, manatee, dugong).
+```{r}
+#| label: merge-counts
+#| output: asis
 
-::: {.callout-important}
-## v5 fix: FWS-managed marine mammals
+cat("In ", doc_ver(), " this yields **", doc_stat("valid_species"),
+    " valid species** across the study area", sep = "")
+if (doc_can("programareas")) cat(", of which **", doc_stat("species_program_areas"),
+    "** contribute to scores within the ", doc_stat("n_program_areas"),
+    " BOEM Program Areas of the current program cycle", sep = "")
+cat(".\n\n")
+```
 
-As of v5, the MMPA floor is correctly applied to **all** marine mammals regardless of managing agency. Earlier versions incorrectly excluded FWS-managed species (walrus, polar bear, sea otter, manatee, dugong) from this floor because the `is_mmpa` flag was derived only from the NMFS Species Directory.
-:::
+## Guarding the rules
 
-### Step 5: MBTA Spatial Floor
+Every merge category has a synthetic fixture in the `msens` test suite asserting its exact expected output: range-only, both-masked, range-outside-the-US excluded, AquaMaps-only single-model, AquaMaps-only multi-model (which must **not** deduplicate), and the multiplicative turtle case.
 
-Similarly, for species protected under the Migratory Bird Treaty Act (most seabirds), a spatial minimum floor of 10% is applied:
-
-$$
-v_{c} = \max(v_{merged,c},\; 10)
-$$ {#eq-mbta-floor}
-
-### Step 6: Persist Results
-
-The final merged model is stored in the DuckDB database as:
-
-- **`model` table**: one row per species with metadata (dataset key `ms_merge`, taxa reference, model sequence)
-- **`model_cell` table**: one row per species × cell combination with the merged suitability value
-
-## Valid Species Filter
-
-After merging, species are flagged as valid (`is_ok = TRUE`) based on the criteria described in @sec-taxonomy. The filtering rules differ slightly between birds and other taxa:
-
-**Birds** (from BirdLife BOTW):
-
-- has a `botw_id` (BirdLife identifier)
-- IUCN Red List code is not "EX" (Extinct)
-- if also in WoRMS: must be marine and not extinct
-
-**Other marine taxa** (from WoRMS):
-
-- has a `taxa_id` and a merged model (`mdl_seq`)
-- IUCN Red List code is not "EX"
-- WoRMS `isMarine = TRUE` and `isExtinct != TRUE`
-- species category is not "reptile" (except sea turtles, which are reclassified as category "reptile")
-
-As of v7, an overlap with a BOEM Program Area is **no longer** required for validity (it previously narrowed the set to 9,424); Program-Area scope is now a spatial/zone query so the full study-area biodiversity is retained.
-
-This filtering yields **`r n_fmt(mst_stats$valid_species)` valid species** across the study area, of which **`r n_fmt(mst_stats$species_program_areas)`** contribute to scores within the `r mst_stats$n_program_areas` BOEM Program Areas of the current program cycle.
+This is deliberate. Whole-pipeline checks — the version-equivalence gate on Program-Area scores, and the content-hash checkpoints — catch *aggregate* drift, but they hide rule-level breakage: the ~750 wrongly-included species above moved aggregate scores almost not at all while being scientifically wrong. A category with no fixture is a category that can break silently.
