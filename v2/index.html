@@ -647,6 +647,24 @@ ul.task-list li input[type="checkbox"] {
 <h1 class="unnumbered">Preface</h1>
 <p>The <strong>Marine Sensitivity Toolkit</strong> (MST) is a cloud-native system developed for the Bureau of Ocean Energy Management (BOEM) to assess the sensitivity of marine ecosystems to offshore energy development.</p>
 <p>It integrates 17,353 species distribution models with extinction risk assessments across US waters (9,792 of which fall within the 20 BOEM Program Areas of the current program cycle).</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>What changed in v2, relative to v1
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><em>Program Areas</em></p>
+<p><strong>Datasets</strong> — <strong>IUCN Red List range maps</strong> added, and used as the global <strong>mask</strong> — constraining AquaMaps predictions to the expert-assessed range rather than contributing a value of their own.</p>
+<p><strong>Methods</strong> — A model-merging pipeline is introduced, producing one merged surface per taxon where a taxon has more than one source.</p>
+<p><strong>Scope</strong> — The <strong>BOEM Program Areas</strong> of the 2026 program cycle replace Planning Areas as the reporting unit.</p>
+<p><strong>Technology</strong> — Individual model layers are published, and distributions are stored as cloud-optimized GeoTIFFs.</p>
+<p><em>Measured against v1: datasets added: <code>rng_iucn</code>; valid species 17,379 → 17,353; spatial units changed.</em></p>
+</div>
+</div>
 <div id="fig-overview-preface" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-overview-preface-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">

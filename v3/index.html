@@ -647,6 +647,23 @@ ul.task-list li input[type="checkbox"] {
 <h1 class="unnumbered">Preface</h1>
 <p>The <strong>Marine Sensitivity Toolkit</strong> (MST) is a cloud-native system developed for the Bureau of Ocean Energy Management (BOEM) to assess the sensitivity of marine ecosystems to offshore energy development.</p>
 <p>It integrates 9,795 species distribution models with extinction risk assessments across US waters (9,621 of which fall within the 20 BOEM Program Areas of the current program cycle).</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>What changed in v3, relative to v2
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><em>Merged models + extinction risk</em></p>
+<p><strong>Datasets</strong> — <strong>NMFS core areas</strong> added — designated regions of concentrated use, a targeted high-confidence habitat indicator rather than a broad-coverage model.</p>
+<p><strong>Methods</strong> — Extinction risk is reworked into a single <strong>governing <code>er_score</code></strong> per taxon, taken as the most protective across its datasets with a US national listing overriding the international IUCN category, plus statutory floors for the <strong>MMPA</strong> (marine mammals) and <strong>MBTA</strong> (migratory birds). Merging now runs for <strong>every</strong> taxon, masked to the IUCN range where one exists.</p>
+<p><strong>Scope</strong> — Taxonomy is tightened: every source name resolves to a canonical WoRMS or BirdLife identity, and non-marine and extinct taxa are dropped. Sea turtles become their own category, and non-turtle reptiles stop being scored. This roughly halves the valid-species count — a change in <strong>definition</strong>, not a loss of data.</p>
+<p><em>Measured against v2: datasets added: <code>ca_nmfs</code>; valid species 17,353 → 9,795.</em></p>
+</div>
+</div>
 <div id="fig-overview-preface" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-overview-preface-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">

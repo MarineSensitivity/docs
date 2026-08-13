@@ -647,6 +647,22 @@ ul.task-list li input[type="checkbox"] {
 <h1 class="unnumbered">Preface</h1>
 <p>The <strong>Marine Sensitivity Toolkit</strong> (MST) is a cloud-native system developed for the Bureau of Ocean Energy Management (BOEM) to assess the sensitivity of marine ecosystems to offshore energy development.</p>
 <p>It integrates 16,153 species distribution models with extinction risk assessments across US waters (9,230 of which fall within the 20 BOEM Program Areas of the current program cycle).</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>What changed in v7, relative to v6
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><em>Validity decoupled from Program Areas</em></p>
+<p><strong>Methods</strong> — Scores are recomputed over the full set, with negligible effect: 18 of 20 Program Areas are unchanged.</p>
+<p><strong>Scope</strong> — <strong>Validity is decoupled from Program Areas.</strong> Earlier releases silently required a species to overlap a current Program Area to count as valid, which hid biodiversity outside the program cycle’s footprint. Validity now means a taxonomically valid species with a modeled distribution anywhere in the study area, and Program-Area membership becomes a spatial query answered afterwards. The count rises sharply <strong>without a single species being added</strong>.</p>
+<p><em>Measured against v6: valid species 9,424 → 16,153; spatial units changed.</em></p>
+</div>
+</div>
 <div id="fig-overview-preface" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-overview-preface-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">

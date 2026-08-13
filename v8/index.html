@@ -647,6 +647,24 @@ ul.task-list li input[type="checkbox"] {
 <h1 class="unnumbered">Preface</h1>
 <p>The <strong>Marine Sensitivity Toolkit</strong> (MST) is a cloud-native system developed for the Bureau of Ocean Energy Management (BOEM) to assess the sensitivity of marine ecosystems to offshore energy development.</p>
 <p>It integrates 17,112 species distribution models with extinction risk assessments across US waters (9,632 of which fall within the 20 BOEM Program Areas of the current program cycle).</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>What changed in v8, relative to v7
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><em>Marine Atlas</em></p>
+<p><strong>Datasets</strong> — The same eight contributing inputs. NOAA SEFSC and NCCOS <strong>density</strong> models are ingested and catalogued but deliberately <strong>excluded from the merge</strong>, because their units (individuals per km²) have no agreed mapping onto the 0–100 suitability scale — they are flagged <code>is_scored = FALSE</code> so no published count includes them.</p>
+<p><strong>Methods</strong> — The expert range <strong>constrains</strong> AquaMaps rather than merely competing with it, and whether a taxon has a range is decided <strong>globally</strong> — so a species whose range lies wholly outside US waters contributes no US cells. Governing extinction risk is applied at merge time, to the range cells. A BirdLife↔︎WoRMS crosswalk de-duplicates seabirds that earlier releases split across two taxa. Species categories come from taxonomy rather than keyword matching, removing the catch-all <code>other</code> and surfacing <code>primary_producer</code>; birds are additionally culled to marine/coastal families with at least 5% of their global range over ocean.</p>
+<p><strong>Scope</strong> — Ingest becomes <strong>global and whole-range</strong> — no land mask, no Program-Area gate — while scoring stays over US waters. A species map now shows the species rather than the analysis extent. Non-turtle reptiles and amphibians remain excluded from scoring.</p>
+<p><strong>Technology</strong> — Releases are published as <strong>partitioned Parquet on S3</strong> with a STAC catalog and a searchable STAC API, readable directly by DuckDB including in a browser. Score surfaces become <strong>pre-rendered COGs</strong>, retiring the tile factory that ran SQL per request. A stable <code>mdl_key</code> replaces the auto-increment <code>mdl_seq</code>, which renumbered on every rebuild and broke saved links. One application renders <strong>every</strong> release from a <code>?ver=</code> parameter, so the per-version forks are retired.</p>
+<p><em>Measured against v7: valid species 16,153 → 17,112; <strong>grid changed</strong> (<code>usa05</code> → <code>global05</code>), so <code>cell_id</code> denotes a different place; public model id <code>mdl_seq</code> → <code>mdl_key</code>; spatial units changed.</em></p>
+</div>
+</div>
 <div id="fig-overview-preface" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-overview-preface-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">

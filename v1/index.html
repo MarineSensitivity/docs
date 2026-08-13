@@ -647,6 +647,23 @@ ul.task-list li input[type="checkbox"] {
 <h1 class="unnumbered">Preface</h1>
 <p>The <strong>Marine Sensitivity Toolkit</strong> (MST) is a cloud-native system developed for the Bureau of Ocean Energy Management (BOEM) to assess the sensitivity of marine ecosystems to offshore energy development.</p>
 <p>It integrates 17,379 species distribution models with extinction risk assessments across US waters.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>v1 — the basis everything since builds on
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><em>Planning Areas</em></p>
+<p><strong>Datasets</strong> — <strong>AquaMaps</strong> global environmental-envelope models supply the distribution of nearly every species, with <strong>BirdLife</strong> expert ranges for birds. NMFS/FWS critical habitat and FWS ranges are present only as a small pilot. Continuous suitability is used as published; expert range polygons take a 50% presence value by convention, since an extent-of-occurrence boundary asserts presence <em>somewhere</em> within it rather than throughout.</p>
+<p><strong>Methods</strong> — A cell’s score is the sum, over the species present, of presence × extinction-risk weight, computed separately per species category. Weights are the IUCN <strong>equal-steps</strong> scale used by the Red List Index and the STAR metric, rescaled so Least Concern keeps a non-zero weight — so overall biological richness stays part of the signal rather than the score being driven entirely by the few threatened species. Cell scores are then rescaled <strong>within each BOEM Ecoregion</strong> and aggregated by area-weighted mean.</p>
+<p><strong>Scope</strong> — Reported for the OCS <strong>Planning Areas</strong>. Marine relevance is decided <em>spatially</em> — any model whose distribution reaches the study area is included — with no independent test of whether the species is marine. Models are merged only for the handful of taxa that have more than one source; every other species is scored directly from its single source model.</p>
+<p><strong>Technology</strong> — A 0.05° geographic (WGS84) grid, chosen because every input arrives on a latitude/longitude grid: analysing in geographic coordinates resamples each input once rather than twice. Area distortion is corrected arithmetically rather than by projection.</p>
+</div>
+</div>
 <div id="fig-overview-preface" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-overview-preface-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
