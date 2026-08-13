@@ -14,6 +14,11 @@
 #   datasets   - inputs added/changed, AND the ROLE they play (value, mask,
 #                spatially-varying extinction risk)
 #   methods    - the scientific rules: merge, extinction-risk scoring, floors
+#   zones      - the spatial unit(s) this release actually REPORTS scores on.
+#                Not the same as the zones present in its `zone` table: v3-v7 carry
+#                36 Planning Areas with a couple of non-composite metrics but score
+#                none of them. `doc_scored_units()` prints the measured answer
+#                beside this prose.
 #   scope      - what counts and where: validity definition, spatial units,
 #                study area, which taxa are eligible. Separated from `methods`
 #                because these are the changes that move the headline count
@@ -39,15 +44,18 @@ v1:
     entirely by the few threatened species. Cell scores are then rescaled **within each BOEM
     Ecoregion** and aggregated by area-weighted mean.
   scope: >
-    Reported for the OCS **Planning Areas**. Marine relevance is decided *spatially* — any model
-    whose distribution reaches the study area is included — with no independent test of whether
-    the species is marine. Models are merged only for the handful of taxa that have more than one
+    Marine relevance is decided *spatially* — any model whose distribution reaches the study area
+    is included — with no independent test of whether the species is marine. Models are merged only for the handful of taxa that have more than one
     source; every other species is scored directly from its single source model.
   technology: >
     A 0.05° geographic (WGS84) grid, chosen because every input arrives on a latitude/longitude
     grid: analysing in geographic coordinates resamples each input once rather than twice. Area
     distortion is corrected arithmetically rather than by projection.
 
+  zones: >
+    Scores are reported on the **36 OCS Planning Areas** and the **12 BOEM Ecoregions**. v1
+    predates the Program Areas entirely — its database contains none, which is why a Program
+    Area view of v1 is empty rather than merely uninteresting.
 v2:
   datasets: >
     **IUCN Red List range maps** added, and used as the global **mask** — constraining AquaMaps
@@ -56,12 +64,16 @@ v2:
     A model-merging pipeline is introduced, producing one merged surface per taxon where a taxon
     has more than one source.
   scope: >
-    The **BOEM Program Areas** of the 2026 program cycle replace Planning Areas as the reporting
-    unit.
+    The **BOEM Program Areas** of the 2026 program cycle are introduced. They do not yet *replace*
+    the Planning Areas — this release scores both, and the changeover completes at v3.
   technology: >
     Individual model layers are published, and distributions are stored as cloud-optimized
     GeoTIFFs.
 
+  zones: >
+    The **transitional** release: scores are reported on **both** the 36 Planning Areas and the
+    new 20 Program Areas, so the two can be compared directly on the same underlying data. This
+    is the only release that scores both.
 v3:
   datasets: >
     **NMFS core areas** added — designated regions of concentrated use, a targeted high-confidence
@@ -77,6 +89,11 @@ v3:
     non-turtle reptiles stop being scored. This roughly halves the valid-species count — a change
     in **definition**, not a loss of data.
 
+  zones: >
+    Scores are reported on the **20 Program Areas** only. The Planning Area geometry is still
+    carried in the database, and a couple of non-composite metrics with it, but no composite
+    score is computed for it — from here on, Planning Areas are history rather than a reporting
+    unit.
 v4:
   datasets: >
     **SWOT sea turtle ranges** and **NOAA Distinct Population Segment** polygons added, replacing
@@ -122,6 +139,9 @@ v7:
     Scores are recomputed over the full set, with negligible effect: 18 of 20 Program Areas are
     unchanged.
 
+  zones: >
+    Scores are reported on the **20 Program Areas**. A single subregion also carries a composite
+    score, which is a by-product of the study-area rollup rather than a reporting unit.
 v8:
   datasets: >
     The same eight contributing inputs. NOAA SEFSC and NCCOS **density** models are ingested and
@@ -147,3 +167,7 @@ v8:
     replaces the auto-increment `mdl_seq`, which renumbered on every rebuild and broke saved links.
     One application renders **every** release from a `?ver=` parameter, so the per-version forks
     are retired.
+  zones: >
+    Scores are reported on the **20 Program Areas**, and ecoregion and subregion rollups are
+    restored alongside them — so the release covers every spatial unit it defines, rather than
+    Program Areas alone.

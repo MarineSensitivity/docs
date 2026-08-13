@@ -468,6 +468,104 @@ doc_version_delta <- local({
   }
 })
 
+#' Per-zone score change between a release and the one before it, all metrics.
+#'
+#' Answers "what did this release actually move", which the species count cannot:
+#' v4b, v5 and v4 all report an unchanged 9,795 valid species while changing the
+#' values substantially.
+#'
+#' Choosing the spatial unit is the whole problem. It must be one BOTH releases
+#' scored, on the same geometry vintage, **and** with the same member keys — the
+#' three tests are not redundant. Every release resolves `subregion_key` to the
+#' same vintage while meaning different things by it (v1 `AKL48`, v7 `FULL`, v8
+#' `AT`), so a vintage check alone would report a delta for a redefinition.
+#' Program Areas are the preferred unit and are genuinely stable — one geometry
+#' hash and the same 20 keys across v2–v8 — but v1 has none, so v1→v2 falls back
+#' to Planning Areas, and ecoregions are the last resort since all nine share them.
+doc_score_delta <- local({
+  cached <- new.env(parent = emptyenv())
+  function(ver = doc_ver()) {
+    if (!is.null(cached[[ver]])) return(cached[[ver]])
+    rel <- doc_releases(); i <- match(ver, rel$ver)
+    if (is.na(i) || i >= nrow(rel)) return(NULL)
+    prev <- rel$ver[i + 1]
+
+    scores <- function(v, fld) {
+      m <- tryCatch(msens::atlas_manifest(v), error = function(e) NULL)
+      if (is.null(m) || !all(c("zone", "zone_metric", "metric") %in% names(m$tables))) return(NULL)
+      zc <- DBI::dbGetQuery(.doc_con(), sprintf(
+        "DESCRIBE SELECT * FROM read_parquet('%s')", m$tables[["zone"]]))$column_name
+      vc <- if ("value" %in% zc) "value" else "val"
+      mm <- DBI::dbGetQuery(.doc_con(), sprintf(
+        "DESCRIBE SELECT * FROM read_parquet('%s')", m$tables[["zone_metric"]]))$column_name
+      sc <- if ("value" %in% mm) "value" else "val"
+      tryCatch(DBI::dbGetQuery(.doc_con(), sprintf(
+        "SELECT z.%s AS zone_key, mt.metric_key, zm.%s AS score
+           FROM read_parquet('%s') z
+           JOIN read_parquet('%s') zm USING (zone_seq)
+           JOIN read_parquet('%s') mt USING (metric_seq)
+          WHERE z.fld = '%s'",
+        vc, sc, m$tables[["zone"]], m$tables[["zone_metric"]], m$tables[["metric"]], fld)),
+        error = function(e) NULL)
+    }
+    zset <- function(v) {
+      z <- tryCatch(msens::atlas_manifest(v)$zones, error = function(e) NULL)
+      if (!is.data.frame(z) || !nrow(z)) return(NULL)
+      stats::setNames(if ("zone_set_key" %in% names(z)) z$zone_set_key else rep(NA, nrow(z)), z$fld)
+    }
+    za <- zset(prev); zb <- zset(ver)
+    if (is.null(za) || is.null(zb)) return(NULL)
+
+    for (fld in c("programarea_key", "planarea_key", "ecoregion_key")) {
+      if (!fld %in% names(za) || !fld %in% names(zb)) next
+      if (!identical(za[[fld]], zb[[fld]])) next            # different vintage
+      a <- scores(prev, fld); b <- scores(ver, fld)
+      if (is.null(a) || is.null(b) || !nrow(a) || !nrow(b)) next
+      # and the member keys must actually match, whatever the vintage says
+      if (!identical(sort(unique(a$zone_key)), sort(unique(b$zone_key)))) next
+      d <- msens::zone_score_delta(a, b, labels = c(prev, ver))
+      d$fld <- fld; d$zone_set_key <- unname(zb[[fld]]); d$prev <- prev
+      cached[[ver]] <- d
+      return(d)
+    }
+    NULL
+  }
+})
+
+#' Which spatial units this release actually REPORTS scores on.
+#'
+#' Not the same question as which zones exist. v3–v7 all carry the 36 Planning
+#' Areas in `zone`, with a couple of non-composite metrics attached, and compute a
+#' composite score for none of them — the geometry is history, not a reporting
+#' unit. Reading "has zones" as "reports scores" is what let the application offer
+#' a Program Areas view of v1, which has no Program Areas at all, and draw an
+#' empty map with an `Inf`/`-Inf` legend.
+#'
+#' Measured on the composite metric, which is the score the maps and reports show.
+doc_scored_units <- local({
+  cached <- new.env(parent = emptyenv())
+  function(ver = doc_ver()) {
+    if (!is.null(cached[[ver]])) return(cached[[ver]])
+    m <- tryCatch(msens::atlas_manifest(ver), error = function(e) NULL)
+    if (is.null(m) || !all(c("zone", "zone_metric", "metric") %in% names(m$tables)))
+      return(NULL)
+    sc <- DBI::dbGetQuery(.doc_con(), sprintf(
+      "DESCRIBE SELECT * FROM read_parquet('%s')", m$tables[["zone_metric"]]))$column_name
+    val <- if ("value" %in% sc) "value" else "val"
+    out <- tryCatch(DBI::dbGetQuery(.doc_con(), sprintf(
+      "SELECT z.fld, count(*) AS n
+         FROM read_parquet('%s') z
+         JOIN read_parquet('%s') zm USING (zone_seq)
+         JOIN read_parquet('%s') mt USING (metric_seq)
+        WHERE mt.metric_key LIKE 'score!_%%' ESCAPE '!'
+        GROUP BY 1 HAVING count(*) > 0 ORDER BY 2 DESC",
+      m$tables[["zone"]], m$tables[["zone_metric"]], m$tables[["metric"]])),
+      error = function(e) NULL)
+    cached[[ver]] <- out
+    out
+  }
+})
+
 #' Render the standardized "what changed" callout for this release.
 doc_changes_callout <- function(ver = doc_ver()) {
   n <- doc_release_notes(ver)
@@ -484,10 +582,21 @@ doc_changes_callout <- function(ver = doc_ver()) {
   if (nrow(row) && nzchar(as.character(row$title)))
     cat("*", as.character(row$title), "*\n\n", sep = "")
 
-  lab <- c(datasets = "Datasets", methods = "Methods", scope = "Scope",
-           technology = "Technology")
-  for (k in names(lab))
-    if (!is.null(n[[k]])) cat("**", lab[[k]], "** — ", trimws(n[[k]]), "\n\n", sep = "")
+  lab <- c(datasets = "Datasets", methods = "Methods", zones = "Reported units",
+           scope = "Scope", technology = "Technology")
+  for (k in names(lab)) {
+    if (is.null(n[[k]])) next
+    cat("**", lab[[k]], "** — ", trimws(n[[k]]), sep = "")
+    # the measured units sit with the prose that describes them
+    if (k == "zones") {
+      u <- doc_scored_units(ver)
+      if (!is.null(u) && nrow(u))
+        cat(" *(measured: ",
+            paste(sprintf("%s %s", n_fmt(u$n), sub("_key$", "", u$fld)), collapse = ", "),
+            " scored on the composite metric.)*", sep = "")
+    }
+    cat("\n\n")
+  }
 
   # the measured facts, so the prose above is never the only account
   if (!is.null(d)) {
