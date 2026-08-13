@@ -74,53 +74,27 @@ knitr::kable(
 
 ## History
 
-### v8 — Marine Atlas
+Each release is summarized under the same four headings, so two versions can be read line for line. The same summary heads that version's own landing page.
 
-A ground-up rebuild as a global **Marine Atlas**.
+- **Datasets** — inputs added or changed, and the role each plays (contributing a value, masking a range, or carrying extinction risk spatially).
+- **Methods** — the scientific rules: how models merge, how extinction risk is scored, which statutory floors apply.
+- **Scope** — what counts and where: the definition of a valid species, the spatial units, the study area, which taxa are eligible.
+- **Technology** — formats, identifiers, serving and applications.
 
-- **Whole-range global ingest.** Every species is modeled across its *entire* global range on a shared global 0.05° ocean grid, with no land mask and no Program-Area gate, so a distribution map shows the species rather than the analysis extent. "How marine" becomes a *derived* measurement rather than a filter applied up front.
-- **Seabird de-duplication.** A BirdLife ↔ WoRMS crosswalk merges each bird's BirdLife, USFWS and AquaMaps inputs into a *single* taxon; v7 split some seabirds across two (Marbled Murrelet, Brown Pelican among them), double-counting them. Correcting it lowers seabird-heavy Program Areas in Alaska and the Pacific by several points, with overall Program-Area correlation to v7 of 0.94.
-- **Taxonomy-driven categories.** Categories come from WoRMS class and phylum rather than keyword matching, which removed the catch-all `other` bucket and surfaced `primary_producer`. Non-turtle reptiles and amphibians are excluded from scoring.
-- **Original *and* interpolated distributions.** Each source model is published in two representations — the native-resolution original and the 0.05° interpolated surface used in scoring — catalogued in STAC and toggleable in the species app.
-- **Partitioned Parquet on S3.** Releases are published as partitioned, content-addressed Parquet with COGs, PMTiles and a STAC catalog, replacing per-dataset archives and a monolithic database file.
-- **A stable model identifier.** `mdl_key` (`am|Fis-29291`, `ms_merge|WORMS:137209`) replaces the auto-increment `mdl_seq`, which renumbered on every rebuild and so broke every saved link to a model.
-- **A different grid.** v8 moves from a regional grid on 0–360 longitudes to a global one on −180 to 180, so **`cell_id` denotes a different place** than it did in v1–v7.
+::: {.callout-warning}
+## Scope changes move the count without any data changing
 
-### v7 — validity decoupled from Program Areas
+The distinction between **Methods** and **Scope** is the one to watch. v3 tightened the taxonomy, v6 excluded ranges outside the EEZ, and v7 decoupled validity from Program Areas — each moved the headline species count substantially, and none of them added or removed a single input. Reading those jumps as growth or loss is the single easiest mistake to make with this table.
+:::
 
-Earlier releases silently required a species to overlap a current BOEM Program Area to count as valid, which hid biodiversity outside the program cycle's footprint. Validity now means a taxonomically valid species with a modeled distribution anywhere in the study area, restoring the set from 9,424 to 16,153 — of which 9,230 fall within the 20 Program Areas. Program-Area membership became a spatial query rather than a species-level filter. Scores were recomputed over the full set with negligible effect: 18 of 20 Program Areas unchanged, and only Gulf of America GAB (−0.04) and GAA (−0.00) shifted at all.
+```{r}
+#| label: history
+#| output: asis
 
-### v6 — expert ranges outside the US EEZ
-
-Excluded 371 species (343 fish, 20 invertebrates, 6 corals, 2 mammals) whose IUCN expert ranges fall entirely outside the US EEZ; their AquaMaps predictions in US waters were edge-of-range artifacts with near-zero suitability. Also ingested three missing marine-mammal IUCN ranges (*Phoca vitulina*, *Trichechus manatus*, *Pusa hispida*) from a more complete download. Effect on Program-Area scores was negligible.
-
-This exclusion was later lost in the v8 rewrite and restored; it now has a named regression test, because ~750 species were affected while aggregate scores barely moved — precisely the kind of error a whole-pipeline check cannot see (@sec-model-merging).
-
-### v5 — MMPA floor for FWS-managed marine mammals
-
-Fixed the MMPA spatial floor for marine mammals managed by FWS rather than NMFS — walrus, polar bear, sea otter, manatee, dugong — which had been missing the protection flag because it was derived from the NMFS Species Directory alone. Later releases assign the flag by taxonomy instead, so no marine mammal can be missed (@sec-extinction-risk).
-
-### v4b — the multiplicative turtle merge
-
-Introduced the second modeling approach, for sea turtles only: instead of taking a maximum and applying a scalar extinction-risk weight at scoring time, the SWOT+DPS extinction-risk **raster** is multiplied into the suitability surface during merging, so risk varies spatially within a species — matching the fact that NOAA Fisheries lists Distinct Population Segments separately. Critical habitat overrides with a maximum. Affected taxa are flagged `is_er_spatial` and pass `er_score = 100` through at scoring so the risk is not counted twice.
-
-This was the point at which the MST had **two** merge strategies rather than one, and it went undocumented for two releases (see @sec-model-merging).
-
-### v4 — SWOT sea turtle ranges
-
-Replaced the overly extensive IUCN sea turtle range maps with the more realistic [State of the World's Sea Turtles](http://seamap.env.duke.edu/swot) global distributions, and applied NOAA Distinct Population Segment polygons carrying ESA listing status to distinguish Endangered from Threatened populations. The result is a more restrictive distribution dominated by ESA risk values.
-
-### v3 — merged models and extinction risk
-
-Program Areas for the National OCS Plan, and ecoregional rescaling. Source datasets merged from continuous suitability models through to binary range maps, with masking where a global IUCN range exists. Introduced species sensitivity weighting from national ESA or global IUCN extinction risk, together with MMPA and MBTA protection. Sea turtles were split out of `reptile` into their own category.
-
-### v2 — Program Areas
-
-Transition to the 2026 Program Areas. Individual model layers, a model-merging pipeline, and cloud-optimized GeoTIFF storage.
-
-### v1 — Planning Areas
-
-Planning Areas across the US EEZ, AquaMaps-based species distributions, flower plots for multi-taxa visualization, and species tables with conservation status. See @sec-release-v1 for the full v1 methodology as delivered in the 2025 final report.
+# Rendered from the SAME curated bullets + computed deltas the landing pages use,
+# so the two cannot disagree about what a release changed.
+for (v in rel$ver) doc_changes_callout(v)
+```
 
 ## Reading an older release
 

@@ -409,6 +409,103 @@ doc_releases <- local({
   }
 })
 
+# ---- what changed in this release ---------------------------------------------
+
+#' Curated release bullets (`data/release_notes.yml`), for one version.
+doc_release_notes <- local({
+  cached <- NULL
+  function(ver = doc_ver()) {
+    if (is.null(cached)) cached <<- tryCatch(
+      yaml::read_yaml(here::here("data/release_notes.yml")), error = function(e) list())
+    cached[[ver]]
+  }
+})
+
+#' Machine-derived difference between a release and the one before it.
+#'
+#' The counts in the "what changed" callout come from HERE, not from the curated
+#' YAML, so a bullet can describe a change while the figures beside it stay tied
+#' to the releases themselves. Prose is editorial; numbers are read.
+#'
+#' Returns `NULL` for the earliest release, which has nothing to differ from.
+doc_version_delta <- local({
+  cached <- new.env(parent = emptyenv())
+  function(ver = doc_ver()) {
+    if (!is.null(cached[[ver]])) return(cached[[ver]])
+    rel <- doc_releases()                      # newest first
+    i   <- match(ver, rel$ver)
+    if (is.na(i) || i >= nrow(rel)) return(NULL)
+    prev <- rel[i + 1, ]; this <- rel[i, ]
+
+    ds <- function(v) {
+      m <- tryCatch(msens::atlas_manifest(v), error = function(e) NULL)
+      if (is.null(m) || !"dataset" %in% names(m$tables)) return(character(0))
+      d <- tryCatch(DBI::dbGetQuery(.doc_con(), sprintf(
+        "SELECT * FROM read_parquet('%s')", m$tables[["dataset"]])), error = function(e) NULL)
+      if (is.null(d)) return(character(0))
+      tm <- if ("taxon_model" %in% names(m$tables)) tryCatch(
+        DBI::dbGetQuery(.doc_con(), sprintf("SELECT DISTINCT ds_key FROM read_parquet('%s')",
+                                            m$tables[["taxon_model"]]))$ds_key,
+        error = function(e) NULL) else NULL
+      keep <- if ("is_scored" %in% names(d)) d$is_scored else
+        msens::dataset_is_scored(d$ds_key, tm)
+      # normalise the AquaMaps key so `am_0.05` -> `am` is not reported as a
+      # dataset being dropped and another added
+      sort(unique(msens::normalize_ds_key(d$ds_key[keep & d$ds_key != "ms_merge"])))
+    }
+    a <- ds(prev$ver); b <- ds(this$ver)
+    out <- list(
+      prev = prev$ver,
+      added = setdiff(b, a), removed = setdiff(a, b),
+      valid_prev = prev$valid_species, valid_this = this$valid_species,
+      grid_changed = !identical(prev$grid, this$grid),
+      grid_prev = prev$grid, grid_this = this$grid,
+      id_changed = !identical(prev$id_field, this$id_field),
+      id_prev = prev$id_field, id_this = this$id_field,
+      units_changed = !identical(prev$units, this$units))
+    cached[[ver]] <- out
+    out
+  }
+})
+
+#' Render the standardized "what changed" callout for this release.
+doc_changes_callout <- function(ver = doc_ver()) {
+  n <- doc_release_notes(ver)
+  if (is.null(n)) return(invisible(NULL))
+  d <- doc_version_delta(ver)
+  row <- doc_version_row(ver)
+  ttl <- if (isTRUE(n$basis)) sprintf("%s — the basis everything since builds on", ver)
+         else sprintf("What changed in %s%s", ver,
+                      if (!is.null(d)) sprintf(", relative to %s", d$prev) else "")
+
+  cat("::: {.callout-important}\n## ", ttl, "\n\n", sep = "")
+  if (nrow(row) && nzchar(as.character(row$title)))
+    cat("*", as.character(row$title), "*\n\n", sep = "")
+
+  lab <- c(datasets = "Datasets", methods = "Methods", scope = "Scope",
+           technology = "Technology")
+  for (k in names(lab))
+    if (!is.null(n[[k]])) cat("**", lab[[k]], "** — ", trimws(n[[k]]), "\n\n", sep = "")
+
+  # the measured facts, so the prose above is never the only account
+  if (!is.null(d)) {
+    bits <- c(
+      if (length(d$added))   sprintf("datasets added: %s", paste0("`", d$added, "`", collapse = ", ")),
+      if (length(d$removed)) sprintf("datasets no longer contributing: %s",
+                                     paste0("`", d$removed, "`", collapse = ", ")),
+      if (!is.na(d$valid_prev) && !is.na(d$valid_this))
+        sprintf("valid species %s → %s", n_fmt(d$valid_prev), n_fmt(d$valid_this)),
+      if (isTRUE(d$grid_changed)) sprintf("**grid changed** (`%s` → `%s`), so `cell_id` denotes a different place",
+                                          d$grid_prev, d$grid_this),
+      if (isTRUE(d$id_changed))   sprintf("public model id `%s` → `%s`", d$id_prev, d$id_this),
+      if (isTRUE(d$units_changed)) "spatial units changed")
+    if (length(bits))
+      cat("*Measured against ", d$prev, ": ", paste(bits, collapse = "; "), ".*\n\n", sep = "")
+  }
+  cat(":::\n\n")
+  invisible(NULL)
+}
+
 # ---- formatting ---------------------------------------------------------------
 
 #' Integer with thousands separator: 16153 -> "16,153". Vectorised.

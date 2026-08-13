@@ -21,6 +21,15 @@ if (doc_can("programareas")) cat(" (", doc_stat("species_program_areas"),
 cat(".\n\n")
 ```
 
+```{r}
+#| label: index-changes
+#| output: asis
+# The first thing a reader of a versioned book needs is what THIS version is —
+# standardized headings so two releases can be compared line for line.
+doc_changes_callout()
+```
+
+
 
 ![Overview of the MST methodology: species distribution models from the source datasets are merged, weighted by extinction risk scores (incorporating ESA, MMPA, MBTA, and IUCN protections), rescaled by ecoregion, and aggregated to management zones for visualization.](figures/overview-methods.svg){#fig-overview-preface}
 
