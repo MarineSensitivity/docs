@@ -585,15 +585,21 @@ doc_changes_callout <- function(ver = doc_ver()) {
   lab <- c(datasets = "Datasets", methods = "Methods", zones = "Reported units",
            scope = "Scope", technology = "Technology")
   for (k in names(lab)) {
-    if (is.null(n[[k]])) next
-    cat("**", lab[[k]], "** — ", trimws(n[[k]]), sep = "")
-    # the measured units sit with the prose that describes them
-    if (k == "zones") {
-      u <- doc_scored_units(ver)
-      if (!is.null(u) && nrow(u))
-        cat(" *(measured: ",
-            paste(sprintf("%s %s", n_fmt(u$n), sub("_key$", "", u$fld)), collapse = ", "),
-            " scored on the composite metric.)*", sep = "")
+    # `zones` is the one heading that ALWAYS renders, even where the release
+    # changed nothing about it. Omitting it left v4/v4b/v5/v6 stating their
+    # reporting unit nowhere at all — which is the ambiguity this heading exists
+    # to remove. Every other heading stays change-only.
+    if (is.null(n[[k]]) && k != "zones") next
+    u <- if (k == "zones") doc_scored_units(ver) else NULL
+    if (k == "zones" && is.null(n[[k]]) && (is.null(u) || !nrow(u))) next
+    cat("**", lab[[k]], "** — ", sep = "")
+    if (!is.null(n[[k]])) cat(trimws(n[[k]]))
+    if (k == "zones" && !is.null(u) && nrow(u)) {
+      units <- paste(sprintf("%s %s", n_fmt(u$n), sub("_key$", "", u$fld)), collapse = ", ")
+      if (is.null(n[[k]]))
+        cat("Scores are reported on **", units, "** — unchanged from the previous release.", sep = "")
+      else
+        cat(" *(measured: ", units, " scored on the composite metric.)*", sep = "")
     }
     cat("\n\n")
   }
