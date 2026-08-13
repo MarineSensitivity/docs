@@ -927,6 +927,7 @@ Table&nbsp;2.2: What each release published, read from its manifest.
 <div class="callout-body-container callout-body">
 <p><em>IUCN range outside US EEZ</em></p>
 <p><strong>Datasets</strong> — Three missing marine-mammal IUCN ranges ingested from a more complete download.</p>
+<p><strong>Reported units</strong> — Scores are reported on <strong>20 programarea</strong> — unchanged from the previous release.</p>
 <p><strong>Scope</strong> — Species whose <strong>IUCN expert range lies entirely outside the US EEZ</strong> are excluded. Their apparent presence in US waters was an edge-of-range artifact of environmental-envelope prediction, with near-zero suitability, so the effect on scores is negligible even though the species count drops.</p>
 <p><em>Measured against v5: valid species 9,795 → 9,424.</em></p>
 </div>
@@ -943,6 +944,7 @@ Table&nbsp;2.2: What each release published, read from its manifest.
 <div class="callout-body-container callout-body">
 <p><em>MMPA spatial floor</em></p>
 <p><strong>Methods</strong> — The <strong>MMPA floor is corrected</strong> for FWS-managed marine mammals — walrus, polar bear, sea otter, manatee and dugong — which had been missed because the protection flag was derived from the NMFS Species Directory alone.</p>
+<p><strong>Reported units</strong> — Scores are reported on <strong>20 programarea</strong> — unchanged from the previous release.</p>
 <p><em>Measured against v4b: valid species 9,795 → 9,795.</em></p>
 </div>
 </div>
@@ -958,6 +960,7 @@ Table&nbsp;2.2: What each release published, read from its manifest.
 <div class="callout-body-container callout-body">
 <p><em>Turtle multiplicative merge</em></p>
 <p><strong>Methods</strong> — The <strong>multiplicative turtle merge</strong>: for sea turtles the DPS extinction-risk surface is multiplied into the suitability surface during merging, with critical habitat overriding by maximum. Risk therefore varies spatially within a species. These taxa pass <code>er_score = 100</code> through at scoring so the risk already embedded in their values is not counted twice. From here the toolkit has <strong>two</strong> merge strategies rather than one.</p>
+<p><strong>Reported units</strong> — Scores are reported on <strong>20 programarea</strong> — unchanged from the previous release.</p>
 <p><em>Measured against v4: valid species 9,795 → 9,795.</em></p>
 </div>
 </div>
@@ -973,6 +976,7 @@ Table&nbsp;2.2: What each release published, read from its manifest.
 <div class="callout-body-container callout-body">
 <p><em>SWOT sea turtles</em></p>
 <p><strong>Datasets</strong> — <strong>SWOT sea turtle ranges</strong> and <strong>NOAA Distinct Population Segment</strong> polygons added, replacing the IUCN range as the global mask for all six sea turtle species. Their role is unusual: the DPS polygons carry <strong>ESA listing status spatially</strong> (Endangered vs Threatened by region), rather than as one scalar per species — the first input to vary extinction risk <em>within</em> a species’ range.</p>
+<p><strong>Reported units</strong> — Scores are reported on <strong>20 programarea</strong> — unchanged from the previous release.</p>
 <p><strong>Scope</strong> — Turtle distributions become substantially more restrictive, since the IUCN and AquaMaps ranges both extended well beyond where the species actually occur.</p>
 <p><em>Measured against v3: datasets added: <code>rng_turtle_swot_dps</code>; valid species 9,795 → 9,795.</em></p>
 </div>
