@@ -18,7 +18,24 @@ src    <- ds |> filter(is_scored, ds_key != "ms_merge")
 unused <- ds |> filter(!is_scored)
 ```
 
-The MST integrates species distributions from **`r nrow(src)` source datasets**, merged into one surface per taxon (`ms_merge`). Each source predicts where a species occurs, and they differ in kind: continuous suitability models (AquaMaps), habitats tied to a core area, critical habitat or distinct population segment (NMFS, FWS, SWOT+DPS), and expert range maps (BirdLife, IUCN, FWS).
+```{r}
+#| label: ds-lead
+#| output: asis
+
+# Lead with the SHAPE of the integration, not just the count. "Five source
+# datasets" is true of v1 and gives entirely the wrong impression, because two of
+# them carry ~99.7% of the species and the other three cover a few dozen taxa
+# between them.
+nv0  <- doc_stats()$valid_species
+tops <- src[order(-coalesce(src$n_taxa, 0)), ]
+cat("The MST integrates species distributions from **", nrow(src), " source datasets**",
+    if (nrow(src) > 1 && !is.na(nv0) && !is.na(tops$n_taxa[1]))
+      sprintf(", though not in equal measure — `%s` alone supplies the distribution of %.0f%% of this release's valid species",
+              tops$ds_key[1], 100 * tops$n_taxa[1] / nv0) else "",
+    ". Each source predicts where a species occurs, and they differ in kind: continuous ",
+    "suitability models, habitats tied to a core area, critical habitat or distinct population ",
+    "segment, and expert range maps.\n\n", sep = "")
+```
 
 ::: {.callout-note}
 The counts and citations on this page are read from **`r doc_ver()`**'s own published `dataset` table, so they describe that release rather than the current one. Earlier releases integrated fewer sources: the table below *is* the answer for this version.
@@ -28,9 +45,10 @@ The counts and citations on this page are read from **`r doc_ver()`**'s own publ
 
 ```{r}
 #| label: tbl-datasets
-#| tbl-cap: !expr paste0("Source datasets in ", doc_ver(), ". *Mask* datasets constrain a taxon's merged distribution to its known range as well as contributing values. *Models* counts the distributions the release registered for that dataset.")
+#| tbl-cap: !expr paste0("Source datasets in ", doc_ver(), ", ordered by merge priority. *Mask* datasets constrain a taxon's merged distribution to its known range as well as contributing values. *Taxa* is how many of this release's valid species the dataset actually supplied a model for — not how many models it registered.")
 
-tab <- ds |> filter(is_scored)
+n_valid <- doc_stats()$valid_species
+tab <- ds |> filter(is_scored, ds_key != "ms_merge")
 tab <- tab[order(coalesce(as.numeric(col(tab, "sort_order")), 99)), ]
 knitr::kable(
   data.frame(
@@ -38,10 +56,46 @@ knitr::kable(
     Name          = lbl(tab),
     `Cell values` = coalesce(as.character(col(tab, "value_info")), ""),
     Mask          = ifelse(is.na(col(tab, "is_mask")), "—", ifelse(col(tab, "is_mask"), "Yes", "No")),
-    Models        = ifelse(is.na(col(tab, "n_models")), "—",
-                           formatC(as.numeric(col(tab, "n_models")), format = "d", big.mark = ",")),
+    Taxa          = ifelse(is.na(tab$n_taxa), "—", n_fmt(tab$n_taxa)),
+    `Share`       = ifelse(is.na(tab$n_taxa) | is.na(n_valid), "—",
+                           ifelse(tab$n_taxa / n_valid < 0.001, "<0.1%",
+                                  sprintf("%.1f%%", 100 * tab$n_taxa / n_valid))),
     check.names = FALSE, row.names = NULL),
-  align = c("l", "l", "l", "c", "r"))
+  align = c("l", "l", "l", "c", "r", "r"))
+```
+
+```{r}
+#| label: ds-coverage
+#| output: asis
+
+# The row COUNT is the misleading number, and it is what this page used to lead
+# with: v1 registers five source datasets, but two of them supply essentially
+# every scored species and the other three together reach a few dozen. The Taxa
+# column above carries that; this names it, because a reader comparing releases
+# is really comparing coverage, not row counts.
+#
+# Deliberately NOT phrased as "pilot": a dataset can be small because it is
+# TARGETED and complete. rng_turtle_swot_dps covers 6 taxa because there are six
+# sea turtle species, and ca_nmfs covers 1 by design — calling either a pilot
+# would be wrong.
+if (!is.na(n_valid) && any(!is.na(tab$n_taxa))) {
+  broad  <- tab[!is.na(tab$n_taxa) & tab$n_taxa / n_valid >= 0.01, ]
+  narrow <- tab[!is.na(tab$n_taxa) & tab$n_taxa / n_valid <  0.01, ]
+  cat("::: {.callout-important}\n## Coverage is very uneven — read the *Taxa* column, not the row count\n\n")
+  if (nrow(broad)) cat(
+    "**Broad coverage.** ", paste0("`", broad$ds_key, "` (", n_fmt(broad$n_taxa), ")",
+                                   collapse = ", "),
+    " — between them these account for the distribution of essentially every scored species.\n\n",
+    sep = "")
+  if (nrow(narrow)) cat(
+    "**Targeted designations.** ", paste0("`", narrow$ds_key, "` (", n_fmt(narrow$n_taxa), ")",
+                                          collapse = ", "),
+    " — each under 1% of valid species. These are legal designations and expert ranges for ",
+    "specific taxa (critical habitat, core areas, sea turtle ranges), so they are small by ",
+    "nature rather than incomplete; they raise the value of the cells they cover rather than ",
+    "extending coverage to new species.\n\n", sep = "")
+  cat(":::\n\n")
+}
 ```
 
 ```{r}
@@ -60,7 +114,30 @@ if (nrow(unused)) cat(
   sep = "")
 ```
 
-The **merged model** (`ms_merge`) is the derived output rather than a source: for each taxon it takes the maximum value across that taxon's source datasets in each cell, constrained to the taxon's expert range where one exists (see @sec-model-merging).
+The **merged model** (`ms_merge`) is the derived output rather than a source, so it is excluded from the table above: for each taxon it takes the maximum value across that taxon's source datasets in each cell, constrained to the taxon's expert range where one exists (see @sec-model-merging).
+
+```{r}
+#| label: ds-merge-role
+#| output: asis
+
+# How much merging a release actually did is itself a defining fact, and it is
+# NOT constant: v1 merged only the handful of taxa that had more than one source,
+# so most scored species carried their source model directly. From v3 the merge
+# runs for every taxon, and the scored surface is entirely ms_merge.
+mrg <- ds$n_taxa[ds$ds_key == "ms_merge"]
+if (length(mrg) == 1 && !is.na(mrg) && !is.na(n_valid)) {
+  frac <- mrg / n_valid
+  cat("In ", doc_ver(), " the merged model covers **", n_fmt(mrg), "** of the ", n_fmt(n_valid),
+      " valid species (", sprintf("%.0f%%", 100 * frac), "). ", sep = "")
+  if (frac > 0.99)
+    cat("Every scored species goes through the merge, so the scored surface is the merged ",
+        "model throughout.\n\n", sep = "")
+  else
+    cat("The remainder carry a single source model directly — this release merges only where a ",
+        "taxon has more than one contributing dataset, so most species are scored straight from ",
+        "their source.\n\n", sep = "")
+}
+```
 
 ## The sources
 

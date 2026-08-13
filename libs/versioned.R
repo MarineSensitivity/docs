@@ -188,6 +188,42 @@ doc_stats <- local({
   }
 })
 
+#' How many VALID taxa each dataset actually supplied a model for.
+#'
+#' The distinction that matters on the data-sources page. A release's `model`
+#' registry counts models it *catalogued*, which is not what it *used*: v1
+#' registers 29 FWS critical-habitat models but only 27 attach to a valid taxon,
+#' and only 4 reach the scored output. Presenting a 27-taxon pilot in the same
+#' column as AquaMaps' 16,871 makes a release look far broader than it was —
+#' which is exactly how v1 came to read as a five-dataset release.
+#'
+#' Counted on the (authority, id) PAIR for the same reason as everywhere else:
+#' the WoRMS and BirdLife namespaces number independently.
+doc_dataset_taxa <- local({
+  cached <- NULL
+  function() {
+    if (!is.null(cached)) return(cached)
+    if (!doc_has("taxon_model")) { cached <<- data.frame(); return(cached) }
+    m   <- doc_manifest()
+    k   <- .doc_keys()
+    tm  <- m$tables[["taxon_model"]]; tx <- m$tables[["taxon"]]
+    tmc <- DBI::dbGetQuery(.doc_con(), sprintf(
+      "DESCRIBE SELECT * FROM read_parquet('%s')", tm))$column_name
+    valid <- paste0("t.", k$valid, if (!is.na(k$marine)) paste0(" AND t.", k$marine) else "")
+    # v8 keys the relation on ms_merge_key; v1-v7 on taxon_id
+    sql <- if ("ms_merge_key" %in% tmc)
+      sprintf("SELECT tm.ds_key, count(DISTINCT tm.ms_merge_key) AS n_taxa
+                 FROM read_parquet('%s') tm JOIN read_parquet('%s') t USING (ms_merge_key)
+                WHERE %s GROUP BY 1", tm, tx, valid)
+    else
+      sprintf("SELECT tm.ds_key, count(DISTINCT t.taxon_authority || ':' || t.taxon_id) AS n_taxa
+                 FROM read_parquet('%s') tm JOIN read_parquet('%s') t ON tm.taxon_id = t.taxon_id
+                WHERE %s GROUP BY 1", tm, tx, valid)
+    cached <<- tryCatch(DBI::dbGetQuery(.doc_con(), sql), error = function(e) data.frame())
+    cached
+  }
+})
+
 #' This version's `dataset` table, with `is_scored` guaranteed.
 #'
 #' `is_scored` distinguishes datasets that fed the scores from ones merely
@@ -199,13 +235,22 @@ doc_datasets <- local({
   cached <- NULL
   function() {
     if (!is.null(cached)) return(cached)
-    d <- doc_tbl("dataset")
+    d  <- doc_tbl("dataset")
+    nt <- doc_dataset_taxa()
+    d$n_taxa <- if (nrow(nt)) nt$n_taxa[match(d$ds_key, nt$ds_key)] else NA_integer_
     if (!"is_scored" %in% names(d)) {
       tm_ds <- if (doc_has("taxon_model")) {
         tm <- doc_tbl("taxon_model")
         if ("ds_key" %in% names(tm)) tm$ds_key else NULL
       } else NULL
       d$is_scored <- msens::dataset_is_scored(d$ds_key, tm_ds)
+    }
+    # A dataset that attaches to NO valid taxon contributed nothing, whatever the
+    # registry says. This is stricter than "has an edge" and it is the honest test:
+    # v8 registers gm/nc with real models and zero valid-taxon links.
+    if (nrow(nt)) {
+      contributed <- !is.na(d$n_taxa) & d$n_taxa > 0
+      d$is_scored <- d$is_scored & (contributed | d$ds_key == "ms_merge")
     }
     cached <<- d
     d
