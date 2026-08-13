@@ -478,7 +478,9 @@ doc_changes_callout <- function(ver = doc_ver()) {
          else sprintf("What changed in %s%s", ver,
                       if (!is.null(d)) sprintf(", relative to %s", d$prev) else "")
 
-  cat("::: {.callout-important}\n## ", ttl, "\n\n", sep = "")
+  # `note` (blue/info), not `important` (red): this is orientation for every
+  # reader arriving on the page, not a warning about something wrong.
+  cat("::: {.callout-note}\n## ", ttl, "\n\n", sep = "")
   if (nrow(row) && nzchar(as.character(row$title)))
     cat("*", as.character(row$title), "*\n\n", sep = "")
 
