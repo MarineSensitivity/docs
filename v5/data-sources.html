@@ -645,7 +645,7 @@ div.csl-indent {
 </header>
 
 
-<p>The MST integrates species distributions from <strong>8 source datasets</strong>, merged into one surface per taxon (<code>ms_merge</code>). Each source predicts where a species occurs, and they differ in kind: continuous suitability models (AquaMaps), habitats tied to a core area, critical habitat or distinct population segment (NMFS, FWS, SWOT+DPS), and expert range maps (BirdLife, IUCN, FWS).</p>
+<p>The MST integrates species distributions from <strong>8 source datasets</strong>, though not in equal measure — <code>am_0.05</code> alone supplies the distribution of 98% of this release’s valid species. Each source predicts where a species occurs, and they differ in kind: continuous suitability models, habitats tied to a core area, critical habitat or distinct population segment, and expert range maps.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -665,17 +665,18 @@ Note
 <div id="tbl-datasets" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-datasets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;5.1: Source datasets in v5. <em>Mask</em> datasets constrain a taxon’s merged distribution to its known range as well as contributing values. <em>Models</em> counts the distributions the release registered for that dataset.
+Table&nbsp;5.1: Source datasets in v5, ordered by merge priority. <em>Mask</em> datasets constrain a taxon’s merged distribution to its known range as well as contributing values. <em>Taxa</em> is how many of this release’s valid species the dataset actually supplied a model for — not how many models it registered.
 </figcaption>
 <div aria-describedby="tbl-datasets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
 <table class="cell caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 23%">
-<col style="width: 23%">
-<col style="width: 39%">
+<col style="width: 22%">
+<col style="width: 22%">
+<col style="width: 37%">
 <col style="width: 6%">
-<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 6%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -683,72 +684,74 @@ Table&nbsp;5.1: Source datasets in v5. <em>Mask</em> datasets constrain a taxon�
 <th style="text-align: left;">Name</th>
 <th style="text-align: left;">Cell values</th>
 <th style="text-align: center;">Mask</th>
-<th style="text-align: right;">Models</th>
+<th style="text-align: right;">Taxa</th>
+<th style="text-align: right;">Share</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><code>ms_merge</code></td>
-<td style="text-align: left;">Merged Model</td>
-<td style="text-align: left;"></td>
-<td style="text-align: center;">No</td>
-<td style="text-align: right;">10,621</td>
-</tr>
-<tr class="even">
 <td style="text-align: left;"><code>am_0.05</code></td>
 <td style="text-align: left;">AquaMaps SDM</td>
 <td style="text-align: left;"></td>
 <td style="text-align: center;">No</td>
-<td style="text-align: right;">17,550</td>
+<td style="text-align: right;">9,584</td>
+<td style="text-align: right;">97.8%</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><code>ca_nmfs</code></td>
 <td style="text-align: left;">NMFS Core Area</td>
 <td style="text-align: left;">Core: 100</td>
 <td style="text-align: center;">Yes</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">&lt;0.1%</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;"><code>ch_nmfs</code></td>
 <td style="text-align: left;">NMFS Critical Habitat</td>
 <td style="text-align: left;">EN:100, TN:50</td>
 <td style="text-align: center;">Yes</td>
-<td style="text-align: right;">34</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">0.3%</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><code>ch_fws</code></td>
 <td style="text-align: left;">FWS Critical Habitat</td>
 <td style="text-align: left;">EN:100, TN:50</td>
 <td style="text-align: center;">Yes</td>
-<td style="text-align: right;">29</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">0.2%</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;"><code>rng_fws</code></td>
 <td style="text-align: left;">FWS Range</td>
 <td style="text-align: left;">EN:100, TN:50, LC:1</td>
 <td style="text-align: center;">Yes</td>
-<td style="text-align: right;">106</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">0.5%</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><code>bl</code></td>
 <td style="text-align: left;">BirdLife Range</td>
 <td style="text-align: left;">CR:50, EN:25, VU:5, NT:2, LC:1, DD:1</td>
 <td style="text-align: center;">Yes</td>
-<td style="text-align: right;">573</td>
+<td style="text-align: right;">193</td>
+<td style="text-align: right;">2.0%</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;"><code>rng_iucn</code></td>
 <td style="text-align: left;">IUCN Range</td>
 <td style="text-align: left;">CR:50, EN:25, VU:5, NT:2, LC:1, DD:1</td>
 <td style="text-align: center;">Yes</td>
-<td style="text-align: right;">1,516</td>
+<td style="text-align: right;">743</td>
+<td style="text-align: right;">7.6%</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><code>rng_turtle_swot_dps</code></td>
 <td style="text-align: left;">SWOT+DPS Turtle Range</td>
 <td style="text-align: left;">EN:100, TN:50</td>
 <td style="text-align: center;">Yes</td>
 <td style="text-align: right;">6</td>
+<td style="text-align: right;">&lt;0.1%</td>
 </tr>
 </tbody>
 </table>
@@ -757,7 +760,22 @@ Table&nbsp;5.1: Source datasets in v5. <em>Mask</em> datasets constrain a taxon�
 </figure>
 </div>
 </div>
-<p>The <strong>merged model</strong> (<code>ms_merge</code>) is the derived output rather than a source: for each taxon it takes the maximum value across that taxon’s source datasets in each cell, constrained to the taxon’s expert range where one exists (see <a href="model-merging.html" class="quarto-xref"><span>Chapter 8</span></a>).</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Coverage is very uneven — read the <em>Taxa</em> column, not the row count
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Broad coverage.</strong> <code>am_0.05</code> (9,584), <code>bl</code> (193), <code>rng_iucn</code> (743) — between them these account for the distribution of essentially every scored species.</p>
+<p><strong>Targeted designations.</strong> <code>ca_nmfs</code> (1), <code>ch_nmfs</code> (26), <code>ch_fws</code> (17), <code>rng_fws</code> (45), <code>rng_turtle_swot_dps</code> (6) — each under 1% of valid species. These are legal designations and expert ranges for specific taxa (critical habitat, core areas, sea turtle ranges), so they are small by nature rather than incomplete; they raise the value of the cells they cover rather than extending coverage to new species.</p>
+</div>
+</div>
+<p>The <strong>merged model</strong> (<code>ms_merge</code>) is the derived output rather than a source, so it is excluded from the table above: for each taxon it takes the maximum value across that taxon’s source datasets in each cell, constrained to the taxon’s expert range where one exists (see <a href="model-merging.html" class="quarto-xref"><span>Chapter 8</span></a>).</p>
+<p>In v5 the merged model covers <strong>9,795</strong> of the 9,795 valid species (100%). Every scored species goes through the merge, so the scored surface is the merged model throughout.</p>
 </section>
 <section id="the-sources" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="the-sources"><span class="header-section-number">5.2</span> The sources</h2>
