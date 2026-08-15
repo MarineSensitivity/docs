@@ -122,6 +122,14 @@ ul.task-list li input[type="checkbox"] {
   three cannot disagree about what exists. The bucket serves it with
   `Access-Control-Allow-Origin: *`, so the fetch works from the browser.
 
+  `access` (public | restricted) decides WHERE a version's book lives: public
+  books are on GitHub Pages under marinesensitivity.org/docs/{ver}/, restricted
+  ones (a pre-release under review) only on the signed-in preview host. So the
+  switcher links by ABSOLUTE URL per access -- a reviewer on the preview host can
+  step to a public version and a public reader sees a locked entry that leads to
+  the sign-in, never a dead relative link. A registry that predates the field is
+  read the way msens::atlas_versions() reads it: prerelease -> restricted.
+
   The page's own version comes from its URL, not from a build-time injection:
   the published layout is /{ver}/..., so the path is the source of truth and
   cannot drift from where the file actually sits. If anything fails — offline,
@@ -131,6 +139,11 @@ ul.task-list li input[type="checkbox"] {
 <script>
 (function () {
   var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
+  var PUBLIC_DOCS  = "https://marinesensitivity.org/docs/";          // GitHub Pages
+  var PREVIEW_DOCS = "https://preview.marinesensitivity.org/docs/";  // signed-in reviewers
+
+  function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
+  function base(v)   { return access(v) === "restricted" ? PREVIEW_DOCS : PUBLIC_DOCS; }
 
   function parsePath() {
     var m = location.pathname.match(/^(.*?\/)(v\d+[a-z]?)(\/.*)?$/);
@@ -142,6 +155,7 @@ ul.task-list li input[type="checkbox"] {
     var s = v.ver;
     if (v.status === "prerelease") s += " (pre-release)";
     else if (v.status === "retired") s += " (retired)";
+    if (access(v) === "restricted") s += " \uD83D\uDD12 restricted";   // sign-in required
     return v.title ? s + " — " + v.title : s;
   }
 
@@ -202,9 +216,14 @@ ul.task-list li input[type="checkbox"] {
       // only v8 is published, so offering v1-v7 as live options would hand the
       // reader a 404. Probe each one and mark the unbuilt ones, rather than
       // maintaining a second list that would drift from what is actually there.
+      // Only SAME-ORIGIN targets can be probed: a cross-origin HEAD (GitHub
+      // Pages sends no CORS headers; the preview host answers with a sign-in
+      // redirect) always fails and would mislabel a published book.
       versions.forEach(function (v) {
         if (v.ver === here.ver) return;
-        fetch(here.prefix + v.ver + "/", { method: "HEAD" })
+        var target = base(v) + v.ver + "/";
+        if (target.indexOf(location.origin + "/") !== 0) return;
+        fetch(target, { method: "HEAD" })
           .then(function (r) {
             if (r.ok) return;
             var o = sel.querySelector("option[value='" + v.ver + "']");
@@ -219,8 +238,11 @@ ul.task-list li input[type="checkbox"] {
       sel.addEventListener("change", function () {
         // keep the reader on the SAME page in the other version; if that page
         // did not exist then, the server 404s and they can climb to its index —
-        // better than always dumping them at the top of an unfamiliar book
-        location.href = here.prefix + sel.value + here.rest;
+        // better than always dumping them at the top of an unfamiliar book.
+        // Absolute per access: a restricted version lives only on the preview
+        // host (sign-in), a public one only on GitHub Pages.
+        var v = versions.filter(function (x) { return x.ver === sel.value; })[0];
+        location.href = (v ? base(v) : here.prefix) + sel.value + here.rest;
       });
 
       wrap.appendChild(lab);
@@ -629,7 +651,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 data-number="18.1" class="anchored" data-anchor-id="current-applications"><span class="header-section-number">18.1</span> Current Applications</h2>
 <section id="scores-mapper-of-aggregate-sensitivity-scores" class="level3" data-number="18.1.1">
 <h3 data-number="18.1.1" class="anchored" data-anchor-id="scores-mapper-of-aggregate-sensitivity-scores"><span class="header-section-number">18.1.1</span> Scores — mapper of aggregate sensitivity scores</h3>
-<p>The <a href="https://app.marinesensitivity.org/scores/">Scores</a> application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:</p>
+<p>The <a href="https://app.marinesensitivity.org/scores/?ver=v8">Scores</a> application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:</p>
 <ul>
 <li><strong>Multi-resolution viewing</strong>: toggle between cell-level (0.05° grid) and Program Area aggregations</li>
 <li><strong>Study area selection</strong>: focus on specific Program Areas or subregions</li>
@@ -650,7 +672,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="species-mapper-of-individual-species-distributions" class="level3" data-number="18.1.2">
 <h3 data-number="18.1.2" class="anchored" data-anchor-id="species-mapper-of-individual-species-distributions"><span class="header-section-number">18.1.2</span> Species — mapper of individual species distributions</h3>
-<p>The <a href="https://app.marinesensitivity.org/species/">Species</a> application enables exploration of individual species distribution models. Key features include:</p>
+<p>The <a href="https://app.marinesensitivity.org/species/?ver=v8">Species</a> application enables exploration of individual species distribution models. Key features include:</p>
 <ul>
 <li><strong>Species selection</strong>: search by common or scientific name, filter by species category</li>
 <li><strong>Model display</strong>: view merged models or individual source dataset layers</li>

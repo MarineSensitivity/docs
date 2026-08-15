@@ -124,6 +124,14 @@ ul.task-list li input[type="checkbox"] {
   three cannot disagree about what exists. The bucket serves it with
   `Access-Control-Allow-Origin: *`, so the fetch works from the browser.
 
+  `access` (public | restricted) decides WHERE a version's book lives: public
+  books are on GitHub Pages under marinesensitivity.org/docs/{ver}/, restricted
+  ones (a pre-release under review) only on the signed-in preview host. So the
+  switcher links by ABSOLUTE URL per access -- a reviewer on the preview host can
+  step to a public version and a public reader sees a locked entry that leads to
+  the sign-in, never a dead relative link. A registry that predates the field is
+  read the way msens::atlas_versions() reads it: prerelease -> restricted.
+
   The page's own version comes from its URL, not from a build-time injection:
   the published layout is /{ver}/..., so the path is the source of truth and
   cannot drift from where the file actually sits. If anything fails — offline,
@@ -133,6 +141,11 @@ ul.task-list li input[type="checkbox"] {
 <script>
 (function () {
   var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
+  var PUBLIC_DOCS  = "https://marinesensitivity.org/docs/";          // GitHub Pages
+  var PREVIEW_DOCS = "https://preview.marinesensitivity.org/docs/";  // signed-in reviewers
+
+  function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
+  function base(v)   { return access(v) === "restricted" ? PREVIEW_DOCS : PUBLIC_DOCS; }
 
   function parsePath() {
     var m = location.pathname.match(/^(.*?\/)(v\d+[a-z]?)(\/.*)?$/);
@@ -144,6 +157,7 @@ ul.task-list li input[type="checkbox"] {
     var s = v.ver;
     if (v.status === "prerelease") s += " (pre-release)";
     else if (v.status === "retired") s += " (retired)";
+    if (access(v) === "restricted") s += " \uD83D\uDD12 restricted";   // sign-in required
     return v.title ? s + " — " + v.title : s;
   }
 
@@ -204,9 +218,14 @@ ul.task-list li input[type="checkbox"] {
       // only v8 is published, so offering v1-v7 as live options would hand the
       // reader a 404. Probe each one and mark the unbuilt ones, rather than
       // maintaining a second list that would drift from what is actually there.
+      // Only SAME-ORIGIN targets can be probed: a cross-origin HEAD (GitHub
+      // Pages sends no CORS headers; the preview host answers with a sign-in
+      // redirect) always fails and would mislabel a published book.
       versions.forEach(function (v) {
         if (v.ver === here.ver) return;
-        fetch(here.prefix + v.ver + "/", { method: "HEAD" })
+        var target = base(v) + v.ver + "/";
+        if (target.indexOf(location.origin + "/") !== 0) return;
+        fetch(target, { method: "HEAD" })
           .then(function (r) {
             if (r.ok) return;
             var o = sel.querySelector("option[value='" + v.ver + "']");
@@ -221,8 +240,11 @@ ul.task-list li input[type="checkbox"] {
       sel.addEventListener("change", function () {
         // keep the reader on the SAME page in the other version; if that page
         // did not exist then, the server 404s and they can climb to its index —
-        // better than always dumping them at the top of an unfamiliar book
-        location.href = here.prefix + sel.value + here.rest;
+        // better than always dumping them at the top of an unfamiliar book.
+        // Absolute per access: a restricted version lives only on the preview
+        // host (sign-in), a public one only on GitHub Pages.
+        var v = versions.filter(function (x) { return x.ver === sel.value; })[0];
+        location.href = (v ? base(v) : here.prefix) + sel.value + here.rest;
       });
 
       wrap.appendChild(lab);
@@ -629,7 +651,7 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This guide walks through the two interactive applications — <strong>Scores</strong> (<a href="https://app.marinesensitivity.org/scores/">app.marinesensitivity.org/scores</a>) and <strong>Species</strong> (<a href="https://app.marinesensitivity.org/species/">app.marinesensitivity.org/species</a>) — one control at a time. Each numbered step below mirrors a step in that app’s built-in <strong>Take a Tour</strong> (click <em>About → Take a Tour</em> in either app to walk the same path live), with the relevant control highlighted on the screenshot.</p>
+<p>This guide walks through the two interactive applications — <strong>Scores</strong> (<a href="https://app.marinesensitivity.org/scores/?ver=v2">app.marinesensitivity.org/scores/?ver=v2</a>) and <strong>Species</strong> (<a href="https://app.marinesensitivity.org/species/?ver=v2">app.marinesensitivity.org/species/?ver=v2</a>) — one control at a time. Each numbered step below mirrors a step in that app’s built-in <strong>Take a Tour</strong> (click <em>About → Take a Tour</em> in either app to walk the same path live), with the relevant control highlighted on the screenshot.</p>
 <p>For a feature-by-feature reference instead, see the <a href="./apps/scores.html">Scores</a> and <a href="./apps/species.html">Species</a> appendix pages.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">

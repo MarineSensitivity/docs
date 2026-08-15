@@ -174,6 +174,14 @@ div.csl-indent {
   three cannot disagree about what exists. The bucket serves it with
   `Access-Control-Allow-Origin: *`, so the fetch works from the browser.
 
+  `access` (public | restricted) decides WHERE a version's book lives: public
+  books are on GitHub Pages under marinesensitivity.org/docs/{ver}/, restricted
+  ones (a pre-release under review) only on the signed-in preview host. So the
+  switcher links by ABSOLUTE URL per access -- a reviewer on the preview host can
+  step to a public version and a public reader sees a locked entry that leads to
+  the sign-in, never a dead relative link. A registry that predates the field is
+  read the way msens::atlas_versions() reads it: prerelease -> restricted.
+
   The page's own version comes from its URL, not from a build-time injection:
   the published layout is /{ver}/..., so the path is the source of truth and
   cannot drift from where the file actually sits. If anything fails — offline,
@@ -183,6 +191,11 @@ div.csl-indent {
 <script>
 (function () {
   var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
+  var PUBLIC_DOCS  = "https://marinesensitivity.org/docs/";          // GitHub Pages
+  var PREVIEW_DOCS = "https://preview.marinesensitivity.org/docs/";  // signed-in reviewers
+
+  function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
+  function base(v)   { return access(v) === "restricted" ? PREVIEW_DOCS : PUBLIC_DOCS; }
 
   function parsePath() {
     var m = location.pathname.match(/^(.*?\/)(v\d+[a-z]?)(\/.*)?$/);
@@ -194,6 +207,7 @@ div.csl-indent {
     var s = v.ver;
     if (v.status === "prerelease") s += " (pre-release)";
     else if (v.status === "retired") s += " (retired)";
+    if (access(v) === "restricted") s += " \uD83D\uDD12 restricted";   // sign-in required
     return v.title ? s + " — " + v.title : s;
   }
 
@@ -254,9 +268,14 @@ div.csl-indent {
       // only v8 is published, so offering v1-v7 as live options would hand the
       // reader a 404. Probe each one and mark the unbuilt ones, rather than
       // maintaining a second list that would drift from what is actually there.
+      // Only SAME-ORIGIN targets can be probed: a cross-origin HEAD (GitHub
+      // Pages sends no CORS headers; the preview host answers with a sign-in
+      // redirect) always fails and would mislabel a published book.
       versions.forEach(function (v) {
         if (v.ver === here.ver) return;
-        fetch(here.prefix + v.ver + "/", { method: "HEAD" })
+        var target = base(v) + v.ver + "/";
+        if (target.indexOf(location.origin + "/") !== 0) return;
+        fetch(target, { method: "HEAD" })
           .then(function (r) {
             if (r.ok) return;
             var o = sel.querySelector("option[value='" + v.ver + "']");
@@ -271,8 +290,11 @@ div.csl-indent {
       sel.addEventListener("change", function () {
         // keep the reader on the SAME page in the other version; if that page
         // did not exist then, the server 404s and they can climb to its index —
-        // better than always dumping them at the top of an unfamiliar book
-        location.href = here.prefix + sel.value + here.rest;
+        // better than always dumping them at the top of an unfamiliar book.
+        // Absolute per access: a restricted version lives only on the preview
+        // host (sign-in), a public one only on GitHub Pages.
+        var v = versions.filter(function (x) { return x.ver === sel.value; })[0];
+        location.href = (v ? base(v) : here.prefix) + sel.value + here.rest;
       });
 
       wrap.appendChild(lab);
@@ -897,7 +919,7 @@ Figure&nbsp;12.5: Data pipeline: ingest workflows populate DuckDB; scoring workf
 <h3 data-number="12.1.4" class="anchored" data-anchor-id="software-components"><span class="header-section-number">12.1.4</span> Software Components</h3>
 <div id="listing-list-components" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1786616797673" data-listing-reading-time-sort="5" data-listing-word-count-sort="932">
+<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1786809795378" data-listing-reading-time-sort="5" data-listing-word-count-sort="932">
 <a href="./apis.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -918,7 +940,7 @@ APIs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1786616797674" data-listing-reading-time-sort="3" data-listing-word-count-sort="466">
+<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1786809795379" data-listing-reading-time-sort="3" data-listing-word-count-sort="510">
 <a href="./apps.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -939,7 +961,7 @@ Apps
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1786616797784" data-listing-reading-time-sort="5" data-listing-word-count-sort="957">
+<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1786809795512" data-listing-reading-time-sort="5" data-listing-word-count-sort="957">
 <a href="./db.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -960,7 +982,7 @@ Database
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1786616797795" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
+<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1786809795526" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
 <a href="./docs.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -981,7 +1003,7 @@ Docs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1786616797906" data-listing-reading-time-sort="2" data-listing-word-count-sort="208">
+<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1786809795699" data-listing-reading-time-sort="2" data-listing-word-count-sort="208">
 <a href="./libraries.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1002,7 +1024,7 @@ Libraries
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1786616797910" data-listing-reading-time-sort="6" data-listing-word-count-sort="1162">
+<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1786809795703" data-listing-reading-time-sort="6" data-listing-word-count-sort="1162">
 <a href="./server.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1023,7 +1045,7 @@ Server
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1786616797911" data-listing-reading-time-sort="5" data-listing-word-count-sort="853">
+<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1786809795704" data-listing-reading-time-sort="5" data-listing-word-count-sort="853">
 <a href="./workflows.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
