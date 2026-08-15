@@ -199,8 +199,8 @@ pre-built pyramid would disagree with it at low zoom.\n\n", sep = "")
 
 Two Shiny applications present the results, each rendering **any published release** from a `?ver=` parameter rather than being frozen to one:
 
-- **[Scores](https://app.marinesensitivity.org/scores/)** — composite and per-category sensitivity by zone, with flower plots and treemaps (see @sec-app-scores)
-- **[Species](https://app.marinesensitivity.org/species/)** — individual and merged distribution models with regulatory status (see @sec-app-species)
+- **[Scores](`r doc_app_url("scores")`)** — composite and per-category sensitivity by zone, with flower plots and treemaps (see @sec-app-scores)
+- **[Species](`r doc_app_url("species")`)** — individual and merged distribution models with regulatory status (see @sec-app-species)
 
 Append `?ver=v3` (or any published version) to view that release. See @sec-apps.
 

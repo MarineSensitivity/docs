@@ -4,9 +4,9 @@ subtitle: "Step-by-step walkthrough of the Scores and Species applications"
 ---
 
 This guide walks through the two interactive applications — **Scores**
-([app.marinesensitivity.org/scores](https://app.marinesensitivity.org/scores/))
+([`r sub("^https://", "", doc_app_url("scores"))`](`r doc_app_url("scores")`))
 and **Species**
-([app.marinesensitivity.org/species](https://app.marinesensitivity.org/species/))
+([`r sub("^https://", "", doc_app_url("species"))`](`r doc_app_url("species")`))
 — one control at a time. Each numbered step below mirrors a step in that app's
 built-in **Take a Tour** (click *About → Take a Tour* in either app to walk the
 same path live), with the relevant control highlighted on the screenshot.

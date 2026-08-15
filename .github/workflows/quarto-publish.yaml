@@ -19,10 +19,20 @@ jobs:
   # Which releases exist is DATA, not a list maintained here: the same
   # versions.json the apps and the pipeline read. Publishing v9 means publishing a
   # release, not editing this file.
+  #
+  # `access` (public | restricted) decides WHERE a book is published. GitHub Pages
+  # cannot be gated, so a restricted release -- a pre-release under review by SDM
+  # data providers and BOEM/NOAA colleagues -- goes to the `gh-pages-preview`
+  # branch, which the server clones and serves only through the signed-in
+  # preview.marinesensitivity.org host. A registry that predates the field is
+  # read the way msens::atlas_versions() reads it: prerelease -> restricted
+  # (fail closed: an old registry can hide a release, never leak one).
   versions:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set.outputs.matrix }}
+      public: ${{ steps.set.outputs.public }}
+      restricted: ${{ steps.set.outputs.restricted }}
     steps:
       - name: Resolve the published versions
         id: set
@@ -35,8 +45,15 @@ jobs:
           # and `curl -sf` calls that success.
           jq -e '.versions | length > 0' versions.json > /dev/null
           M=$(jq -c '[.versions[].ver]' versions.json)
-          echo "versions: $M"
+          ACC='.versions | map(. + {access: (.access // (if .status == "prerelease" then "restricted" else "public" end))})'
+          P=$(jq -c "$ACC | map(select(.access == \"public\") | .ver)" versions.json)
+          R=$(jq -c "$ACC | map(select(.access == \"restricted\") | .ver)" versions.json)
+          # every access value must be one of the two, or the split above silently drops a book
+          jq -e "$ACC | all(.access == \"public\" or .access == \"restricted\")" versions.json > /dev/null
+          echo "versions: $M  public: $P  restricted: $R"
           echo "matrix=$M" >> "$GITHUB_OUTPUT"
+          echo "public=$P" >> "$GITHUB_OUTPUT"
+          echo "restricted=$R" >> "$GITHUB_OUTPUT"
 
   # RENDER ONLY — no job here touches gh-pages.
   #
@@ -105,9 +122,12 @@ jobs:
           path: _book
           retention-days: 1
 
-  # THE ONLY JOB THAT WRITES gh-pages, and it writes once: every version that
-  # rendered, plus the root redirect, in a single commit. `if: always()` so a
+  # THE ONLY JOB THAT WRITES gh-pages, and it writes once: every PUBLIC version
+  # that rendered, plus the root redirect, in a single commit. `if: always()` so a
   # version that failed to render does not withhold the ones that succeeded.
+  # Restricted versions are never staged here, and any directory of theirs left
+  # from when they were public is REMOVED -- that removal is what takes a release
+  # under review off the public web.
   publish:
     needs: [versions, build]
     if: always()
@@ -127,11 +147,14 @@ jobs:
           pattern: book-*
           path: _dl
 
-      - name: Publish the versions, point / at the promoted release, prune the flat root
+      - name: Publish the public versions, point / at the promoted release, prune the flat root
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLIC: ${{ needs.versions.outputs.public }}
+          RESTRICTED: ${{ needs.versions.outputs.restricted }}
         run: |
           set -euo pipefail
+          is_in() { echo "$2" | jq -e --arg v "$1" 'index($v) != null' > /dev/null; }
 
           # Each artifact replaces its version directory WHOLESALE, so a page
           # deleted from the book stops being served instead of lingering.
@@ -139,12 +162,22 @@ jobs:
           for d in _dl/book-*; do
             v="${d#_dl/book-}"
             echo "$v" | grep -Eq '^v[0-9]+[a-z]?$' || { echo "skipping odd artifact $d" >&2; continue; }
+            if ! is_in "$v" "$PUBLIC"; then echo "  $v is not public: not staged on gh-pages"; continue; fi
             [ -f "$d/index.html" ] || { echo "artifact $d has no index.html" >&2; exit 1; }
             rm -rf "./$v"
             mv "$d" "./$v"
             echo "  staged $v"
           done
           rm -rf _dl
+
+          # a version that became RESTRICTED leaves the public site now
+          for v in $(echo "$RESTRICTED" | jq -r '.[]'); do
+            if [ -d "./$v" ]; then
+              echo "  removing $v (restricted; served only on the preview host)"
+              git rm -rq --ignore-unmatch -- "$v" || true
+              rm -rf -- "./$v"
+            fi
+          done
 
           # / redirects to the version named by the atlas registry's latest.txt --
           # the SAME pointer the apps resolve, so docs and data cannot disagree
@@ -205,3 +238,86 @@ jobs:
             git commit -m "docs: publish $(ls -d v*/ 2>/dev/null | tr -d '/' | tr '\n' ' ')- root -> $LATEST, $PRUNED pruned"
             git push
           fi
+
+  # THE ONLY JOB THAT WRITES gh-pages-preview: the books of RESTRICTED versions,
+  # each replaced wholesale, plus a root index and a robots.txt that refuses
+  # crawlers. The branch is (re)written even when nothing is restricted, so the
+  # server's docs-preview sidecar always has something to clone. Different branch
+  # from `publish`, so the two pushes cannot race.
+  publish-preview:
+    needs: [versions, build]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out (main, then switch to gh-pages-preview or create it)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download every rendered book
+        uses: actions/download-artifact@v4
+        with:
+          pattern: book-*
+          path: _dl
+
+      - name: Publish the restricted versions to gh-pages-preview
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RESTRICTED: ${{ needs.versions.outputs.restricted }}
+        run: |
+          set -euo pipefail
+          is_in() { echo "$2" | jq -e --arg v "$1" 'index($v) != null' > /dev/null; }
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # the downloaded books must survive the branch switch: park them outside the tree
+          mv _dl /tmp/_dl
+          if git ls-remote --exit-code --heads origin gh-pages-preview > /dev/null; then
+            git fetch origin gh-pages-preview
+            git checkout gh-pages-preview
+          else
+            git checkout --orphan gh-pages-preview
+            git rm -rfq . || true
+            git clean -fdxq
+          fi
+
+          shopt -s nullglob
+          staged=""
+          for d in /tmp/_dl/book-*; do
+            v="${d#/tmp/_dl/book-}"
+            echo "$v" | grep -Eq '^v[0-9]+[a-z]?$' || continue
+            is_in "$v" "$RESTRICTED" || continue
+            [ -f "$d/index.html" ] || { echo "artifact $d has no index.html" >&2; exit 1; }
+            rm -rf "./$v"
+            mv "$d" "./$v"
+            staged="$staged $v"
+            echo "  staged $v (restricted)"
+          done
+          # a version that is no longer restricted leaves this branch (it is public now)
+          for d in v*/; do
+            v="${d%/}"
+            is_in "$v" "$RESTRICTED" || { echo "  removing $v (no longer restricted)"; git rm -rq --ignore-unmatch -- "$v" || true; rm -rf -- "./$v"; }
+          done
+
+          # root index: what is here, for a reviewer who lands on /docs/
+          {
+            echo '<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex,nofollow">'
+            echo '<title>Marine Sensitivity documentation — preview (restricted releases)</title>'
+            echo '<h1>Marine Sensitivity documentation — preview</h1>'
+            echo '<p>Restricted, pre-release documentation for reviewers. Public releases: <a href="https://marinesensitivity.org/docs/">marinesensitivity.org/docs</a>.</p><ul>'
+            for d in v*/; do v="${d%/}"; echo "<li><a href=\"./$v/\">$v</a></li>"; done
+            echo '</ul>'
+          } > index.html
+          printf 'User-agent: *\nDisallow: /\n' > robots.txt
+          touch .nojekyll
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "gh-pages-preview already current (restricted:${staged:- none})"
+          else
+            git commit -m "docs(preview): publish restricted${staged:- (none)}"
+            git push origin gh-pages-preview
+          fi
+

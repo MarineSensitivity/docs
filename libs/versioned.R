@@ -58,10 +58,58 @@ doc_versions <- local({
   }
 })
 
-#' Row for this version in the registry (title, status, released).
+#' Row for this version in the registry (title, status, access, released).
 doc_version_row <- function(ver = doc_ver()) {
   d <- doc_versions()
   d[match(ver, d$ver), , drop = FALSE]
+}
+
+# ---- where this release is served --------------------------------------------
+#
+# `access` (public | restricted) is the pre-release review gate: a restricted
+# release -- a pre-release under review by SDM data providers and BOEM/NOAA
+# colleagues -- is served ONLY through the signed-in preview host, apps and docs
+# alike (msens::atlas_allow_access()). So the app links a book prints must follow
+# its own release: the v8 book under review must send its reader to
+# preview.marinesensitivity.org/scores/?ver=v8, not to the public app, which
+# would refuse the version and fall back to the promoted release. And every
+# link carries ?ver=, so a v4 page opens the v4 app rather than whatever is
+# promoted that day.
+
+#' `public` or `restricted` for a version (derived fail-closed by msens when the
+#' registry predates the column).
+doc_access <- function(ver = doc_ver()) {
+  row <- doc_version_row(ver)
+  a <- if ("access" %in% names(row)) as.character(row$access) else NA_character_
+  if (is.na(a) || !nzchar(a)) a <- if (identical(as.character(row$status), "prerelease")) "restricted" else "public"
+  a
+}
+
+#' The signed-in preview host. msens >= 0.30.0 exports it (MS_PREVIEW_URL aware);
+#' an older msens on a cached CI runner falls back to the canonical host rather
+#' than failing the whole book.
+doc_preview_url <- function() {
+  if (exists("atlas_preview_url", envir = asNamespace("msens"), inherits = FALSE))
+    msens::atlas_preview_url() else "https://preview.marinesensitivity.org"
+}
+
+#' Base URL of the apps for a version: the public host, or the preview host when
+#' the release is restricted. No trailing slash.
+doc_app_base <- function(ver = doc_ver()) {
+  if (identical(doc_access(ver), "restricted")) doc_preview_url()
+  else "https://app.marinesensitivity.org"
+}
+
+#' URL of one app (`scores` / `species`) for a version, with `?ver=`.
+doc_app_url <- function(app = c("scores", "species"), ver = doc_ver()) {
+  app <- match.arg(app)
+  sprintf("%s/%s/?ver=%s", doc_app_base(ver), app, ver)
+}
+
+#' URL of a version's own book: GitHub Pages, or the preview host when restricted.
+doc_docs_url <- function(ver = doc_ver()) {
+  if (identical(doc_access(ver), "restricted")) sprintf("%s/docs/%s/", doc_preview_url(), ver)
+  else sprintf("https://marinesensitivity.org/docs/%s/", ver)
 }
 
 # ---- capability + table gates -------------------------------------------------

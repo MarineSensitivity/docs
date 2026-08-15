@@ -35,8 +35,8 @@ doc_changes_callout()
 
 ### Interactive Apps
 
-- [**Composite Scores**](https://app.marinesensitivity.org/scores/) — sensitivity scores by zone, with flower-plot summaries
-- [**Species Distribution**](https://app.marinesensitivity.org/species/) — individual species distribution models and habitat suitability
+- [**Composite Scores**](`r doc_app_url("scores")`) — sensitivity scores by zone, with flower-plot summaries
+- [**Species Distribution**](`r doc_app_url("species")`) — individual species distribution models and habitat suitability
 
 Both render **any published release**: append `?ver=v3` (or any version) to view that one.
 - [**Scoring Walkthrough**](scoring-walkthrough.qmd) — step through the scoring pipeline interactively, from input rasters to final scores
