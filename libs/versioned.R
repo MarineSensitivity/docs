@@ -93,17 +93,15 @@ doc_preview_url <- function() {
     msens::atlas_preview_url() else "https://preview.marinesensitivity.org"
 }
 
-#' Base URL of the apps for a version: the public host, or the preview host when
-#' the release is restricted. No trailing slash.
-doc_app_base <- function(ver = doc_ver()) {
-  if (identical(doc_access(ver), "restricted")) doc_preview_url()
-  else "https://app.marinesensitivity.org"
-}
-
-#' URL of one app (`scores` / `species`) for a version, with `?ver=`.
+#' URL of one app (`scores` / `species`) for a version. Public releases: the
+#' public host with `?ver=`. Restricted releases: the signed-in preview host,
+#' where THE VERSION IS THE PATH (`/v9/scores/`) because Cloudflare Access holds
+#' one reviewer policy per version and scopes it by path, never by query
+#' (msens::preview_app_url() is the single source of that shape).
 doc_app_url <- function(app = c("scores", "species"), ver = doc_ver()) {
   app <- match.arg(app)
-  sprintf("%s/%s/?ver=%s", doc_app_base(ver), app, ver)
+  if (identical(doc_access(ver), "restricted")) sprintf("%s/%s/%s/", doc_preview_url(), ver, app)
+  else sprintf("https://app.marinesensitivity.org/%s/?ver=%s", app, ver)
 }
 
 #' URL of a version's own book: GitHub Pages, or the preview host when restricted.
