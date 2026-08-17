@@ -234,12 +234,19 @@ div.csl-indent {
     else fn();
   }
 
+  // Both this and the version switcher mount at host.firstChild once their own
+  // fetch resolves, so whichever lands LAST ends up on top and the pair's order
+  // flips between page loads (observed live: core-links first locally, switcher
+  // first on marinesensitivity.org). Each now anchors on the other instead, so
+  // the strip reads the same way whichever wins the race: links, then switcher.
   function mount(el) {
     var host = document.querySelector("#quarto-margin-sidebar")
             || document.querySelector("#quarto-sidebar")
             || document.querySelector(".nav-footer")
             || document.body;
-    host.insertBefore(el, host.firstChild);
+    // if the switcher already mounted, go directly above it; else take the top
+    var sw = host.querySelector(".docs-version-switcher");
+    host.insertBefore(el, sw || host.firstChild);
   }
 
   function link(href, text, title) {
@@ -364,7 +371,15 @@ div.csl-indent {
             || document.querySelector("#quarto-sidebar")
             || document.querySelector(".nav-footer")
             || document.body;
-    host.insertBefore(el, host.firstChild);
+    // Sit BELOW the core-links box (_nav-links.html) when it has already
+    // mounted. Both widgets used to insert at firstChild once their own fetch
+    // resolved, so whichever landed last ended up on top and the pair's order
+    // flipped between page loads. Anchoring on each other makes the strip read
+    // the same way whichever wins the race: links, then switcher.
+    var links = host.querySelector(".docs-core-links");
+    if (links && links.nextSibling) host.insertBefore(el, links.nextSibling);
+    else if (links)                 host.appendChild(el);
+    else                            host.insertBefore(el, host.firstChild);
   }
 
   var here = parsePath();
@@ -1056,7 +1071,7 @@ Figure&nbsp;12.5: Data pipeline: ingest workflows populate DuckDB; scoring workf
 <h3 data-number="12.1.4" class="anchored" data-anchor-id="software-components"><span class="header-section-number">12.1.4</span> Software Components</h3>
 <div id="listing-list-components" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1787003372710" data-listing-reading-time-sort="5" data-listing-word-count-sort="932">
+<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1787005388541" data-listing-reading-time-sort="5" data-listing-word-count-sort="932">
 <a href="./apis.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1077,7 +1092,7 @@ APIs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1787003372710" data-listing-reading-time-sort="3" data-listing-word-count-sort="510">
+<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1787005388541" data-listing-reading-time-sort="3" data-listing-word-count-sort="510">
 <a href="./apps.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1098,7 +1113,7 @@ Apps
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1787003372861" data-listing-reading-time-sort="5" data-listing-word-count-sort="957">
+<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1787005388666" data-listing-reading-time-sort="5" data-listing-word-count-sort="957">
 <a href="./db.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1119,7 +1134,7 @@ Database
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1787003372879" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
+<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1787005388673" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
 <a href="./docs.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1140,7 +1155,7 @@ Docs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1787003373014" data-listing-reading-time-sort="2" data-listing-word-count-sort="208">
+<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1787005388818" data-listing-reading-time-sort="2" data-listing-word-count-sort="208">
 <a href="./libraries.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1161,7 +1176,7 @@ Libraries
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1787003373017" data-listing-reading-time-sort="6" data-listing-word-count-sort="1162">
+<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1787005388821" data-listing-reading-time-sort="6" data-listing-word-count-sort="1162">
 <a href="./server.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1182,7 +1197,7 @@ Server
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1787003373018" data-listing-reading-time-sort="5" data-listing-word-count-sort="853">
+<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1787005388823" data-listing-reading-time-sort="5" data-listing-word-count-sort="853">
 <a href="./workflows.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">

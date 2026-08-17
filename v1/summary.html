@@ -181,12 +181,19 @@ ul.task-list li input[type="checkbox"] {
     else fn();
   }
 
+  // Both this and the version switcher mount at host.firstChild once their own
+  // fetch resolves, so whichever lands LAST ends up on top and the pair's order
+  // flips between page loads (observed live: core-links first locally, switcher
+  // first on marinesensitivity.org). Each now anchors on the other instead, so
+  // the strip reads the same way whichever wins the race: links, then switcher.
   function mount(el) {
     var host = document.querySelector("#quarto-margin-sidebar")
             || document.querySelector("#quarto-sidebar")
             || document.querySelector(".nav-footer")
             || document.body;
-    host.insertBefore(el, host.firstChild);
+    // if the switcher already mounted, go directly above it; else take the top
+    var sw = host.querySelector(".docs-version-switcher");
+    host.insertBefore(el, sw || host.firstChild);
   }
 
   function link(href, text, title) {
@@ -311,7 +318,15 @@ ul.task-list li input[type="checkbox"] {
             || document.querySelector("#quarto-sidebar")
             || document.querySelector(".nav-footer")
             || document.body;
-    host.insertBefore(el, host.firstChild);
+    // Sit BELOW the core-links box (_nav-links.html) when it has already
+    // mounted. Both widgets used to insert at firstChild once their own fetch
+    // resolved, so whichever landed last ended up on top and the pair's order
+    // flipped between page loads. Anchoring on each other makes the strip read
+    // the same way whichever wins the race: links, then switcher.
+    var links = host.querySelector(".docs-core-links");
+    if (links && links.nextSibling) host.insertBefore(el, links.nextSibling);
+    else if (links)                 host.appendChild(el);
+    else                            host.insertBefore(el, host.firstChild);
   }
 
   var here = parsePath();
