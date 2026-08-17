@@ -107,6 +107,9 @@ format:
     echo: false
     include-in-header:
       - _analytics.html
+      # core links (apps + GitHub) on EVERY page, not only the Preface (docs#6),
+      # mounted into the same sidebar host as the version switcher below it
+      - _nav-links.html
       - _version-switcher.html
   docx:
     toc: true

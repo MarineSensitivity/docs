@@ -16,6 +16,7 @@ site_libs/
 # is exactly how the version switcher shipped as a no-op on first attempt.
 !_analytics.html
 !_version-switcher.html
+!_nav-links.html
 
 **/*.quarto_ipynb
 .positai
