@@ -163,6 +163,143 @@ div.csl-indent {
   }, true);
 </script>
 <!--
+  Core links, on every page (docs#6).
+
+  The app links DO exist — on the Preface, under "Interactive Apps", which is
+  where marinesensitivity.org/docs/ lands. But a Quarto book keeps them on that
+  one page: follow a search hit, a bookmark or a chapter link and the sidebar
+  shows only chapters, so the viewer is no longer reachable from anywhere on
+  screen. Tim White found it in §13 Server — a page that happens to list service
+  URLs — which is the failure, not the destination:
+
+    "after misplacing the link on my desktop, it took me quite some time to
+     locate it in the documentation ... could we create a box on the
+     Introduction page, or possibly across all pages"
+
+  There was no GitHub link on any page either: `repo-url` is set, but
+  `repo-actions: [edit]` renders only a small "Edit this page" action in the
+  right-hand TOC, which is not what someone looking for the source is scanning
+  for.
+
+  WHY CLIENT-SIDE, and why here. This mirrors _version-switcher.html deliberately
+  — same include-in-header mechanism, same sidebar host, so the two read as one
+  control strip and neither needs a Quarto feature that books do not have. It
+  also means the version comes from the page's own URL (/{ver}/...), which cannot
+  drift from where the file actually sits, rather than from a build-time
+  injection.
+
+  This DUPLICATES msens::product_urls() in JavaScript, which is a real cost worth
+  naming: the R side is the authority and is unit-tested, but a static book has
+  no R at read time. Kept deliberately identical in shape — ?ver= for a public
+  release, the preview host's PATH form for a restricted one — and the same
+  fail-closed access default the switcher and msens::atlas_versions() use
+  (prerelease -> restricted). If one changes, change both.
+
+  If anything fails — offline, registry unreachable, an unversioned local preview
+  — the box simply does not appear. A docs page must never fail to render over
+  its own chrome.
+-->
+<script>
+(function () {
+  var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
+  var APP      = "https://app.marinesensitivity.org";
+  var PREVIEW  = "https://preview.marinesensitivity.org";
+  var HOME     = "https://marinesensitivity.org";
+  var GITHUB   = "https://github.com/MarineSensitivity";
+  var REPO     = "https://github.com/MarineSensitivity/docs";
+
+  function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
+
+  // Same rule as msens::product_urls(): the version is a QUERY parameter on the
+  // public host and a PATH segment on the signed-in preview host, because
+  // Cloudflare Access scopes its per-version reviewer policies by path.
+  function appUrls(ver, acc) {
+    if (acc === "restricted")
+      return { scores: PREVIEW + "/" + ver + "/scores/",
+               species: PREVIEW + "/" + ver + "/species/" };
+    return { scores: APP + "/scores/?ver=" + ver,
+             species: APP + "/species/?ver=" + ver };
+  }
+
+  function parseVer() {
+    var m = location.pathname.match(/^(.*?\/)(v\d+[a-z]?)(\/.*)?$/);
+    return m ? m[2] : null;
+  }
+
+  // The script is injected into <head>, so on a fast/cached load it can run
+  // before the body exists — mounting into a null host silently does nothing.
+  function whenReady(fn) {
+    if (document.readyState === "loading")
+      document.addEventListener("DOMContentLoaded", fn, { once: true });
+    else fn();
+  }
+
+  function mount(el) {
+    var host = document.querySelector("#quarto-margin-sidebar")
+            || document.querySelector("#quarto-sidebar")
+            || document.querySelector(".nav-footer")
+            || document.body;
+    host.insertBefore(el, host.firstChild);
+  }
+
+  function link(href, text, title) {
+    var a = document.createElement("a");
+    a.href = href; a.textContent = text;
+    if (title) a.title = title;
+    a.style.cssText = "display:block;padding:0.1rem 0;";
+    return a;
+  }
+
+  function box(ver, acc) {
+    var u = appUrls(ver, acc);
+    var wrap = document.createElement("div");
+    wrap.className = "docs-core-links";
+    wrap.style.cssText =
+      "margin:0.75rem 0;padding:0.6rem 0.75rem;font-size:0.85rem;" +
+      "border:1px solid rgba(128,128,128,0.35);border-radius:0.35rem;";
+
+    var h = document.createElement("div");
+    h.textContent = "Core links";
+    h.style.cssText = "font-weight:600;margin-bottom:0.35rem;";
+    wrap.appendChild(h);
+
+    // The apps are what Tim could not find, so they lead — and they point at
+    // THIS book's release, never the promoted one, so the reader is not moved
+    // to a different version than the page they are reading.
+    wrap.appendChild(link(u.scores,  "▶ Composite Scores",
+                          "sensitivity scores by zone (" + ver + ")"));
+    wrap.appendChild(link(u.species, "▶ Species Distribution",
+                          "individual species models (" + ver + ")"));
+
+    var hr = document.createElement("div");
+    hr.style.cssText = "border-top:1px solid rgba(128,128,128,0.25);margin:0.4rem 0;";
+    wrap.appendChild(hr);
+
+    wrap.appendChild(link(HOME,   "⌂ Project home", "marinesensitivity.org"));
+    wrap.appendChild(link(GITHUB, "◇ GitHub — all repositories", GITHUB));
+    wrap.appendChild(link(REPO,   "◇ GitHub — these docs", REPO));
+    return wrap;
+  }
+
+  var ver = parseVer();
+  if (!ver) return;   // unversioned local preview: nothing reliable to link to
+
+  fetch(REGISTRY, { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (j) {
+      var versions = (j && j.versions) || j;
+      if (!versions || !versions.length) return;
+      var me = versions.filter(function (v) { return v.ver === ver; })[0];
+      // A book can be published for a release the registry has not caught up
+      // with; fail CLOSED so a restricted pre-release is never linked at the
+      // public host, where it would 404 or leak that it exists.
+      var acc = me ? access(me) : "restricted";
+      whenReady(function () { mount(box(ver, acc)); });
+    })
+    .catch(function () { /* registry unreachable: show nothing */ });
+})();
+</script>
+<!--
   Documentation version switcher.
 
   One book documented eight model releases, so a reader could not tell which
@@ -854,7 +991,64 @@ Figure&nbsp;12.5: Data pipeline: ingest workflows populate DuckDB; scoring workf
 <h3 data-number="12.1.3" class="anchored" data-anchor-id="github-repositories"><span class="header-section-number">12.1.3</span> Github Repositories</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p>See the <a href="https://github.com/MarineSensitivity">MarineSensitivity organization on GitHub</a>.</p>
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">repo</th>
+<th style="text-align: left;">description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/.github">.github</a></td>
+<td style="text-align: left;">organization README</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/analytics">analytics</a></td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/api">api</a></td>
+<td style="text-align: left;">application programming interface (API) using R Plumber package</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/apps">apps</a></td>
+<td style="text-align: left;">Shiny applications</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/docs">docs</a></td>
+<td style="text-align: left;">documentation for BOEM’s offshore environmental sensitivity index products</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/manuscripts">manuscripts</a></td>
+<td style="text-align: left;">Manuscripts with review of sensitivities by industry and receptors (species, habitats, human uses)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/MarineSensitivity.github.io">MarineSensitivity.github.io</a></td>
+<td style="text-align: left;">default website</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/msens">msens</a></td>
+<td style="text-align: left;">R library of functions for mapping marine sensitivities, sponsored by BOEM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/objectives">objectives</a></td>
+<td style="text-align: left;">repository for issues spanning multiple repositories and doing big picture roadmapping</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/server">server</a></td>
+<td style="text-align: left;">server setup for R Shiny apps, RStudio IDE, Caddy web server, h3 TiTiler service and Varnish cache</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/stac-sdm">stac-sdm</a></td>
+<td style="text-align: left;">STAC extension for Species Distribution Models (SDMs)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/workflows">workflows</a></td>
+<td style="text-align: left;">scripts for testing data analytics and visualization as well as production workflows</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </section>
@@ -862,7 +1056,7 @@ Figure&nbsp;12.5: Data pipeline: ingest workflows populate DuckDB; scoring workf
 <h3 data-number="12.1.4" class="anchored" data-anchor-id="software-components"><span class="header-section-number">12.1.4</span> Software Components</h3>
 <div id="listing-list-components" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1786813014162" data-listing-reading-time-sort="5" data-listing-word-count-sort="932">
+<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1787002574460" data-listing-reading-time-sort="5" data-listing-word-count-sort="932">
 <a href="./apis.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -883,7 +1077,7 @@ APIs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1786813014162" data-listing-reading-time-sort="3" data-listing-word-count-sort="510">
+<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1787002574460" data-listing-reading-time-sort="3" data-listing-word-count-sort="510">
 <a href="./apps.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -904,7 +1098,7 @@ Apps
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1786813014266" data-listing-reading-time-sort="5" data-listing-word-count-sort="957">
+<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1787002574600" data-listing-reading-time-sort="5" data-listing-word-count-sort="957">
 <a href="./db.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -925,7 +1119,7 @@ Database
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1786813014273" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
+<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1787002574612" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
 <a href="./docs.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -946,7 +1140,7 @@ Docs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1786813014378" data-listing-reading-time-sort="2" data-listing-word-count-sort="208">
+<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1787002574787" data-listing-reading-time-sort="2" data-listing-word-count-sort="208">
 <a href="./libraries.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -967,7 +1161,7 @@ Libraries
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1786813014382" data-listing-reading-time-sort="6" data-listing-word-count-sort="1162">
+<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1787002574795" data-listing-reading-time-sort="6" data-listing-word-count-sort="1162">
 <a href="./server.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -988,7 +1182,7 @@ Server
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1786813014383" data-listing-reading-time-sort="5" data-listing-word-count-sort="853">
+<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1787002574795" data-listing-reading-time-sort="5" data-listing-word-count-sort="853">
 <a href="./workflows.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
