@@ -39,7 +39,8 @@ doc_changes_callout()
 - [Individual **species**](`r doc_app_url("species")`) — individual species distribution models and habitat suitability
 
 Both render **any published release**: append `?ver=v3` (or any version) to view that one.
-- [**Scoring Walkthrough**](scoring-walkthrough.qmd) — step through the scoring pipeline interactively, from input rasters to final scores
+
+- [Scoring **walkthrough**](scoring-walkthrough.qmd) — step through the scoring pipeline interactively, from input rasters to final scores
 
 ### Documentation
 
