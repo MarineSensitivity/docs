@@ -8,7 +8,7 @@
 
 <meta name="author" content="Benjamin D. Best">
 <meta name="author" content="Timothy P. White">
-<meta name="dcterms.date" content="2026-08-17">
+<meta name="dcterms.date" content="2026-08-20">
 
 <title>Marine Sensitivity</title>
 <style>
@@ -115,7 +115,7 @@ ul.task-list li input[type="checkbox"] {
   }, true);
 </script>
 <!--
-  Core links, on every page (docs#6).
+  Interactive apps + core links, on every page (docs#6).
 
   The app links DO exist — on the Preface, under "Interactive Apps", which is
   where marinesensitivity.org/docs/ lands. But a Quarto book keeps them on that
@@ -201,9 +201,12 @@ ul.task-list li input[type="checkbox"] {
     host.insertBefore(el, sw || host.firstChild);
   }
 
-  function link(href, text, title) {
+  // label is HTML, not text: the app links bold the noun that distinguishes them
+  // ("Composite **scores**" / "Individual **species**"). Every label here is a
+  // literal in this file, so there is nothing untrusted to interpolate.
+  function link(href, label, title) {
     var a = document.createElement("a");
-    a.href = href; a.textContent = text;
+    a.href = href; a.innerHTML = label;
     if (title) a.title = title;
     a.style.cssText = "display:block;padding:0.1rem 0;";
     return a;
@@ -218,16 +221,16 @@ ul.task-list li input[type="checkbox"] {
       "border:1px solid rgba(128,128,128,0.35);border-radius:0.35rem;";
 
     var h = document.createElement("div");
-    h.textContent = "Core links";
+    h.textContent = "Interactive apps";
     h.style.cssText = "font-weight:600;margin-bottom:0.35rem;";
     wrap.appendChild(h);
 
     // The apps are what Tim could not find, so they lead — and they point at
     // THIS book's release, never the promoted one, so the reader is not moved
     // to a different version than the page they are reading.
-    wrap.appendChild(link(u.scores,  "▶ Composite Scores",
+    wrap.appendChild(link(u.scores,  "▶ Composite <strong>scores</strong>",
                           "sensitivity scores by zone (" + ver + ")"));
-    wrap.appendChild(link(u.species, "▶ Species Distribution",
+    wrap.appendChild(link(u.species, "▶ Individual <strong>species</strong>",
                           "individual species models (" + ver + ")"));
 
     var hr = document.createElement("div");
@@ -805,7 +808,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2026-08-17</p>
+      <p class="date">2026-08-20</p>
     </div>
   </div>
   
@@ -852,10 +855,13 @@ Figure&nbsp;1: Overview of the MST methodology: species distribution models from
 <section id="interactive-apps" class="level3">
 <h3 class="anchored" data-anchor-id="interactive-apps">Interactive Apps</h3>
 <ul>
-<li><a href="https://app.marinesensitivity.org/scores/?ver=v3"><strong>Composite Scores</strong></a> — sensitivity scores by zone, with flower-plot summaries</li>
-<li><a href="https://app.marinesensitivity.org/species/?ver=v3"><strong>Species Distribution</strong></a> — individual species distribution models and habitat suitability</li>
+<li><a href="https://app.marinesensitivity.org/scores/?ver=v3">Composite <strong>scores</strong></a> — sensitivity scores by zone, with flower-plot summaries</li>
+<li><a href="https://app.marinesensitivity.org/species/?ver=v3">Individual <strong>species</strong></a> — individual species distribution models and habitat suitability</li>
 </ul>
-<p>Both render <strong>any published release</strong>: append <code>?ver=v3</code> (or any version) to view that one. - <a href="./scoring-walkthrough.html"><strong>Scoring Walkthrough</strong></a> — step through the scoring pipeline interactively, from input rasters to final scores</p>
+<p>Both render <strong>any published release</strong>: append <code>?ver=v3</code> (or any version) to view that one.</p>
+<ul>
+<li><a href="./scoring-walkthrough.html">Scoring <strong>walkthrough</strong></a> — step through the scoring pipeline interactively, from input rasters to final scores</li>
+</ul>
 </section>
 <section id="documentation" class="level3">
 <h3 class="anchored" data-anchor-id="documentation">Documentation</h3>

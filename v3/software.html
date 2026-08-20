@@ -163,7 +163,7 @@ div.csl-indent {
   }, true);
 </script>
 <!--
-  Core links, on every page (docs#6).
+  Interactive apps + core links, on every page (docs#6).
 
   The app links DO exist — on the Preface, under "Interactive Apps", which is
   where marinesensitivity.org/docs/ lands. But a Quarto book keeps them on that
@@ -249,9 +249,12 @@ div.csl-indent {
     host.insertBefore(el, sw || host.firstChild);
   }
 
-  function link(href, text, title) {
+  // label is HTML, not text: the app links bold the noun that distinguishes them
+  // ("Composite **scores**" / "Individual **species**"). Every label here is a
+  // literal in this file, so there is nothing untrusted to interpolate.
+  function link(href, label, title) {
     var a = document.createElement("a");
-    a.href = href; a.textContent = text;
+    a.href = href; a.innerHTML = label;
     if (title) a.title = title;
     a.style.cssText = "display:block;padding:0.1rem 0;";
     return a;
@@ -266,16 +269,16 @@ div.csl-indent {
       "border:1px solid rgba(128,128,128,0.35);border-radius:0.35rem;";
 
     var h = document.createElement("div");
-    h.textContent = "Core links";
+    h.textContent = "Interactive apps";
     h.style.cssText = "font-weight:600;margin-bottom:0.35rem;";
     wrap.appendChild(h);
 
     // The apps are what Tim could not find, so they lead — and they point at
     // THIS book's release, never the promoted one, so the reader is not moved
     // to a different version than the page they are reading.
-    wrap.appendChild(link(u.scores,  "▶ Composite Scores",
+    wrap.appendChild(link(u.scores,  "▶ Composite <strong>scores</strong>",
                           "sensitivity scores by zone (" + ver + ")"));
-    wrap.appendChild(link(u.species, "▶ Species Distribution",
+    wrap.appendChild(link(u.species, "▶ Individual <strong>species</strong>",
                           "individual species models (" + ver + ")"));
 
     var hr = document.createElement("div");
@@ -1071,7 +1074,7 @@ Figure&nbsp;12.5: Data pipeline: ingest workflows populate DuckDB; scoring workf
 <h3 data-number="12.1.4" class="anchored" data-anchor-id="software-components"><span class="header-section-number">12.1.4</span> Software Components</h3>
 <div id="listing-list-components" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1787004600740" data-listing-reading-time-sort="5" data-listing-word-count-sort="932">
+<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1787222324006" data-listing-reading-time-sort="5" data-listing-word-count-sort="932">
 <a href="./apis.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1092,7 +1095,7 @@ APIs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1787004600740" data-listing-reading-time-sort="3" data-listing-word-count-sort="510">
+<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1787222324006" data-listing-reading-time-sort="3" data-listing-word-count-sort="510">
 <a href="./apps.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1113,7 +1116,7 @@ Apps
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1787004600817" data-listing-reading-time-sort="5" data-listing-word-count-sort="957">
+<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1787222324093" data-listing-reading-time-sort="5" data-listing-word-count-sort="957">
 <a href="./db.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1134,7 +1137,7 @@ Database
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1787004600825" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
+<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1787222324106" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
 <a href="./docs.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1155,7 +1158,7 @@ Docs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1787004600912" data-listing-reading-time-sort="2" data-listing-word-count-sort="208">
+<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1787222324211" data-listing-reading-time-sort="2" data-listing-word-count-sort="208">
 <a href="./libraries.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1176,7 +1179,7 @@ Libraries
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1787004600914" data-listing-reading-time-sort="6" data-listing-word-count-sort="1162">
+<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1787222324218" data-listing-reading-time-sort="6" data-listing-word-count-sort="1162">
 <a href="./server.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1197,7 +1200,7 @@ Server
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1787004600915" data-listing-reading-time-sort="5" data-listing-word-count-sort="853">
+<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1787222324218" data-listing-reading-time-sort="5" data-listing-word-count-sort="853">
 <a href="./workflows.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">

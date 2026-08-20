@@ -130,7 +130,7 @@ div.csl-indent {
   }, true);
 </script>
 <!--
-  Core links, on every page (docs#6).
+  Interactive apps + core links, on every page (docs#6).
 
   The app links DO exist — on the Preface, under "Interactive Apps", which is
   where marinesensitivity.org/docs/ lands. But a Quarto book keeps them on that
@@ -216,9 +216,12 @@ div.csl-indent {
     host.insertBefore(el, sw || host.firstChild);
   }
 
-  function link(href, text, title) {
+  // label is HTML, not text: the app links bold the noun that distinguishes them
+  // ("Composite **scores**" / "Individual **species**"). Every label here is a
+  // literal in this file, so there is nothing untrusted to interpolate.
+  function link(href, label, title) {
     var a = document.createElement("a");
-    a.href = href; a.textContent = text;
+    a.href = href; a.innerHTML = label;
     if (title) a.title = title;
     a.style.cssText = "display:block;padding:0.1rem 0;";
     return a;
@@ -233,16 +236,16 @@ div.csl-indent {
       "border:1px solid rgba(128,128,128,0.35);border-radius:0.35rem;";
 
     var h = document.createElement("div");
-    h.textContent = "Core links";
+    h.textContent = "Interactive apps";
     h.style.cssText = "font-weight:600;margin-bottom:0.35rem;";
     wrap.appendChild(h);
 
     // The apps are what Tim could not find, so they lead — and they point at
     // THIS book's release, never the promoted one, so the reader is not moved
     // to a different version than the page they are reading.
-    wrap.appendChild(link(u.scores,  "▶ Composite Scores",
+    wrap.appendChild(link(u.scores,  "▶ Composite <strong>scores</strong>",
                           "sensitivity scores by zone (" + ver + ")"));
-    wrap.appendChild(link(u.species, "▶ Species Distribution",
+    wrap.appendChild(link(u.species, "▶ Individual <strong>species</strong>",
                           "individual species models (" + ver + ")"));
 
     var hr = document.createElement("div");
