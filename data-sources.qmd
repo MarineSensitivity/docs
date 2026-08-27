@@ -191,6 +191,37 @@ AquaMaps is the foundational dataset for most taxa: environmental-envelope model
 
 Models are native to a 0.5° grid (c-squares) and are interpolated onto the analysis grid **bilinearly**, implemented as a precomputed weight join rather than a per-species raster resample. Source cells that are absent contribute zero, so a distribution fades to zero within about one cell of its edge rather than ending on a hard step.
 
+```{r}
+#| label: aquax-note
+#| output: asis
+
+# rendered only for releases that carry the dataset -- a v8 book must not describe v9's inputs
+if ("ax" %in% ds$ds_key) cat('
+### AquaX supersedes AquaMaps in US waters
+
+**AquaX** [@reygondeau2026] is an enhanced and revised AquaMaps framework: for each species, a
+ten-algorithm ensemble of habitat suitability, cropped to the species\' biogeographic range. The
+delivery used here is **native to the analysis grid** (0.05°, the same lattice as this release\'s
+cells, so each pixel *is* a cell — no interpolation) and **masked to US waters**: it covers the
+BOEM study-area polygon and nothing beyond it. Values are the present-day ensemble mean on a
+0–1000 scale, divided by 10 to sit on AquaMaps\' 0–100 scale; the model\'s TSS threshold (`cutoff`)
+and skill (`AUC`, `TSS`) are carried as metadata but the threshold is **not** applied, matching how
+AquaMaps has always been used.
+
+Because AquaX is a newer model of the same quantity, it **supersedes AquaMaps for the same
+species wherever AquaX was modeled**. The rule is per species and inside AquaX\'s own mask only:
+a superseded species\' AquaMaps cells inside the mask are removed *before* the merge, so an AquaX
+absence is an absence rather than an AquaMaps presence showing through; outside the mask — the
+rest of the world — AquaMaps continues unchanged. Species AquaX did not model keep AquaMaps everywhere. Species AquaX modeled
+but predicted *absent* from US waters keep their AquaMaps surface in this pre-release; that is a
+question for review, and it is a switch in the pipeline rather than a silent default.
+
+In the species app both inputs sit side by side — AquaMaps (0.5° native and 0.05° interpolated)
+and AquaX (delivered and ingested) — so the difference behind any merged surface can be inspected.
+
+')
+```
+
 ### Sea turtles: why a dedicated range dataset
 
 Sea turtle distributions from AquaMaps and from IUCN range maps were both too broad, extending well beyond where the species actually occur. Several species also carry **different ESA protection in different parts of their range**, through NOAA Fisheries Distinct Population Segments (DPS) — which a single global range map cannot express.
