@@ -216,8 +216,12 @@ rest of the world — AquaMaps continues unchanged. Species AquaX did not model 
 but predicted *absent* from US waters keep their AquaMaps surface in this pre-release; that is a
 question for review, and it is a switch in the pipeline rather than a silent default.
 
-In the species app both inputs sit side by side — AquaMaps (0.5° native and 0.05° interpolated)
-and AquaX (delivered and ingested) — so the difference behind any merged surface can be inspected.
+In the species app both inputs sit side by side. AquaMaps offers *Original* (its native 0.5°
+cells) and *Interpolated* (the 0.05° surface used in scoring). AquaX needs no interpolation, so its
+two views are *Delivered* (the 0–1000 band exactly as received) and *As ingested* (÷10, integer
+1–100, and — like AquaMaps — pixels below suitability 1 dropped; roughly half of a typical AquaX
+model\'s pixels are near-zero and fall below that line). Toggling between them shows the effect of
+the ingest threshold itself, which is why the second view is published rather than aliased.
 
 ')
 ```
