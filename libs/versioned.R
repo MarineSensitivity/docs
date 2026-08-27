@@ -99,9 +99,11 @@ doc_preview_url <- function() {
 #' one reviewer policy per version and scopes it by path, never by query
 #' (msens::preview_app_url() is the single source of that shape).
 doc_app_url <- function(app = c("scores", "species"), ver = doc_ver()) {
-  app <- match.arg(app)
-  if (identical(doc_access(ver), "restricted")) sprintf("%s/%s/%s/", doc_preview_url(), ver, app)
-  else sprintf("https://app.marinesensitivity.org/%s/?ver=%s", app, ver)
+  app  <- match.arg(app)
+  # the version is the PATH on both hosts (2026-08-27); ?ver= still 301s there
+  base <- if (identical(doc_access(ver), "restricted")) doc_preview_url()
+          else "https://app.marinesensitivity.org"
+  sprintf("%s/%s/%s/", base, ver, app)
 }
 
 #' URL of a version's own book: GitHub Pages, or the preview host when restricted.
