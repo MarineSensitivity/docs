@@ -226,6 +226,37 @@ the ingest threshold itself, which is why the second view is published rather th
 ')
 ```
 
+```{r}
+#| label: dps-note
+#| output: asis
+
+if ("dps_nmfs" %in% ds$ds_key) cat('
+### Listed entities below the species: NMFS Distinct Population Segments
+
+Under the ESA the *listed entity* can be a species, a subspecies or a Distinct Population Segment
+(DPS / ESU), and for several species NMFS lists only some populations. The humpback whale has six
+listed DPSs and eight that are Not at Risk — including those breeding in US waters (Hawaii, West
+Indies) — while the Central America and Western North Pacific DPSs (Endangered) and the Mexico DPS
+(Threatened) use feeding areas off the West Coast and Alaska. A single species-wide status is wrong
+in every part of that range.
+
+For every species whose listed entities are scoped below the species — humpback and Southern
+Resident killer whales, Cook Inlet beluga, Main Hawaiian Islands false killer whale, Western
+Steller sea lion, Beringia bearded and Arctic ringed seals, the salmon and steelhead ESUs, both
+sturgeons, smalltooth sawfish, bocaccio, yelloweye rockfish and eulachon — extinction risk is
+therefore **spatial**: each listed entity\'s designated critical habitat, from NOAA Fisheries\'
+authoritative national service (`All_NMFS_Critical_Habitat`, shared by NMFS on 2026-04-16),
+carries that entity\'s status (Endangered 100 / Threatened 50, with the MMPA floor), and the rest
+of the species\' IUCN range carries the species\' IUCN category plus the MMPA floor — the fallback
+NOAA itself suggested. These species then merge like the sea turtles: per-cell extinction risk
+**multiplied** by habitat suitability, so an Endangered population shows as a gradient rather than
+a flat maximum. NOAA is publishing DPS-level species *ranges* at the end of 2026; when they do, they
+replace the critical-habitat polygons as the source of these per-entity extents with no change to
+the rule. Sea turtles keep their own SWOT + DPS dataset.
+
+')
+```
+
 ### Sea turtles: why a dedicated range dataset
 
 Sea turtle distributions from AquaMaps and from IUCN range maps were both too broad, extending well beyond where the species actually occur. Several species also carry **different ESA protection in different parts of their range**, through NOAA Fisheries Distinct Population Segments (DPS) — which a single global range map cannot express.
