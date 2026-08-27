@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="v1 methodology as delivered in the 2025 BOEM final report">
+
+<title>3&nbsp; v1 — Planning Areas – Marine Sensitivity</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../science.html" rel="next">
+<link href="../releases.html" rel="prev">
+<link href="../images/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google tag (gtag.js) — GA4 property 413466008 -->
+<!--
+  ONE measurement ID across every MarineSensitivity product (see the homepage
+  repo's _analytics.html for why). Products are separated in reporting by
+  `content_group`; this book reports as 'docs'.
+
+  This replaces the `google-analytics:` key, which cannot set content_group and
+  would double-count page views if both were enabled.
+-->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-9HW6L751XG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-9HW6L751XG', { content_group: 'docs' });
+
+  // Quarto's `downloads: [pdf, docx]` buttons are plain anchors — the gtag
+  // config above counts the page view but not the download, so track them
+  // explicitly. Delegated so it survives Quarto's client-side navigation.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    var m = href.match(/\.(pdf|docx|epub|csv|zip|gpkg|tif|parquet)(\?|$)/i);
+    if (!m) return;
+    gtag('event', 'file_download', {
+      content_group: 'docs',
+      file_extension: m[1].toLowerCase(),
+      file_name: href.split('/').pop().slice(0, 100),
+      link_text: (a.textContent || '').trim().slice(0, 100)
+    });
+  }, true);
+</script>
+<!--
+  Interactive apps + core links, on every page (docs#6).
+
+  The app links DO exist — on the Preface, under "Interactive Apps", which is
+  where marinesensitivity.org/docs/ lands. But a Quarto book keeps them on that
+  one page: follow a search hit, a bookmark or a chapter link and the sidebar
+  shows only chapters, so the viewer is no longer reachable from anywhere on
+  screen. Tim White found it in §13 Server — a page that happens to list service
+  URLs — which is the failure, not the destination:
+
+    "after misplacing the link on my desktop, it took me quite some time to
+     locate it in the documentation ... could we create a box on the
+     Introduction page, or possibly across all pages"
+
+  There was no GitHub link on any page either: `repo-url` is set, but
+  `repo-actions: [edit]` renders only a small "Edit this page" action in the
+  right-hand TOC, which is not what someone looking for the source is scanning
+  for.
+
+  WHY CLIENT-SIDE, and why here. This mirrors _version-switcher.html deliberately
+  — same include-in-header mechanism, same sidebar host, so the two read as one
+  control strip and neither needs a Quarto feature that books do not have. It
+  also means the version comes from the page's own URL (/{ver}/...), which cannot
+  drift from where the file actually sits, rather than from a build-time
+  injection.
+
+  This DUPLICATES msens::product_urls() in JavaScript, which is a real cost worth
+  naming: the R side is the authority and is unit-tested, but a static book has
+  no R at read time. Kept deliberately identical in shape — ?ver= for a public
+  release, the preview host's PATH form for a restricted one — and the same
+  fail-closed access default the switcher and msens::atlas_versions() use
+  (prerelease -> restricted). If one changes, change both.
+
+  If anything fails — offline, registry unreachable, an unversioned local preview
+  — the box simply does not appear. A docs page must never fail to render over
+  its own chrome.
+-->
+<script>
+(function () {
+  var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
+  var APP      = "https://app.marinesensitivity.org";
+  var PREVIEW  = "https://preview.marinesensitivity.org";
+  var HOME     = "https://marinesensitivity.org";
+  var GITHUB   = "https://github.com/MarineSensitivity";
+  var REPO     = "https://github.com/MarineSensitivity/docs";
+
+  function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
+
+  // Same rule as msens::product_urls(): the version is a QUERY parameter on the
+  // public host and a PATH segment on the signed-in preview host, because
+  // Cloudflare Access scopes its per-version reviewer policies by path.
+  function appUrls(ver, acc) {
+    if (acc === "restricted")
+      return { scores: PREVIEW + "/" + ver + "/scores/",
+               species: PREVIEW + "/" + ver + "/species/" };
+    return { scores: APP + "/scores/?ver=" + ver,
+             species: APP + "/species/?ver=" + ver };
+  }
+
+  function parseVer() {
+    var m = location.pathname.match(/^(.*?\/)(v\d+[a-z]?)(\/.*)?$/);
+    return m ? m[2] : null;
+  }
+
+  // The script is injected into <head>, so on a fast/cached load it can run
+  // before the body exists — mounting into a null host silently does nothing.
+  function whenReady(fn) {
+    if (document.readyState === "loading")
+      document.addEventListener("DOMContentLoaded", fn, { once: true });
+    else fn();
+  }
+
+  // Both this and the version switcher mount at host.firstChild once their own
+  // fetch resolves, so whichever lands LAST ends up on top and the pair's order
+  // flips between page loads (observed live: core-links first locally, switcher
+  // first on marinesensitivity.org). Each now anchors on the other instead, so
+  // the strip reads the same way whichever wins the race: links, then switcher.
+  function mount(el) {
+    var host = document.querySelector("#quarto-margin-sidebar")
+            || document.querySelector("#quarto-sidebar")
+            || document.querySelector(".nav-footer")
+            || document.body;
+    // if the switcher already mounted, go directly above it; else take the top
+    var sw = host.querySelector(".docs-version-switcher");
+    host.insertBefore(el, sw || host.firstChild);
+  }
+
+  // label is HTML, not text: the app links bold the noun that distinguishes them
+  // ("Composite **scores**" / "Individual **species**"). Every label here is a
+  // literal in this file, so there is nothing untrusted to interpolate.
+  function link(href, label, title) {
+    var a = document.createElement("a");
+    a.href = href; a.innerHTML = label;
+    if (title) a.title = title;
+    a.style.cssText = "display:block;padding:0.1rem 0;";
+    return a;
+  }
+
+  function box(ver, acc) {
+    var u = appUrls(ver, acc);
+    var wrap = document.createElement("div");
+    wrap.className = "docs-core-links";
+    wrap.style.cssText =
+      "margin:0.75rem 0;padding:0.6rem 0.75rem;font-size:0.85rem;" +
+      "border:1px solid rgba(128,128,128,0.35);border-radius:0.35rem;";
+
+    var h = document.createElement("div");
+    h.textContent = "Interactive apps";
+    h.style.cssText = "font-weight:600;margin-bottom:0.35rem;";
+    wrap.appendChild(h);
+
+    // The apps are what Tim could not find, so they lead — and they point at
+    // THIS book's release, never the promoted one, so the reader is not moved
+    // to a different version than the page they are reading.
+    wrap.appendChild(link(u.scores,  "▶ Composite <strong>scores</strong>",
+                          "sensitivity scores by zone (" + ver + ")"));
+    wrap.appendChild(link(u.species, "▶ Individual <strong>species</strong>",
+                          "individual species models (" + ver + ")"));
+
+    var hr = document.createElement("div");
+    hr.style.cssText = "border-top:1px solid rgba(128,128,128,0.25);margin:0.4rem 0;";
+    wrap.appendChild(hr);
+
+    wrap.appendChild(link(HOME,   "⌂ Project home", "marinesensitivity.org"));
+    wrap.appendChild(link(GITHUB, "◇ GitHub — all repositories", GITHUB));
+    wrap.appendChild(link(REPO,   "◇ GitHub — these docs", REPO));
+    return wrap;
+  }
+
+  var ver = parseVer();
+  if (!ver) return;   // unversioned local preview: nothing reliable to link to
+
+  fetch(REGISTRY, { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (j) {
+      var versions = (j && j.versions) || j;
+      if (!versions || !versions.length) return;
+      var me = versions.filter(function (v) { return v.ver === ver; })[0];
+      // A book can be published for a release the registry has not caught up
+      // with; fail CLOSED so a restricted pre-release is never linked at the
+      // public host, where it would 404 or leak that it exists.
+      var acc = me ? access(me) : "restricted";
+      whenReady(function () { mount(box(ver, acc)); });
+    })
+    .catch(function () { /* registry unreachable: show nothing */ });
+})();
+</script>
+<!--
+  Documentation version switcher.
+
+  One book documented eight model releases, so a reader could not tell which
+  version a page described, and a citation to the v4 methods had nowhere to
+  point. Docs are now published per release under /{ver}/, and this widget moves
+  between them.
+
+  It reads the SAME versions.json that drives the pipeline and the apps, so the
+  three cannot disagree about what exists. The bucket serves it with
+  `Access-Control-Allow-Origin: *`, so the fetch works from the browser.
+
+  `access` (public | restricted) decides WHERE a version's book lives: public
+  books are on GitHub Pages under marinesensitivity.org/docs/{ver}/, restricted
+  ones (a pre-release under review) only on the signed-in preview host. So the
+  switcher links by ABSOLUTE URL per access -- a reviewer on the preview host can
+  step to a public version and a public reader sees a locked entry that leads to
+  the sign-in, never a dead relative link. A registry that predates the field is
+  read the way msens::atlas_versions() reads it: prerelease -> restricted.
+
+  The page's own version comes from its URL, not from a build-time injection:
+  the published layout is /{ver}/..., so the path is the source of truth and
+  cannot drift from where the file actually sits. If anything fails — offline,
+  registry unreachable, an unversioned preview render — the widget simply does
+  not appear, because a docs page must never fail to render over its own chrome.
+-->
+<script>
+(function () {
+  var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
+  var PUBLIC_DOCS  = "https://marinesensitivity.org/docs/";          // GitHub Pages
+  var PREVIEW_DOCS = "https://preview.marinesensitivity.org/docs/";  // signed-in reviewers
+
+  function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
+  function base(v)   { return access(v) === "restricted" ? PREVIEW_DOCS : PUBLIC_DOCS; }
+
+  function parsePath() {
+    var m = location.pathname.match(/^(.*?\/)(v\d+[a-z]?)(\/.*)?$/);
+    if (!m) return null;
+    return { prefix: m[1], ver: m[2], rest: m[3] || "/" };
+  }
+
+  function label(v) {
+    var s = v.ver;
+    if (v.status === "prerelease") s += " (pre-release)";
+    else if (v.status === "retired") s += " (retired)";
+    if (access(v) === "restricted") s += " \uD83D\uDD12 restricted";   // sign-in required
+    return v.title ? s + " — " + v.title : s;
+  }
+
+  // The script is injected into <head>, so on a fast/cached load the fetch can
+  // resolve BEFORE the body exists -- and mounting into a null host silently
+  // does nothing. Observed exactly that: the switcher appeared on the index but
+  // not on an inner page whose registry response came from cache.
+  function whenReady(fn) {
+    if (document.readyState === "loading")
+      document.addEventListener("DOMContentLoaded", fn, { once: true });
+    else fn();
+  }
+
+  function mount(el) {
+    // the book sidebar is the natural home; fall back to the footer, then body
+    var host = document.querySelector("#quarto-margin-sidebar")
+            || document.querySelector("#quarto-sidebar")
+            || document.querySelector(".nav-footer")
+            || document.body;
+    // Sit BELOW the core-links box (_nav-links.html) when it has already
+    // mounted. Both widgets used to insert at firstChild once their own fetch
+    // resolved, so whichever landed last ended up on top and the pair's order
+    // flipped between page loads. Anchoring on each other makes the strip read
+    // the same way whichever wins the race: links, then switcher.
+    var links = host.querySelector(".docs-core-links");
+    if (links && links.nextSibling) host.insertBefore(el, links.nextSibling);
+    else if (links)                 host.appendChild(el);
+    else                            host.insertBefore(el, host.firstChild);
+  }
+
+  var here = parsePath();
+  if (!here) return;   // unversioned (local preview) — nothing to switch between
+
+  fetch(REGISTRY, { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (j) {
+      var versions = (j && j.versions) || j;
+      if (!versions || !versions.length) return;
+
+      versions = versions.slice().sort(function (a, b) {
+        return String(b.released || b.ver).localeCompare(String(a.released || a.ver));
+      });
+
+      var wrap = document.createElement("div");
+      wrap.className = "docs-version-switcher";
+      wrap.style.cssText = "margin:0.75rem 0;font-size:0.85rem;";
+
+      var lab = document.createElement("label");
+      lab.textContent = "Docs version";
+      lab.style.cssText = "display:block;font-weight:600;margin-bottom:0.25rem;";
+      lab.setAttribute("for", "docs-version-select");
+
+      var sel = document.createElement("select");
+      sel.id = "docs-version-select";
+      sel.className = "form-select form-select-sm";
+
+      versions.forEach(function (v) {
+        var o = document.createElement("option");
+        o.value = v.ver;
+        o.textContent = label(v);
+        if (v.ver === here.ver) o.selected = true;
+        sel.appendChild(o);
+      });
+
+      // A release exists in the registry long before its DOCS are built -- today
+      // only v8 is published, so offering v1-v7 as live options would hand the
+      // reader a 404. Probe each one and mark the unbuilt ones, rather than
+      // maintaining a second list that would drift from what is actually there.
+      // Only SAME-ORIGIN targets can be probed: a cross-origin HEAD (GitHub
+      // Pages sends no CORS headers; the preview host answers with a sign-in
+      // redirect) always fails and would mislabel a published book.
+      versions.forEach(function (v) {
+        if (v.ver === here.ver) return;
+        var target = base(v) + v.ver + "/";
+        if (target.indexOf(location.origin + "/") !== 0) return;
+        fetch(target, { method: "HEAD" })
+          .then(function (r) {
+            if (r.ok) return;
+            var o = sel.querySelector("option[value='" + v.ver + "']");
+            if (o) { o.disabled = true; o.textContent = label(v) + " — docs not published"; }
+          })
+          .catch(function () {
+            var o = sel.querySelector("option[value='" + v.ver + "']");
+            if (o) { o.disabled = true; o.textContent = label(v) + " — docs not published"; }
+          });
+      });
+
+      sel.addEventListener("change", function () {
+        // keep the reader on the SAME page in the other version; if that page
+        // did not exist then, the server 404s and they can climb to its index —
+        // better than always dumping them at the top of an unfamiliar book.
+        // Absolute per access: a restricted version lives only on the preview
+        // host (sign-in), a public one only on GitHub Pages.
+        var v = versions.filter(function (x) { return x.ver === sel.value; })[0];
+        location.href = (v ? base(v) : here.prefix) + sel.value + here.rest;
+      });
+
+      wrap.appendChild(lab);
+      wrap.appendChild(sel);
+      whenReady(function () { mount(wrap); });
+    })
+    .catch(function () { /* registry unreachable: show nothing */ });
+})();
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../releases.html">Releases</a></li><li class="breadcrumb-item"><a href="../releases/v1.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">v1 — Planning Areas</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Marine Sensitivity</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/MarineSensitivity/docs/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="../Marine-Sensitivity.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="../Marine-Sensitivity.docx">
+              <i class="bi bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Releases</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../releases.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Releases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../releases/v1.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">v1 — Planning Areas</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Science</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../science.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Science</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data-sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data Sources</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../taxonomy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Taxonomy</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../extinction-risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Extinction Risk</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../model-merging.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Merging</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../scoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Scoring</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../scoring-walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Scoring Walkthrough</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stressors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Stressors</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../server.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Server</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../db.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Database</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../workflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Workflows</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">APIs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../libraries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Libraries</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Apps</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps-guide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Apps User Guide</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../docs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Applications (Current)</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/scores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/species.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Applications (Legacy)</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/aoi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Areas of Interest</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/bird_hotspots.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bird Hotspots</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Regional Map</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/scores_0.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scores Explorer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/sdm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, Vector</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/sdm-cog.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, Raster</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/vmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vulnerability Mapper</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#conceptual-framework" id="toc-conceptual-framework" class="nav-link active" data-scroll-target="#conceptual-framework"><span class="header-section-number">3.1</span> Conceptual framework</a>
+  <ul class="collapse">
+  <li><a href="#where-exposure-and-adaptive-capacity-sit" id="toc-where-exposure-and-adaptive-capacity-sit" class="nav-link" data-scroll-target="#where-exposure-and-adaptive-capacity-sit"><span class="header-section-number">3.1.1</span> Where exposure and adaptive capacity sit</a></li>
+  </ul></li>
+  <li><a href="#extinction-risk-weighting-and-why-these-numbers" id="toc-extinction-risk-weighting-and-why-these-numbers" class="nav-link" data-scroll-target="#extinction-risk-weighting-and-why-these-numbers"><span class="header-section-number">3.2</span> Extinction-risk weighting, and why these numbers</a></li>
+  <li><a href="#scoring" id="toc-scoring" class="nav-link" data-scroll-target="#scoring"><span class="header-section-number">3.3</span> Scoring</a>
+  <ul class="collapse">
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">3.3.1</span> Worked example</a></li>
+  <li><a href="#what-ecoregional-rescaling-does-and-does-not-preserve" id="toc-what-ecoregional-rescaling-does-and-does-not-preserve" class="nav-link" data-scroll-target="#what-ecoregional-rescaling-does-and-does-not-preserve"><span class="header-section-number">3.3.2</span> What ecoregional rescaling does and does not preserve</a></li>
+  </ul></li>
+  <li><a href="#grid-and-projection" id="toc-grid-and-projection" class="nav-link" data-scroll-target="#grid-and-projection"><span class="header-section-number">3.4</span> Grid and projection</a></li>
+  <li><a href="#marine-relevance-in-v1" id="toc-marine-relevance-in-v1" class="nav-link" data-scroll-target="#marine-relevance-in-v1"><span class="header-section-number">3.5</span> Marine relevance in v1</a></li>
+  <li><a href="#sources-in-v1" id="toc-sources-in-v1" class="nav-link" data-scroll-target="#sources-in-v1"><span class="header-section-number">3.6</span> Sources in v1</a></li>
+  <li><a href="#primary-productivity" id="toc-primary-productivity" class="nav-link" data-scroll-target="#primary-productivity"><span class="header-section-number">3.7</span> Primary productivity</a></li>
+  <li><a href="#successor-releases" id="toc-successor-releases" class="nav-link" data-scroll-target="#successor-releases"><span class="header-section-number">3.8</span> Successor releases</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/releases/v1.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../releases.html">Releases</a></li><li class="breadcrumb-item"><a href="../releases/v1.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">v1 — Planning Areas</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-release-v1" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">v1 — Planning Areas</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>v1 was the first delivered version of the Marine Sensitivity Toolkit, reported to BOEM’s Environmental Studies Program under contract 140M0123P0018 as the <em>Marine Sensitivity Toolkit</em> final report (2025).</p>
+<p>It is documented here in its own right because several of its choices — the conceptual framing, the extinction-risk weighting and its justification, and the honest account of what ecoregional rescaling does and does not preserve — remain the foundation of every later release, and because reports and decisions cite it.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>What this page is, and is not
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This is the <strong>methodology</strong> of v1. Numbers are deliberately omitted: the counts in the 2025 report are snapshots of a build that has since been superseded, and reprinting them here would set them beside computed figures elsewhere in this book as if the two were equally current. For v1’s counts as published, see the <a href="../releases.html">Releases</a> table, which reads them from the v1 release itself.</p>
+<p>The report also retains, as a matter of record, figures it identifies as incorrect. Those are not carried forward.</p>
+</div>
+</div>
+<section id="conceptual-framework" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="conceptual-framework"><span class="header-section-number">3.1</span> Conceptual framework</h2>
+<p>Vulnerability (<span class="math inline">\(V\)</span>) is a function of exposure (<span class="math inline">\(E\)</span>), sensitivity (<span class="math inline">\(S\)</span>) and adaptive capacity (<span class="math inline">\(A\)</span>):</p>
+<p><span id="eq-v1-vesa"><span class="math display">\[
+V = f(E, S, A)
+\tag{3.1}\]</span></span></p>
+<p>This decomposition is the standard framing in ecological risk and climate-vulnerability assessment <span class="citation" data-cites="ipcc2014 halpern2007 hare2016">(<a href="../references.html#ref-ipcc2014" role="doc-biblioref">Intergovernmental Panel on Climate Change 2014</a>; <a href="../references.html#ref-halpern2007" role="doc-biblioref">Halpern et al. 2007</a>; <a href="../references.html#ref-hare2016" role="doc-biblioref"><span class="nocase">Hare et al.</span> 2016</a>)</span>. The more exposed and sensitive an area is — and the less able it is to recover — the more vulnerable it is to impacts from offshore activities.</p>
+<p>For spatial implementation, the vulnerability of a cell <span class="math inline">\(v_c\)</span> is the sum across all species in a taxonomic group <span class="math inline">\(S_g\)</span> of the product of the species’ presence in the cell <span class="math inline">\(p_{sc}\)</span> and a species weight <span class="math inline">\(w_s\)</span>, the risk of that species going extinct:</p>
+<p><span id="eq-v1-cell"><span class="math display">\[
+v_c = \sum_{s=1}^{S_g} p_{sc} \cdot w_s
+\tag{3.2}\]</span></span></p>
+<p>where <span class="math inline">\(p_{sc}\)</span> is presence probability or suitability (0–1) and <span class="math inline">\(w_s\)</span> is how at-risk that species is of going extinct (0–1, ranging from Least Concern at 0.2 to Critically Endangered at 1).</p>
+<p>In plain terms: if a cell has many species that are both likely to be present and at high risk of extinction, it gets a higher sensitivity score. This is how places where rare or threatened species concentrate are found.</p>
+<section id="where-exposure-and-adaptive-capacity-sit" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="where-exposure-and-adaptive-capacity-sit"><span class="header-section-number">3.1.1</span> Where exposure and adaptive capacity sit</h3>
+<p>The implemented score resolves the <strong>sensitivity</strong> and <strong>adaptive-capacity</strong> terms jointly, and leaves <strong>exposure</strong> to be supplied by the decision being evaluated.</p>
+<p>Extinction risk serves as an integrated proxy for both because the IUCN and ESA listing criteria assess population size, rate of decline, range restriction and fragmentation — the same properties that govern whether a population can absorb an added impact and recover from it.</p>
+<p>This is a deliberate simplification, and the principal structural limitation of v1: adaptive capacity cannot be varied independently of sensitivity, and traits that distinguish recovery potential <em>within</em> a risk category — generation time, fecundity, dispersal, habitat specialization — are not represented. Separating the terms would mean adding activity-specific exposure layers (spill-trajectory probability, lease-block footprints, modeled noise fields) and letting them interact with trait-based adaptive-capacity attributes drawn from established marine vulnerability protocols <span class="citation" data-cites="hare2016">(<a href="../references.html#ref-hare2016" role="doc-biblioref"><span class="nocase">Hare et al.</span> 2016</a>)</span>.</p>
+</section>
+</section>
+<section id="extinction-risk-weighting-and-why-these-numbers" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="extinction-risk-weighting-and-why-these-numbers"><span class="header-section-number">3.2</span> Extinction-risk weighting, and why these numbers</h2>
+<p>IUCN Red List categories and ESA status codes were standardized to numeric risk weights: CR = 1.0, EN = 0.8, VU and ESA Threatened = 0.6, NT = 0.4, LC = 0.2. Where a species had several assessments the most recent was used; where statuses conflicted across regions the precautionary principle applied, taking the higher risk category.</p>
+<p>These weights are a rescaling of the IUCN <strong>equal-steps</strong> weighting used for the Red List Index <span class="citation" data-cites="butchart2004 butchart2007">(<a href="../references.html#ref-butchart2004" role="doc-biblioref">Butchart et al. 2004</a>, <a href="../references.html#ref-butchart2007" role="doc-biblioref">2007</a>)</span> and for the Species Threat Abatement and Restoration (STAR) metric <span class="citation" data-cites="mair2021">(<a href="../references.html#ref-mair2021" role="doc-biblioref"><span class="nocase">Mair et al.</span> 2021</a>)</span>, which maps LC = 0, NT = 1, VU = 2, EN = 3, CR = 4. Dividing by five and shifting Least Concern from 0 to 0.2 yields the multipliers above.</p>
+<p>STAR is the closest published analogue to the MST score: an additive, spatially explicit sum of species presence weighted by extinction risk.</p>
+<p><strong>Least Concern is deliberately given non-zero weight</strong> so that overall biological richness remains part of the sensitivity signal — consistent with the statutory language — rather than the score being driven entirely by the small fraction of species that are threatened. A Critically Endangered species still carries five times the weight of a Least Concern one.</p>
+<p>Equal-steps weighting is the most widely used convention but not the only defensible one. Extinction-probability weightings <span class="citation" data-cites="butchart2007 mooers2008">(<a href="../references.html#ref-butchart2007" role="doc-biblioref">Butchart et al. 2007</a>; <a href="../references.html#ref-mooers2008" role="doc-biblioref">Mooers et al. 2008</a>)</span> are strongly convex and would concentrate nearly all weight on CR and EN species. Because the transformation can affect rank order <span class="citation" data-cites="mooers2008">(<a href="../references.html#ref-mooers2008" role="doc-biblioref">Mooers et al. 2008</a>)</span>, a sensitivity analysis comparing area rankings under equal-steps, extinction-probability and equal (richness-only) weightings is a recommended next step.</p>
+</section>
+<section id="scoring" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="scoring"><span class="header-section-number">3.3</span> Scoring</h2>
+<p><strong>Step 1 — cell-level scoring.</strong> For each 0.05° cell the raw score <span class="math inline">\(v_c\)</span> is the sum of presence × extinction-risk weight across the species in a taxonomic group.</p>
+<p><strong>Step 2 — ecoregional rescaling.</strong> Raw cell scores are rescaled to 0–100 within each BOEM Ecoregion, using the minimum and maximum observed inside that ecoregion for the component being scored.</p>
+<p><strong>Step 3 — Planning Area aggregation.</strong> Rescaled cell scores are aggregated by <strong>area-weighted</strong> average: each cell contributes in proportion to the fraction of its area falling inside the Planning Area, so larger low-latitude cells do not outweigh smaller high-latitude ones.</p>
+<section id="worked-example" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">3.3.1</span> Worked example</h3>
+<p>A simplified Planning Area with three equal-area cells in an ecoregion whose fish scores run from 65 to 974:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Cell</th>
+<th style="text-align: right;">Raw fish score</th>
+<th style="text-align: right;">Rescaled</th>
+<th style="text-align: right;">Cell area (km²)</th>
+<th style="text-align: right;">Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">A</td>
+<td style="text-align: right;">200</td>
+<td style="text-align: right;"><span class="math inline">\((200-65)/(974-65)\times100 = 15\)</span></td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: right;">600</td>
+<td style="text-align: right;"><span class="math inline">\((600-65)/(974-65)\times100 = 59\)</span></td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C</td>
+<td style="text-align: right;">400</td>
+<td style="text-align: right;"><span class="math inline">\((400-65)/(974-65)\times100 = 37\)</span></td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.33</td>
+</tr>
+</tbody>
+</table>
+<p>The Planning Area fish score is <span class="math inline">\(15\times0.33 + 59\times0.33 + 37\times0.33 = 37\)</span> — meaning the Planning Area sits 37% of the way between the lowest and highest fish scores observed in its ecoregion.</p>
+</section>
+<section id="what-ecoregional-rescaling-does-and-does-not-preserve" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="what-ecoregional-rescaling-does-and-does-not-preserve"><span class="header-section-number">3.3.2</span> What ecoregional rescaling does and does not preserve</h3>
+<p>Rescaling within ecoregions is a deliberate analytical choice with a cost that should be explicit.</p>
+<p>Because min–max rescaling is <strong>monotonic</strong>, it preserves the complete ordering of cells and Planning Areas <em>within</em> an ecoregion: no within-region comparison is affected. What it removes is the difference in <strong>absolute magnitude between</strong> ecoregions. A score of 80 in the Gulf of America and a score of 80 in the Arctic both denote “high relative to that region”, not equal absolute sensitivity, and the difference in raw species richness between those regions is by design not visible in the rescaled value.</p>
+<p>The rationale is that the raw score is count-like — it increases with the number of species modeled in a cell — and is therefore governed by the latitudinal richness gradient. Without rescaling, nearly every subtropical Planning Area would outrank nearly every Arctic one, and the result would approximate a map of model density rather than of conservation concern. Within-region normalization is also consistent with the prior RESA methodology <span class="citation" data-cites="niedoroda2014">(<a href="../references.html#ref-niedoroda2014" role="doc-biblioref">Niedoroda 2014</a>)</span>.</p>
+<p>Two consequences follow for interpretation:</p>
+<ol type="1">
+<li><strong>Rescaled scores are not a national ranking.</strong> Comparing areas across ecoregions compares each to its own regional context.</li>
+<li><strong>The endpoints are observed extrema</strong>, so a single outlier cell can set the 100 for an entire ecoregion and compress every other score in it. Robust percentile endpoints (1st/99th) are recommended in their place.</li>
+</ol>
+<p>Because absolute magnitude is management-relevant information, reporting raw scores alongside the rescaled ones — together with a nationally rescaled variant and the rank correlation between the two rankings — would let the effect of the normalization on rank order be assessed directly rather than assumed.</p>
+</section>
+</section>
+<section id="grid-and-projection" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="grid-and-projection"><span class="header-section-number">3.4</span> Grid and projection</h2>
+<p>The analysis grid is <strong>geographic (WGS84) rather than projected</strong>, because every input dataset — AquaMaps half-degree cells, Bio-ORACLE reference layers, the VIIRS productivity grid, and IUCN/BirdLife range polygons — is distributed on a regular latitude/longitude grid. Analyzing in geographic coordinates resamples each input once rather than twice, avoiding blurred suitability surfaces and displaced range boundaries; and no single equal-area projection serves both the Gulf of America and the Aleutians well.</p>
+<p>Area distortion is therefore corrected <strong>arithmetically rather than by projection</strong>: cell area is computed on the sphere, and every cell-to-area aggregation is weighted by that true area and by the cell’s fractional overlap with the Planning Area — making the reported statistics equal-area in effect. Maps are drawn in region-appropriate equal-area projections <strong>for display only</strong>; no analysis is performed in a display projection.</p>
+</section>
+<section id="marine-relevance-in-v1" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="marine-relevance-in-v1"><span class="header-section-number">3.5</span> Marine relevance in v1</h2>
+<p>In v1 a <strong>spatial inclusion rule</strong> was applied — every model whose distribution intersected the study area was ingested — without an independent test of whether the species is marine.</p>
+<p>This admits a small number of non-marine species with coastal range polygons; the introduced White-winged Parakeet (<em>Brotogeris versicolurus</em>) in southern Florida is one. Because such species are almost always Least Concern and occupy few cells, the effect on scores is negligible, but their presence in the species viewer is not defensible.</p>
+<p>Subsequent versions apply an explicit marine-relevance filter: birds are scored only if they belong to a marine or coastal family <strong>and</strong> at least 5% of their whole global range falls over ocean, with a curated include/exclude list for edge cases.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The standard <strong>WoRMS <code>isMarine</code> flag cannot be used</strong> for this purpose, because seabirds are largely absent from that register. This is the reason the later filter is built from family membership and a measured percentage rather than from the obvious flag — see <a href="../taxonomy.html#sec-is-marine" class="quarto-xref"><span>Section 6.4</span></a>.</p>
+</div>
+</div>
+</section>
+<section id="sources-in-v1" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="sources-in-v1"><span class="header-section-number">3.6</span> Sources in v1</h2>
+<p>v1’s distributions came principally from AquaMaps global species distribution models, downscaled from their native 0.5° half-degree cells to 0.05° by bilinear interpolation, together with BirdLife range maps for birds.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>AquaMaps vintage
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The 2025 report cites AquaMaps in two ways — a retrieval date in the Methods and “AquaMaps 2019” in the conclusions — which reads as a contradiction. It is not.</p>
+<p>The <strong>model release is AquaMaps Version 10/2019</strong>, which is what the release registry records and what the data itself carries; the later date is when that release was <em>retrieved</em>. No newer AquaMaps release has been ingested, and the suitability surfaces have not changed.</p>
+</div>
+</div>
+<p>Presence values follow external convention where one exists and are assigned by the study where one does not. Continuous suitability models are used as published, without modification. Expert range maps take a 50% presence value, following the convention for extent-of-occurrence polygons, which assert presence <em>somewhere</em> within the boundary rather than throughout it. Designated Critical Habitat takes a higher value reflecting the stronger occupancy evidence implied by a legal designation — an assumption of the study rather than an external standard, and identified as such.</p>
+</section>
+<section id="primary-productivity" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="primary-productivity"><span class="header-section-number">3.7</span> Primary productivity</h2>
+<p>Net primary productivity was computed with the Vertically Generalized Production Model <span class="citation" data-cites="behrenfeld1997">(<a href="../references.html#ref-behrenfeld1997" role="doc-biblioref">Behrenfeld and Falkowski 1997</a>)</span> from VIIRS satellite data for the most recently completed decade. Monthly NPP was averaged annually, then a ten-year mean and standard deviation computed, downsampled to the analysis grid by bilinear interpolation, and converted to metric tons C km<sup>-2</sup> yr<sup>-1</sup>.</p>
+</section>
+<section id="successor-releases" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="successor-releases"><span class="header-section-number">3.8</span> Successor releases</h2>
+<p>v1 scored <strong>Planning Areas</strong>; the 2026 program cycle introduced <strong>Program Areas</strong>, which v2 adopted. Later releases changed the taxonomy, the merge and the definition of a valid species — see <a href="../releases.html">Releases</a> for what changed and when, and read this page as the record of what v1 did.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-behrenfeld1997" class="csl-entry" role="listitem">
+Behrenfeld, Michael J., and Paul G. Falkowski. 1997. <span>“Photosynthetic Rates Derived from Satellite-Based Chlorophyll Concentration.”</span> <em>Limnology and Oceanography</em> 42 (1): 1–20. <a href="https://doi.org/10.4319/lo.1997.42.1.0001">https://doi.org/10.4319/lo.1997.42.1.0001</a>.
+</div>
+<div id="ref-butchart2007" class="csl-entry" role="listitem">
+Butchart, Stuart H. M., H. Resit Akçakaya, Janice Chanson, et al. 2007. <span>“Improvements to the Red List Index.”</span> <em>PLoS ONE</em> 2 (1): e140. <a href="https://doi.org/10.1371/journal.pone.0000140">https://doi.org/10.1371/journal.pone.0000140</a>.
+</div>
+<div id="ref-butchart2004" class="csl-entry" role="listitem">
+Butchart, Stuart H. M., Alison J. Stattersfield, Leon A. Bennun, et al. 2004. <span>“Measuring Global Trends in the Status of Biodiversity: Red List Indices for Birds.”</span> <em>PLoS Biology</em> 2 (12): e383. <a href="https://doi.org/10.1371/journal.pbio.0020383">https://doi.org/10.1371/journal.pbio.0020383</a>.
+</div>
+<div id="ref-halpern2007" class="csl-entry" role="listitem">
+Halpern, Benjamin S., Kimberly A. Selkoe, Fiorenza Micheli, and Carrie V. Kappel. 2007. <span>“Evaluating and Ranking the Vulnerability of Global Marine Ecosystems to Anthropogenic Threats.”</span> <em>Conservation Biology</em> 21: 1301–15. <a href="https://doi.org/10.1111/j.1523-1739.2007.00752.x">https://doi.org/10.1111/j.1523-1739.2007.00752.x</a>.
+</div>
+<div id="ref-hare2016" class="csl-entry" role="listitem">
+<span class="nocase">Hare, Jonathan A., Wendy E. Morrison, Mark W. Nelson, et al.</span> 2016. <span>“A Vulnerability Assessment of Fish and Invertebrates to Climate Change on the Northeast u.s. Continental Shelf.”</span> <em>PLoS ONE</em> 11 (2): e0146756. <a href="https://doi.org/10.1371/journal.pone.0146756">https://doi.org/10.1371/journal.pone.0146756</a>.
+</div>
+<div id="ref-ipcc2014" class="csl-entry" role="listitem">
+Intergovernmental Panel on Climate Change. 2014. <em>Climate Change 2014: Impacts, Adaptation, and Vulnerability. Contribution of Working Group II to the Fifth Assessment Report</em>. Cambridge University Press.
+</div>
+<div id="ref-mair2021" class="csl-entry" role="listitem">
+<span class="nocase">Mair, Louise, Leon A. Bennun, Thomas M. Brooks, et al.</span> 2021. <span>“A Metric for Spatially Explicit Contributions to Science-Based Species Targets.”</span> <em>Nature Ecology &amp; Evolution</em> 5: 836–44. <a href="https://doi.org/10.1038/s41559-021-01432-0">https://doi.org/10.1038/s41559-021-01432-0</a>.
+</div>
+<div id="ref-mooers2008" class="csl-entry" role="listitem">
+Mooers, Arne Ø., Daniel P. Faith, and Wayne P. Maddison. 2008. <span>“Converting Endangered Species Categories to Probabilities of Extinction for Phylogenetic Conservation Prioritization.”</span> <em>PLoS ONE</em> 3 (11): e3700. <a href="https://doi.org/10.1371/journal.pone.0003700">https://doi.org/10.1371/journal.pone.0003700</a>.
+</div>
+<div id="ref-niedoroda2014" class="csl-entry" role="listitem">
+Niedoroda, Alan W. 2014. <em>Renewable Energy Space Assessment Model (<span>RESA</span>)</em>. Bureau of Ocean Energy Management.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../releases.html" class="pagination-link" aria-label="Releases">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Releases</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../science.html" class="pagination-link" aria-label="Science">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Science</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© <a href="https://bbest.github.io/cv/" target="_blank">Ben Best</a>, <a href="https://www.boem.gov/environment/environmental-studies/environmental-studies-information" target="_blank">BOEM-ESP</a></p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/releases/v1.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org/" target="_blank">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
