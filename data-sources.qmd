@@ -246,13 +246,16 @@ Steller sea lion, Beringia bearded and Arctic ringed seals, the salmon and steel
 sturgeons, smalltooth sawfish, bocaccio, yelloweye rockfish and eulachon — extinction risk is
 therefore **spatial**: each listed entity\'s designated critical habitat, from NOAA Fisheries\'
 authoritative national service (`All_NMFS_Critical_Habitat`, shared by NMFS on 2026-04-16),
-carries that entity\'s status (Endangered 100 / Threatened 50, with the MMPA floor), and the rest
-of the species\' IUCN range carries the species\' IUCN category plus the MMPA floor — the fallback
-NOAA itself suggested. These species then merge like the sea turtles: per-cell extinction risk
-**multiplied** by habitat suitability, so an Endangered population shows as a gradient rather than
-a flat maximum. NOAA is publishing DPS-level species *ranges* at the end of 2026; when they do, they
-replace the critical-habitat polygons as the source of these per-entity extents with no change to
-the rule. Sea turtles keep their own SWOT + DPS dataset.
+carries that entity\'s status (Endangered 100 / Threatened 50), and the rest of the species\' IUCN
+range carries the baseline every unlisted species of its kind gets — the MMPA floor of 20 for a
+marine mammal, the IUCN category otherwise — the fallback NOAA itself suggested. Unlike the sea
+turtles, this surface is **not multiplied into the merged model**: the merged model stays the
+species\' habitat suitability (AquaX, or AquaMaps where AquaX did not model it), masked to the
+extinction-risk footprint like any other range, and the per-cell risk is carried beside it and
+multiplied in at scoring (@sec-model-merging). The species app offers the risk surface as its own
+input layer, *NMFS DPS extinction risk*. NOAA is publishing DPS-level species *ranges* at the end of
+2026; when they do, they replace the critical-habitat polygons as the source of these per-entity
+extents with no change to the rule. Sea turtles keep their own SWOT + DPS dataset.
 
 ')
 ```

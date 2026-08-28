@@ -185,10 +185,12 @@ v9:
     species whose ESA listing applies to some populations only (humpback and Southern Resident
     killer whales, Cook Inlet beluga, the salmonid ESUs, both sturgeons, …) take each listed
     entity's status inside its designated critical habitat, from NOAA Fisheries' authoritative
-    service, and the IUCN category (plus the MMPA floor) across the rest of their range — then
-    merge like the sea turtles, risk × suitability. Before this the humpback carried the Endangered
-    status of DPSs that breed outside US waters everywhere it occurs, a flat maximum across its
-    entire range. Supersession is a filter on the merge input, not a per-cell blend: inside the AquaX mask a
+    service, and the baseline every unlisted species of its kind gets (the MMPA floor for a marine
+    mammal, the IUCN category otherwise) across the rest of their range. Their merged model stays
+    the habitat suitability; the per-cell risk is carried beside it and multiplied in at scoring,
+    and is offered in the species app as its own layer. Before this the humpback carried the
+    Endangered status of DPSs that breed outside US waters everywhere it occurs, a flat maximum
+    across its entire range. Supersession is a filter on the merge input, not a per-cell blend: inside the AquaX mask a
     superseded species' AquaMaps cells are dropped before the merge, so an AquaX absence is an
     absence. Values are AquaX's 0–1000 ensemble mean ÷ 10, on AquaMaps' 0–100 scale; the model's
     TSS cutoff is recorded but not applied. Every other rule — range constraint, governing

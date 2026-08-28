@@ -16,7 +16,7 @@ The [Scoring Walkthrough](scoring-walkthrough.qmd) animates this — maximum mer
 
 ## The rule, in one place
 
-The merge rules are **`msens::merge_sql()`** and **`msens::turtle_sql()`** — SQL held in the package rather than inside a notebook. The merge notebook executes them and the unit tests assert them against synthetic fixtures, one per taxon category, so the pipeline and its tests cannot drift apart. Changing a rule in a way that breaks a documented case fails the tests.
+The merge rules are **`msens::merge_sql()`**, **`msens::turtle_sql()`** and **`msens::dps_sql()`** — SQL held in the package rather than inside a notebook. The merge notebook executes them and the unit tests assert them against synthetic fixtures, one per taxon category, so the pipeline and its tests cannot drift apart. Changing a rule in a way that breaks a documented case fails the tests.
 
 ## Pipeline
 
@@ -27,7 +27,10 @@ The merge rules are **`msens::merge_sql()`** and **`msens::turtle_sql()`** — S
 flowchart TD
   A["Gather this taxon's models<br>across all source datasets"] --> T{"Sea turtle?"}
   T -->|Yes| M["Multiply DPS extinction-risk<br>surface by suitability"]
-  T -->|No| B{"Has an expert range<br>anywhere in the world?"}
+  T -->|No| P{"NMFS DPS-listed<br>species?"}
+  P -->|Yes| Q["Suitability masked to the<br>extinction-risk footprint;<br>per-cell risk kept beside it"]
+  P -->|No| B{"Has an expert range<br>anywhere in the world?"}
+  Q --> F
   B -->|Yes| C["Range footprint valued at<br>max(governing er_score,<br>AquaMaps at those cells)"]
   B -->|No| D["Raw AquaMaps footprint<br>(no expert range to constrain it)"]
   M --> E["Critical habitat<br>overrides with a max"]
@@ -100,16 +103,32 @@ Critical-habitat designations then override with a maximum, so a designated cell
 
 Because risk is already inside the merged values, turtles receive `er_score = 100` at scoring time as a pass-through multiplier (flagged `is_er_spatial`), which cancels in the division by 100 rather than double-counting.
 
+### Step 5 — NMFS DPS-listed species: the model stays the distribution, risk varies by cell
+
+A second group of species carries extinction risk that varies across the range without being sea turtles: those whose ESA *listed entity* is a Distinct Population Segment, an ESU or a subspecies rather than the whole species — the humpback whale, the Southern Resident killer whale, Cook Inlet beluga, the salmon and steelhead ESUs, both sturgeons, and the others listed under *NMFS Distinct Population Segments* in @sec-data-sources. For them the pipeline builds a per-cell extinction-risk surface (`dps_nmfs`): each listed entity's designated critical habitat at that entity's status, and the species' baseline everywhere else in its IUCN range (the MMPA floor of 20 for a marine mammal; the IUCN category otherwise).
+
+These species do **not** use the turtle multiplication. Their merged value is the **distribution** — the suitability surface (AquaX, or AquaMaps where AquaX did not model the species) masked to the extinction-risk footprint, exactly the range mask every other taxon receives, with a cell that no suitability model covers valued at its risk, as in the plain rule — and the per-cell risk is carried **beside** the value rather than inside it:
+
+$$
+v_{c} = \begin{cases} v_{suit,c} & \text{where a suitability model covers } c \\ v_{er,c} & \text{otherwise} \end{cases}
+\qquad\qquad er_{c} = v_{er,c}
+$$ {#eq-merge-dps}
+
+Scoring then multiplies the two (@sec-scoring), so the score is the same extinction-risk-weighted suitability the turtle rule produces — computed one step later. What changes is what the merged model *shows*: under the turtle rule the humpback, whose risk is the MMPA baseline across 99.8 % of its range, collapsed to a near-flat minimum everywhere outside critical habitat — the map drew the *weight*, not the whale. Now the merged model is the whale's habitat suitability, and its risk is a separate layer (*NMFS DPS extinction risk* in the species app).
+
+Critical-habitat datasets are not an input for these species: `dps_nmfs` already carries every designation at its own entity's status, whereas the generic critical-habitat layers carry the species-level status (Endangered for the humpback) and would override the Threatened Mexico DPS habitat back to Endangered.
+
 ::: {.callout-note}
-## Two merge strategies
+## Three merge strategies
 
 - **Most taxa** — range-constrained maximum, then a **scalar** extinction-risk weight at scoring time.
 - **Sea turtles** — an extinction-risk **raster** multiplied into the merged model, so risk varies spatially within the species.
+- **NMFS DPS-listed species** — the merged model is the suitability; an extinction-risk **raster** is kept beside it and multiplied in at scoring time.
 :::
 
 ## Where extinction risk enters
 
-The governing `er_score` (@sec-extinction-risk) is applied **at merge time**, valuing the range cells — the point at which a species' presence in a cell should carry its governing risk rather than whatever code the contributing dataset happened to record. Applying it later, at scoring, would lose that: the merged surface would carry source-specific codes that may be stale or out of jurisdiction.
+The governing `er_score` (@sec-extinction-risk) is applied **at merge time**, valuing the range cells — the point at which a species' presence in a cell should carry its governing risk rather than whatever code the contributing dataset happened to record. Applying it later, at scoring, would lose that: the merged surface would carry source-specific codes that may be stale or out of jurisdiction. The NMFS DPS-listed species are the deliberate exception: their risk is a per-cell surface built from the listings themselves, so it is carried beside the merged value and applied at scoring, where the per-cell weight replaces the scalar one.
 
 ## The statutory floors
 

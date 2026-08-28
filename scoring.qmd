@@ -27,15 +27,23 @@ where $\text{score}_{c,g}$ is the score for cell $c$ and category $g$; $\text{er
 
 In plain terms: for every cell the MST adds up the contributions of the species found there. A cell holding many species that are both likely present and at high risk scores higher — which is how places where rare or threatened species concentrate are identified.
 
-### Sea turtles are the exception
+### Two exceptions: species whose risk varies across the range
 
-For turtles, extinction risk is already inside the merged values via the multiplicative merge (@sec-model-merging), so the formula collapses to a plain sum:
+For sea turtles, extinction risk is already inside the merged values via the multiplicative merge (@sec-model-merging), so the formula collapses to a plain sum:
 
 $$
 \text{score}_{c,g} = \sum_{s=1}^{S_g} v_{merged,s,c}
 $$ {#eq-cell-score-turtle}
 
 `er_score = 100` acts as a pass-through multiplier that cancels against the division. Cells inside an Endangered DPS therefore contribute more than cells inside a Threatened one, for the same species at the same suitability.
+
+For the NMFS DPS-listed species (the humpback whale, Southern Resident killer whale, salmonid ESUs, …) the merged value is the suitability alone and the risk is a **per-cell** weight carried beside it, so the species-level `er_score` is replaced by the cell's:
+
+$$
+\text{score}_{c,g} = \frac{1}{100} \sum_{s=1}^{S_g} er_{s,c} \times v_{s,c}
+$$ {#eq-cell-score-dps}
+
+Numerically this is the turtle product taken one step later; the difference is that the merged model these species publish is their distribution, not their risk-weighted distribution. Each taxon's rule is recorded as `er_mode` in the scoring `taxon` table (`taxon` — the scalar weight; `premultiplied` — sea turtles; `cell` — DPS-listed species).
 
 ## Metrics
 
