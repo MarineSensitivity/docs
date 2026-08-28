@@ -835,7 +835,7 @@ window.Quarto = {
   <ul>
   <li><a href="#cell-level-scoring" id="toc-cell-level-scoring" class="nav-link active" data-scroll-target="#cell-level-scoring"><span class="header-section-number">9.1</span> Cell-level scoring</a>
   <ul class="collapse">
-  <li><a href="#sea-turtles-are-the-exception" id="toc-sea-turtles-are-the-exception" class="nav-link" data-scroll-target="#sea-turtles-are-the-exception"><span class="header-section-number">9.1.1</span> Sea turtles are the exception</a></li>
+  <li><a href="#two-exceptions-species-whose-risk-varies-across-the-range" id="toc-two-exceptions-species-whose-risk-varies-across-the-range" class="nav-link" data-scroll-target="#two-exceptions-species-whose-risk-varies-across-the-range"><span class="header-section-number">9.1.1</span> Two exceptions: species whose risk varies across the range</a></li>
   </ul></li>
   <li><a href="#metrics" id="toc-metrics" class="nav-link" data-scroll-target="#metrics"><span class="header-section-number">9.2</span> Metrics</a></li>
   <li><a href="#ecoregional-rescaling" id="toc-ecoregional-rescaling" class="nav-link" data-scroll-target="#ecoregional-rescaling"><span class="header-section-number">9.3</span> Ecoregional rescaling</a></li>
@@ -900,13 +900,18 @@ window.Quarto = {
 \tag{9.1}\]</span></span></p>
 <p>where <span class="math inline">\(\text{score}_{c,g}\)</span> is the score for cell <span class="math inline">\(c\)</span> and category <span class="math inline">\(g\)</span>; <span class="math inline">\(\text{er\_score}_s\)</span> is species <span class="math inline">\(s\)</span>’s extinction-risk weight (1–100, <a href="extinction-risk.html" class="quarto-xref"><span>Chapter 7</span></a>); <span class="math inline">\(v_{s,c}\)</span> is the merged model value for that species in that cell (0–100, <a href="model-merging.html" class="quarto-xref"><span>Chapter 8</span></a>); and <span class="math inline">\(S_g\)</span> is the number of valid species in the category. Dividing by 100 returns the product to a 0–100 scale.</p>
 <p>In plain terms: for every cell the MST adds up the contributions of the species found there. A cell holding many species that are both likely present and at high risk scores higher — which is how places where rare or threatened species concentrate are identified.</p>
-<section id="sea-turtles-are-the-exception" class="level3" data-number="9.1.1">
-<h3 data-number="9.1.1" class="anchored" data-anchor-id="sea-turtles-are-the-exception"><span class="header-section-number">9.1.1</span> Sea turtles are the exception</h3>
-<p>For turtles, extinction risk is already inside the merged values via the multiplicative merge (<a href="model-merging.html" class="quarto-xref"><span>Chapter 8</span></a>), so the formula collapses to a plain sum:</p>
+<section id="two-exceptions-species-whose-risk-varies-across-the-range" class="level3" data-number="9.1.1">
+<h3 data-number="9.1.1" class="anchored" data-anchor-id="two-exceptions-species-whose-risk-varies-across-the-range"><span class="header-section-number">9.1.1</span> Two exceptions: species whose risk varies across the range</h3>
+<p>For sea turtles, extinction risk is already inside the merged values via the multiplicative merge (<a href="model-merging.html" class="quarto-xref"><span>Chapter 8</span></a>), so the formula collapses to a plain sum:</p>
 <p><span id="eq-cell-score-turtle"><span class="math display">\[
 \text{score}_{c,g} = \sum_{s=1}^{S_g} v_{merged,s,c}
 \tag{9.2}\]</span></span></p>
 <p><code>er_score = 100</code> acts as a pass-through multiplier that cancels against the division. Cells inside an Endangered DPS therefore contribute more than cells inside a Threatened one, for the same species at the same suitability.</p>
+<p>For the NMFS DPS-listed species (the humpback whale, Southern Resident killer whale, salmonid ESUs, …) the merged value is the suitability alone and the risk is a <strong>per-cell</strong> weight carried beside it, so the species-level <code>er_score</code> is replaced by the cell’s:</p>
+<p><span id="eq-cell-score-dps"><span class="math display">\[
+\text{score}_{c,g} = \frac{1}{100} \sum_{s=1}^{S_g} er_{s,c} \times v_{s,c}
+\tag{9.3}\]</span></span></p>
+<p>Numerically this is the turtle product taken one step later; the difference is that the merged model these species publish is their distribution, not their risk-weighted distribution. Each taxon’s rule is recorded as <code>er_mode</code> in the scoring <code>taxon</code> table (<code>taxon</code> — the scalar weight; <code>premultiplied</code> — sea turtles; <code>cell</code> — DPS-listed species).</p>
 </section>
 </section>
 <section id="metrics" class="level2" data-number="9.2">
@@ -1013,7 +1018,7 @@ Table&nbsp;9.1: Cell-level metrics published by v8. Each has an ecoregionally re
 <p>Raw cell scores vary naturally between ecoregions, through differences in species richness, oceanography and biogeography. Each metric is therefore rescaled to 0–100 <strong>within each BOEM Ecoregion</strong>:</p>
 <p><span id="eq-ecoregion-rescale"><span class="math display">\[
 \text{score}'_{c} = \frac{\text{score}_{c} - \text{score}_{min}}{\text{score}_{max} - \text{score}_{min}} \times 100
-\tag{9.3}\]</span></span></p>
+\tag{9.4}\]</span></span></p>
 <p>with the minimum and maximum taken over that metric’s cells within the ecoregion.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1105,7 +1110,7 @@ Figure&nbsp;9.1: BOEM Ecoregions (colored) and Program Area outlines. <strong>Ec
 <p>Rescaled cell scores are aggregated to each spatial unit by area-weighted mean:</p>
 <p><span id="eq-zone-agg"><span class="math display">\[
 \text{score}_{zone} = \frac{\sum_{c \in zone} \text{score}'_c \times A_c}{\sum_{c \in zone} A_c}
-\tag{9.4}\]</span></span></p>
+\tag{9.5}\]</span></span></p>
 <p>where <span class="math inline">\(A_c\)</span> is the area of cell <span class="math inline">\(c\)</span> — which is latitude-dependent on a 0.05° grid, so the weighting is not cosmetic.</p>
 </section>
 <section id="visualization" class="level2" data-number="9.7">

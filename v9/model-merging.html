@@ -794,6 +794,7 @@ window.Quarto = {
   <li><a href="#step-2-the-expert-range-constrains-aquamaps" id="toc-step-2-the-expert-range-constrains-aquamaps" class="nav-link" data-scroll-target="#step-2-the-expert-range-constrains-aquamaps"><span class="header-section-number">8.2.2</span> Step 2 — the expert range constrains AquaMaps</a></li>
   <li><a href="#step-3-two-surfaces-not-one" id="toc-step-3-two-surfaces-not-one" class="nav-link" data-scroll-target="#step-3-two-surfaces-not-one"><span class="header-section-number">8.2.3</span> Step 3 — two surfaces, not one</a></li>
   <li><a href="#step-4-sea-turtles-multiply-instead-of-taking-a-maximum" id="toc-step-4-sea-turtles-multiply-instead-of-taking-a-maximum" class="nav-link" data-scroll-target="#step-4-sea-turtles-multiply-instead-of-taking-a-maximum"><span class="header-section-number">8.2.4</span> Step 4 — sea turtles multiply instead of taking a maximum</a></li>
+  <li><a href="#step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell" id="toc-step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell" class="nav-link" data-scroll-target="#step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell"><span class="header-section-number">8.2.5</span> Step 5 — NMFS DPS-listed species: the model stays the distribution, risk varies by cell</a></li>
   </ul></li>
   <li><a href="#where-extinction-risk-enters" id="toc-where-extinction-risk-enters" class="nav-link" data-scroll-target="#where-extinction-risk-enters"><span class="header-section-number">8.3</span> Where extinction risk enters</a></li>
   <li><a href="#the-statutory-floors" id="toc-the-statutory-floors" class="nav-link" data-scroll-target="#the-statutory-floors"><span class="header-section-number">8.4</span> The statutory floors</a></li>
@@ -841,7 +842,7 @@ window.Quarto = {
 </div>
 <section id="the-rule-in-one-place" class="level2" data-number="8.1">
 <h2 data-number="8.1" class="anchored" data-anchor-id="the-rule-in-one-place"><span class="header-section-number">8.1</span> The rule, in one place</h2>
-<p>The merge rules are <strong><code>msens::merge_sql()</code></strong> and <strong><code>msens::turtle_sql()</code></strong> — SQL held in the package rather than inside a notebook. The merge notebook executes them and the unit tests assert them against synthetic fixtures, one per taxon category, so the pipeline and its tests cannot drift apart. Changing a rule in a way that breaks a documented case fails the tests.</p>
+<p>The merge rules are <strong><code>msens::merge_sql()</code></strong>, <strong><code>msens::turtle_sql()</code></strong> and <strong><code>msens::dps_sql()</code></strong> — SQL held in the package rather than inside a notebook. The merge notebook executes them and the unit tests assert them against synthetic fixtures, one per taxon category, so the pipeline and its tests cannot drift apart. Changing a rule in a way that breaks a documented case fails the tests.</p>
 </section>
 <section id="pipeline" class="level2" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="pipeline"><span class="header-section-number">8.2</span> Pipeline</h2>
@@ -851,7 +852,7 @@ window.Quarto = {
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-merge-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
-<p><a href="model-merging_files/figure-html/mermaid-figure-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;8.1: Merging one taxon’s source models into a single surface."><img src="model-merging_files/figure-html/mermaid-figure-1.png" style="width:6in;height:6.25in" class="figure-img"></a></p>
+<p><a href="model-merging_files/figure-html/mermaid-figure-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;8.1: Merging one taxon’s source models into a single surface."><img src="model-merging_files/figure-html/mermaid-figure-1.png" style="width:6in;height:6.02in" class="figure-img"></a></p>
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-merge-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -908,19 +909,31 @@ v_{c} = \max\!\Big(1,\; \mathrm{round}\Big(\frac{v_{er,c} \times v_{suit,c}}{100
 \tag{8.2}\]</span></span></p>
 <p>Critical-habitat designations then override with a maximum, so a designated cell is never scored below its designation.</p>
 <p>Because risk is already inside the merged values, turtles receive <code>er_score = 100</code> at scoring time as a pass-through multiplier (flagged <code>is_er_spatial</code>), which cancels in the division by 100 rather than double-counting.</p>
+</section>
+<section id="step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell" class="level3" data-number="8.2.5">
+<h3 data-number="8.2.5" class="anchored" data-anchor-id="step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell"><span class="header-section-number">8.2.5</span> Step 5 — NMFS DPS-listed species: the model stays the distribution, risk varies by cell</h3>
+<p>A second group of species carries extinction risk that varies across the range without being sea turtles: those whose ESA <em>listed entity</em> is a Distinct Population Segment, an ESU or a subspecies rather than the whole species — the humpback whale, the Southern Resident killer whale, Cook Inlet beluga, the salmon and steelhead ESUs, both sturgeons, and the others listed under <em>NMFS Distinct Population Segments</em> in <a href="data-sources.html" class="quarto-xref"><span>Chapter 5</span></a>. For them the pipeline builds a per-cell extinction-risk surface (<code>dps_nmfs</code>): each listed entity’s designated critical habitat at that entity’s status, and the species’ baseline everywhere else in its IUCN range (the MMPA floor of 20 for a marine mammal; the IUCN category otherwise).</p>
+<p>These species do <strong>not</strong> use the turtle multiplication. Their merged value is the <strong>distribution</strong> — the suitability surface (AquaX, or AquaMaps where AquaX did not model the species) masked to the extinction-risk footprint, exactly the range mask every other taxon receives, with a cell that no suitability model covers valued at its risk, as in the plain rule — and the per-cell risk is carried <strong>beside</strong> the value rather than inside it:</p>
+<p><span id="eq-merge-dps"><span class="math display">\[
+v_{c} = \begin{cases} v_{suit,c} &amp; \text{where a suitability model covers } c \\ v_{er,c} &amp; \text{otherwise} \end{cases}
+\qquad\qquad er_{c} = v_{er,c}
+\tag{8.3}\]</span></span></p>
+<p>Scoring then multiplies the two (<a href="scoring.html" class="quarto-xref"><span>Chapter 9</span></a>), so the score is the same extinction-risk-weighted suitability the turtle rule produces — computed one step later. What changes is what the merged model <em>shows</em>: under the turtle rule the humpback, whose risk is the MMPA baseline across 99.8 % of its range, collapsed to a near-flat minimum everywhere outside critical habitat — the map drew the <em>weight</em>, not the whale. Now the merged model is the whale’s habitat suitability, and its risk is a separate layer (<em>NMFS DPS extinction risk</em> in the species app).</p>
+<p>Critical-habitat datasets are not an input for these species: <code>dps_nmfs</code> already carries every designation at its own entity’s status, whereas the generic critical-habitat layers carry the species-level status (Endangered for the humpback) and would override the Threatened Mexico DPS habitat back to Endangered.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Two merge strategies
+<span class="screen-reader-only">Note</span>Three merge strategies
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ul>
 <li><strong>Most taxa</strong> — range-constrained maximum, then a <strong>scalar</strong> extinction-risk weight at scoring time.</li>
 <li><strong>Sea turtles</strong> — an extinction-risk <strong>raster</strong> multiplied into the merged model, so risk varies spatially within the species.</li>
+<li><strong>NMFS DPS-listed species</strong> — the merged model is the suitability; an extinction-risk <strong>raster</strong> is kept beside it and multiplied in at scoring time.</li>
 </ul>
 </div>
 </div>
@@ -928,7 +941,7 @@ v_{c} = \max\!\Big(1,\; \mathrm{round}\Big(\frac{v_{er,c} \times v_{suit,c}}{100
 </section>
 <section id="where-extinction-risk-enters" class="level2" data-number="8.3">
 <h2 data-number="8.3" class="anchored" data-anchor-id="where-extinction-risk-enters"><span class="header-section-number">8.3</span> Where extinction risk enters</h2>
-<p>The governing <code>er_score</code> (<a href="extinction-risk.html" class="quarto-xref"><span>Chapter 7</span></a>) is applied <strong>at merge time</strong>, valuing the range cells — the point at which a species’ presence in a cell should carry its governing risk rather than whatever code the contributing dataset happened to record. Applying it later, at scoring, would lose that: the merged surface would carry source-specific codes that may be stale or out of jurisdiction.</p>
+<p>The governing <code>er_score</code> (<a href="extinction-risk.html" class="quarto-xref"><span>Chapter 7</span></a>) is applied <strong>at merge time</strong>, valuing the range cells — the point at which a species’ presence in a cell should carry its governing risk rather than whatever code the contributing dataset happened to record. Applying it later, at scoring, would lose that: the merged surface would carry source-specific codes that may be stale or out of jurisdiction. The NMFS DPS-listed species are the deliberate exception: their risk is a per-cell surface built from the listings themselves, so it is carried beside the merged value and applied at scoring, where the per-cell weight replaces the scalar one.</p>
 </section>
 <section id="the-statutory-floors" class="level2" data-number="8.4">
 <h2 data-number="8.4" class="anchored" data-anchor-id="the-statutory-floors"><span class="header-section-number">8.4</span> The statutory floors</h2>
