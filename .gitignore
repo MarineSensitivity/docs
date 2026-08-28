@@ -17,6 +17,7 @@ site_libs/
 !_analytics.html
 !_version-switcher.html
 !_nav-links.html
+!_hero-style.html
 
 **/*.quarto_ipynb
 .positai

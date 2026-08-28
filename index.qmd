@@ -1,5 +1,8 @@
 # Preface {.unnumbered}
 
+![](images/mst-hero.svg){fig-alt="Marine Sensitivity Toolkit: species distributions and extinction risk, scored across US ocean waters" .mst-hero}
+
+
 ```{r}
 #| include: false
 # knitr evaluates inline `r ...` only in a document that has at least one code
