@@ -428,6 +428,19 @@ div.csl-indent {
     .catch(function () { /* registry unreachable: show nothing */ });
 })();
 </script>
+<!-- The cover banner on the Preface: full column width, square corners softened,
+     and no figure caption chrome. Kept in its own include so the book's other
+     images are untouched. -->
+<style>
+  .mst-hero {
+    display:       block;
+    width:         100%;
+    height:        auto;
+    margin:        0 0 1.75rem 0;
+    border-radius: 10px;
+  }
+  figure:has(> p > .mst-hero), figure:has(> .mst-hero) { margin: 0; }
+</style>
 
 
 </head>
@@ -852,12 +865,12 @@ Table&nbsp;5.1: Source datasets in v9, ordered by merge priority. <em>Mask</em> 
 <div class="cell-output-display">
 <table class="cell caption-top table table-sm table-striped small">
 <colgroup>
+<col style="width: 9%">
 <col style="width: 11%">
-<col style="width: 12%">
-<col style="width: 66%">
+<col style="width: 70%">
+<col style="width: 2%">
 <col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
+<col style="width: 2%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -945,7 +958,7 @@ Table&nbsp;5.1: Source datasets in v9, ordered by merge priority. <em>Mask</em> 
 <tr class="even">
 <td style="text-align: left;"><code>dps_nmfs</code></td>
 <td style="text-align: left;">NMFS DPS extinction risk</td>
-<td style="text-align: left;">extinction-risk score per cell (NMFS:EN 100 / NMFS:TN 50 inside a listed entity’s critical habitat; IUCN + MMPA floor elsewhere)</td>
+<td style="text-align: left;">extinction-risk score per cell (NMFS:EN 100 / NMFS:TN 50 inside a listed entity’s critical habitat; IUCN category elsewhere, the MMPA floor of 20 for mammals)</td>
 <td style="text-align: center;">Yes</td>
 <td style="text-align: right;">17</td>
 <td style="text-align: right;">&lt;0.1%</td>
@@ -1120,7 +1133,7 @@ Table&nbsp;5.1: Source datasets in v9, ordered by merge priority. <em>Mask</em> 
 <p>Per-cell extinction risk for ESA listed entities that are Distinct Population Segments, ESUs or subspecies rather than whole species: each listed entity’s designated critical habitat carries that entity’s status (Endangered 100 / Threatened 50, with the MMPA floor), and the rest of the species’ IUCN range carries the species’ IUCN status plus the MMPA floor. Merged multiplicatively with suitability, like the sea turtles.</p>
 <ul>
 <li><strong>Response</strong>: range</li>
-<li><strong>Cell values</strong>: extinction-risk score per cell (NMFS:EN 100 / NMFS:TN 50 inside a listed entity’s critical habitat; IUCN + MMPA floor elsewhere)</li>
+<li><strong>Cell values</strong>: extinction-risk score per cell (NMFS:EN 100 / NMFS:TN 50 inside a listed entity’s critical habitat; IUCN category elsewhere, the MMPA floor of 20 for mammals)</li>
 <li><strong>Coverage</strong>: US waters (critical habitat) + the species’ global IUCN range (baseline)</li>
 <li><strong>Role</strong>: contributes values <strong>and</strong> constrains the merged range</li>
 </ul>

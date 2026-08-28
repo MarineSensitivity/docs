@@ -425,6 +425,19 @@ div.csl-indent {
     .catch(function () { /* registry unreachable: show nothing */ });
 })();
 </script>
+<!-- The cover banner on the Preface: full column width, square corners softened,
+     and no figure caption chrome. Kept in its own include so the book's other
+     images are untouched. -->
+<style>
+  .mst-hero {
+    display:       block;
+    width:         100%;
+    height:        auto;
+    margin:        0 0 1.75rem 0;
+    border-radius: 10px;
+  }
+  figure:has(> p > .mst-hero), figure:has(> .mst-hero) { margin: 0; }
+</style>
 
 
 </head>
