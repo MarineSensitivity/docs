@@ -789,13 +789,15 @@ div.csl-indent {
   <li><a href="#birdlife-range-bl" id="toc-birdlife-range-bl" class="nav-link" data-scroll-target="#birdlife-range-bl"><span class="header-section-number">5.2.7</span> BirdLife Range (<code>bl</code>)</a></li>
   <li><a href="#iucn-range-rng_iucn" id="toc-iucn-range-rng_iucn" class="nav-link" data-scroll-target="#iucn-range-rng_iucn"><span class="header-section-number">5.2.8</span> IUCN Range (<code>rng_iucn</code>)</a></li>
   <li><a href="#swotdps-turtle-range-rng_turtle_swot_dps" id="toc-swotdps-turtle-range-rng_turtle_swot_dps" class="nav-link" data-scroll-target="#swotdps-turtle-range-rng_turtle_swot_dps"><span class="header-section-number">5.2.9</span> SWOT+DPS Turtle Range (<code>rng_turtle_swot_dps</code>)</a></li>
+  <li><a href="#nmfs-dps-extinction-risk-dps_nmfs" id="toc-nmfs-dps-extinction-risk-dps_nmfs" class="nav-link" data-scroll-target="#nmfs-dps-extinction-risk-dps_nmfs"><span class="header-section-number">5.2.10</span> NMFS DPS extinction risk (<code>dps_nmfs</code>)</a></li>
   </ul></li>
   <li><a href="#notes-on-individual-sources" id="toc-notes-on-individual-sources" class="nav-link" data-scroll-target="#notes-on-individual-sources"><span class="header-section-number">5.3</span> Notes on individual sources</a>
   <ul class="collapse">
   <li><a href="#aquamaps-vintage" id="toc-aquamaps-vintage" class="nav-link" data-scroll-target="#aquamaps-vintage"><span class="header-section-number">5.3.1</span> AquaMaps vintage</a></li>
   <li><a href="#aquax-supersedes-aquamaps-in-us-waters" id="toc-aquax-supersedes-aquamaps-in-us-waters" class="nav-link" data-scroll-target="#aquax-supersedes-aquamaps-in-us-waters"><span class="header-section-number">5.3.2</span> AquaX supersedes AquaMaps in US waters</a></li>
-  <li><a href="#sea-turtles-why-a-dedicated-range-dataset" id="toc-sea-turtles-why-a-dedicated-range-dataset" class="nav-link" data-scroll-target="#sea-turtles-why-a-dedicated-range-dataset"><span class="header-section-number">5.3.3</span> Sea turtles: why a dedicated range dataset</a></li>
-  <li><a href="#range-maps-as-masks" id="toc-range-maps-as-masks" class="nav-link" data-scroll-target="#range-maps-as-masks"><span class="header-section-number">5.3.4</span> Range maps as masks</a></li>
+  <li><a href="#listed-entities-below-the-species-nmfs-distinct-population-segments" id="toc-listed-entities-below-the-species-nmfs-distinct-population-segments" class="nav-link" data-scroll-target="#listed-entities-below-the-species-nmfs-distinct-population-segments"><span class="header-section-number">5.3.3</span> Listed entities below the species: NMFS Distinct Population Segments</a></li>
+  <li><a href="#sea-turtles-why-a-dedicated-range-dataset" id="toc-sea-turtles-why-a-dedicated-range-dataset" class="nav-link" data-scroll-target="#sea-turtles-why-a-dedicated-range-dataset"><span class="header-section-number">5.3.4</span> Sea turtles: why a dedicated range dataset</a></li>
+  <li><a href="#range-maps-as-masks" id="toc-range-maps-as-masks" class="nav-link" data-scroll-target="#range-maps-as-masks"><span class="header-section-number">5.3.5</span> Range maps as masks</a></li>
   </ul></li>
   <li><a href="#standard-grid" id="toc-standard-grid" class="nav-link" data-scroll-target="#standard-grid"><span class="header-section-number">5.4</span> Standard grid</a></li>
   <li><a href="#sec-primary-productivity" id="toc-sec-primary-productivity" class="nav-link" data-scroll-target="#sec-primary-productivity"><span class="header-section-number">5.5</span> Primary productivity</a></li>
@@ -824,7 +826,7 @@ div.csl-indent {
 </header>
 
 
-<p>The MST integrates species distributions from <strong>9 source datasets</strong>, though not in equal measure — <code>am</code> alone supplies the distribution of 97% of this release’s valid species. Each source predicts where a species occurs, and they differ in kind: continuous suitability models, habitats tied to a core area, critical habitat or distinct population segment, and expert range maps.</p>
+<p>The MST integrates species distributions from <strong>10 source datasets</strong>, though not in equal measure — <code>am</code> alone supplies the distribution of 97% of this release’s valid species. Each source predicts where a species occurs, and they differ in kind: continuous suitability models, habitats tied to a core area, critical habitat or distinct population segment, and expert range maps.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -850,12 +852,12 @@ Table&nbsp;5.1: Source datasets in v9, ordered by merge priority. <em>Mask</em> 
 <div class="cell-output-display">
 <table class="cell caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 17%">
-<col style="width: 17%">
-<col style="width: 50%">
-<col style="width: 4%">
-<col style="width: 5%">
-<col style="width: 4%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 66%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 3%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -940,6 +942,14 @@ Table&nbsp;5.1: Source datasets in v9, ordered by merge priority. <em>Mask</em> 
 <td style="text-align: right;">6</td>
 <td style="text-align: right;">&lt;0.1%</td>
 </tr>
+<tr class="even">
+<td style="text-align: left;"><code>dps_nmfs</code></td>
+<td style="text-align: left;">NMFS DPS extinction risk</td>
+<td style="text-align: left;">extinction-risk score per cell (NMFS:EN 100 / NMFS:TN 50 inside a listed entity’s critical habitat; IUCN + MMPA floor elsewhere)</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">&lt;0.1%</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -958,7 +968,7 @@ Table&nbsp;5.1: Source datasets in v9, ordered by merge priority. <em>Mask</em> 
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>Broad coverage.</strong> <code>ax</code> (10,506), <code>am</code> (16,589), <code>bl</code> (226), <code>rng_iucn</code> (1,877) — between them these account for the distribution of essentially every scored species.</p>
-<p><strong>Targeted designations.</strong> <code>ca_nmfs</code> (1), <code>ch_nmfs</code> (36), <code>ch_fws</code> (16), <code>rng_fws</code> (47), <code>rng_turtle_swot_dps</code> (6) — each under 1% of valid species. These are legal designations and expert ranges for specific taxa (critical habitat, core areas, sea turtle ranges), so they are small by nature rather than incomplete; they raise the value of the cells they cover rather than extending coverage to new species.</p>
+<p><strong>Targeted designations.</strong> <code>ca_nmfs</code> (1), <code>ch_nmfs</code> (36), <code>ch_fws</code> (16), <code>rng_fws</code> (47), <code>rng_turtle_swot_dps</code> (6), <code>dps_nmfs</code> (17) — each under 1% of valid species. These are legal designations and expert ranges for specific taxa (critical habitat, core areas, sea turtle ranges), so they are small by nature rather than incomplete; they raise the value of the cells they cover rather than extending coverage to new species.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-important callout-titled">
@@ -982,7 +992,7 @@ Table&nbsp;5.1: Source datasets in v9, ordered by merge priority. <em>Mask</em> 
 <h3 data-number="5.2.1" class="anchored" data-anchor-id="aquax-ax"><span class="header-section-number">5.2.1</span> AquaX (<code>ax</code>)</h3>
 <p>Ensemble habitat suitability (present day, cropped to the species’ biogeographic range) from the AquaX framework — an enhanced and revised AquaMaps — delivered on the 0.05° grid masked to US waters. Supersedes AquaMaps for the same taxon wherever AquaX was modeled.</p>
 <ul>
-<li><strong>Models</strong>: 10,537</li>
+<li><strong>Models</strong>: 10,536</li>
 <li><strong>Response</strong>: suitability</li>
 <li><strong>Cell values</strong>: habitat suitability 0–100 (delivered 0–1000 ensemble mean ÷ 10)</li>
 <li><strong>Coverage</strong>: US waters (BOEM study-area mask)</li>
@@ -1105,6 +1115,20 @@ Table&nbsp;5.1: Source datasets in v9, ordered by merge priority. <em>Mask</em> 
 </blockquote>
 <p><a href="https://www.seaturtlestatus.org/online-map-data">Source</a></p>
 </section>
+<section id="nmfs-dps-extinction-risk-dps_nmfs" class="level3" data-number="5.2.10">
+<h3 data-number="5.2.10" class="anchored" data-anchor-id="nmfs-dps-extinction-risk-dps_nmfs"><span class="header-section-number">5.2.10</span> NMFS DPS extinction risk (<code>dps_nmfs</code>)</h3>
+<p>Per-cell extinction risk for ESA listed entities that are Distinct Population Segments, ESUs or subspecies rather than whole species: each listed entity’s designated critical habitat carries that entity’s status (Endangered 100 / Threatened 50, with the MMPA floor), and the rest of the species’ IUCN range carries the species’ IUCN status plus the MMPA floor. Merged multiplicatively with suitability, like the sea turtles.</p>
+<ul>
+<li><strong>Response</strong>: range</li>
+<li><strong>Cell values</strong>: extinction-risk score per cell (NMFS:EN 100 / NMFS:TN 50 inside a listed entity’s critical habitat; IUCN + MMPA floor elsewhere)</li>
+<li><strong>Coverage</strong>: US waters (critical habitat) + the species’ global IUCN range (baseline)</li>
+<li><strong>Role</strong>: contributes values <strong>and</strong> constrains the merged range</li>
+</ul>
+<blockquote class="blockquote">
+<p>NOAA Fisheries (2026) All NMFS Critical Habitat, ArcGIS MapServer (maps.fisheries.noaa.gov), All_critical_habitat_poly_20230502 and per-entity layers; species-range services with DPS-level ranges expected end of CY2026</p>
+</blockquote>
+<p><a href="https://www.fisheries.noaa.gov/resource/map/national-esa-critical-habitat-mapper">Source</a> · <a href="https://maps.fisheries.noaa.gov/server/rest/services/All_NMFS_Critical_Habitat/MapServer">Download</a></p>
+</section>
 </section>
 <section id="notes-on-individual-sources" class="level2" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="notes-on-individual-sources"><span class="header-section-number">5.3</span> Notes on individual sources</h2>
@@ -1119,13 +1143,18 @@ Table&nbsp;5.1: Source datasets in v9, ordered by merge priority. <em>Mask</em> 
 <p>Because AquaX is a newer model of the same quantity, it <strong>supersedes AquaMaps for the same species wherever AquaX was modeled</strong>. The rule is per species and inside AquaX’s own mask only: a superseded species’ AquaMaps cells inside the mask are removed <em>before</em> the merge, so an AquaX absence is an absence rather than an AquaMaps presence showing through; outside the mask — the rest of the world — AquaMaps continues unchanged. Species AquaX did not model keep AquaMaps everywhere. Species AquaX modeled but predicted <em>absent</em> from US waters keep their AquaMaps surface in this pre-release; that is a question for review, and it is a switch in the pipeline rather than a silent default.</p>
 <p>In the species app both inputs sit side by side. AquaMaps offers <em>Original</em> (its native 0.5° cells) and <em>Interpolated</em> (the 0.05° surface used in scoring). AquaX needs no interpolation, so its two views are <em>Delivered</em> (the 0–1000 band exactly as received) and <em>As ingested</em> (÷10, integer 1–100, and — like AquaMaps — pixels below suitability 1 dropped; roughly half of a typical AquaX model’s pixels are near-zero and fall below that line). Toggling between them shows the effect of the ingest threshold itself, which is why the second view is published rather than aliased.</p>
 </section>
-<section id="sea-turtles-why-a-dedicated-range-dataset" class="level3" data-number="5.3.3">
-<h3 data-number="5.3.3" class="anchored" data-anchor-id="sea-turtles-why-a-dedicated-range-dataset"><span class="header-section-number">5.3.3</span> Sea turtles: why a dedicated range dataset</h3>
+<section id="listed-entities-below-the-species-nmfs-distinct-population-segments" class="level3" data-number="5.3.3">
+<h3 data-number="5.3.3" class="anchored" data-anchor-id="listed-entities-below-the-species-nmfs-distinct-population-segments"><span class="header-section-number">5.3.3</span> Listed entities below the species: NMFS Distinct Population Segments</h3>
+<p>Under the ESA the <em>listed entity</em> can be a species, a subspecies or a Distinct Population Segment (DPS / ESU), and for several species NMFS lists only some populations. The humpback whale has six listed DPSs and eight that are Not at Risk — including those breeding in US waters (Hawaii, West Indies) — while the Central America and Western North Pacific DPSs (Endangered) and the Mexico DPS (Threatened) use feeding areas off the West Coast and Alaska. A single species-wide status is wrong in every part of that range.</p>
+<p>For every species whose listed entities are scoped below the species — humpback and Southern Resident killer whales, Cook Inlet beluga, Main Hawaiian Islands false killer whale, Western Steller sea lion, Beringia bearded and Arctic ringed seals, the salmon and steelhead ESUs, both sturgeons, smalltooth sawfish, bocaccio, yelloweye rockfish and eulachon — extinction risk is therefore <strong>spatial</strong>: each listed entity’s designated critical habitat, from NOAA Fisheries’ authoritative national service (<code>All_NMFS_Critical_Habitat</code>, shared by NMFS on 2026-04-16), carries that entity’s status (Endangered 100 / Threatened 50, with the MMPA floor), and the rest of the species’ IUCN range carries the species’ IUCN category plus the MMPA floor — the fallback NOAA itself suggested. These species then merge like the sea turtles: per-cell extinction risk <strong>multiplied</strong> by habitat suitability, so an Endangered population shows as a gradient rather than a flat maximum. NOAA is publishing DPS-level species <em>ranges</em> at the end of 2026; when they do, they replace the critical-habitat polygons as the source of these per-entity extents with no change to the rule. Sea turtles keep their own SWOT + DPS dataset.</p>
+</section>
+<section id="sea-turtles-why-a-dedicated-range-dataset" class="level3" data-number="5.3.4">
+<h3 data-number="5.3.4" class="anchored" data-anchor-id="sea-turtles-why-a-dedicated-range-dataset"><span class="header-section-number">5.3.4</span> Sea turtles: why a dedicated range dataset</h3>
 <p>Sea turtle distributions from AquaMaps and from IUCN range maps were both too broad, extending well beyond where the species actually occur. Several species also carry <strong>different ESA protection in different parts of their range</strong>, through NOAA Fisheries Distinct Population Segments (DPS) — which a single global range map cannot express.</p>
 <p>The SWOT+DPS dataset replaces the IUCN range as the global mask for all six sea turtle species, combining SWOT Global Distributions <span class="citation" data-cites="wallace2023">(<a href="references.html#ref-wallace2023" role="doc-biblioref">Wallace et al. 2023</a>)</span> for realistic range polygons with the NOAA Fisheries ESA Species Range Geodatabase <span class="citation" data-cites="noaafisheries2025dps">(<a href="references.html#ref-noaafisheries2025dps" role="doc-biblioref">NOAA Fisheries 2025</a>)</span> for DPS listing status. Where DPS data exist (Loggerhead, Green, Olive Ridley), Endangered DPS areas take the Endangered value and the remainder of the SWOT range the Threatened value; for species Endangered throughout (Leatherback, Hawksbill, Kemp’s Ridley) the entire range takes the Endangered value.</p>
 </section>
-<section id="range-maps-as-masks" class="level3" data-number="5.3.4">
-<h3 data-number="5.3.4" class="anchored" data-anchor-id="range-maps-as-masks"><span class="header-section-number">5.3.4</span> Range maps as masks</h3>
+<section id="range-maps-as-masks" class="level3" data-number="5.3.5">
+<h3 data-number="5.3.5" class="anchored" data-anchor-id="range-maps-as-masks"><span class="header-section-number">5.3.5</span> Range maps as masks</h3>
 <p>Datasets marked <em>Mask</em> do double duty: they contribute cell values <strong>and</strong> define the spatial extent a taxon’s merged distribution may occupy. This is what stops an environmental-envelope model from asserting presence far outside a species’ known range — see <a href="model-merging.html" class="quarto-xref"><span>Chapter 8</span></a>.</p>
 </section>
 </section>
