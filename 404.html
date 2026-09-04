@@ -1,0 +1,20 @@
+<!doctype html><meta charset="utf-8">
+<title>Marine Sensitivity documentation</title>
+<meta name="robots" content="noindex">
+<p id="msg">Redirecting to the current documentation (<a href="/docs/v7/">v7</a>)&hellip;</p>
+<script>
+(function () {
+  var latest = "v7";
+  var m = location.pathname.match(/^\/docs\/(?:(v[0-9]+[a-z]?)\/)?(.*)$/);
+  if (!m) return;
+  var ver = m[1], rest = m[2] || "";
+  if (!ver) { location.replace("/docs/" + latest + "/" + rest + location.search + location.hash); return; }
+  var p = document.getElementById("msg");
+  p.textContent = "No public documentation at this address. Release " + ver + " may be a restricted pre-release, served only on the review host: ";
+  var a = document.createElement("a");
+  a.href = "https://preview.marinesensitivity.org/docs/" + ver + "/" + rest + location.search + location.hash;
+  a.textContent = a.href; p.appendChild(a);
+  p.appendChild(document.createTextNode(" — or open the current public documentation: "));
+  var b = document.createElement("a"); b.href = "/docs/" + latest + "/"; b.textContent = latest; p.appendChild(b);
+})();
+</script>
