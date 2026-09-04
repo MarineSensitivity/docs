@@ -8,15 +8,37 @@ services:
       - 80:80
       - 443:443
     restart: unless-stopped
+    environment:
+      # Cloudflare Access team domain + application AUD tag for the signed-in
+      # preview.marinesensitivity.org vhost (caddy/Caddyfile jwtauth). Set both
+      # in the server .env once the Access application exists
+      # (server/cloudflare/). Unset, the vhost fails CLOSED: the defaults match
+      # no real JWT, so every request there gets 401 rather than the app.
+      CF_ACCESS_TEAM: ${CF_ACCESS_TEAM:-unconfigured}
+      CF_ACCESS_AUD: ${CF_ACCESS_AUD:-unconfigured}
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      # the preview host's routes, in their own file so caddy/test/run.sh can
+      # exercise the very same file behind a test jwtauth (single-file bind
+      # mount, same restart rule as the Caddyfile)
+      - ./caddy/preview_routes.caddy:/etc/caddy/preview_routes.caddy
+      # the version-path routes, shared by BOTH app vhosts (see the Caddyfile)
+      - ./caddy/app_version_routes.caddy:/etc/caddy/app_version_routes.caddy
       - /share:/share
       - /share/caddy/data:/data
       - /share/caddy/config:/config
 
   rstudio:
     container_name: rstudio
-    build: ./rstudio
+    build:
+      context: ./rstudio
+      args:
+        # which msens the IMAGE carries. Default `main` = never stale; the deploy
+        # (rstudio/build.sh) passes the resolved commit instead, which both
+        # records what was built and busts Docker's layer cache. The running
+        # container additionally reconciles with the /share checkout at start
+        # (rstudio/cont-init/03_msens_from_share).
+        MSENS_REF: ${MSENS_REF:-main}
     environment:
       ROOT: 'true'
       # The login is `rstudio`, and DEFAULT_USER must say so.
@@ -46,6 +68,18 @@ services:
       # events. The apps hold no credential — the endpoint is the whole secret,
       # so it belongs in .env (untracked), never in the app source.
       MSENS_LOG_URL: ${MSENS_LOG_URL:-}
+      # signs the version token a Shiny page embeds so the session renders the
+      # version its page was served for (msens::ver_token_*). Set in .env
+      # (`openssl rand -hex 32`); reaches the app processes via rocker's
+      # Renviron.site. Unset, msens uses a per-process random secret, which is
+      # still correct -- only a session straddling a process restart is asked
+      # to reload.
+      MS_TOKEN_SECRET: ${MS_TOKEN_SECRET:-}
+      # shared secret the PREVIEW app instance sends to the API as
+      # X-MS-Preview-Token, so /report will render a restricted (under-review)
+      # release for a signed-in reviewer and for nobody else. Same value in the
+      # plumber service below; unset = restricted reports refused everywhere.
+      MSENS_PREVIEW_TOKEN: ${MSENS_PREVIEW_TOKEN:-}
     ports:
       - 8787:8787  # rstudio
       - 3838:3838  # shiny
@@ -53,12 +87,73 @@ services:
     volumes:
       - /share:/share
       - /share/shiny_apps:/srv/shiny-server
+      # Shiny Server config with a SECOND server block (:3839) for the preview
+      # instance -- same app code, MS_PREVIEW=1 -- that only Caddy's signed-in
+      # preview.marinesensitivity.org vhost proxies to. Single-file bind mount:
+      # a change needs `docker compose restart rstudio` (inode rule, as Caddyfile).
+      - ./rstudio/shiny-server.conf:/etc/shiny-server/shiny-server.conf:ro
+      # the preview instance's site_dir: 3-line wrapper app.R per app that sets
+      # MS_PREVIEW=1 and shinyAppDir()s the real app; `touch restart.txt` here
+      # reloads it (DEPLOY_APPS does). Not published as a port on purpose.
+      - ./rstudio/shiny_apps_preview:/srv/shiny-server-preview
       # Release notebooks rendered INSIDE this container publish to S3. The image
       # carries the AWS CLI, but a CLI with no credentials just fails later and
       # louder: `NoCredentials` at the publish step, after the build work is done.
       # Read-only, and the container already runs as uid 1000 = host `ubuntu`,
       # which owns these.
       - /home/ubuntu/.aws:/home/rstudio/.aws:ro
+
+  # warm: keep the versions people actually open already built, so the first
+  # visitor after a deploy or a quiet night does not pay the ~13-17 s cold start
+  # (app_idle_timeout can only keep alive what someone already started). Reads
+  # the registry for WHICH versions — promoted + restricted — and hits the
+  # container ports directly, so no Cloudflare round trip and no Access token.
+  # See warm/warm.sh.
+  warm:
+    container_name: warm
+    image: alpine:3.22
+    restart: unless-stopped
+    depends_on: [rstudio]
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["apk add --no-cache curl jq >/dev/null && exec /warm.sh"]
+    volumes:
+      - ./warm/warm.sh:/warm.sh:ro
+
+  # docs-preview: the rendered books of RESTRICTED docs releases. GitHub Pages
+  # cannot be gated, so the docs CI publishes restricted versions to the
+  # `gh-pages-preview` branch (public versions go to gh-pages as always) and
+  # Caddy's signed-in preview vhost serves this clone at /docs/{ver}/. The
+  # sidecar keeps the clone current by polling -- no inbound secret, no manual
+  # step; a docs push shows up within 5 min. Runs as uid 1000 (= host `ubuntu`)
+  # so nothing under /share ends up root-owned. The branch may not exist yet on
+  # a fresh install: the loop just retries.
+  docs-preview:
+    container_name: docs-preview
+    image: alpine/git:v2.49.1
+    restart: unless-stopped
+    user: "1000:1000"
+    environment:
+      HOME: /tmp
+      GIT_TERMINAL_PROMPT: "0"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        REPO=https://github.com/MarineSensitivity/docs.git
+        while true; do
+          if [ ! -d /repo/.git ]; then
+            git clone --quiet --branch gh-pages-preview --single-branch "$$REPO" /repo \
+              && echo "cloned gh-pages-preview" \
+              || echo "clone failed (gh-pages-preview may not exist yet); retrying in 5 min"
+          else
+            git -C /repo pull --ff-only --quiet || echo "pull failed; retrying in 5 min"
+          fi
+          sleep 300
+        done
+    volumes:
+      # HOST STATE: this directory must be owned by uid 1000 (`sudo chown
+      # 1000:1000 /share/docs_preview`). Docker auto-creates a missing bind-mount
+      # source as root:root, and the sidecar then cannot write its clone.
+      - /share/docs_preview:/repo
 
   # plumber: DuckDB-backed custom API (postgres stack retired 2026-06). Serves
   # the OBIS H3 summary endpoint /h3 (obisindicators::obis_h3t_sql) from the same
@@ -70,6 +165,11 @@ services:
     build: ./plumber
     environment:
       MSENS_OBIS_DUCKDB: /share/data/obis/obis_h3.duckdb
+      # the other half of the review gate's report check: /report renders a
+      # restricted (under-review) release only for a caller presenting this
+      # secret in X-MS-Preview-Token -- i.e. the preview Shiny instance. Must
+      # match the rstudio service's value; unset = restricted reports refused.
+      MSENS_PREVIEW_TOKEN: ${MSENS_PREVIEW_TOKEN:-}
     ports:
       - 8888:8888  # api
     volumes:

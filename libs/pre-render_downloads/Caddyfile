@@ -1,6 +1,9 @@
 # docker exec caddy caddy reload --config /etc/caddy/Caddyfile
 {
 	order pmtiles_proxy before file_server
+	# jwtauth (ggicci/caddy-jwt, built into caddy/Dockerfile) must run before any
+	# handler on the vhosts that use it -- see preview.marinesensitivity.org
+	order jwtauth before basic_auth
 }
 
 (cors) {
@@ -17,6 +20,16 @@ api.marinesensitivity.org {
 
 file.marinesensitivity.org {
 	import cors
+
+	# the brand set, served straight from the repo checkout: a `git pull` on the
+	# server publishes it, so there is no copy step to forget. Used by the
+	# Cloudflare Access login page (which takes a logo URL), the docs, the apps
+	# and any deck. See server/branding/README.md.
+	handle_path /branding/* {
+		root * /share/github/MarineSensitivity/server/branding
+		header Cache-Control "public, max-age=3600"
+		file_server browse
+	}
 
 	# raw pmtiles for client-side PMTiles protocol (add_pmtiles_source)
 	handle_path /pmtiles/* {
@@ -171,21 +184,128 @@ app.marinesensitivity.org {
 	#
 	# 301 (permanent): these instances are not coming back, and a permanent
 	# redirect lets browsers and crawlers stop asking.
+	#
+	# `&{query}` IS THE POINT OF THE REDIRECT. A redir target that carries its own
+	# query string REPLACES the incoming one, so these rules used to answer
+	# /mapsp/?mdl_seq=1434 with /species/?ver=v7 -- dropping the very thing the
+	# link was about. The app then opened on its default taxon, which is why every
+	# deep link in the final report, and the ones in issue #5, silently showed the
+	# leatherback turtle. Every published per-species link is of this form, so a
+	# redirect that keeps the path and loses the id is worse than a 404: it looks
+	# like it worked (MarineSensitivity/apps#6).
+	#
+	# An empty {query} leaves a harmless trailing "&", which parses to nothing.
 	@scores_ver path_regexp scv ^/(?:mapgl|scores)_(v[0-9]+[a-z]?)(?:/(.*))?$
-	redir @scores_ver /scores/?ver={re.scv.1} 301
+	redir @scores_ver /{re.scv.1}/scores/?{query} 301
 
 	@species_ver path_regexp spv ^/(?:mapsp|species)_(v[0-9]+[a-z]?)(?:/(.*))?$
-	redir @species_ver /species/?ver={re.spv.1} 301
+	redir @species_ver /{re.spv.1}/species/?{query} 301
 
 	# the unsuffixed v7 instances: `mapgl`/`mapsp` were what /scores and
 	# /species pointed at, so they carry v7 explicitly
 	@scores_v7 path_regexp sc7 ^/mapgl(?:/(.*))?$
-	redir @scores_v7 /scores/?ver=v7 301
+	redir @scores_v7 /v7/scores/?{query} 301
 
 	@species_v7 path_regexp sp7 ^/mapsp(?:/(.*))?$
-	redir @species_v7 /species/?ver=v7 301
+	redir @species_v7 /v7/species/?{query} 301
+
+	# THE VERSION IS THE PATH here too (2026-08-27). One definition, shared with
+	# the preview vhost, so the two hosts cannot drift: /v7/scores/ is canonical,
+	# /scores/?ver=v7 301s to it, and the app reads X-MS-Version. A bare /scores/
+	# (no version) still resolves the promoted release inside the app -- Caddy
+	# cannot read latest.txt, and the app canonicalises the URL once it knows.
+	import app_version_routes.caddy rstudio:3838
+
+	# X-MS-User (the signed-in reviewer's identity) and X-MS-Version (the version
+	# from the preview host's URL path) are set by the PREVIEW vhost from things
+	# it has verified. Both are meaningful only there; a client must not be able
+	# to supply either here, where the version comes from ?ver= and the policy
+	# refuses restricted releases anyway.
+	request_header -X-MS-User
+	request_header -X-MS-Version
 
 	reverse_proxy rstudio:3838
+}
+
+# The signed-in PREVIEW host: restricted (under-review) releases of the apps and
+# docs, for SDM data providers and BOEM/NOAA reviewers.
+#
+# How the gate works (workflows/.claude/plans/2026-08-15 pre-release review gate …):
+#   1. DNS for this ONE hostname is proxied through Cloudflare, and a Cloudflare
+#      Access application in front of it lets a request through only after the
+#      visitor signs in (emailed one-time PIN, Google). Access then stamps every
+#      request -- page GETs, static assets, the Shiny websocket upgrade -- with
+#      Cf-Access-Jwt-Assertion, an RS256 JWT for this app's AUD.
+#   2. jwtauth below is the ORIGIN-SIDE check Cloudflare documents: verify that
+#      JWT against the team's JWKS + issuer + audience. A request that reaches
+#      this box without going through Access (origin IP, wrong hostname, a
+#      forged header) has no valid JWT and gets 401 -- so proxying only this
+#      hostname is safe.
+#   3. What is behind it (caddy/preview_routes.caddy): the PREVIEW Shiny Server
+#      instance (rstudio:3839, the same app code as /scores + /species with
+#      MS_PREVIEW=1 -- see rstudio/shiny-server.conf) at /{ver}/scores/ and
+#      /{ver}/species/ -- THE VERSION IS THE PATH, so Access can hold one
+#      reviewer policy per version -- the rendered books of restricted docs
+#      versions at /docs/{ver}/ (docs CI publishes those to the gh-pages-preview
+#      branch, cloned at /share/docs_preview by the docs-preview sidecar), and a
+#      landing page.
+#
+# CF_ACCESS_TEAM / CF_ACCESS_AUD come from the server .env. Their DEFAULT is a
+# value nothing can match, so an unconfigured deploy fails CLOSED (401 for
+# everyone) rather than open. Which versions are restricted is NOT known here:
+# that is `access` in versions.json, enforced by the app process's MS_PREVIEW.
+preview.marinesensitivity.org {
+	log {
+		output file /share/logs/caddy/preview.log {
+			roll_size 64MiB
+			roll_keep 14
+			roll_keep_for 2160h
+		}
+		format json
+	}
+
+	jwtauth {
+		jwk_url https://{$CF_ACCESS_TEAM:unconfigured}.cloudflareaccess.com/cdn-cgi/access/certs
+		from_header Cf-Access-Jwt-Assertion
+		from_cookies CF_Authorization
+		issuer_whitelist https://{$CF_ACCESS_TEAM:unconfigured}.cloudflareaccess.com
+		audience_whitelist {$CF_ACCESS_AUD:unconfigured}
+		# A HUMAN's Access JWT carries `email`; a SERVICE TOKEN's carries
+		# `common_name` (its client id) and no email at all. caddy-jwt needs to
+		# find one of these or it rejects the request -- which is how the release
+		# notebook's own check token got a 401 from the ORIGIN after Cloudflare
+		# had already admitted it. (Cloudflare rewrites `server:` on proxied
+		# responses, so `server: cloudflare` on that 401 was not evidence that
+		# Cloudflare produced it; the body was this vhost's own error page.)
+		user_claims email common_name sub
+	}
+
+	# the routes themselves live in a file the functional test can import too
+	# (caddy/test/run.sh) -- see it for the URL scheme: the version is the PATH
+	import /etc/caddy/preview_routes.caddy
+
+	# jwtauth answers a bare 401 with an EMPTY body -- a blank page in a browser,
+	# indistinguishable from "broken". Say what this host is instead. (Cloudflare
+	# Access intercepts before the origin, so once it is in front a human never
+	# sees this; it is what a request that BYPASSED Access gets.)
+	handle_errors {
+		@unauth expression {http.error.status_code} == 401
+		handle @unauth {
+			header Content-Type "text/html; charset=utf-8"
+			respond <<HTML
+				<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex">
+				<title>Marine Sensitivity — preview (sign-in required)</title>
+				<style>body{font:16px/1.5 system-ui,sans-serif;max-width:40rem;margin:4rem auto;padding:0 1.25rem}</style>
+				<h1>Marine Sensitivity — preview</h1>
+				<p>This host serves <b>restricted, pre-release</b> versions of the apps and documentation
+				to invited reviewers, and requires sign-in through the project's access gateway —
+				which is not yet in front of this address, so nothing here can be viewed at the moment.</p>
+				<p>Public releases: <a href="https://app.marinesensitivity.org/scores/">Scores</a> ·
+				<a href="https://app.marinesensitivity.org/species/">Species</a> ·
+				<a href="https://marinesensitivity.org/docs/">Documentation</a>.</p>
+				HTML 401
+		}
+	}
 }
 
 shiny.oceanmetrics.io {

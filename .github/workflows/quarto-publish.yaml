@@ -206,7 +206,7 @@ jobs:
           # Deletes only TOP-LEVEL entries that are neither a version directory
           # nor part of the root itself. Version directories are matched on the
           # registry's own grammar, so a new release is never mistaken for cruft.
-          KEEP='^(index\.html|robots\.txt|\.nojekyll|\.git|CNAME|v[0-9]+[a-z]?)$'
+          KEEP='^(index\.html|404\.html|robots\.txt|\.nojekyll|\.git|CNAME|v[0-9]+[a-z]?)$'
           PRUNED=0
           for f in $(ls -A); do
             if ! echo "$f" | grep -Eq "$KEEP"; then
@@ -226,6 +226,34 @@ jobs:
           <link rel="canonical" href="./$LATEST/">
           <meta http-equiv="refresh" content="0; url=./$LATEST/">
           <p>Redirecting to the current documentation (<a href="./$LATEST/">$LATEST</a>)&hellip;</p>
+          HTML
+          # Unversioned deep links (/docs/scoring.html, the form every pre-2026-08
+          # citation used) 404 on GitHub Pages now that the flat root is pruned.
+          # Pages serves 404.html for every miss, so it forwards them to the
+          # promoted release, keeping the page path, query and #anchor. A missing
+          # VERSIONED path is different: it is usually a restricted pre-release,
+          # which lives only on the review host, so say so and link there.
+          cat > 404.html <<HTML
+          <!doctype html><meta charset="utf-8">
+          <title>Marine Sensitivity documentation</title>
+          <meta name="robots" content="noindex">
+          <p id="msg">Redirecting to the current documentation (<a href="/docs/$LATEST/">$LATEST</a>)&hellip;</p>
+          <script>
+          (function () {
+            var latest = "$LATEST";
+            var m = location.pathname.match(/^\/docs\/(?:(v[0-9]+[a-z]?)\/)?(.*)$/);
+            if (!m) return;
+            var ver = m[1], rest = m[2] || "";
+            if (!ver) { location.replace("/docs/" + latest + "/" + rest + location.search + location.hash); return; }
+            var p = document.getElementById("msg");
+            p.textContent = "No public documentation at this address. Release " + ver + " may be a restricted pre-release, served only on the review host: ";
+            var a = document.createElement("a");
+            a.href = "https://preview.marinesensitivity.org/docs/" + ver + "/" + rest + location.search + location.hash;
+            a.textContent = a.href; p.appendChild(a);
+            p.appendChild(document.createTextNode(" — or open the current public documentation: "));
+            var b = document.createElement("a"); b.href = "/docs/" + latest + "/"; b.textContent = latest; p.appendChild(b);
+          })();
+          </script>
           HTML
           printf 'User-agent: *\nAllow: /\n' > robots.txt
 
