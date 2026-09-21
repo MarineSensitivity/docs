@@ -203,3 +203,22 @@ v9:
     A same-grid version bump now reuses the previous release's unchanged ingests (copy-on-write
     clone, verified against their content checkpoints) instead of re-running them, and every
     reader of the previous release resolves its schema by introspection.
+v7b:
+  methods: >
+    A **surgical patch of v7**, not a new build: two method changes, everything else re-executes
+    v7's own scoring verbatim, and turning both changes off reproduces v7 exactly. (1) **Sea-turtle
+    core habitat** — AquaMaps suitability now enters the turtle merge only where it is at least
+    0.5 (AquaMaps' own core-habitat default); a range cell with no suitability at or above that
+    threshold is **dropped** rather than filled at a nominal value of 1. Critical habitat still
+    overrides by taking the higher value, so no designated cell is ever lost to the threshold. (2)
+    **Coverage floor.** A scored component is reportable in a Program Area only where its scored
+    cells cover at least 5% of the area; on v7's data this removes exactly one component (St.
+    George Basin's turtles, at 1.5% coverage) rather than publishing it as a misleadingly precise
+    near-zero. One side effect worth reading carefully: with its turtle component gone, Cook
+    Inlet's average of its remaining components (53.2) edges past Hope Basin's (52.7) for the top
+    Program-Area rank — a reordering caused by removing a below-average component, not by anything
+    improving. The year-integrated productivity fix that an earlier review flagged is **not**
+    part of this patch — productivity is unchanged from v7 here, because under this release's
+    ecoregion-relative rescaling the year-integration barely moves scores (and moves some the
+    wrong way); it lands with v10, whose national reference is where the correction actually
+    counts.

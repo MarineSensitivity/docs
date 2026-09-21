@@ -101,6 +101,25 @@ $$ {#eq-merge-turtle}
 
 Critical-habitat designations then override with a maximum, so a designated cell is never scored below its designation.
 
+```{r}
+#| output: asis
+mth <- doc_manifest()$methods
+if (!is.null(mth) && "turtle_suit_min" %in% mth$method_key) {
+  g <- function(k) mth$value[mth$method_key == k]
+  cat(glue::glue(
+"**{doc_ver()} patches this rule**, without changing @eq-merge-turtle itself: the suitability term
+\\(v_{{suit,c}}\\) is thresholded before the multiply. A suitability strictly below {g('turtle_suit_min')}
+(AquaMaps' own core-habitat default, on its 0–100 scale) is treated as absent, and a range cell left
+with none is **dropped** rather than filled at a nominal suitability of 1 — the fill v7 used, recorded
+here as `turtle_fill = {g('turtle_fill')}`. Critical habitat still overrides by maximum, so a
+designated cell is never lost to the threshold. Turning the threshold off (`turtle_suit_min = 0`)
+reproduces v7's merged turtle models exactly. A stricter cutoff of 0.6, validated against surveys
+for marine mammals [@kaschner2011], would empty every Alaska Program Area of turtles; {doc_ver()}
+keeps the milder, AquaMaps-default 0.5 because it leaves a small leatherback signal off Southeast
+Alaska, consistent with the region's sparse but real occurrence record [@hodgewing2000].\n\n"))
+}
+```
+
 Because risk is already inside the merged values, turtles receive `er_score = 100` at scoring time as a pass-through multiplier (flagged `is_er_spatial`), which cancels in the division by 100 rather than double-counting.
 
 ### Step 5 — NMFS DPS-listed species: the model stays the distribution, risk varies by cell

@@ -164,6 +164,33 @@ $$ {#eq-zone-agg}
 
 where $A_c$ is the area of cell $c$ — which is latitude-dependent on a 0.05° grid, so the weighting is not cosmetic.
 
+```{r}
+#| output: asis
+mth <- doc_manifest()$methods
+if (!is.null(mth) && "coverage_floor_pct" %in% mth$method_key) {
+  kappa <- mth$value[mth$method_key == "coverage_floor_pct"]
+  cat(glue::glue(
+"### Coverage floor
+
+**Since {doc_ver()}**, a component (a species category, or the composite) is *reportable* for a zone
+only where its scored cells cover a large enough share of that zone's area:
+
+$$
+\\text{{coverage}}_{{zone,\\,component}} = \\frac{{\\sum_{{c \\,\\in\\, zone,\\; \\text{{scored}}}} A_c}}{{\\sum_{{c \\,\\in\\, zone}} A_c}}
+\\,, \\qquad \\text{{reportable}} \\iff \\text{{coverage}}_{{zone,\\,component}} \\ge \\kappa
+$$ {{#eq-coverage-floor}}
+
+with $\\kappa$ = {kappa}%. Below the floor the component is **not reportable**: it renders as no
+data, is excluded from the composite exactly as a component with no scored cells already is, and is
+never published as a zero (a zero would pull the composite down for a reason unrelated to
+sensitivity). The rule is geometric — defined on which cells carry a value, not on the value itself
+— so it applies identically regardless of what the scored value happens to be. On {doc_ver()}'s own
+data it removes exactly one Program-Area component (sea turtles in St. George Basin, at 1.5 %
+coverage); the next-lowest coverage among all other components is well clear of the floor, so the
+choice of {kappa}% is a wide margin rather than a tuned cutoff.\n\n"))
+}
+```
+
 ## Visualization
 
 ### Flower plot
