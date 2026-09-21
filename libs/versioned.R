@@ -447,6 +447,9 @@ doc_releases <- local({
         ver = v, status = reg$status[i],
         released = as.character(reg$released[i]),
         title = if ("title" %in% names(reg)) reg$title[i] else "",
+        # lineage: which release this one PATCHES, e.g. v7b -> v7. Absent/blank
+        # for an ordinary bump, which falls back to date order (see below).
+        prev = if ("prev" %in% names(reg)) as.character(reg$prev[i]) else NA_character_,
         grid = m$grid_id, id_field = m$id_field,
         n_datasets = ds, valid_species = valid, species_pra = pra,
         n_metrics = if (is.data.frame(m$metrics)) length(unique(m$metrics$metric_key)) else NA_real_,
@@ -482,8 +485,15 @@ doc_version_delta <- local({
     if (!is.null(cached[[ver]])) return(cached[[ver]])
     rel <- doc_releases()                      # newest first
     i   <- match(ver, rel$ver)
-    if (is.na(i) || i >= nrow(rel)) return(NULL)
-    prev <- rel[i + 1, ]; this <- rel[i, ]
+    if (is.na(i)) return(NULL)
+    # a curated `prev` (e.g. v7b -> v7, a PATCH of an older release) overrides
+    # date order, which would otherwise pick whatever released most recently
+    # before this ver -- wrong for a patch released after its successors
+    has_prev <- "prev" %in% names(rel) && !is.na(rel$prev[i]) && nzchar(rel$prev[i])
+    if (!has_prev && i >= nrow(rel)) return(NULL)
+    pi  <- if (has_prev) match(rel$prev[i], rel$ver) else i + 1L
+    if (is.na(pi)) return(NULL)
+    prev <- rel[pi, ]; this <- rel[i, ]
 
     ds <- function(v) {
       m <- tryCatch(msens::atlas_manifest(v), error = function(e) NULL)
@@ -535,8 +545,12 @@ doc_score_delta <- local({
   function(ver = doc_ver()) {
     if (!is.null(cached[[ver]])) return(cached[[ver]])
     rel <- doc_releases(); i <- match(ver, rel$ver)
-    if (is.na(i) || i >= nrow(rel)) return(NULL)
-    prev <- rel$ver[i + 1]
+    if (is.na(i)) return(NULL)
+    # see doc_version_delta(): a curated `prev` overrides date order
+    has_prev <- "prev" %in% names(rel) && !is.na(rel$prev[i]) && nzchar(rel$prev[i])
+    if (!has_prev && i >= nrow(rel)) return(NULL)
+    prev <- if (has_prev) rel$prev[i] else rel$ver[i + 1]
+    if (is.na(match(prev, rel$ver))) return(NULL)
 
     scores <- function(v, fld) {
       m <- tryCatch(msens::atlas_manifest(v), error = function(e) NULL)
