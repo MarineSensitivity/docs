@@ -172,22 +172,24 @@ if (!is.null(mth) && "coverage_floor_pct" %in% mth$method_key) {
   cat(glue::glue(
 "### Coverage floor
 
-**Since {doc_ver()}**, a component (a species category, or the composite) is *reportable* for a zone
-only where its scored cells cover a large enough share of that zone's area:
+**Since {doc_ver()}**, a component (a species category, or primary productivity) is *reportable*
+for a Program Area only where its scored cells cover a large enough share of that area:
 
 $$
-\\text{{coverage}}_{{zone,\\,component}} = \\frac{{\\sum_{{c \\,\\in\\, zone,\\; \\text{{scored}}}} A_c}}{{\\sum_{{c \\,\\in\\, zone}} A_c}}
+\\text{{coverage}}_{{zone,\\,component}} = \\frac{{\\sum_{{c \\,\\in\\, zone,\\; \\text{{scored}}}} w_c}}{{\\sum_{{c \\,\\in\\, zone}} w_c}}
 \\,, \\qquad \\text{{reportable}} \\iff \\text{{coverage}}_{{zone,\\,component}} \\ge \\kappa
 $$ {{#eq-coverage-floor}}
 
-with $\\kappa$ = {kappa}%. Below the floor the component is **not reportable**: it renders as no
-data, is excluded from the composite exactly as a component with no scored cells already is, and is
-never published as a zero (a zero would pull the composite down for a reason unrelated to
-sensitivity). The rule is geometric — defined on which cells carry a value, not on the value itself
-— so it applies identically regardless of what the scored value happens to be. On {doc_ver()}'s own
-data it removes exactly one Program-Area component (sea turtles in St. George Basin, at 1.5 %
-coverage); the next-lowest coverage among all other components is well clear of the floor, so the
-choice of {kappa}% is a wide margin rather than a tuned cutoff.\n\n"))
+where $w_c$ is the share of cell $c$ lying inside the Program Area, and $\\kappa$ = {kappa}%. Below
+the floor the component is **not reportable**: it renders as no data, is excluded from the composite
+exactly as a component with no scored cells already is, and is never published as a zero (a zero
+would pull the composite down for a reason unrelated to sensitivity). The rule is geometric — defined
+on which cells carry a value, not on the value itself. The composite itself is not subject to the
+floor; it averages whichever components are reportable. On v7's data the floor removes exactly one
+of 151 Program Area × component pairs (sea turtles in St. George Basin, at 1.5 % coverage); in
+{doc_ver()} the turtle core-habitat threshold has already emptied that area of turtles, so the
+floor removes no further pair and stands as the reporting rule. The next-lowest pair is High Arctic
+corals at 7.3 %, so any floor between 2 % and 7 % gives the same answer.\n\n"))
 }
 ```
 

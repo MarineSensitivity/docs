@@ -113,10 +113,11 @@ if (!is.null(mth) && "turtle_suit_min" %in% mth$method_key) {
 with none is **dropped** rather than filled at a nominal suitability of 1 — the fill v7 used, recorded
 here as `turtle_fill = {g('turtle_fill')}`. Critical habitat still overrides by maximum, so a
 designated cell is never lost to the threshold. Turning the threshold off (`turtle_suit_min = 0`)
-reproduces v7's merged turtle models exactly. A stricter cutoff of 0.6, validated against surveys
-for marine mammals [@kaschner2011], would empty every Alaska Program Area of turtles; {doc_ver()}
-keeps the milder, AquaMaps-default 0.5 because it leaves a small leatherback signal off Southeast
-Alaska, consistent with the region's sparse but real occurrence record [@hodgewing2000].\n\n"))
+reproduces v7's merged turtle models exactly. The threshold is AquaMaps' own convention rather than
+a number tuned to the outcome. It leaves turtles in exactly one Alaska Program Area: the Gulf of
+Alaska, 9,608 leatherback cells at suitability 0.50–0.58 off Southeast Alaska, where the region's
+sparse occurrence records are [@hodgewing2000]. At 0.6 — the cutoff validated against surveys for
+marine mammals [@kaschner2011] — no Alaska Program Area would retain turtles.\n\n"))
 }
 ```
 
