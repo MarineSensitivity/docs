@@ -110,7 +110,7 @@ doc_app_url <- function(app = c("scores", "species"), ver = doc_ver()) {
 #' different host (`marinesensitivity.org`, not `app.marinesensitivity.org`) and
 #' resolves its release from `?ver=` on the public host rather than a path
 #' segment (msens::preview_app_url() does not cover it). The preview branch
-#' mirrors `previewLink.ts`'s own `/{ver}/atlas/` shape but is not yet SERVED —
+# The preview host serves the Atlas at /{ver}/atlas/ since 2026-09-24 (server caddy/atlas_preview_routes.caddy).
 #' `server` main has no Atlas route as of this writing (see apps/atlas.qmd's
 #' Known Limitations); it is written now so nothing here has to change once it is.
 doc_atlas_url <- function(ver = doc_ver()) {
