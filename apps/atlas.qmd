@@ -1,0 +1,359 @@
+---
+title: "Atlas — the static, in-browser scores, species and places app"
+description: "one static map app for scores, species, places and reports over U.S. marine areas"
+categories: [current]
+---
+
+# Atlas {#sec-app-atlas}
+
+## Overview
+
+The **Atlas** ([marinesensitivity.org/atlas](https://marinesensitivity.org/atlas/)) is a third,
+newer way to explore the MST: **one static web app**, built with Svelte and MapLibre, that runs
+entirely in the browser. Where the [Scores](scores.qmd) and [Species](species.qmd) Shiny apps are
+server-rendered R processes, the Atlas ships as plain HTML/JS/CSS with no server component at
+all — every score, click, flower plot and report is computed client-side, in-browser, by a DuckDB
+instance compiled to WebAssembly (DuckDB-WASM) that queries the release's own published Parquet
+tables directly over HTTPS. The same static build runs unmodified at
+`https://marinesensitivity.org/atlas/` (public releases) and at
+`https://preview.marinesensitivity.org/{ver}/atlas/` (the signed-in reviewer host for a
+`restricted` pre-release, @sec-app-scores's "one application, every release" idea applied to a
+different runtime).
+
+::: {.callout-note}
+## The version is still data, not a code fork
+
+Exactly as with Scores and Species, there is one Atlas checkout for every release. On the public
+host the release is a query parameter (`?ver=v7`), resolved client-side against the published
+`versions.json`; defaulting to the promoted release when the parameter is absent. On the preview
+host — because Cloudflare Access scopes its reviewer policies by URL **path**, never by query — the
+release is the path itself (`/v9/atlas/`), matching the pattern `/v9/scores/` and `/v9/species/`
+already use there. A version the current host is not allowed to show (a restricted release
+requested on the public host, or an unrecognized `?ver=`) opens the release picker with a link to
+"Continue on the preview host" rather than silently falling back to another version's data.
+:::
+
+The Atlas combines what the two Shiny apps do separately — mapping composite scores, mapping
+individual species distributions — with a capability neither has: **Places**, a tool for drawing,
+typing, or uploading your own area of interest (a lease block, a survey footprint, a project
+boundary) and getting the same scores and species tables the built-in Program Areas get, then
+sharing the exact area and view through the URL and exporting a report. @sec-atlas-places below
+covers Places in detail, including the byte-level shape of the codec that carries a drawn shape in
+a link.
+
+@fig-atlas-map shows the default Scores view: the 0.05° cell grid colored by a composite
+sensitivity score across U.S. waters, dark theme (the app's default), with the tool rail on the
+left and the release's own attribution in the lower-right corner.
+
+![The Atlas, Scores lens, default view (desktop, dark theme). The top bar carries the release chip, the Scores/Species lens switch, search, Share, Report, Help and a theme toggle; the tool rail on the left opens Layers, Places, Flower plot, Table and Report.](/images/atlas/desktop-map.png){#fig-atlas-map}
+
+**Desktop vs. phone layout.** On a wide viewport the five tools open a single **dockable panel**
+that floats over the map (left, right or bottom); on a phone the identical five tools sit in a
+labelled **bottom tab bar** — never under a sheet, so the tools stay reachable at every sheet
+height — and the panel becomes a **bottom sheet** with three heights (peek, half, full) instead of
+a floating card. @fig-atlas-phone-map shows the phone layout: the top bar shrinks to the mark,
+release chip, lens switch and theme toggle, with search, Share, Report, Help, About and Feedback
+folded into a **⋯ (more) menu** (@fig-atlas-phone-more).
+
+![The Atlas on a phone (390×844, dark theme). The tool rail becomes a bottom tab bar; the panel becomes a bottom sheet at its default "half" height.](/images/atlas/phone-map.png){#fig-atlas-phone-map}
+
+![The phone's ⋯ (more) menu, reached from the top bar, holding the controls a wide viewport shows directly: Share, Report, Feedback, About this release, Take a tour, Docs.](/images/atlas/phone-more-menu.png){#fig-atlas-phone-more}
+
+## Getting around
+
+**The top bar**, left to right: the MST mark and title; a **release chip** that opens the version
+picker (every published release, with restricted rows offering "Continue on the preview host" and
+retired rows offering "Switch"); a **Scores | Species lens switch**; a **search field** (species and
+places — desktop only, folded into the phone's search behavior); then, right-aligned, **Share**
+(copies the current view as a link and announces what it carries), **Report** (opens the report
+builder for whatever is currently selected), a **(?) Help** menu (Take a tour, a keyboard-shortcut
+reference, and a link to this documentation book), the **About / Feedback / ⋯** control group, and a
+sun/moon **theme toggle**.
+
+**The tool rail** is five controls, always in the same order, on every viewport:
+**Layers · Places · Flower plot · Table · Report**. In the Species lens the Flower control fades in
+place — a flower plot has no meaning for a single species — but it is never removed, and its
+tooltip says why ("Flower plot — Scores only") rather than just disappearing.
+
+**The panel** that a rail tool opens is one dockable surface, not a fixed sidebar:
+
+- **Dock** left, right or bottom (a horizontal drawer), from a control in its header.
+- **Resize** by dragging its map-facing edge (320–720 px), or with arrow keys on the same handle.
+- **Maximize** to the whole stage — a backdrop appears, focus is trapped inside while maximized,
+  and the map keeps rendering underneath — or **collapse** to a small labelled pill at the panel's
+  edge; clicking any rail tool re-opens a collapsed panel to that tool.
+- Its dock/size/collapsed state is **chrome, remembered per viewport size** (browser
+  `localStorage`), never written into the shareable URL — only the view state the URL does carry
+  (@sec-atlas-place-links) travels with a shared link.
+
+On a phone the same panel becomes the bottom **sheet**, with three detents — peek (its header
+only), half (the default) and full — instead of dock/resize/maximize.
+
+A floating **legend chip** tracks the current layer's color ramp; on a phone it floats above the
+sheet at peek/half and moves inline inside the sheet at full height, so it never sits over the
+sheet's own header controls.
+
+## Scores lens {#sec-atlas-scores}
+
+The Scores lens is the Atlas's equivalent of the [Scores app](scores.qmd): the composite,
+extinction-risk-weighted score for every 0.05° cell (or, aggregated, every Program Area) of U.S.
+waters. Opening **Layers** (@fig-atlas-layers) shows the one row every lens shares — **Data**,
+expandable into that lens's own controls (study area, spatial unit, the score layer, color
+palette) — plus the rest of the **layer stack**: outlines/labels, a Program-Area/ecoregion boundary
+group, and the basemap's own sub-layers (land & water, bathymetry — present but empty until a
+relief layer is published, boundaries, roads & buildings, place labels). Every row in the stack
+can be shown/hidden, given an opacity, and **moved up or down** relative to the others — so, for
+example, place labels can be pulled above a semi-transparent score raster, or below it.
+
+![The Layers panel: the Data row (study area, spatial unit, layer, palette) expanded above the rest of the stack — outlines, basemap sub-layers — each with a visibility toggle, an opacity slider and move-up/move-down controls.](/images/atlas/desktop-layers.png){#fig-atlas-layers}
+
+Clicking a cell or a Program Area on the map selects it: the URL gains a `sel=cell:<id>` or
+`sel=zone:<unit>:<key>` token, and the **Flower plot** and **Table** tools (@sec-atlas-flower-table)
+both then describe that selection. Spatial units can be switched between raster cells and Program
+Areas from the Data row; four palettes are available (Spectral is the default and the one every
+release publishes legend stops for today).
+
+## Species lens
+
+Switching the lens switch to **Species** turns the top-bar search into a species picker (common or
+scientific name, with an "Only species in US waters" checkbox), and the panel becomes the species
+**card**: the merged model as a filled pill, plus one pill per contributing input dataset the taxon
+carries (AquaMaps, BirdLife, IUCN range, critical habitat, …), colored green for the merged model
+and orange for each input. An input this release published **no surface** for renders as a
+**struck-through, non-interactive pill** — never simply omitted — so a viewer can see what feeds
+the model even when this particular release cannot draw it.
+
+Two toggles sit beside the pills: a **representation** toggle — "Original" (the source SDM at its
+native resolution) vs. "Interpolated" (resampled to the 0.05° scoring grid), or, for a dataset
+that is *delivered* already on that grid (AquaX, from v9 onward), "Delivered" vs. "As ingested" —
+mirroring the same native-vs-model comparison the [Species app](species.qmd) offers. Clicking
+anywhere on the map returns that cell's modelled value; the legend under the map is titled with the
+species' scientific name and its 1–100 range.
+
+![The Species lens' card for the leatherback turtle (*Dermochelys coriacea*): the merged model (six inputs) with five inputs struck through — published for this taxon's merge but not, in this release, as their own drawable surface — beside the species' ESA/IUCN/WoRMS panel.](/images/atlas/desktop-species.png){#fig-atlas-species}
+
+## Places {#sec-atlas-places}
+
+**Places** is the tool the two Shiny apps do not have: any area you outline, not only the built-in
+Program Areas, gets the same scores and species results. The empty state spells out every way in:
+"Turn on pick mode and click a Program Area, draw a shape, enter coordinates, or drop a file on the
+map."
+
+- **Pick a Program Area** two ways: **pick mode** (a toggle; click a Program Area on the map, or
+  Ctrl/Cmd-click or long-press to add more than one), or the panel's own **Program Area chooser** —
+  a full-name-sorted picker ("St. George Basin (GEB)", not the bare key) that needs no pointer and
+  works on a phone, where clicking the map is impractical.
+- **Draw** a Polygon, Rectangle or Circle directly on the map (click points, close a polygon on its
+  first vertex; a rectangle or circle is a drag). A drawn shape's corners stay draggable afterward,
+  and the map outline for a drawn place is magenta.
+- **Enter coordinates** — the keyboard/screen-reader alternative to drawing, in a modal dialog
+  (@fig-atlas-coords): a bounding box (`xmin, ymin, xmax, ymax`), a list of `lon, lat` vertices one
+  per line (three or more), or pasted WKT/GeoJSON. Every refusal (malformed input, too few points, a
+  self-intersecting ring) is shown **verbatim** — what went wrong, why, and how to fix it — never a
+  bare "invalid input."
+- **Upload a file**, either through the picker or by dropping it anywhere on the map
+  (@fig-atlas-places below shows the drop zone). The exact accepted-format line, as the app itself
+  states it: *"GeoJSON, zipped shapefile, KML, GPX, FlatGeobuf, WKT or GeoPackage, up to 10 MB."*
+  (`MAX_FILE_MB = 10` in `src/places/UploadPanel.svelte`.) A file with several shapes prompts a
+  choice — keep them as separate places, or merge into one — and a GeoPackage additionally asks
+  consent before its one-time fetch, naming the size and the third-party host, because reading one
+  needs a separate ~22 MB DuckDB `spatial` extension the app does not otherwise load.
+
+![The Places panel: pick mode, the Program Area chooser, draw tools (Polygon/Rectangle/Circle), "Enter coordinates," and the upload drop zone, above the current place list.](/images/atlas/desktop-places.png){#fig-atlas-places}
+
+![The "Enter coordinates" dialog: a bounding box, a vertex list, or pasted WKT/GeoJSON, with the same verbatim what/why/fix refusal format the upload path uses.](/images/atlas/desktop-coordinate-dialog.png){#fig-atlas-coords}
+
+Each place in the list shows its area, once analyzed its data coverage percentage and composite
+score, and per-row actions (rename, zoom to, duplicate, delete). Selecting a place expands its
+**results**: a note on what fraction of the place falls inside the U.S. study area ("*N*% of this
+place is inside the US study area (*a* of *b* cells)"), a flower plot, a table of component scores,
+and — loaded on request, batched over the place's cells — a species table. The panel's footer holds
+**Share**, **Download places** (GeoJSON) and **Report**, each disabled until at least one place
+exists.
+
+## How places are stored in the link {#sec-atlas-place-links}
+
+A place never lives on a server: it is encoded directly into the URL, so that opening a shared
+link reproduces the sender's exact area — this is also why **every analysis runs on the *decoded*
+geometry**, never the geometry as drawn, so a place and the numbers describing it can never diverge
+between sender and recipient.
+
+Places live in the URL **fragment** (`#pl=`, never the query string, because a fragment is never
+sent to a server or a referrer), one place per `~`-separated token:
+
+```
+#pl=z.pa.GAA~g1.Monterey%20box.EAECDMSNAdcC...
+```
+
+- **`z.<set>.<key>[,<key>...]`** — a reference to a *built-in* zone (`pa` Program Area, `pl`
+  Planning Area, `er` ecoregion, `sr` subregion) by key; the geometry itself comes from the
+  release's own PMTiles, so the link carries only a few bytes.
+- **`g1.<name>.<base64url bytes>`** — a drawn, typed or uploaded polygon, carried inline. `g1` is a
+  small hand-rolled binary codec, not GeoJSON-in-base64: each ring is quantized to a fixed
+  precision (3 decimal digits, about 110 m — 4 digits for a place under half a degree across),
+  delta-encoded vertex-to-vertex as zigzag varints, and base64url-encoded with **no general-purpose
+  compression** — the format is already dense, and (per the codec's own source comments) a
+  compressed stream would have no straightforward decoder to give the sibling `msens` R package,
+  which the design intends to read the identical tokens.[^atlas-g1-r] Longitudes are stored
+  **unwrapped**, so a place that crosses the antimeridian round-trips without an antimeridian
+  special case.
+- **`u.<name>.<8-hex-digit digest>`** — the fallback for a place too large to carry at all: only
+  its name and an 8-character SHA-256 digest travel in the link, and the recipient is prompted to
+  re-upload or re-draw it.
+
+[^atlas-g1-r]: Not independently verified in this book: at the time of writing the `msens` R
+package's own repository does not yet contain a decoder for the `g1` format, although the atlas
+source's own test fixture (`tests/fixtures/place_codec.json`) is written to be shared byte-for-byte
+with an `msens inst/fixtures/place_codec.json` twin once one exists.
+
+**The URL has a length budget**, applied automatically whenever a place is added, shared or
+reported: up to **2,000 characters silently**, up to **8,000 characters with a "long link" note**,
+and beyond that a Douglas-Peucker simplification ladder — coarsening at 0.001°, doubling each rung
+to 0.002°, 0.004°, 0.008° and 0.016° — where **a rung is accepted only if it changes the place's
+area by no more than 1% and leaves every ring simple** (no self-intersections); a rung that would
+violate either check is rejected and the next-coarser one is tried instead. If no rung fits the
+8,000-character budget even at the coarsest tolerance, the place falls back to the `u.` digest form
+described above, and the Share dialog's practical advice is to **download the place as GeoJSON**
+and send that alongside the link instead. In practice this means: a simple lease-block rectangle or
+a hand-drawn polygon of modest complexity always survives in the link; a highly detailed uploaded
+boundary (thousands of vertices) may be silently simplified by a fraction of a percent of its area,
+and a truly enormous shapefile will end up as a name-only reference that has to be re-attached.
+
+The **Share** dialog (opened from Places' footer or the top bar) states in one sentence what the
+copied link actually carries — *"This link carries release v7, the scores lens, the current map
+view, 3 places. Link length: 1,842 characters."* — and, if simplification had to run to fit the
+budget, shows the before/after vertex count and area change and requires the numbers on screen to
+already reflect the simplified geometry before the link can be copied, so the copied link and the
+displayed results can never disagree with each other.
+
+![The Share dialog for a Program Area place: a one-sentence summary of everything the link carries (release, lens, camera, place count) and the link's exact character length — the same dialog a drawn, typed or uploaded place opens.](/images/atlas/desktop-share-dialog.png){#fig-atlas-share}
+
+The rest of the view is carried the same URL-is-the-state way, in the query string rather than the
+hash: `ver` (release), `lens` (`scores`/`species`), `lyr`/`sp` (the active layer or species), `unit`
+(cell vs. a zone key), `area` (a study-area camera preset), `map` (an explicit camera —
+`lon,lat,zoom[,bearing,pitch]`), `pal` (palette), `sel` (the clicked cell or zone), `layers` (the
+layer-stack deltas described in @sec-atlas-scores), `theme` and `tour`. Every field is written only
+when it differs from its default, so a plain `https://marinesensitivity.org/atlas/` link is never
+cluttered by state nobody changed; an unrecognized or malformed value is dropped back to its
+default rather than throwing.
+
+## Flower plot and Table {#sec-atlas-flower-table}
+
+**Flower plot**, once a cell, Program Area or Place is selected, shows the same kind of flower the
+[Scores app](scores.qmd) draws: one annular petal per species category, its outer radius scaled to
+that category's rescaled score, drawn from a shared inner hub that carries the weighted center
+value. Tapping or hovering a petal shows its category and value; the same values also list below
+the plot as plain text, for a screen reader or a reader who wants the numbers without decoding the
+geometry.
+
+![The Flower plot for a clicked cell in the Gulf of Mexico: one annular petal per species category around a centre value, with the component table (and the map popup carrying the same combined-score sentence) below it.](/images/atlas/desktop-flower.png){#fig-atlas-flower}
+
+**Table** opens three tabs on the same panel: a sortable **species table** (scientific/common name,
+category, ESA/IUCN/MMPA/MBTA flags, extinction-risk score, model key), a **zones table** (every
+Program Area ranked by its composite score, with a "report on selected" action once some are
+ticked), and a **composition** treemap (species contribution to the current selection's score, one
+level). On a phone the species and zones tables open with a compact default column set and a
+**Columns** control to add or remove columns — the choice persists for the session — while both
+tables get sticky header/identifying columns and horizontal scrolling that never spills outside the
+panel. Every table has a **CSV download**.
+
+![The Table tool's species tab for a clicked cell: sortable, filterable columns (Category, Taxon, Scientific name, Common name, …), with Zones and Composition as the other two tabs.](/images/atlas/desktop-table.png){#fig-atlas-table}
+
+## Report
+
+**Report** builds a self-contained document for whatever places are currently selected —
+opened either from the top bar, a rail tool, or a place's own row — and renders progressively, one
+section as its data arrives, rather than waiting for everything at once:
+
+- a **header band** with the MST mark, release chip, generation timestamp, the report's own
+  permalink and a **QR code** of that permalink (so a printed copy can lead back to the live one);
+- an **introduction**, restating what was selected;
+- a static **map** snapshot of the selected place(s);
+- one **flower plot** per place;
+- a **Table of Scores** — every place's component scores and overall score, with footnotes grouped
+  one per area for any component whose data coverage falls under the release's coverage floor;
+- a **Summary of Species** per place (a category × count cross-tab, plus the top 20 by score);
+- **Sources and Method**, with the release's own citations;
+- a **Provenance** section: release id, status/access, generation time, the app's build SHA, the
+  DuckDB-WASM version, which tables were actually read, and the SQL that actually ran (the same
+  query templates `sql/` shares with the `msens` R package) — so the report documents exactly how
+  its own numbers were produced, not just what they are.
+
+![The report document: header band with QR permalink, map, flower plot, Table of Scores, species summary and provenance, generated in-browser from the same link that selected the place.](/images/atlas/desktop-report.png){#fig-atlas-report}
+
+Four ways to take the report with you, all built client-side with no server round trip:
+
+- **Print** — calls the browser's own print dialog once; the printed layout is print-media-aware
+  (roughly five U.S. Letter pages for a typical report).
+- **Download HTML** — one self-contained file (inline CSS, inline SVGs, the map and flower as
+  embedded PNG data URIs), openable completely offline.
+- **Data package (ZIP)** — `README.md`, `CITATION.md`, `provenance.json`, `places.geojson`, and a
+  `scores_*.csv`/`species_*.csv` pair per place, at full numeric precision.
+- **Word document (.docx)** — the same Table of Scores, species summary and provenance as coded
+  Word styles (no reference template), plus the map and a rasterized flower per place as embedded
+  images.
+
+Because the report is derived entirely from the URL, re-opening the exact link it prints in its
+header band reproduces the same document — the report *is* reproducible in the same sense the rest
+of the MST pipeline is (@sec-apps).
+
+## Accessibility and performance notes
+
+The Atlas ships a written [WCAG 2.1 Level AA accessibility conformance note](https://github.com/MarineSensitivity/atlas/blob/main/docs/accessibility.md) and
+a [performance budget report](https://github.com/MarineSensitivity/atlas/blob/main/docs/performance.md) in its own repository; both are living documents
+scoped to what is actually automated-tested, not a blanket claim. A few figures worth carrying into
+this book:
+
+- **Keyboard.** Every rail tool, panel control (dock/resize/maximize/collapse), layer-stack row and
+  dialog is reachable and operable from the keyboard alone; the panel traps focus while maximized
+  and restores it correctly on Esc; skip links jump past the map to the tool rail; the map itself
+  exposes its data as a text equivalent ("Every zone's score is also in the Zones table, under the
+  Table tool") since a rendered raster has no accessible text content of its own.
+- **Screen readers.** One shared, polite ARIA live region announces state changes (pick mode
+  on/off, a place added, a link copied, a layer moved); every meaningful state (pressed, expanded,
+  disabled) is exposed through ARIA attributes, never color alone.
+- **First paint.** The critical-path JavaScript is held to a **450 KB gzip** budget (measured
+  ~417 KB) plus a **150 KB** budget for the MapLibre runtime worker (~140 KB measured), combining to
+  a **600 KB "before first interaction"** ceiling — everything else (drawing tools, the report
+  builder, DOCX/ZIP export, the feedback screenshot tool) loads lazily, on demand, well after that.
+  A separate timing gate asserts the species lens paints its first data pixel within **2.5 s** on a
+  laptop and **4 s** on CI's shared runners (median of repeated cold loads).
+
+## Feedback and versions
+
+**Feedback** (the top bar's control, or the phone's ⋯ menu) opens a dialog rather than jumping
+straight to an external site: a kind (bug / idea / question / data), a short description, an
+optional email, a client-captured screenshot the reporter can annotate (arrow, circle, rectangle,
+pen, text), and a privacy checkbox — **"include my current view link" is off by default**, so a
+drawn place's geometry never leaves the device unless the reporter explicitly opts in. It posts to
+the project's feedback endpoint, or falls back to a prefilled GitHub issue if that post fails.
+
+**Versions** follow the same public/restricted split described in the
+[Releases](../releases.qmd) chapter: a `public`
+release opens directly at `https://marinesensitivity.org/atlas/?ver={ver}`; a `restricted`
+pre-release under review is offered only as a link to
+`https://preview.marinesensitivity.org/{ver}/atlas/`, behind the same Cloudflare Access gate that
+protects the preview Scores and Species apps. Opening this book's own release picker inside the
+Atlas (the top-bar release chip) is the fastest way to see which releases exist and which one is
+promoted, without leaving the app.
+
+![The release picker ("Data release"), opened from the top-bar chip: every published release, its status and date, `restricted` pre-releases offering "Continue on the preview host," and `retired` releases offering "Switch."](/images/atlas/desktop-version-picker.png){#fig-atlas-versions}
+
+::: {.callout-note}
+## A note on this section's links
+
+Unlike the Scores and Species pages, the links above are written out directly rather than built
+with `doc_app_url()`: that helper's URL shape (`https://app.marinesensitivity.org/{ver}/{app}/`)
+does not fit the Atlas, which lives on a different host (`marinesensitivity.org`, not
+`app.marinesensitivity.org`) and — on the public host — resolves its release from a query
+parameter rather than a path segment. Extending `doc_app_url()` to cover this correctly would be
+more than a one-line addition, so this page hard-codes the URLs instead.
+:::
+
+## Source Code
+
+[`atlas`](https://github.com/MarineSensitivity/atlas) on its own `main` branch — one static build
+for every release, the same "one checkout, not one per version" convention the [Scores](scores.qmd)
+and [Species](species.qmd) apps follow. `sql/` holds the DuckDB-WASM query templates that are meant
+to be the browser-side twin of the equivalent `msens` R functions; `docs/` in that repository holds
+its own design spec, usability walkthroughs, and the accessibility/performance notes cited above.

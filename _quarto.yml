@@ -82,6 +82,7 @@ book:
     - glossary.qmd
     - part: Applications (Current)
       chapters:
+        - apps/atlas.qmd
         - apps/scores.qmd
         - apps/species.qmd
     - part: Applications (Legacy)
