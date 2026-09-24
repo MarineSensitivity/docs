@@ -41,9 +41,13 @@ left, the Layers panel open by default, and the basemap's attribution in the low
 **Desktop vs. phone layout.** On a wide viewport the five rail tools open a single **dockable
 panel** that floats over the map; on a phone the identical five tools sit in a labelled **bottom
 tab bar**, and the panel becomes a **bottom sheet** with three heights (peek, half, full).
-@fig-atlas-phone-map shows the phone layout.
+@fig-atlas-phone-map shows the phone layout, and @fig-atlas-phone-more its top bar's More (⋯) menu.
 
-![The Atlas on a phone (390×844, dark theme): bottom tab bar, sheet at its default "half" height.](/images/atlas/phone-map.png){#fig-atlas-phone-map fig-alt="The Atlas on a phone: a thin top bar, the map, and a bottom sheet showing the Layers panel at half height above a bottom tab bar."}
+::: {layout-ncol=2}
+![Phone: default view.](/images/atlas/phone-map.png){#fig-atlas-phone-map fig-alt="The Atlas on a phone: a thin top bar, the map, and a bottom sheet showing the Layers panel at half height above a bottom tab bar."}
+
+![Phone: the top bar's More (⋯) menu.](/images/atlas/phone-more-menu.png){#fig-atlas-phone-more fig-alt="The phone's More menu open: Share, Report, Feedback, About this release, Take a tour, Docs, and Switch to light theme, above the bottom tab bar."}
+:::
 
 ## Quick start
 
@@ -146,20 +150,23 @@ coordinates, or drop a file on the map."*
   choice; a GeoPackage additionally prompts consent for a one-time ~22 MB download before it fails
   at the "no runtime" refusal above.
 
-![The Places panel with the drop zone visible: pick mode, the Program Area chooser, draw tools, "Enter coordinates," and the upload drop zone above the (empty) place list.](/images/atlas/desktop-places.png){#fig-atlas-places fig-alt="The Places panel: Pick mode and Add-to-places buttons, a Program Area chooser, Polygon/Rectangle/Circle/Done draw buttons, Enter coordinates, an upload drop zone, and an empty place list reading 0 of 20 places."}
+![The Places panel with two places: a Program Area ("ALA," reading "not analysed yet") and a selected, entered-coordinates place showing its real coverage note, composite score and flower.](/images/atlas/desktop-places.png){#fig-atlas-places fig-alt="The Places panel: pick mode, the Program Area chooser, draw tools, Enter coordinates, an upload drop zone, a Program Area row reading not analysed yet, and a selected drawn place showing 100% inside the study area, a 42.7 composite score and the start of a flower plot."}
 
-![The "Enter coordinates" dialog.](/images/atlas/desktop-coordinate-dialog.png){#fig-atlas-coords fig-alt="The Enter coordinates dialog: a text area accepting a bounding box, a vertex list, or WKT/GeoJSON, with an Add place button."}
+![The "Enter coordinates" dialog, showing a refusal for input that matches none of the three accepted shapes.](/images/atlas/desktop-coordinate-dialog.png){#fig-atlas-coords fig-alt="The Enter coordinates dialog with a single-point entry and a refusal message explaining what was expected instead."}
 
-Each row shows its area and a chip; a **drawn or typed** place always reads **"not analysed
-yet"** in the row itself — its real numbers appear only in the results panel below once selected
-— and, on today's releases, a **Program Area** row does too (the release does not yet publish a
-composite/coverage figure at the row level; see Known Limitations). Row actions: an inline
+Each row shows its area, and — for a **drawn, typed or uploaded** place — its data coverage
+percentage and composite score directly in the row as soon as it is analysed (the same analysis
+runs for every such place in the list, not only the one currently selected). A **Program Area**
+row still reads **"not analysed yet"** on today's releases: the release does not yet publish a
+composite/coverage figure at the row level (see Known Limitations). Row actions: an inline
 **rename** (≤ 60 characters, drawn/uploaded places only), **zoom to**, **duplicate**
-(drawn/uploaded only), **delete**, and **Open in report**. Selecting a place expands its
-**results**: a coverage note ("*N*% of this place is inside the US study area (*a* of *b* cells)",
-or "This place is outside US waters here: no scores can be computed"), a flower plot, a component
-table, and — on request, with a "Loading species needs *N* tiles, about *X* MB. Continue?" prompt —
-a species table. **Show analysis cells** paints the analysed 0.05° cells (up to 20,000 of them).
+(drawn/uploaded only), **delete**, and **Open in report**. Selecting a **drawn, typed or
+uploaded** place additionally expands its **results** panel below the list — a Program Area
+place does not get one here (its scores live in the Flower/Table tools instead,
+@sec-atlas-flower-table): a coverage note ("*N*% of this place is inside the US study area (*a* of
+*b* cells)", or "This place is outside US waters here: no scores can be computed"), a flower plot,
+a component table, and — on request, with a "Loading species needs *N* tiles, about *X* MB.
+Continue?" prompt — a species table. **Show analysis cells** paints the analysed 0.05° cells (up to 20,000 of them).
 The list caps at 20 places ("*n* / 20 places"); **Recent** (this browser only) offers to add a
 removed place back. The footer holds **Share**, **Download places** (GeoJSON) and **Report**, each
 disabled with zero places.
@@ -206,7 +213,7 @@ Peucker at 0.001° doubling to 0.016°, a rung accepted only while the area chan
 1% and every ring stays simple — **aims to bring the link back under 2,000 characters**; it stops
 at the first rung that does, or, if none does, uses the coarsest accepted rung provided that still
 fits under 8,000. This is never silent: the dialog shows the before/after (vertices, area change,
-cells), and you click **"Simplify and update the numbers"** to accept it — which is also what
+cells, @fig-atlas-share-ladder), and you click **"Simplify and update the numbers"** to accept it — which is also what
 rewrites `#pl=`, so the copied link and the displayed numbers can never disagree. If even the
 coarsest rung is still too long, **every** drawn, typed or uploaded place in the link (zone places
 are unaffected) becomes a `u.` token: the recipient sees a named row with no results and a
@@ -215,6 +222,8 @@ place as GeoJSON** and send that alongside the link. A single small rectangle al
 in the silent budget; that is not guaranteed for several places together, or a long base URL.
 
 ![The Share dialog: what the link carries and its exact length.](/images/atlas/desktop-share-dialog.png){#fig-atlas-share fig-alt="The Share dialog showing a one-sentence summary of what the link carries and its character length, with a Copy link button."}
+
+![The Share dialog's simplification ladder for an oversized place: before/after vertex count, area change and cell count, with a "Simplify and update the numbers" button.](/images/atlas/desktop-share-ladder.png){#fig-atlas-share-ladder fig-alt="The Share dialog reading link length 1,564 characters, with the text: Simplifying to 0.004 degrees would change this place from 3501 to 411 vertices (-0.03% area, 12059 to 12055 cells), and a Simplify and update the numbers button."}
 
 The rest of the view travels the same URL-is-the-state way, in the query string: `ver`, `lens`,
 `lyr`/`sp`, `unit`, `area`, `map` (camera), `pal`, `sel`, `layers` (the stack deltas from
@@ -271,7 +280,9 @@ data arrives:
 - a **Provenance** section (release, status/access, app build SHA, DuckDB-WASM version, tables
   read, SQL run).
 
-![The report document.](/images/atlas/desktop-report.png){#fig-atlas-report fig-alt="The report document: header band with permalink and QR code, an introduction, and the start of the interactive map."}
+![The report document's header band and introduction, on the live host: the MMA seal, a real permalink and QR code (never `localhost`), Parameters, and the start of the interactive map.](/images/atlas/desktop-report.png){#fig-atlas-report fig-alt="The report document: the Marine Minerals Administration seal and lockup, title, release chip, generation time, a real permalink and QR code, an introduction, a Parameters disclosure, and the start of the interactive map."}
+
+![The report's Table of Scores and the start of the Summary of Species, for the same Program Area.](/images/atlas/desktop-report-scores.png){#fig-atlas-report-scores fig-alt="A flower plot legend, the Table of Scores with one row of component and overall scores, and the beginning of the Summary of Species section."}
 
 Four exports, all built client-side: **Print** (the browser's dialog; roughly five Letter pages);
 **Download HTML** (one self-contained file — the flowers stay inline SVG, only the map is an
@@ -324,8 +335,9 @@ current one offers **Switch**.
 - For v7, every one of a species' input datasets shows struck through in the Species card — a
   release-side gap in what v7 publishes, not the app's design; the Species app can still draw them.
 - Program Areas are shown by their bare key; "Name (KEY)" needs a release that publishes names.
-- Every place-list row reads "not analysed yet," even after its results panel below has real
-  numbers.
+- A Program Area place's row always reads "not analysed yet," and selecting it opens no results
+  panel in Places — its scores live in the Flower plot/Table tools instead. (Drawn, typed and
+  uploaded places are unaffected: they show real numbers in both places.)
 - Feedback **Send** is not configured on the live app; use "Open as GitHub issue" (public).
 - The preview-host Atlas (`/{ver}/atlas/`) is not yet served; "Continue on the preview host"
   currently leads to a sign-in and then the landing page, not the Atlas.
@@ -336,8 +348,7 @@ current one offers **Switch**.
 
 The atlas repository's own `scripts/eyes-shots.mjs` captures the standard states this chapter's
 figures come from (18 states, phone 390×844 at 2x pixel density and desktop 1280×800, dark theme),
-run against a
-live or locally built app:
+run against a live or locally built app:
 
 ```sh
 ATLAS_URL=https://marinesensitivity.org/atlas OUT=.tmp/eyes node scripts/eyes-shots.mjs
