@@ -1185,12 +1185,12 @@ Figure&nbsp;9.4: Zoomed treemap showing individual species within a risk categor
 </section>
 <section id="interactive-maps" class="level3" data-number="9.7.4">
 <h3 data-number="9.7.4" class="anchored" data-anchor-id="interactive-maps"><span class="header-section-number">9.7.4</span> Interactive maps</h3>
-<p>Two Shiny applications present the results, each rendering <strong>any published release</strong> from a <code>?ver=</code> parameter rather than being frozen to one:</p>
+<p>Two Shiny applications present the results, each rendering <strong>any published release</strong> from the URL path rather than being frozen to one:</p>
 <ul>
 <li><strong><a href="https://preview.marinesensitivity.org/v8/scores/">Scores</a></strong> — composite and per-category sensitivity by zone, with flower plots and treemaps (see <a href="apps/scores.html" class="quarto-xref"><span>Appendix C</span></a>)</li>
 <li><strong><a href="https://preview.marinesensitivity.org/v8/species/">Species</a></strong> — individual and merged distribution models with regulatory status (see <a href="apps/species.html" class="quarto-xref"><span>Appendix D</span></a>)</li>
 </ul>
-<p>Append <code>?ver=v3</code> (or any published version) to view that release. See <a href="apps.html" class="quarto-xref"><span>Chapter 18</span></a>.</p>
+<p>Substitute the version in the path (e.g.&nbsp;<code>/v3/scores/</code>) to view that release; an older <code>?ver=v3</code> deep link still resolves, 301’d to the equivalent path. See <a href="apps.html" class="quarto-xref"><span>Chapter 18</span></a>.</p>
 </section>
 </section>
 <section id="implementation" class="level2" data-number="9.8">
