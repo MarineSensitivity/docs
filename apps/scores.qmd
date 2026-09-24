@@ -8,7 +8,7 @@ categories: [current]
 
 ## Overview
 
-The **Scores** application ([app.marinesensitivity.org/scores](https://app.marinesensitivity.org/scores/)) is the primary interactive tool for exploring composite marine sensitivity scores. It renders **any published release** from a `?ver=` parameter — `?ver=v3` shows v3 — defaulting to the promoted release when none is given. It enables users to visualize extinction risk weighted species presence at multiple spatial resolutions, with integrated flower plot and treemap summaries.
+The **Scores** application ([`r sub("^https://", "", doc_app_url("scores"))`](`r doc_app_url("scores")`)) is the primary interactive tool for exploring composite marine sensitivity scores. It renders **any published release** from the URL path — `/v3/scores/` shows v3 — defaulting to the promoted release when none is given; an older `?ver=v3` deep link still resolves, 301'd to the equivalent path. It enables users to visualize extinction risk weighted species presence at multiple spatial resolutions, with integrated flower plot and treemap summaries.
 
 @fig-scores-map shows the global view of cell-level sensitivity scores across all US waters. The sidebar provides controls for study area, spatial units (raster cells or program areas), and layer selection.
 
@@ -77,4 +77,4 @@ webshot2::webshot(
 
 ## Source Code
 
-[`scores/app.R`](https://github.com/MarineSensitivity/apps/tree/main/scores) on the `apps` repository's `main` branch. There is **one** checkout, not one per release: the version is data, resolved from the published manifest, so the per-version forks (`mapgl`, `mapgl_v1`…`v6`, `scores_v6`, `scores_v8`) are retired and their URLs 301 to `/scores/?ver=…`.
+[`scores/app.R`](https://github.com/MarineSensitivity/apps/tree/main/scores) on the `apps` repository's `main` branch. There is **one** checkout, not one per release: the version is data, resolved from the published manifest, so the per-version forks (`mapgl`, `mapgl_v1`…`v6`, `scores_v6`, `scores_v8`) are retired and their URLs 301 to the equivalent `/v{n}/scores/` path (an older `?ver=` deep link 301s the same way).
