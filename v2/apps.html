@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="interactive applications using Shiny">
+<meta name="description" content="interactive applications: two Shiny apps plus the static, in-browser Atlas">
 
 <title>18&nbsp; Apps – Marine Sensitivity</title>
 <style>
@@ -692,14 +692,20 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./apps/atlas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Atlas (beta) — the static, in-browser scores, species and places app</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/species.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
   </div>
 </li>
       </ul>
@@ -771,8 +777,9 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#current-applications" id="toc-current-applications" class="nav-link active" data-scroll-target="#current-applications"><span class="header-section-number">18.1</span> Current Applications</a>
   <ul class="collapse">
-  <li><a href="#scores-mapper-of-aggregate-sensitivity-scores" id="toc-scores-mapper-of-aggregate-sensitivity-scores" class="nav-link" data-scroll-target="#scores-mapper-of-aggregate-sensitivity-scores"><span class="header-section-number">18.1.1</span> Scores — mapper of aggregate sensitivity scores</a></li>
-  <li><a href="#species-mapper-of-individual-species-distributions" id="toc-species-mapper-of-individual-species-distributions" class="nav-link" data-scroll-target="#species-mapper-of-individual-species-distributions"><span class="header-section-number">18.1.2</span> Species — mapper of individual species distributions</a></li>
+  <li><a href="#atlas-beta-static-in-browser-scores-species-and-places" id="toc-atlas-beta-static-in-browser-scores-species-and-places" class="nav-link" data-scroll-target="#atlas-beta-static-in-browser-scores-species-and-places"><span class="header-section-number">18.1.1</span> Atlas (beta) — static, in-browser scores, species and places</a></li>
+  <li><a href="#scores-mapper-of-aggregate-sensitivity-scores" id="toc-scores-mapper-of-aggregate-sensitivity-scores" class="nav-link" data-scroll-target="#scores-mapper-of-aggregate-sensitivity-scores"><span class="header-section-number">18.1.2</span> Scores — mapper of aggregate sensitivity scores</a></li>
+  <li><a href="#species-mapper-of-individual-species-distributions" id="toc-species-mapper-of-individual-species-distributions" class="nav-link" data-scroll-target="#species-mapper-of-individual-species-distributions"><span class="header-section-number">18.1.3</span> Species — mapper of individual species distributions</a></li>
   </ul></li>
   <li><a href="#legacy-applications" id="toc-legacy-applications" class="nav-link" data-scroll-target="#legacy-applications"><span class="header-section-number">18.2</span> Legacy Applications</a></li>
   </ul>
@@ -800,7 +807,7 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>The MST provides two interactive web applications, plus several legacy applications from earlier development phases.</p>
+<p>The MST provides three interactive web applications — two Shiny apps (Scores, Species) plus a newer, static, in-browser Atlas — along with several legacy applications from earlier development phases.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -811,14 +818,19 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Both apps render <strong>any published release</strong> from a <code>?ver=</code> parameter — <code>?ver=v3</code> shows v3 — defaulting to the promoted release when none is given. There is no per-version fork: the version is data, settled by the release’s published manifest, so a fix reaches every version at once. The 18 former per-version instances are retired, and their URLs redirect permanently to the equivalent <code>?ver=</code>, so links printed in earlier reports still resolve to the release they always showed.</p>
+<p>Every one of the three current apps renders <strong>any published release</strong> rather than shipping a per-version fork. Scores and Species do this from the URL (<code>/v3/scores/</code>; older <code>?ver=v3</code> links redirect there) — the version is data, settled by the release’s published manifest, so a fix reaches every version at once, and the 18 former per-version Shiny instances are retired with their URLs redirecting permanently to the equivalent path. The Atlas follows the same rule with a different mechanism (<a href="apps/atlas.html" class="quarto-xref"><span>Appendix B</span></a>): one static build reads the same published <code>versions.json</code>, resolving the release from <code>?ver=</code> on its public host, and — once its preview route ships — from the URL path on its signed-in preview host.</p>
 </div>
 </div>
 <p>These tools allow stakeholders, scientists, and decision-makers to understand the underlying components contributing to an area’s sensitivity to offshore energy development, supporting better planning and impact assessment.</p>
 <section id="current-applications" class="level2" data-number="18.1">
 <h2 data-number="18.1" class="anchored" data-anchor-id="current-applications"><span class="header-section-number">18.1</span> Current Applications</h2>
-<section id="scores-mapper-of-aggregate-sensitivity-scores" class="level3" data-number="18.1.1">
-<h3 data-number="18.1.1" class="anchored" data-anchor-id="scores-mapper-of-aggregate-sensitivity-scores"><span class="header-section-number">18.1.1</span> Scores — mapper of aggregate sensitivity scores</h3>
+<section id="atlas-beta-static-in-browser-scores-species-and-places" class="level3" data-number="18.1.1">
+<h3 data-number="18.1.1" class="anchored" data-anchor-id="atlas-beta-static-in-browser-scores-species-and-places"><span class="header-section-number">18.1.1</span> Atlas (beta) — static, in-browser scores, species and places</h3>
+<p>The <a href="https://marinesensitivity.org/atlas/?ver=v2">Atlas</a> is a newer, third way to explore the MST, currently labelled <strong>beta</strong>: one static Svelte/MapLibre app with <strong>no application server of its own</strong> — scores, clicks, flowers and reports are computed in your browser by a DuckDB-WASM instance, though score tiles, zone outlines and the basemap still come from the project’s titiler, PMTiles and CARTO. It combines what Scores and Species do separately — mapping composite scores and mapping individual species — with a capability neither Shiny app has, <strong>Places</strong>: drawing, typing or uploading any area of interest (not only the built-in Program Areas) and getting the same scores, species tables and an exportable report for it, shareable entirely through the URL.</p>
+<p>See <a href="apps/atlas.html" class="quarto-xref"><span>Appendix B</span></a> for the full walkthrough, including how a drawn place is encoded into a shareable link.</p>
+</section>
+<section id="scores-mapper-of-aggregate-sensitivity-scores" class="level3" data-number="18.1.2">
+<h3 data-number="18.1.2" class="anchored" data-anchor-id="scores-mapper-of-aggregate-sensitivity-scores"><span class="header-section-number">18.1.2</span> Scores — mapper of aggregate sensitivity scores</h3>
 <p>The <a href="https://app.marinesensitivity.org/v2/scores/">Scores</a> application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:</p>
 <ul>
 <li><strong>Multi-resolution viewing</strong>: toggle between cell-level (0.05° grid) and Program Area aggregations</li>
@@ -836,10 +848,10 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Zone choropleth</strong> — polygon geometry from a static PMTiles archive published per geometry <strong>vintage</strong>, with per-zone fill colors pushed live into the paint spec from the release’s <code>zone_metric</code> (see <a href="software.html#fig-choropleth" class="quarto-xref">Figure&nbsp;<span>12.4</span></a>).</li>
 </ul>
 <p>Because every one of those is resolved from the manifest rather than hardcoded, switching <code>?ver=</code> switches all three together — including drawing the boundary vintage that release actually used.</p>
-<p>See <a href="apps/scores.html" class="quarto-xref"><span>Appendix B</span></a> for details.</p>
+<p>See <a href="apps/scores.html" class="quarto-xref"><span>Appendix C</span></a> for details.</p>
 </section>
-<section id="species-mapper-of-individual-species-distributions" class="level3" data-number="18.1.2">
-<h3 data-number="18.1.2" class="anchored" data-anchor-id="species-mapper-of-individual-species-distributions"><span class="header-section-number">18.1.2</span> Species — mapper of individual species distributions</h3>
+<section id="species-mapper-of-individual-species-distributions" class="level3" data-number="18.1.3">
+<h3 data-number="18.1.3" class="anchored" data-anchor-id="species-mapper-of-individual-species-distributions"><span class="header-section-number">18.1.3</span> Species — mapper of individual species distributions</h3>
 <p>The <a href="https://app.marinesensitivity.org/v2/species/">Species</a> application enables exploration of individual species distribution models. Key features include:</p>
 <ul>
 <li><strong>Species selection</strong>: search by common or scientific name, filter by species category</li>
@@ -849,7 +861,7 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Species info panel</strong>: ESA listing, IUCN Red List category, MMPA/MBTA protection flags, extinction risk score</li>
 <li><strong>Deep-linking</strong>: URL parameters support direct links to specific species</li>
 </ul>
-<p>See <a href="apps/species.html" class="quarto-xref"><span>Appendix C</span></a> for details.</p>
+<p>See <a href="apps/species.html" class="quarto-xref"><span>Appendix D</span></a> for details.</p>
 </section>
 </section>
 <section id="legacy-applications" class="level2" data-number="18.2">

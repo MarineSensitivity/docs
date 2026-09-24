@@ -584,7 +584,7 @@
     "href": "scoring.html#visualization",
     "title": "9  Scoring",
     "section": "9.7 Visualization",
-    "text": "9.7 Visualization\n\n9.7.1 Flower plot\nThe flower plot summarizes a zone’s sensitivity profile by category, after the Ocean Health Index (Halpern et al. 2012):\n\npetal length — the rescaled score (0–100) for that category; longer means more sensitive\npetal width — that category’s weight in the composite; wider means more influence\ncentre — the weighted mean across categories\n\n\n\n\n\n\n\nFigure 9.2: Flower plots for the BOEM Program Areas, showing ecoregionally rescaled sensitivity scores by species category.\n\n\n\nIt lets a reader see at a glance which ecological elements drive sensitivity in an area. The scores app implements an interactive version.\n\n\n9.7.2 Treemap\nThe treemap shows how individual species contribute to a score, nested first by extinction-risk category and then by taxonomy, with zoom down to single species.\n\n\n\n\n\n\nFigure 9.3: Treemap of species contributions to extinction-risk scores, organized by risk category and taxonomy.\n\n\n\n\n\n\n\n\n\nFigure 9.4: Zoomed treemap showing individual species within a risk category and taxonomic group.\n\n\n\n\n\n9.7.3 Score rasters\nCell-level scores are published as Cloud-Optimized GeoTIFFs, one per metric x subregion, with the manifest carrying each raster’s URL and its build-time rescale range. The map reads those directly.\nThis replaced a tile factory that ran SQL against the database on every tile request. The rasters were verified byte-identical to the factory’s output before the switch. They are stored without overviews deliberately: the renderer decimates from full resolution per request, so a pre-built pyramid would disagree with it at low zoom.\n\n\n9.7.4 Interactive maps\nTwo Shiny applications present the results, each rendering any published release from a ?ver= parameter rather than being frozen to one:\n\nScores — composite and per-category sensitivity by zone, with flower plots and treemaps (see Appendix B)\nSpecies — individual and merged distribution models with regulatory status (see Appendix C)\n\nAppend ?ver=v3 (or any published version) to view that release. See Chapter 18.",
+    "text": "9.7 Visualization\n\n9.7.1 Flower plot\nThe flower plot summarizes a zone’s sensitivity profile by category, after the Ocean Health Index (Halpern et al. 2012):\n\npetal length — the rescaled score (0–100) for that category; longer means more sensitive\npetal width — that category’s weight in the composite; wider means more influence\ncentre — the weighted mean across categories\n\n\n\n\n\n\n\nFigure 9.2: Flower plots for the BOEM Program Areas, showing ecoregionally rescaled sensitivity scores by species category.\n\n\n\nIt lets a reader see at a glance which ecological elements drive sensitivity in an area. The scores app implements an interactive version.\n\n\n9.7.2 Treemap\nThe treemap shows how individual species contribute to a score, nested first by extinction-risk category and then by taxonomy, with zoom down to single species.\n\n\n\n\n\n\nFigure 9.3: Treemap of species contributions to extinction-risk scores, organized by risk category and taxonomy.\n\n\n\n\n\n\n\n\n\nFigure 9.4: Zoomed treemap showing individual species within a risk category and taxonomic group.\n\n\n\n\n\n9.7.3 Score rasters\nCell-level scores are published as Cloud-Optimized GeoTIFFs, one per metric x subregion, with the manifest carrying each raster’s URL and its build-time rescale range. The map reads those directly.\nThis replaced a tile factory that ran SQL against the database on every tile request. The rasters were verified byte-identical to the factory’s output before the switch. They are stored without overviews deliberately: the renderer decimates from full resolution per request, so a pre-built pyramid would disagree with it at low zoom.\n\n\n9.7.4 Interactive maps\nTwo Shiny applications present the results, each rendering any published release from a ?ver= parameter rather than being frozen to one:\n\nScores — composite and per-category sensitivity by zone, with flower plots and treemaps (see Appendix C)\nSpecies — individual and merged distribution models with regulatory status (see Appendix D)\n\nAppend ?ver=v3 (or any published version) to view that release. See Chapter 18.",
     "crumbs": [
       "Science",
       "<span class='chapter-number'>9</span>  <span class='chapter-title'>Scoring</span>"
@@ -661,7 +661,7 @@
     "href": "software.html#software-overview",
     "title": "12  Software",
     "section": "",
-    "text": "server — a Docker Compose configuration orchestrating the reverse proxy, Shiny server, APIs, TiTiler raster serving and file server;\ndatabase — a columnar, embedded analytic database (DuckDB) as the single source of truth for species distributions, per-cell scores and derived per-zone metrics;\nworkflows — Quarto notebooks to ingest source datasets (AquaMaps, IUCN, NMFS/FWS, BirdLife, WoRMS, BOEM zones), merge taxonomic authorities, and compute scores that are written back to DuckDB;\nAPIs — a custom R plumber API for data requests, TiTiler serving the published COGs, and a searchable STAC API with one Item per model;\nlibraries — re-usable documented functions as the msens R package, including the version/manifest registry that lets one application render any release, and the tile-URL helpers the applications use;\napplications — two Shiny apps (scores, species) that combine COG raster layers with static PMTiles vector layers and live-pushed choropleth paint rules, each rendering any published release from ?ver=;\ndocumentation — this Quarto book with figures, tables, glossary and references in interactive HTML or static DOCX / PDF output.\n\n\n\n\n\n12.1.1 Interactive Applications\nWe have developed a series of interactive applications to explore the data and results of the MST project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the shiny package in R (Chang et al. 2024), which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.\n\n\n12.1.2 Overcoming Challenges with Large Spatial Data\nThe MST project incorporates many large spatial datasets that are problematic to render in a typical interactive application. For instance, the most common interactive mapping R package leaflet has a 4 MB limitation for displaying rasters (see “Large Raster Warning” in Raster Images • leaflet). Vectors (points, lines and polygons) get smoothed when containing many vertices, but contiguity between polygons is lost and rendering degrades depending on the user’s connection speed.\nTo work around these limitations we use a “cloud native” stack (see also the Cloud-Optimized Geospatial Formats Guide) that transfers only the pixels / features visible in the current viewport:\n\nRaster cell values are published as pre-rendered Cloud-Optimized GeoTIFFs and delivered as small 256×256 PNG tiles by TiTiler’s stock /cog routes, which range-read only the part of the COG a tile needs.\nVector polygons (Program Areas, Ecoregions, Planning Areas, …) are served as static PMTiles archives by the Caddy file server — a single archive per layer, range-read by the browser.\nChoropleth values (per-Program-Area scores) are pushed live from DuckDB into the PMTiles paint spec via a mapbox-gl match expression, so geometry stays static but color updates as the user changes metric / subregion.\n\nLet’s take a closer look at each.\n\n12.1.2.1 Raster: pre-rendered COGs\nEach metric (e.g. extrisk_mammal) resolves, in DuckDB’s cell_metric table, to a list of (cell_id, val) rows — one per grid cell. Materializing the full raster and shipping it to the browser is not viable (several GiB), so only the tiles in view are transferred.\nScores are published as one COG per metric × subregion, written by a publishing workflow into a content-addressed store. Each release’s manifest carries the href and the build-time rescale range, so the application reads them and hands the URL to TiTiler’s stock /cog endpoints — no custom endpoint, and no database query in the tile path (Figure 12.2).\nTwo details are load-bearing:\n\nNo overviews. The renderer decimates from full resolution on each request, so a pre-built pyramid would disagree with it at low zoom.\nThe object key includes the encoding, not just the payload. Rewriting an object at a stable URL once left GDAL’s /vsicurl serving a cached header describing bytes that no longer existed: fine at z5+, HTTP 500 at z2–z4.\n\nThis replaced a custom TiTiler factory that rendered each tile by executing a validated SELECT against DuckDB and looking the result up against a pre-baked cell-id COG, with Varnish caching each tile URL for seven days. That path is retired but kept behind a flag (see Chapter 16); the two were verified to produce the same picture before the switch.\n\n\n\n\n\n\n\n\n\n\nFigure 12.2: Sequence diagram: a cell-values raster layer is rendered on-the-fly by the custom msens TiTiler factory from the DuckDB source of truth. Varnish caches identical tile URLs for 7 days.\n\n\n\n\n\nBinary overlays — the “cells outside Program Areas” mask — are published the same way, as their own single-color rasters rather than as a query.\n\n\n12.1.2.2 Vector: static PMTiles served by Caddy\nFor polygon layers (Program Areas, Ecoregions, Planning Areas, protractions, blocks, aliquots) we build PMTiles archives offline via tippecanoe and publish them as static files on the server. A PMTiles archive is a single file with an internal directory structure that lets any HTTP client issue small range requests for individual tiles; no tile server process is required — Caddy’s static file handler is all we need (Figure 12.3).\n\n\n\n\n\n\n\n\n\n\nFigure 12.3: Sequence diagram: vector layers are served as static PMTiles archives through Caddy. Each tile is a byte-range read of the archive — no tile server process is in the path.\n\n\n\n\n\nThis is a deliberate simplification from the prior architecture which used PostgreSQL + PostGIS + pg_tileserv. For our workload — polygon layers that change only when the data is rebuilt — a compiled tile server and live database query engine add latency and operational complexity for no benefit over byte-range reads of a pre-baked archive. (PostgreSQL and pg_tileserv are now commented out of docker-compose.yml entirely and are not running; see Chapter 13.)\n\n\n12.1.2.3 Choropleth: live DuckDB values + static PMTiles geometry\nThe Program Area choropleth is the interesting hybrid case. The geometry (Program Area polygons keyed by programarea_key) is static — it comes from the same PMTiles file as the polygon outlines. But the fill color depends on the currently-selected metric + subregion, which means the per-Program-Area score has to come live from DuckDB.\nThe Shiny server handles this by querying zone_metric (pre-aggregated per-zone values), building a mapbox-gl match expression that maps programarea_key → fill_color, and pushing that paint rule to the map through mapgl’s Shiny proxy. No tiles are re-rendered; only the paint specification changes (Figure 12.4).\n\n\n\n\n\n\n\n\n\n\nFigure 12.4: Sequence diagram: the Program Area choropleth. Polygon geometry is static (PMTiles from Caddy file server); per-area fill values come live from DuckDB’s zone_metric table and are pushed into mapbox-gl’s paint spec via a match expression. Switching metrics updates only the paint rule, not the tiles.\n\n\n\n\n\n\n\n12.1.2.4 Data pipeline — how the source of truth is built\nThe serving paths above all sit downstream of one pipeline: ingest workflows write per-dataset distributions, the merge workflows combine them into one surface per taxon, the scoring workflows compute cell_metric and zone_metric, and the release workflow publishes the result as partitioned Parquet plus COGs, PMTiles and a STAC catalog. The whole thing is a targets graph generated from each notebook’s own metadata, so adding a dataset means adding a notebook (Figure 12.5). See Chapter 15.\n\n\n\n\n\n\n\n\n\n\nFigure 12.5: Data pipeline: ingest workflows populate DuckDB; scoring workflows compute cell_metric and zone_metric back into DuckDB; a one-shot COG regen and offline PMTiles build produce the derived artifacts the serving tier reads.\n\n\n\n\n\n\n\n\n12.1.3 Github Repositories\n\n\n\n\n\nrepo\ndescription\n\n\n\n\n.github\norganization README\n\n\nanalytics\nNA\n\n\napi\napplication programming interface (API) using R Plumber package\n\n\napp\napp for viewing and summarizing MST composite scores and individual species distributions\n\n\napps\nShiny applications\n\n\natlas\nMarine Sensitivity Atlas: one static browser app for scores, species, places and reports, reading the published marine-atlas release\n\n\ndocs\ndocumentation for BOEM’s offshore environmental sensitivity index products\n\n\nmanuscripts\nManuscripts with review of sensitivities by industry and receptors (species, habitats, human uses)\n\n\nMarineSensitivity.github.io\ndefault website\n\n\nmsens\nR library of functions for mapping marine sensitivities, sponsored by BOEM\n\n\nobjectives\nrepository for issues spanning multiple repositories and doing big picture roadmapping\n\n\nserver\nserver setup for R Shiny apps, RStudio IDE, Caddy web server, h3 TiTiler service and Varnish cache\n\n\nstac-sdm\nSTAC extension for Species Distribution Models (SDMs)\n\n\nworkflows\nscripts for testing data analytics and visualization as well as production workflows\n\n\n\n\n\n\n\n12.1.4 Software Components\n\n\n\n\n\n\n\n\n\n\nAPIs\n\n\napplication programming interfaces (APIs)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApps\n\n\ninteractive applications using Shiny\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDatabase\n\n\nDuckDB as the authoritative store for species distribution models and derived scores\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDocs\n\n\ntechnical documentation\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLibraries\n\n\ndocumented functions as an R package\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nServer\n\n\nserver software configuration using Docker\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorkflows\n\n\nscripts for exploring plus production workflows\n\n\n\n\n\n\n\n\n\n\nNo matching items\n\n\n\n\n\n\nChang, Winston, Joe Cheng, JJ Allaire, et al. 2024. Shiny: Web Application Framework for r. https://CRAN.R-project.org/package=shiny.\n\n\nLowndes, Julia S. Stewart, Benjamin D. Best, Courtney Scarborough, et al. 2017. “Our Path to Better Science in Less Time Using Open Data Science Tools.” Nature Ecology & Evolution 1 (6): 0160. https://doi.org/10.1038/s41559-017-0160.\n\n\nMaitner, Brian, Paul Efren Santos Andrade, Luna Lei, et al. 2024. “Code Sharing in Ecology and Evolution Increases Citation Rates but Remains Uncommon.” Ecology and Evolution 14 (8): e70030. https://doi.org/10.1002/ece3.70030.\n\n\nWilkinson, Mark D., Michel Dumontier, IJsbrand Jan Aalbersberg, et al. 2016. “The FAIR Guiding Principles for Scientific Data Management and Stewardship.” Scientific Data 3 (1): 160018. https://doi.org/10.1038/sdata.2016.18.",
+    "text": "server — a Docker Compose configuration orchestrating the reverse proxy, Shiny server, APIs, TiTiler raster serving and file server;\ndatabase — a columnar, embedded analytic database (DuckDB) as the single source of truth for species distributions, per-cell scores and derived per-zone metrics;\nworkflows — Quarto notebooks to ingest source datasets (AquaMaps, IUCN, NMFS/FWS, BirdLife, WoRMS, BOEM zones), merge taxonomic authorities, and compute scores that are written back to DuckDB;\nAPIs — a custom R plumber API for data requests, TiTiler serving the published COGs, and a searchable STAC API with one Item per model;\nlibraries — re-usable documented functions as the msens R package, including the version/manifest registry that lets one application render any release, and the tile-URL helpers the applications use;\napplications — two Shiny apps (scores, species) that combine COG raster layers with static PMTiles vector layers and live-pushed choropleth paint rules, each rendering any published release from ?ver=;\ndocumentation — this Quarto book with figures, tables, glossary and references in interactive HTML or static DOCX / PDF output.\n\n\n\n\n\n12.1.1 Interactive Applications\nWe have developed a series of interactive applications to explore the data and results of the MST project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the shiny package in R (Chang et al. 2024), which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.\n\n\n12.1.2 Overcoming Challenges with Large Spatial Data\nThe MST project incorporates many large spatial datasets that are problematic to render in a typical interactive application. For instance, the most common interactive mapping R package leaflet has a 4 MB limitation for displaying rasters (see “Large Raster Warning” in Raster Images • leaflet). Vectors (points, lines and polygons) get smoothed when containing many vertices, but contiguity between polygons is lost and rendering degrades depending on the user’s connection speed.\nTo work around these limitations we use a “cloud native” stack (see also the Cloud-Optimized Geospatial Formats Guide) that transfers only the pixels / features visible in the current viewport:\n\nRaster cell values are published as pre-rendered Cloud-Optimized GeoTIFFs and delivered as small 256×256 PNG tiles by TiTiler’s stock /cog routes, which range-read only the part of the COG a tile needs.\nVector polygons (Program Areas, Ecoregions, Planning Areas, …) are served as static PMTiles archives by the Caddy file server — a single archive per layer, range-read by the browser.\nChoropleth values (per-Program-Area scores) are pushed live from DuckDB into the PMTiles paint spec via a mapbox-gl match expression, so geometry stays static but color updates as the user changes metric / subregion.\n\nLet’s take a closer look at each.\n\n12.1.2.1 Raster: pre-rendered COGs\nEach metric (e.g. extrisk_mammal) resolves, in DuckDB’s cell_metric table, to a list of (cell_id, val) rows — one per grid cell. Materializing the full raster and shipping it to the browser is not viable (several GiB), so only the tiles in view are transferred.\nScores are published as one COG per metric × subregion, written by a publishing workflow into a content-addressed store. Each release’s manifest carries the href and the build-time rescale range, so the application reads them and hands the URL to TiTiler’s stock /cog endpoints — no custom endpoint, and no database query in the tile path (Figure 12.2).\nTwo details are load-bearing:\n\nNo overviews. The renderer decimates from full resolution on each request, so a pre-built pyramid would disagree with it at low zoom.\nThe object key includes the encoding, not just the payload. Rewriting an object at a stable URL once left GDAL’s /vsicurl serving a cached header describing bytes that no longer existed: fine at z5+, HTTP 500 at z2–z4.\n\nThis replaced a custom TiTiler factory that rendered each tile by executing a validated SELECT against DuckDB and looking the result up against a pre-baked cell-id COG, with Varnish caching each tile URL for seven days. That path is retired but kept behind a flag (see Chapter 16); the two were verified to produce the same picture before the switch.\n\n\n\n\n\n\n\n\n\n\nFigure 12.2: Sequence diagram: a cell-values raster layer is rendered on-the-fly by the custom msens TiTiler factory from the DuckDB source of truth. Varnish caches identical tile URLs for 7 days.\n\n\n\n\n\nBinary overlays — the “cells outside Program Areas” mask — are published the same way, as their own single-color rasters rather than as a query.\n\n\n12.1.2.2 Vector: static PMTiles served by Caddy\nFor polygon layers (Program Areas, Ecoregions, Planning Areas, protractions, blocks, aliquots) we build PMTiles archives offline via tippecanoe and publish them as static files on the server. A PMTiles archive is a single file with an internal directory structure that lets any HTTP client issue small range requests for individual tiles; no tile server process is required — Caddy’s static file handler is all we need (Figure 12.3).\n\n\n\n\n\n\n\n\n\n\nFigure 12.3: Sequence diagram: vector layers are served as static PMTiles archives through Caddy. Each tile is a byte-range read of the archive — no tile server process is in the path.\n\n\n\n\n\nThis is a deliberate simplification from the prior architecture which used PostgreSQL + PostGIS + pg_tileserv. For our workload — polygon layers that change only when the data is rebuilt — a compiled tile server and live database query engine add latency and operational complexity for no benefit over byte-range reads of a pre-baked archive. (PostgreSQL and pg_tileserv are now commented out of docker-compose.yml entirely and are not running; see Chapter 13.)\n\n\n12.1.2.3 Choropleth: live DuckDB values + static PMTiles geometry\nThe Program Area choropleth is the interesting hybrid case. The geometry (Program Area polygons keyed by programarea_key) is static — it comes from the same PMTiles file as the polygon outlines. But the fill color depends on the currently-selected metric + subregion, which means the per-Program-Area score has to come live from DuckDB.\nThe Shiny server handles this by querying zone_metric (pre-aggregated per-zone values), building a mapbox-gl match expression that maps programarea_key → fill_color, and pushing that paint rule to the map through mapgl’s Shiny proxy. No tiles are re-rendered; only the paint specification changes (Figure 12.4).\n\n\n\n\n\n\n\n\n\n\nFigure 12.4: Sequence diagram: the Program Area choropleth. Polygon geometry is static (PMTiles from Caddy file server); per-area fill values come live from DuckDB’s zone_metric table and are pushed into mapbox-gl’s paint spec via a match expression. Switching metrics updates only the paint rule, not the tiles.\n\n\n\n\n\n\n\n12.1.2.4 Data pipeline — how the source of truth is built\nThe serving paths above all sit downstream of one pipeline: ingest workflows write per-dataset distributions, the merge workflows combine them into one surface per taxon, the scoring workflows compute cell_metric and zone_metric, and the release workflow publishes the result as partitioned Parquet plus COGs, PMTiles and a STAC catalog. The whole thing is a targets graph generated from each notebook’s own metadata, so adding a dataset means adding a notebook (Figure 12.5). See Chapter 15.\n\n\n\n\n\n\n\n\n\n\nFigure 12.5: Data pipeline: ingest workflows populate DuckDB; scoring workflows compute cell_metric and zone_metric back into DuckDB; a one-shot COG regen and offline PMTiles build produce the derived artifacts the serving tier reads.\n\n\n\n\n\n\n\n\n12.1.3 Github Repositories\n\n\n\n\n\nrepo\ndescription\n\n\n\n\n.github\norganization README\n\n\nanalytics\nNA\n\n\napi\napplication programming interface (API) using R Plumber package\n\n\napp\napp for viewing and summarizing MST composite scores and individual species distributions\n\n\napps\nShiny applications\n\n\natlas\nMarine Sensitivity Atlas: one static browser app for scores, species, places and reports, reading the published marine-atlas release\n\n\ndocs\ndocumentation for BOEM’s offshore environmental sensitivity index products\n\n\nmanuscripts\nManuscripts with review of sensitivities by industry and receptors (species, habitats, human uses)\n\n\nMarineSensitivity.github.io\ndefault website\n\n\nmsens\nR library of functions for mapping marine sensitivities, sponsored by BOEM\n\n\nobjectives\nrepository for issues spanning multiple repositories and doing big picture roadmapping\n\n\nserver\nserver setup for R Shiny apps, RStudio IDE, Caddy web server, h3 TiTiler service and Varnish cache\n\n\nstac-sdm\nSTAC extension for Species Distribution Models (SDMs)\n\n\nworkflows\nscripts for testing data analytics and visualization as well as production workflows\n\n\n\n\n\n\n\n12.1.4 Software Components\n\n\n\n\n\n\n\n\n\n\nAPIs\n\n\napplication programming interfaces (APIs)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nApps\n\n\ninteractive applications: two Shiny apps plus the static, in-browser Atlas\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDatabase\n\n\nDuckDB as the authoritative store for species distribution models and derived scores\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDocs\n\n\ntechnical documentation\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLibraries\n\n\ndocumented functions as an R package\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nServer\n\n\nserver software configuration using Docker\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorkflows\n\n\nscripts for exploring plus production workflows\n\n\n\n\n\n\n\n\n\n\nNo matching items\n\n\n\n\n\n\nChang, Winston, Joe Cheng, JJ Allaire, et al. 2024. Shiny: Web Application Framework for r. https://CRAN.R-project.org/package=shiny.\n\n\nLowndes, Julia S. Stewart, Benjamin D. Best, Courtney Scarborough, et al. 2017. “Our Path to Better Science in Less Time Using Open Data Science Tools.” Nature Ecology & Evolution 1 (6): 0160. https://doi.org/10.1038/s41559-017-0160.\n\n\nMaitner, Brian, Paul Efren Santos Andrade, Luna Lei, et al. 2024. “Code Sharing in Ecology and Evolution Increases Citation Rates but Remains Uncommon.” Ecology and Evolution 14 (8): e70030. https://doi.org/10.1002/ece3.70030.\n\n\nWilkinson, Mark D., Michel Dumontier, IJsbrand Jan Aalbersberg, et al. 2016. “The FAIR Guiding Principles for Scientific Data Management and Stewardship.” Scientific Data 3 (1): 160018. https://doi.org/10.1038/sdata.2016.18.",
     "crumbs": [
       "Software",
       "<span class='chapter-number'>12</span>  <span class='chapter-title'>Software</span>"
@@ -925,7 +925,7 @@
     "href": "apps.html",
     "title": "18  Apps",
     "section": "",
-    "text": "18.1 Current Applications\nThe MST provides two interactive web applications, plus several legacy applications from earlier development phases.\nThese tools allow stakeholders, scientists, and decision-makers to understand the underlying components contributing to an area’s sensitivity to offshore energy development, supporting better planning and impact assessment.",
+    "text": "18.1 Current Applications\nThe MST provides three interactive web applications — two Shiny apps (Scores, Species) plus a newer, static, in-browser Atlas — along with several legacy applications from earlier development phases.\nThese tools allow stakeholders, scientists, and decision-makers to understand the underlying components contributing to an area’s sensitivity to offshore energy development, supporting better planning and impact assessment.",
     "crumbs": [
       "Software",
       "<span class='chapter-number'>18</span>  <span class='chapter-title'>Apps</span>"
@@ -936,7 +936,7 @@
     "href": "apps.html#current-applications",
     "title": "18  Apps",
     "section": "",
-    "text": "18.1.1 Scores — mapper of aggregate sensitivity scores\nThe Scores application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:\n\nMulti-resolution viewing: toggle between cell-level (0.05° grid) and Program Area aggregations\nStudy area selection: focus on specific Program Areas or subregions\nLayer selection: view individual species category scores or composite metrics\nFlower plot: interactive summary showing scores by species category with weighted center value\nSpecies table: sortable table of species present in selected area with extinction risk details\nTreemap: hierarchical view of species contributions to sensitivity\nCSV export: download data for selected area or species\n\nUnder the hood the Scores app composes three kinds of map layer (Figure 12.1):\n\nScore raster — a pre-rendered COG per metric × subregion, whose URL and rescale range come straight from the release manifest. The browser fetches only the tiles intersecting its viewport; no full-raster transfer on load (see Figure 12.2).\n“Cells outside Program Areas” mask — a single-color overlay published the same way.\nZone choropleth — polygon geometry from a static PMTiles archive published per geometry vintage, with per-zone fill colors pushed live into the paint spec from the release’s zone_metric (see Figure 12.4).\n\nBecause every one of those is resolved from the manifest rather than hardcoded, switching ?ver= switches all three together — including drawing the boundary vintage that release actually used.\nSee Appendix B for details.\n\n\n18.1.2 Species — mapper of individual species distributions\nThe Species application enables exploration of individual species distribution models. Key features include:\n\nSpecies selection: search by common or scientific name, filter by species category\nModel display: view merged models or individual source dataset layers\nRepresentation toggle: compare the native-resolution original with the interpolated surface used in scoring\nMasking toggle: compare the expert-range-constrained merged model with the unconstrained suitability\nSpecies info panel: ESA listing, IUCN Red List category, MMPA/MBTA protection flags, extinction risk score\nDeep-linking: URL parameters support direct links to specific species\n\nSee Appendix C for details.",
+    "text": "18.1.1 Atlas (beta) — static, in-browser scores, species and places\nThe Atlas is a newer, third way to explore the MST, currently labelled beta: one static Svelte/MapLibre app with no application server of its own — scores, clicks, flowers and reports are computed in your browser by a DuckDB-WASM instance, though score tiles, zone outlines and the basemap still come from the project’s titiler, PMTiles and CARTO. It combines what Scores and Species do separately — mapping composite scores and mapping individual species — with a capability neither Shiny app has, Places: drawing, typing or uploading any area of interest (not only the built-in Program Areas) and getting the same scores, species tables and an exportable report for it, shareable entirely through the URL.\nSee Appendix B for the full walkthrough, including how a drawn place is encoded into a shareable link.\n\n\n18.1.2 Scores — mapper of aggregate sensitivity scores\nThe Scores application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:\n\nMulti-resolution viewing: toggle between cell-level (0.05° grid) and Program Area aggregations\nStudy area selection: focus on specific Program Areas or subregions\nLayer selection: view individual species category scores or composite metrics\nFlower plot: interactive summary showing scores by species category with weighted center value\nSpecies table: sortable table of species present in selected area with extinction risk details\nTreemap: hierarchical view of species contributions to sensitivity\nCSV export: download data for selected area or species\n\nUnder the hood the Scores app composes three kinds of map layer (Figure 12.1):\n\nScore raster — a pre-rendered COG per metric × subregion, whose URL and rescale range come straight from the release manifest. The browser fetches only the tiles intersecting its viewport; no full-raster transfer on load (see Figure 12.2).\n“Cells outside Program Areas” mask — a single-color overlay published the same way.\nZone choropleth — polygon geometry from a static PMTiles archive published per geometry vintage, with per-zone fill colors pushed live into the paint spec from the release’s zone_metric (see Figure 12.4).\n\nBecause every one of those is resolved from the manifest rather than hardcoded, switching ?ver= switches all three together — including drawing the boundary vintage that release actually used.\nSee Appendix C for details.\n\n\n18.1.3 Species — mapper of individual species distributions\nThe Species application enables exploration of individual species distribution models. Key features include:\n\nSpecies selection: search by common or scientific name, filter by species category\nModel display: view merged models or individual source dataset layers\nRepresentation toggle: compare the native-resolution original with the interpolated surface used in scoring\nMasking toggle: compare the expert-range-constrained merged model with the unconstrained suitability\nSpecies info panel: ESA listing, IUCN Red List category, MMPA/MBTA protection flags, extinction risk score\nDeep-linking: URL parameters support direct links to specific species\n\nSee Appendix D for details.",
     "crumbs": [
       "Software",
       "<span class='chapter-number'>18</span>  <span class='chapter-title'>Apps</span>"
@@ -1059,123 +1059,303 @@
     ]
   },
   {
-    "objectID": "apps/scores.html",
-    "href": "apps/scores.html",
-    "title": "Appendix A — Scores — mapper of aggregate sensitivity scores",
+    "objectID": "apps/atlas.html",
+    "href": "apps/atlas.html",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
     "section": "",
-    "text": "B Scores",
+    "text": "B Atlas",
     "crumbs": [
       "Appendices",
       "Applications (Current)",
-      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#overview",
+    "href": "apps/atlas.html#overview",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.1 Overview",
+    "text": "B.1 Overview\nThe Atlas (https://marinesensitivity.org/atlas/?ver=v4b) is a third, newer way to explore the MST, currently labelled beta: one static web app, built with Svelte and MapLibre, that runs entirely in the browser. Where the Scores and Species Shiny apps are server-rendered R processes, the Atlas has no application server of its own: scores, flowers, tables and reports are computed in your browser, by a DuckDB instance compiled to WebAssembly (DuckDB-WASM) querying the release’s published Parquet directly over HTTPS. It still depends on a few other services for what a browser cannot compute itself — score and species map tiles come from the project’s titiler, zone outlines from PMTiles on S3, and the basemap from CARTO — but there is no Atlas-specific backend.\nOn the public host the release is a query parameter (?ver=v7), resolved client-side against the published versions.json and defaulting to the promoted release when absent. A restricted pre-release is meant to be served the same way the preview Scores and Species apps are, at https://preview.marinesensitivity.org/{ver}/atlas/ (the version as the URL path, since Cloudflare Access scopes its reviewer policies by path, never by query) — this route is planned, not yet live; see Known Limitations below.\nFigure B.1 shows the default Scores view: the 0.05° cell grid colored by a composite sensitivity score across U.S. waters, dark theme (the app’s default), with the tool rail on the left, the Layers panel open by default, and the basemap’s attribution in the lower-left corner.\n\n\n\n\n\n\nFigure B.1: The Atlas, Scores lens, default view (desktop, dark theme).\n\n\n\nDesktop vs. phone layout. On a wide viewport the five rail tools open a single dockable panel that floats over the map; on a phone the identical five tools sit in a labelled bottom tab bar, and the panel becomes a bottom sheet with three heights (peek, half, full). Figure B.2 shows the phone layout, and Figure B.3 its top bar’s More (⋯) menu.\n\n\n\n\n\n\n\n\n\nFigure B.2: Phone: default view.\n\n\n\n\n\n\n\n\n\n\n\nFigure B.3: Phone: the top bar’s More (⋯) menu.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#quick-start",
+    "href": "apps/atlas.html#quick-start",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.2 Quick start",
+    "text": "B.2 Quick start\nDesktop:\n\nOpen Places, and either choose a Program Area from its list or draw a Rectangle (click, move, click, then Done).\nSelect the drawn place in the list to see its coverage note, flower and component table, and (on request) its species table (a Program Area’s row already shows its composite).\nRename it inline if you like.\nPlaces › Share › Copy link — the fastest way to hand someone the same place.\nPlaces › Report for a printable, downloadable document (Print, HTML, ZIP or Word).\n\nPhone: the tool rail is the bottom tab bar; use the Program Area chooser or Enter coordinates rather than drawing, and the file picker rather than dropping a file on the map (that gesture needs a desktop pointer).",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#getting-around",
+    "href": "apps/atlas.html#getting-around",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.3 Getting around",
+    "text": "B.3 Getting around\nThe top bar, left to right on desktop: the MST mark and title; a release chip that opens the version picker; a Scores | Species lens switch; a search field; then, right-aligned, Share, Report, a (?) Help menu (Take a tour, keyboard shortcuts, a Docs link), a Feedback button, an (i) About button, and a sun/moon theme toggle. On a phone (below 900 px) the title collapses to the mark, and Share, Report, Help, Feedback, About and the theme toggle fold into one More (⋯) button beside a search button; below 381 px the mark hides too. The keyboard-shortcut list is desktop-only.\nThe tool rail is five controls, always in the same order, on every viewport: Layers · Places · Flower plot · Table · Report. In the Species lens the Flower control fades in place — it has no meaning for a single species — but stays visible with a tooltip explaining why.\nThe panel that a rail tool opens is one dockable surface: dock left, right or bottom; resize by dragging its map-facing edge or with arrow keys; maximize to the whole stage; or collapse to a small labelled pill (clicking any rail tool re-opens it). Its dock/size/collapsed state is chrome, remembered per viewport, never written into the shareable URL. On a phone the same panel is the bottom sheet, with peek/half/full detents. On a desktop the map’s legend floats in a corner clear of the panel, on whichever side it is docked, and hides while the panel is maximized; on a phone it is a compact Legend chip above the sheet that opens the full legend, moving into the sheet’s own header at full height.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#sec-atlas-scores",
+    "href": "apps/atlas.html#sec-atlas-scores",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.4 Scores lens",
+    "text": "B.4 Scores lens\nThe Scores lens shows the composite, extinction-risk-weighted score for every 0.05° cell (or, aggregated, every Program Area) of U.S. waters. Opening Layers (Figure B.4) expands the Data row into this lens’s own controls — study area, spatial unit, the score layer, color palette, a Sphere switch (globe vs. flat projection), and a Cells outside Program Areas switch where the release publishes that overlay — above the rest of the layer stack, listed top to bottom: Selection (pinned at the top), Zone outlines, Data, Place labels, Roads & buildings, Boundaries, Bathymetry (present but disabled until a relief layer is published) and Land & water at the bottom. Every row’s visibility and opacity can be changed, and most can be reordered — Data can never move above Zone outlines, so an opaque score raster can never hide the boundaries it is measured against — and Reset layers restores the default stack.\n\n\n\n\n\n\nFigure B.4: The Layers panel docked, with Place labels moved above Data (one “move up” click) to show the reorder feature, and Data expanded to its study area, spatial units, layer and palette controls.\n\n\n\nClicking a cell or a Program Area selects it: the URL gains a sel=cell:&lt;id&gt; or sel=zone:&lt;unit&gt;:&lt;key&gt; token, which the Flower plot and Table tools then describe (Section B.8). A click on land or outside the scored area shows “No scored cell here” with its coordinates and leaves the selection unchanged.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#species-lens",
+    "href": "apps/atlas.html#species-lens",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.5 Species lens",
+    "text": "B.5 Species lens\nSwitching to Species turns the top-bar search into a species picker (common or scientific name, with an “Only species in US waters” checkbox), and replaces the Data row’s contents inside Layers with the species card: the merged model as a filled pill marked ✓ with a gold edge, plus one pill per contributing input dataset marked ▶ with a grey edge. An input this release published no surface for renders as a struck-through, non-interactive pill — never simply omitted. Where the selected input publishes both, one representation toggle appears (“Original” vs. “Interpolated,” or “Delivered” vs. “As ingested” for a dataset already on the scoring grid). Selecting a species flies the map to that model’s extent; clicking it then returns that cell’s modelled value, or “No scored cell here” outside the model’s range. The legend floats in a corner of the map (a legend chip on a phone), titled with the species’ scientific name and its 1–100 range.\n\n\n\n\n\n\nFigure B.5: The Species lens’ card for the leatherback turtle (Dermochelys coriacea): the merged model with every one of its six inputs struck through — a v7 release-side gap, not the app’s design (see Known Limitations).",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#sec-atlas-places",
+    "href": "apps/atlas.html#sec-atlas-places",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.6 Places",
+    "text": "B.6 Places\nPlaces is the tool the two Shiny apps do not have: any area you outline gets the same scores and species results the built-in Program Areas get. The empty state reads exactly: “No places yet. Choose a Program Area above, turn on pick mode and click one on the map, draw a shape, enter coordinates, or drop a file on the map.”\n\nPick a Program Area. Turning on pick mode and clicking only highlights it — Ctrl/Cmd-click, Shift-click or long-press to highlight several — and “Add to places (n)” is the button that actually adds it; several picks become one place. Or use the panel’s own Program Area chooser, which needs no pointer and works on a phone. Program Areas are shown by their bare key (e.g. GEO) today; a release that publishes names shows “St. George Basin (GEO)” instead.\nDraw a Polygon, Rectangle or Circle: click, move, click for each vertex or corner (not a drag), then press Done — a polygon also closes when you click its first vertex again, or press Enter. A circle is stored as a 64-sided polygon. Dragging a finished shape’s corner does not edit it (see Known limitations).\nEnter coordinates — the keyboard/screen-reader alternative to drawing, in a modal dialog: a bounding box (xmin, ymin, xmax, ymax), a list of lon, lat vertices one per line, or pasted WKT/GeoJSON. A refusal is shown verbatim — what went wrong, why, and how to fix it.\nUpload a file, through the picker or by dropping it anywhere on the map: “GeoJSON, zipped shapefile, KML, GPX, FlatGeobuf, WKT or GeoPackage (not yet), up to 10 MB.” GeoPackage cannot actually be read yet — every .gpkg refuses immediately, reading “GeoPackage is not supported yet”; export the layer as GeoJSON or a zipped shapefile instead. Other rules that cause a refusal: polygons only (points and lines are refused, never buffered); a shapefile needs its .prj (projected coordinates are refused); at most 50,000 vertices; a zipped shapefile at most 50 MB uncompressed and 200 entries; and the shape must touch the U.S. study area. A file with several features becomes one place per feature (up to 20, named after the file and numbered) or one merged place, your choice.\n\n\n\n\n\n\n\nFigure B.6: The Places panel with two places, both analysed: a Program Area (“ALA,” 28.3 composite) and a selected, entered-coordinates place (“bounding box,” 100% coverage, 42.7 composite) showing its coverage note and flower below.\n\n\n\n\n\n\n\n\n\nFigure B.7: The “Enter coordinates” dialog, showing a refusal for input that matches none of the three accepted shapes.\n\n\n\nEach row shows its area and, as soon as it is analysed, its data coverage percentage and composite score directly in the row — for a drawn, typed or uploaded place the same analysis runs for every such place in the list, not only the one currently selected; a Program Area row shows its own published composite the same way (e.g. “ALA … 28.3 composite”). Row actions: an inline rename (≤ 60 characters, drawn/uploaded places only), zoom to, duplicate (drawn/uploaded only), delete, and Open in report. Selecting a drawn, typed or uploaded place additionally expands its results panel below the list — a Program Area place does not get one here: to see its flower and species, click it on the map (spatial unit: Program Areas) or choose it in Table › Zones instead (Section B.8). The results panel shows a coverage note (“N% of this place is inside the US study area (a of b cells)”, or “This place is outside US waters here: no scores can be computed”), a flower plot, a component table, and — on request, with a “Loading species needs N tiles, about X MB. Continue?” prompt — a species table. Show analysis cells paints the analysed 0.05° cells (up to 20,000 of them). The list caps at 20 places (“n / 20 places”); Recent (this browser only) offers to add a removed place back. The footer holds Share, Download places (GeoJSON) and Report, each disabled with zero places.\nTwo different Share buttons. The top-bar Share simply copies the current address bar to the clipboard — no dialog, no summary, no length check. Places › Share opens the real dialog described next, and is the one to use whenever places are involved.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#sec-atlas-place-links",
+    "href": "apps/atlas.html#sec-atlas-place-links",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.7 How places are stored in the link",
+    "text": "B.7 How places are stored in the link\nA place never lives on a server: it is encoded directly into the URL fragment (#pl=, never the query string, so it is never sent to a server or a referrer), so opening a shared link reproduces the sender’s exact area. Every analysis runs on the decoded geometry, never the geometry as drawn, so the numbers can never diverge between sender and recipient. Places are joined with ~:\n#pl=z.pa.GAA~g1.Gulf%20box.EAMBAQSf_grYrQPQDwAA0A_PDwA\n(the decoded form; the address bar itself percent-encodes ~ and other reserved characters)\n\nz.&lt;set&gt;.&lt;key&gt;[,&lt;key&gt;...] — a reference to a built-in zone (pa Program Area, pl Planning Area, er ecoregion, sr subregion); its geometry comes from the release’s own PMTiles.\ng1.&lt;name&gt;.&lt;base64url bytes&gt; — a drawn, typed or uploaded polygon, carried inline as a compact binary encoding (see “For developers” below).\nu.&lt;name&gt;.&lt;8-hex-digit digest&gt; — the fallback for a place too large to carry (see below): only a name and a digest travel.\n\n\n\n\n\n\n\nNoteFor developers: the g1 byte layout\n\n\n\n\n\nEach ring is quantized to a fixed precision (3 decimal digits, ~110 m — 4 digits when the place’s bounding box is under 0.5° in both directions), delta-encoded vertex-to-vertex as zigzag varints running across rings and polygons, and base64url-encoded with no general-purpose compression (delta varints are already dense). Longitudes are stored unwrapped, so a place crossing the antimeridian round-trips without a special case. An R decoder in msens is in preparation; the shared test fixture (tests/fixtures/place_codec.json) is written to match it byte for byte.\n\n\n\nThe link’s length is checked only when you open Places › Share. Adding a place, or copying the top-bar Share link, carries the unsimplified geometry (already quantized to 3–4 decimals) regardless of length. In that dialog: up to 2,000 characters silently; between 2,000 and 8,000 a note reads “This link is over 2,000 characters — some chat apps and older browsers truncate very long links,” with Copy anyway; only above 8,000 does the Douglas-Peucker ladder run — 0.001° doubling to 0.016°, a rung accepted only while the area changes by no more than 1% and every ring stays simple — aiming to bring the link back under 2,000 characters; it stops at the first rung that does, or, if none does, uses the coarsest accepted rung provided that still fits under 8,000. This is never silent: the dialog shows the before/after (vertices, area change, cells, Figure B.9), and you click “Simplify and update the numbers” to accept it — which is also what rewrites #pl=, so the copied link and the displayed numbers can never disagree. If even the coarsest rung is still too long, Copy link anyway copies every drawn, typed or uploaded place (zone places are unaffected) as a u. token instead — your own address bar and session keep the real shapes; the recipient of that copied link sees a named row with no results and a “not analysed yet” chip, never a prompt. The dialog’s own advice at that point is to download the place as GeoJSON and send that alongside the link. A single small rectangle almost always fits in the silent budget; that is not guaranteed for several places together, or a long base URL.\n\n\n\n\n\n\nFigure B.8: The Share dialog: what the link carries and its exact length.\n\n\n\n\n\n\n\n\n\nFigure B.9: The Share dialog’s simplification ladder for an oversized place: before/after vertex count, area change and cell count, with a “Simplify and update the numbers” button.\n\n\n\nThe rest of the view travels the same URL-is-the-state way, in the query string: ver, lens, lyr/sp, unit, area, map (camera), pal, sel, layers (the stack deltas from Section B.4), theme and tour — each written only when it differs from its default.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#sec-atlas-flower-table",
+    "href": "apps/atlas.html#sec-atlas-flower-table",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.8 Flower plot and Table",
+    "text": "B.8 Flower plot and Table\nFlower plot and Table are Scores-lens tools for a clicked cell or Program Area; in the Species lens, Table is a placeholder, and a drawn Place’s flower and species table live in the Places results panel instead (Section B.6), not here.\nThe flower draws one equal-width annular petal per score component, scaled to its rescaled score; the hub shows the plain mean of the components present (not a weighted mean). Since 0.10.41 the values also list in a real table (swatch, component, score, and a Mean row) below the plot.\n\n\n\n\n\n\nFigure B.10: The Flower plot for a clicked cell in the Gulf of America: one petal per score component, and the values table with a Mean row below it.\n\n\n\nTable opens three tabs: a sortable species table (Category, Taxon, Scientific name, Common name, ER code, ER score, Model, MMPA, MBTA, Area (km²), Avg. suitability, % of category — ESA and IUCN status are folded into ER code), a zones table (every Program Area ranked by the current layer, with “report on selected” once some are ticked), and a composition treemap (one box per species category, sized by suitability × extinction risk × area). Only the species table has the phone’s compact default columns and a Columns control; both tables get sticky headers/first column and horizontal scrolling that never spills the panel. Only the species table’s Download CSV exports it; the zones table and the composition treemap have no export yet. A drawn place’s Components and Species tables in the Places results panel each have their own working Export CSV.\n\n\n\n\n\n\nFigure B.11: The Table tool’s species tab.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#report",
+    "href": "apps/atlas.html#report",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.9 Report",
+    "text": "B.9 Report\nReport reports every place currently in the link (#pl=); with no places, it reports the single selected Program Area; with neither, it shows a chooser. A row’s own Open in report reports just that row’s place. The document renders progressively as its data arrives:\n\na header band — mark, release chip, generation time, permalink and QR code (a restricted release also gets a PREVIEW banner and print watermark);\nan introduction;\na collapsible Parameters section (kind, keys or vertices, area, cell count, study-area share, token);\na map — interactive on screen; a static snapshot only in print and the HTML export;\none flower plot per place, under “Plot of Scores”;\na Table of Scores — component and overall scores, with a footnote when a component covers under 99% of the area, or is missing entirely because the release’s own 5% coverage floor dropped it;\na Summary of Species per place (a category × count cross-tab, plus the top 20 by score);\nSources and Method, with the release’s own citations — each query behind these numbers is a parity-tested twin (npm run parity, max|Δ| &lt; 1e-9) of an msens R function, though “Reproduce in R” itself is not yet usable: it prints calls to msens::place_decode(), cells_in_polygon_grid() and scores_for_cells() that exist only on an unreleased msens branch;\na Provenance section (release, status/access, app build SHA, DuckDB-WASM version, tables read, SQL run).\n\n\n\n\n\n\n\nFigure B.12: The report document’s header band and introduction: the MMA seal, a permalink and QR code, Parameters, and the start of the interactive map.\n\n\n\n\n\n\n\n\n\nFigure B.13: The report’s Table of Scores and the start of the Summary of Species, for the same Program Area.\n\n\n\nFour exports, all built client-side: Print (the browser’s dialog; roughly five Letter pages); Download HTML (one self-contained file — the flowers stay inline SVG, only the map is an embedded PNG); a data package (ZIP) — README.md, CITATION.md, provenance.json, places.geojson (drawn/uploaded places only, not zone places), a scores_*.csv/species_*.csv pair per place, and query/*.sql; and a Word document (.docx) — the same tables as coded Word styles, plus the map and a rasterized flower per place.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#accessibility-and-performance-notes",
+    "href": "apps/atlas.html#accessibility-and-performance-notes",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.10 Accessibility and performance notes",
+    "text": "B.10 Accessibility and performance notes\nThe Atlas ships a written WCAG 2.1 conformance note and a performance budget report in its own repository. As of the note’s own 0.10.24 (2026-09-23) evaluation the claim is “partially supports,” not full support, and it states plainly that no screen reader was actually driven in producing it — automated and manual keyboard testing stand in for that. Two skip links sit at the very top of the page: “Skip to the tools” and “Skip to the details panel.” The critical-path JavaScript was measured (0.10.20, 2026-09-23) at ~417 KB gzip against a 450 KB budget, plus ~140 KB for the MapLibre worker against 150 KB; a separate gate asserted the species lens paints its first data pixel within 2.5 s on a laptop and 4 s on CI. Both budgets may have moved since; see the linked reports for current numbers.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#feedback-and-versions",
+    "href": "apps/atlas.html#feedback-and-versions",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.11 Feedback and versions",
+    "text": "B.11 Feedback and versions\nFeedback opens a dialog: a kind (bug / idea / question / data), a title, a description, an optional email, an annotatable screenshot, and a privacy checkbox (off by default) for including the current view’s link. On the live app, “Send” is not configured — no feedback endpoint is set in production — so the dialog says so and points to “Open as GitHub issue” instead, a separate button that opens a public issue in MarineSensitivity/atlas, labelled by kind, with the screenshot copied to your clipboard to paste in. Tell an analyst plainly: text sent this way is public. A restricted release has no GitHub route at all — “feedback cannot be sent from here right now.” Once an endpoint is configured, a public-release submission without an email is also filed as a public GitHub issue.\nVersions follow the same public/restricted split as the rest of the MST (see Chapter 2): a public release opens directly on the public host; a restricted pre-release’s Atlas is meant to be reached only through the signed-in preview host — but that route is not yet deployed (see Known Limitations). Requesting a release the current host cannot show opens the version picker automatically: a restricted one offers “Continue on the preview host,” an unrecognized one reads “is not a version this host recognizes,” and either way the promoted release loads underneath while the picker explains why. In the picker, every public release other than the current one offers Switch.\n\n\n\n\n\n\nFigure B.14: The release picker.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#known-limitations-as-of-0.10.48",
+    "href": "apps/atlas.html#known-limitations-as-of-0.10.48",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.12 Known limitations (as of 0.10.48)",
+    "text": "B.12 Known limitations (as of 0.10.48)\n\nThe top-bar search box does nothing in the Scores lens; it only searches species, in the Species lens.\nGeoPackage upload is listed as an accepted format (“GeoPackage (not yet)” in the drop zone’s own text) but cannot actually be read yet.\nFor v7, every one of a species’ input datasets shows struck through in the Species card — a release-side gap in what v7 publishes, not the app’s design; the Species app can still draw them.\nProgram Areas are shown by their bare key; “Name (KEY)” needs a release that publishes names.\nSelecting a Program Area place opens no results panel in Places (its row does show a real composite score, but there is no coverage note or flower there) — click it on the map or choose it in Table › Zones to see its flower and species instead.\nDragging a drawn shape’s corner adds a new place rather than editing the original: delete the extra row, or redraw.\nFeedback Send is not configured on the live app; use “Open as GitHub issue” (public).\nThe preview-host Atlas (/{ver}/atlas/) is not yet served; “Continue on the preview host” currently leads to a sign-in and then the landing page, not the Atlas.\nThe report’s “Reproduce in R” snippets call msens functions that exist only on an unreleased branch.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#generating-screenshots",
+    "href": "apps/atlas.html#generating-screenshots",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.13 Generating Screenshots",
+    "text": "B.13 Generating Screenshots\nThe atlas repository’s own scripts/eyes-shots.mjs captures the standard states most of this chapter’s figures come from (18 states, phone 390×844 at 2x pixel density and desktop 1280×800, dark theme), run against a live or locally built app:\nATLAS_URL=https://marinesensitivity.org/atlas OUT=.tmp/eyes node scripts/eyes-shots.mjs\nA few figures here (the Share dialog and its simplification ladder, the Coordinate dialog’s refusal state, the version picker, and one Report scroll position) are not among that script’s own states; they were captured by hand from the same live build, driving the app to the specific state each caption describes.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/atlas.html#source-code",
+    "href": "apps/atlas.html#source-code",
+    "title": "Appendix A — Atlas (beta) — the static, in-browser scores, species and places app",
+    "section": "B.14 Source Code",
+    "text": "B.14 Source Code\natlas on its own main branch — one static build for every release, the same “one checkout, not one per version” convention the Scores and Species apps follow.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Atlas (beta) — the static, in-browser scores, species and places app</span>"
+    ]
+  },
+  {
+    "objectID": "apps/scores.html",
+    "href": "apps/scores.html",
+    "title": "Appendix B — Scores — mapper of aggregate sensitivity scores",
+    "section": "",
+    "text": "C Scores",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
     ]
   },
   {
     "objectID": "apps/scores.html#overview",
     "href": "apps/scores.html#overview",
-    "title": "Appendix A — Scores — mapper of aggregate sensitivity scores",
-    "section": "B.1 Overview",
-    "text": "B.1 Overview\nThe Scores application (app.marinesensitivity.org/scores) is the primary interactive tool for exploring composite marine sensitivity scores. It renders any published release from a ?ver= parameter — ?ver=v3 shows v3 — defaulting to the promoted release when none is given. It enables users to visualize extinction risk weighted species presence at multiple spatial resolutions, with integrated flower plot and treemap summaries.\nFigure B.1 shows the global view of cell-level sensitivity scores across all US waters. The sidebar provides controls for study area, spatial units (raster cells or program areas), and layer selection.\n\n\n\n\n\n\nFigure B.1: The Scores application displaying cell-level sensitivity scores across US waters. The sidebar provides controls for study area selection, spatial resolution (raster cells vs. program areas), and layer choice. The globe view shows scores from 0 (blue) to 89 (red) with MapBox basemap.\n\n\n\nFigure B.2 shows the flower plot panel that appears when a program area is selected. Here, the Southern California program area displays a weighted mean score of 29, with petals representing species categories (bird, coral, fish, invertebrate, mammal, other, turtle) and primary productivity.\n\n\n\n\n\n\nFigure B.2: The Scores application showing the flower plot panel for Southern California. Petal length represents each category’s rescaled sensitivity score; petal width represents its weight. The center value (29) is the weighted mean across all categories.",
+    "title": "Appendix B — Scores — mapper of aggregate sensitivity scores",
+    "section": "C.1 Overview",
+    "text": "C.1 Overview\nThe Scores application (app.marinesensitivity.org/scores) is the primary interactive tool for exploring composite marine sensitivity scores. It renders any published release from a ?ver= parameter — ?ver=v3 shows v3 — defaulting to the promoted release when none is given. It enables users to visualize extinction risk weighted species presence at multiple spatial resolutions, with integrated flower plot and treemap summaries.\nFigure C.1 shows the global view of cell-level sensitivity scores across all US waters. The sidebar provides controls for study area, spatial units (raster cells or program areas), and layer selection.\n\n\n\n\n\n\nFigure C.1: The Scores application displaying cell-level sensitivity scores across US waters. The sidebar provides controls for study area selection, spatial resolution (raster cells vs. program areas), and layer choice. The globe view shows scores from 0 (blue) to 89 (red) with MapBox basemap.\n\n\n\nFigure C.2 shows the flower plot panel that appears when a program area is selected. Here, the Southern California program area displays a weighted mean score of 29, with petals representing species categories (bird, coral, fish, invertebrate, mammal, other, turtle) and primary productivity.\n\n\n\n\n\n\nFigure C.2: The Scores application showing the flower plot panel for Southern California. Petal length represents each category’s rescaled sensitivity score; petal width represents its weight. The center value (29) is the weighted mean across all categories.",
     "crumbs": [
       "Appendices",
       "Applications (Current)",
-      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
     ]
   },
   {
     "objectID": "apps/scores.html#features",
     "href": "apps/scores.html#features",
-    "title": "Appendix A — Scores — mapper of aggregate sensitivity scores",
-    "section": "B.2 Features",
-    "text": "B.2 Features\n\nB.2.1 Map Display\n\nCell-level view: 0.05° grid cells colored by sensitivity score for the selected metric\nProgram area view: aggregated scores by BOEM Program Area, with boundaries overlaid\nBase maps: multiple MapBox base layers (satellite, streets, light, dark)\nStudy area selection: click a program area to focus the view and update summary panels\n\n\n\nB.2.2 Sensitivity Metrics\nThe map can display any of the following layers:\n\nComposite extinction risk (weighted sum across all species categories)\nIndividual category scores, one per scored species category in the release being viewed\nPrimary productivity\n\nAll scores are ecoregionally rescaled to [0–100] for meaningful cross-region comparison (see Chapter 9).\n\n\nB.2.3 Flower Plot\nSelecting a program area displays a flower plot summarizing the sensitivity profile:\n\nEach petal represents a species category\nPetal length = rescaled sensitivity score (0–100)\nPetal width = category weight\nCenter value = weighted mean across categories\n\n\n\nB.2.4 Species Table\nA sortable table of all valid species present in the selected area, showing:\n\nScientific and common name\nSpecies category\nESA listing, IUCN Red List status\nMMPA/MBTA protection flags\nExtinction risk score\n\n\n\nB.2.5 Data Export\nUsers can download CSV files of scores and species lists for the selected program area or custom area of interest.",
+    "title": "Appendix B — Scores — mapper of aggregate sensitivity scores",
+    "section": "C.2 Features",
+    "text": "C.2 Features\n\nC.2.1 Map Display\n\nCell-level view: 0.05° grid cells colored by sensitivity score for the selected metric\nProgram area view: aggregated scores by BOEM Program Area, with boundaries overlaid\nBase maps: multiple MapBox base layers (satellite, streets, light, dark)\nStudy area selection: click a program area to focus the view and update summary panels\n\n\n\nC.2.2 Sensitivity Metrics\nThe map can display any of the following layers:\n\nComposite extinction risk (weighted sum across all species categories)\nIndividual category scores, one per scored species category in the release being viewed\nPrimary productivity\n\nAll scores are ecoregionally rescaled to [0–100] for meaningful cross-region comparison (see Chapter 9).\n\n\nC.2.3 Flower Plot\nSelecting a program area displays a flower plot summarizing the sensitivity profile:\n\nEach petal represents a species category\nPetal length = rescaled sensitivity score (0–100)\nPetal width = category weight\nCenter value = weighted mean across categories\n\n\n\nC.2.4 Species Table\nA sortable table of all valid species present in the selected area, showing:\n\nScientific and common name\nSpecies category\nESA listing, IUCN Red List status\nMMPA/MBTA protection flags\nExtinction risk score\n\n\n\nC.2.5 Data Export\nUsers can download CSV files of scores and species lists for the selected program area or custom area of interest.",
     "crumbs": [
       "Appendices",
       "Applications (Current)",
-      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
     ]
   },
   {
     "objectID": "apps/scores.html#generating-screenshots",
     "href": "apps/scores.html#generating-screenshots",
-    "title": "Appendix A — Scores — mapper of aggregate sensitivity scores",
-    "section": "B.3 Generating Screenshots",
-    "text": "B.3 Generating Screenshots",
-    "crumbs": [
-      "Appendices",
-      "Applications (Current)",
-      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
-    ]
-  },
-  {
-    "objectID": "apps/scores.html#source-code",
-    "href": "apps/scores.html#source-code",
-    "title": "Appendix A — Scores — mapper of aggregate sensitivity scores",
-    "section": "B.4 Source Code",
-    "text": "B.4 Source Code\nscores/app.R on the apps repository’s main branch. There is one checkout, not one per release: the version is data, resolved from the published manifest, so the per-version forks (mapgl, mapgl_v1…v6, scores_v6, scores_v8) are retired and their URLs 301 to /scores/?ver=….",
-    "crumbs": [
-      "Appendices",
-      "Applications (Current)",
-      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
-    ]
-  },
-  {
-    "objectID": "apps/species.html",
-    "href": "apps/species.html",
-    "title": "Appendix B — Species — mapper of individual species distributions",
-    "section": "",
-    "text": "C Species",
-    "crumbs": [
-      "Appendices",
-      "Applications (Current)",
-      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
-    ]
-  },
-  {
-    "objectID": "apps/species.html#overview",
-    "href": "apps/species.html#overview",
-    "title": "Appendix B — Species — mapper of individual species distributions",
-    "section": "C.1 Overview",
-    "text": "C.1 Overview\nThe Species application (app.marinesensitivity.org/species) enables exploration of individual species distribution models. Like the Scores app it renders any published release from a ?ver= parameter. Users can view merged and source-level models, compare masked vs. unmasked distributions, and access detailed species regulatory status information.\nFigure C.1 shows the merged distribution model for the blue whale (Balaenoptera musculus). The map displays cell values from 1 (low suitability, blue) to 100 (high suitability, red) across all US program areas where the species occurs.\n\n\n\n\n\n\nFigure C.1: The Species application showing the merged distribution model for blue whale (Balaenoptera musculus). Cell values range from 1 (low suitability) to 100 (high suitability). The species selector dropdown allows searching by common or scientific name with category prefix.",
-    "crumbs": [
-      "Appendices",
-      "Applications (Current)",
-      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
-    ]
-  },
-  {
-    "objectID": "apps/species.html#features",
-    "href": "apps/species.html#features",
-    "title": "Appendix B — Species — mapper of individual species distributions",
-    "section": "C.2 Features",
-    "text": "C.2 Features\n\nC.2.1 Species Selection\n\nSearch: find species by common name or scientific name\nCategory filter: narrow results by species category, as defined in the release being viewed\nAlphabetical browsing: scroll through species lists within each category\n\n\n\nC.2.2 Model Display\n\nMerged model: the final merged distribution showing MAX values across all source datasets, with masking and spatial floors applied\nSource datasets: toggle individual source layers (AquaMaps, NMFS CH, FWS CH, FWS Range, BirdLife, IUCN Range) to see each dataset’s contribution\nIUCN masking toggle: compare the unmasked AquaMaps SDM with the masked merged model to visualize the effect of range constraints\n\n\n\nC.2.3 Species Info Panel\nDetailed information for the selected species:\n\nScientific name and common name\nSpecies category (bird, fish, mammal, etc.)\nESA listing status (Endangered, Threatened, or not listed)\nIUCN Red List category\nMMPA protection flag\nMBTA protection flag\nComputed extinction risk score (1–100)\nNumber of source datasets contributing to the merged model\n\n\n\nC.2.4 Deep-Linking\nThe application supports URL parameters for direct linking to specific species, enabling bookmarking and sharing of specific views:\nhttps://shiny.marinesensitivity.org/species/?species=Balaenoptera+musculus",
-    "crumbs": [
-      "Appendices",
-      "Applications (Current)",
-      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
-    ]
-  },
-  {
-    "objectID": "apps/species.html#generating-screenshots",
-    "href": "apps/species.html#generating-screenshots",
-    "title": "Appendix B — Species — mapper of individual species distributions",
+    "title": "Appendix B — Scores — mapper of aggregate sensitivity scores",
     "section": "C.3 Generating Screenshots",
     "text": "C.3 Generating Screenshots",
     "crumbs": [
       "Appendices",
       "Applications (Current)",
-      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
+    ]
+  },
+  {
+    "objectID": "apps/scores.html#source-code",
+    "href": "apps/scores.html#source-code",
+    "title": "Appendix B — Scores — mapper of aggregate sensitivity scores",
+    "section": "C.4 Source Code",
+    "text": "C.4 Source Code\nscores/app.R on the apps repository’s main branch. There is one checkout, not one per release: the version is data, resolved from the published manifest, so the per-version forks (mapgl, mapgl_v1…v6, scores_v6, scores_v8) are retired and their URLs 301 to /scores/?ver=….",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Scores — mapper of aggregate sensitivity scores</span>"
+    ]
+  },
+  {
+    "objectID": "apps/species.html",
+    "href": "apps/species.html",
+    "title": "Appendix C — Species — mapper of individual species distributions",
+    "section": "",
+    "text": "D Species",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>C</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
+    ]
+  },
+  {
+    "objectID": "apps/species.html#overview",
+    "href": "apps/species.html#overview",
+    "title": "Appendix C — Species — mapper of individual species distributions",
+    "section": "D.1 Overview",
+    "text": "D.1 Overview\nThe Species application (app.marinesensitivity.org/species) enables exploration of individual species distribution models. Like the Scores app it renders any published release from a ?ver= parameter. Users can view merged and source-level models, compare masked vs. unmasked distributions, and access detailed species regulatory status information.\nFigure D.1 shows the merged distribution model for the blue whale (Balaenoptera musculus). The map displays cell values from 1 (low suitability, blue) to 100 (high suitability, red) across all US program areas where the species occurs.\n\n\n\n\n\n\nFigure D.1: The Species application showing the merged distribution model for blue whale (Balaenoptera musculus). Cell values range from 1 (low suitability) to 100 (high suitability). The species selector dropdown allows searching by common or scientific name with category prefix.",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>C</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
+    ]
+  },
+  {
+    "objectID": "apps/species.html#features",
+    "href": "apps/species.html#features",
+    "title": "Appendix C — Species — mapper of individual species distributions",
+    "section": "D.2 Features",
+    "text": "D.2 Features\n\nD.2.1 Species Selection\n\nSearch: find species by common name or scientific name\nCategory filter: narrow results by species category, as defined in the release being viewed\nAlphabetical browsing: scroll through species lists within each category\n\n\n\nD.2.2 Model Display\n\nMerged model: the final merged distribution showing MAX values across all source datasets, with masking and spatial floors applied\nSource datasets: toggle individual source layers (AquaMaps, NMFS CH, FWS CH, FWS Range, BirdLife, IUCN Range) to see each dataset’s contribution\nIUCN masking toggle: compare the unmasked AquaMaps SDM with the masked merged model to visualize the effect of range constraints\n\n\n\nD.2.3 Species Info Panel\nDetailed information for the selected species:\n\nScientific name and common name\nSpecies category (bird, fish, mammal, etc.)\nESA listing status (Endangered, Threatened, or not listed)\nIUCN Red List category\nMMPA protection flag\nMBTA protection flag\nComputed extinction risk score (1–100)\nNumber of source datasets contributing to the merged model\n\n\n\nD.2.4 Deep-Linking\nThe application supports URL parameters for direct linking to specific species, enabling bookmarking and sharing of specific views:\nhttps://shiny.marinesensitivity.org/species/?species=Balaenoptera+musculus",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>C</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
+    ]
+  },
+  {
+    "objectID": "apps/species.html#generating-screenshots",
+    "href": "apps/species.html#generating-screenshots",
+    "title": "Appendix C — Species — mapper of individual species distributions",
+    "section": "D.3 Generating Screenshots",
+    "text": "D.3 Generating Screenshots",
+    "crumbs": [
+      "Appendices",
+      "Applications (Current)",
+      "<span class='chapter-number'>C</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
     ]
   },
   {
     "objectID": "apps/species.html#source-code",
     "href": "apps/species.html#source-code",
-    "title": "Appendix B — Species — mapper of individual species distributions",
-    "section": "C.4 Source Code",
-    "text": "C.4 Source Code\nspecies/app.R on the apps repository’s main branch — one checkout serving every release, not one per version.",
+    "title": "Appendix C — Species — mapper of individual species distributions",
+    "section": "D.4 Source Code",
+    "text": "D.4 Source Code\nspecies/app.R on the apps repository’s main branch — one checkout serving every release, not one per version.",
     "crumbs": [
       "Appendices",
       "Applications (Current)",
-      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
+      "<span class='chapter-number'>C</span>  <span class='chapter-title'>Species — mapper of individual species distributions</span>"
     ]
   },
   {
