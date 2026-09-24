@@ -1305,7 +1305,7 @@ Table&nbsp;2.2: What each release published, read from its manifest.
 <p>Every release remains published and readable:</p>
 <ul>
 <li><strong>Documentation</strong> — this book, at <code>/{version}/</code>; the sidebar switcher moves between builds and marks any version whose docs are not built.</li>
-<li><strong>Applications</strong> — <a href="https://app.marinesensitivity.org/scores/?ver=v3"><code>/scores/?ver=v3</code></a> and <a href="https://app.marinesensitivity.org/species/?ver=v3"><code>/species/?ver=v3</code></a>, substituting any published version. The per-version application forks are retired; their old URLs 301 to the equivalent <code>?ver=</code>, so links printed in earlier reports still resolve to the release they always showed.</li>
+<li><strong>Applications</strong> — <a href="https://app.marinesensitivity.org/v3/scores/"><code>/v3/scores/</code></a> and <a href="https://app.marinesensitivity.org/v3/species/"><code>/v3/species/</code></a>, substituting any published version in the path. The per-version application forks are retired; their old URLs 301 to the equivalent path, so links printed in earlier reports — including an older <code>?ver=v3</code> deep link — still resolve to the release they always showed.</li>
 <li><strong>Data</strong> — <code>marine-atlas/{version}/tables/*.parquet</code> on S3, readable directly by DuckDB (including in a browser) without downloading a database.</li>
 </ul>
 <p><strong>Promotion is deliberate and separate from publishing.</strong> Writing data does not make a release current: the pointer that applications follow by default is only rewritten under an explicit flag, and may only name a released — never a pre-release — version. It currently names <strong>v7</strong>.</p>

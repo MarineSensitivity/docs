@@ -811,7 +811,7 @@ ul.task-list li input[type="checkbox"] {
 <li><p><strong>Extinction-risk scoring</strong> (1–100) folds in ESA listing, the MMPA floor (assigned by taxonomy, so no marine mammal is missed) and the MBTA floor (the FWS CFR 50 §10.13 species list, not all birds), falling back to the IUCN Red List where there is no US listing.</p></li>
 <li><p><strong>Model merging</strong> produces one surface per taxon, with the <strong>expert range constraining</strong> suitability predictions rather than merely competing with them, and the governing extinction risk applied at the range cells. Sea turtles merge multiplicatively, so risk varies spatially within a species.</p></li>
 <li><p><strong>Ecoregional rescaling</strong> normalizes each metric to 0–100 within a BOEM Ecoregion, so scores are comparable among Program Areas in one ecoregion without being dominated by naturally species-rich waters.</p></li>
-<li><p><strong>Interactive applications</strong> — Scores and Species — render <strong>any published release</strong> from a <code>?ver=</code> parameter, so a reader can look at the release a report cited rather than only the newest one.</p></li>
+<li><p><strong>Interactive applications</strong> — Scores and Species — render <strong>any published release</strong> from the URL path (e.g.&nbsp;<code>/v3/scores/</code>; an older <code>?ver=v3</code> deep link still resolves, 301’d to the equivalent path), so a reader can look at the release a report cited rather than only the newest one.</p></li>
 </ul>
 </section>
 <section id="delivered-since-the-first-release" class="level2" data-number="21.2">

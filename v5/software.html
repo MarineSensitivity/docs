@@ -898,7 +898,7 @@ window.Quarto = {
 <li><strong>workflows</strong> — Quarto notebooks to ingest source datasets (AquaMaps, IUCN, NMFS/FWS, BirdLife, WoRMS, BOEM zones), merge taxonomic authorities, and compute scores that are written back to DuckDB;</li>
 <li><strong>APIs</strong> — a custom R <a href="https://www.rplumber.io"><code>plumber</code></a> API for data requests, <a href="https://developmentseed.org/titiler/"><strong>TiTiler</strong></a> serving the published COGs, and a searchable STAC API with one Item per model;</li>
 <li><strong>libraries</strong> — re-usable documented functions as the <a href="https://github.com/MarineSensitivities/msens"><code>msens</code></a> R package, including the version/manifest registry that lets one application render any release, and the tile-URL helpers the applications use;</li>
-<li><strong>applications</strong> — two Shiny apps (<code>scores</code>, <code>species</code>) that combine COG raster layers with static <a href="https://protomaps.com/docs/pmtiles/">PMTiles</a> vector layers and live-pushed choropleth paint rules, each rendering <strong>any published release</strong> from <code>?ver=</code>;</li>
+<li><strong>applications</strong> — two Shiny apps (<code>scores</code>, <code>species</code>) that combine COG raster layers with static <a href="https://protomaps.com/docs/pmtiles/">PMTiles</a> vector layers and live-pushed choropleth paint rules, each rendering <strong>any published release</strong> from the URL path;</li>
 <li><strong>documentation</strong> — this Quarto book with figures, tables, glossary and references in interactive HTML or static DOCX / PDF output.</li>
 </ol>
 <p>This toolbox is intended to primarily serve BOEM needs internally, but by being open-source and fully reproducible the hope is to enlist buy-in and even contributions from external partners, whether from other government agencies, academia, NGOs or industry.</p>
@@ -1101,7 +1101,7 @@ Figure&nbsp;12.5: Data pipeline: ingest workflows populate DuckDB; scoring workf
 <h3 data-number="12.1.4" class="anchored" data-anchor-id="software-components"><span class="header-section-number">12.1.4</span> Software Components</h3>
 <div id="listing-list-components" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1790255184340" data-listing-reading-time-sort="5" data-listing-word-count-sort="932">
+<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1790259243239" data-listing-reading-time-sort="5" data-listing-word-count-sort="932">
 <a href="./apis.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1122,7 +1122,7 @@ APIs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1790255184341" data-listing-reading-time-sort="4" data-listing-word-count-sort="698">
+<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1790259243239" data-listing-reading-time-sort="4" data-listing-word-count-sort="698">
 <a href="./apps.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1143,7 +1143,7 @@ Apps
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1790255184420" data-listing-reading-time-sort="5" data-listing-word-count-sort="957">
+<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1790259243377" data-listing-reading-time-sort="5" data-listing-word-count-sort="957">
 <a href="./db.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1164,7 +1164,7 @@ Database
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1790255184427" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
+<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1790259243392" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
 <a href="./docs.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1185,7 +1185,7 @@ Docs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1790255184535" data-listing-reading-time-sort="2" data-listing-word-count-sort="208">
+<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1790259243539" data-listing-reading-time-sort="2" data-listing-word-count-sort="208">
 <a href="./libraries.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1206,7 +1206,7 @@ Libraries
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1790255184538" data-listing-reading-time-sort="6" data-listing-word-count-sort="1162">
+<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1790259243545" data-listing-reading-time-sort="6" data-listing-word-count-sort="1172">
 <a href="./server.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1227,7 +1227,7 @@ Server
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1790255184538" data-listing-reading-time-sort="5" data-listing-word-count-sort="853">
+<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1790259243546" data-listing-reading-time-sort="5" data-listing-word-count-sort="853">
 <a href="./workflows.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
