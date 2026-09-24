@@ -140,9 +140,9 @@ coordinates, or drop a file on the map."*
   bounding box (`xmin, ymin, xmax, ymax`), a list of `lon, lat` vertices one per line, or pasted
   WKT/GeoJSON. A refusal is shown verbatim — what went wrong, why, and how to fix it.
 - **Upload a file**, through the picker or by dropping it anywhere on the map: *"GeoJSON, zipped
-  shapefile, KML, GPX, FlatGeobuf, WKT or GeoPackage, up to 10 MB."* **GeoPackage is listed but
-  cannot actually be read yet** — every `.gpkg` ends in a refusal; export the layer to GeoJSON,
-  FlatGeobuf or a zipped shapefile instead. Other rules that cause a refusal: polygons only
+  shapefile, KML, GPX, FlatGeobuf, WKT or GeoPackage (not yet), up to 10 MB."* GeoPackage cannot
+  actually be read yet — every `.gpkg` ends in a refusal; export the layer to GeoJSON, FlatGeobuf
+  or a zipped shapefile instead. Other rules that cause a refusal: polygons only
   (points and lines are refused, never buffered); a shapefile needs its `.prj` (projected
   coordinates are refused); at most 50,000 vertices; a zipped shapefile at most 50 MB uncompressed
   and 200 entries; and the shape must touch the U.S. study area. A file with several features
@@ -150,15 +150,14 @@ coordinates, or drop a file on the map."*
   choice; a GeoPackage additionally prompts consent for a one-time ~22 MB download before it fails
   at the "no runtime" refusal above.
 
-![The Places panel with two places: a Program Area ("ALA," reading "not analysed yet") and a selected, entered-coordinates place showing its real coverage note, composite score and flower.](/images/atlas/desktop-places.png){#fig-atlas-places fig-alt="The Places panel: pick mode, the Program Area chooser, draw tools, Enter coordinates, an upload drop zone, a Program Area row reading not analysed yet, and a selected drawn place showing 100% inside the study area, a 42.7 composite score and the start of a flower plot."}
+![The Places panel with two places, both analysed: a Program Area ("ALA," 28.3 composite) and a selected, entered-coordinates place ("bounding box," 100% coverage, 42.7 composite) showing its coverage note and flower below.](/images/atlas/desktop-places.png){#fig-atlas-places fig-alt="The Places panel: pick mode, the Program Area chooser, draw tools, Enter coordinates, an upload drop zone reading GeoPackage (not yet), a Program Area row showing 28.3 composite, and a selected drawn place showing 100% inside the study area, a 42.7 composite score and the start of a flower plot."}
 
 ![The "Enter coordinates" dialog, showing a refusal for input that matches none of the three accepted shapes.](/images/atlas/desktop-coordinate-dialog.png){#fig-atlas-coords fig-alt="The Enter coordinates dialog with a single-point entry and a refusal message explaining what was expected instead."}
 
-Each row shows its area, and — for a **drawn, typed or uploaded** place — its data coverage
-percentage and composite score directly in the row as soon as it is analysed (the same analysis
-runs for every such place in the list, not only the one currently selected). A **Program Area**
-row still reads **"not analysed yet"** on today's releases: the release does not yet publish a
-composite/coverage figure at the row level (see Known Limitations). Row actions: an inline
+Each row shows its area and, as soon as it is analysed, its data coverage percentage and composite
+score directly in the row — for a **drawn, typed or uploaded** place the same analysis runs for
+every such place in the list, not only the one currently selected; a **Program Area** row shows
+its own published composite the same way (e.g. "ALA … 28.3 composite"). Row actions: an inline
 **rename** (≤ 60 characters, drawn/uploaded places only), **zoom to**, **duplicate**
 (drawn/uploaded only), **delete**, and **Open in report**. Selecting a **drawn, typed or
 uploaded** place additionally expands its **results** panel below the list — a Program Area
@@ -327,17 +326,18 @@ current one offers **Switch**.
 
 ![The release picker.](/images/atlas/desktop-version-picker.png){#fig-atlas-versions fig-alt="The release picker listing every published release with its status and date: restricted pre-releases offering Continue on the preview host, and other public releases offering Switch."}
 
-## Known limitations (as of 0.10.44)
+## Known limitations (as of 0.10.48)
 
 - The top-bar search box does nothing in the **Scores** lens; it only searches species, in the
   **Species** lens.
-- **GeoPackage** upload is listed as an accepted format but cannot actually be read yet.
+- **GeoPackage** upload is listed as an accepted format ("GeoPackage (not yet)" in the drop zone's
+  own text) but cannot actually be read yet.
 - For v7, every one of a species' input datasets shows struck through in the Species card — a
   release-side gap in what v7 publishes, not the app's design; the Species app can still draw them.
 - Program Areas are shown by their bare key; "Name (KEY)" needs a release that publishes names.
-- A Program Area place's row always reads "not analysed yet," and selecting it opens no results
-  panel in Places — its scores live in the Flower plot/Table tools instead. (Drawn, typed and
-  uploaded places are unaffected: they show real numbers in both places.)
+- Selecting a Program Area place opens no results panel in Places (its row does show a real
+  composite score, but there is no coverage note or flower there) — its scores live in the Flower
+  plot/Table tools instead.
 - Feedback **Send** is not configured on the live app; use "Open as GitHub issue" (public).
 - The preview-host Atlas (`/{ver}/atlas/`) is not yet served; "Continue on the preview host"
   currently leads to a sign-in and then the landing page, not the Atlas.
