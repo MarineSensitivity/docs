@@ -26,7 +26,7 @@ cat("- **", sum(cats$scored), " scored species categories** (",
 
 - **Ecoregional rescaling** normalizes each metric to 0–100 within a BOEM Ecoregion, so scores are comparable among Program Areas in one ecoregion without being dominated by naturally species-rich waters.
 
-- **Interactive applications** — Scores and Species — render **any published release** from a `?ver=` parameter, so a reader can look at the release a report cited rather than only the newest one.
+- **Interactive applications** — Scores and Species — render **any published release** from the URL path (e.g. `/v3/scores/`; an older `?ver=v3` deep link still resolves, 301'd to the equivalent path), so a reader can look at the release a report cited rather than only the newest one.
 
 ## Delivered since the first release
 
