@@ -54,8 +54,9 @@ tab bar**, and the panel becomes a **bottom sheet** with three heights (peek, ha
 
 1. Open **Places**, and either choose a Program Area from its list or draw a **Rectangle**
    (click, move, click, then **Done**).
-2. Select the drawn place in the list to see its coverage note, flower and component table, and
-   (on request) its species table (a Program Area's row already shows its composite).
+2. Select the place in the list — Program Area or drawn — to see its results: a coverage note (or,
+   for a Program Area, its published cell count, area and composite), a flower and component
+   table, and (on request) its species table.
 3. Rename it inline if you like.
 4. **Places › Share › Copy link** — the fastest way to hand someone the same place.
 5. **Places › Report** for a printable, downloadable document (Print, HTML, ZIP or Word).
@@ -134,7 +135,7 @@ model's extent; clicking it then returns that cell's modelled value, or *"No sco
 outside the model's range. The legend floats in a corner of the map (a legend chip on a phone),
 titled with the species' scientific name and its 1–100 range.
 
-![The Species lens' card for the leatherback turtle (*Dermochelys coriacea*): the merged model with every one of its six inputs struck through — as of this writing, a stale v7 app bundle rather than a genuinely missing registry row for most of them (see Known Limitations).](/images/atlas/desktop-species.png){#fig-atlas-species fig-alt="The Species lens card for the leatherback turtle: a Merged Model pill and six struck-through input pills, with the species' ESA, IUCN and WoRMS panel below."}
+![The Species lens' card for the leatherback turtle (*Dermochelys coriacea*): the merged model with every one of its six inputs struck through — as of this writing, a stale v7 app bundle rather than a genuinely missing registry row for all six (see Known Limitations).](/images/atlas/desktop-species.png){#fig-atlas-species fig-alt="The Species lens card for the leatherback turtle: a Merged Model pill and six struck-through input pills, with the species' ESA, IUCN and WoRMS panel below."}
 
 ## Places {#sec-atlas-places}
 
@@ -146,11 +147,13 @@ coordinates, or drop a file on the map."*
 - **Pick a Program Area.** Turning on **pick mode** and clicking only highlights it — Ctrl/Cmd-click,
   Shift-click or long-press to highlight several — and **"Add to places (n)"** is the button that
   actually adds it; several picks become **one** place. Or use the panel's own **Program Area
-  chooser**, which needs no pointer and works on a phone. Program Areas are shown everywhere as
+  chooser**, which needs no pointer and works on a phone. Program Areas are shown as
   **"Full Name (KEY)"** — e.g. "St. George Basin (GEO)" — from an app-side name table generated off
-  the canonical Program-Area geometry, since no published release (v6 through v9) actually
-  publishes a full name on its own Program Area rows; a release that does publish one is preferred
-  when present.
+  the canonical Program-Area geometry (no published release, v6 through v9, actually publishes a
+  full name on its own Program Area rows; a release that does publish one is preferred when
+  present), in the Places panel, the Scores-lens search and the Zones table and report; from
+  0.10.59, everywhere — today the Scores-lens map tooltip, Flower title and Table header for a
+  clicked Program Area still show the bare key.
 - **Draw** a Polygon, Rectangle or Circle: **click, move, click** for each vertex or corner (not a
   drag), then press **Done** — a polygon also closes when you click its first vertex again, or
   press Enter. A circle is stored as a 64-sided polygon. Dragging a finished shape's corner **edits
@@ -162,41 +165,48 @@ coordinates, or drop a file on the map."*
   shapefile, KML, GPX, FlatGeobuf, WKT or GeoPackage, up to 10 MB."* **GeoPackage** is now read
   (polygons only, same as every other format), through the same resident DuckDB-WASM engine the
   scores boot, via its `spatial` extension — fetched live, with consent, from
-  `extensions.duckdb.org` (the one deliberately non-mirrored third-party download, ~23 MB), so the
-  first `.gpkg` upload in a session asks permission before anything is read; a GeoPackage with no
-  vector layer (raster tiles, or a plain attribute table) is refused by name rather than surfacing a
-  raw SQL error. Other rules that cause a refusal: polygons only (points and lines are refused,
-  never buffered); a shapefile needs its `.prj` (projected coordinates are refused); at most 50,000
-  vertices; a zipped shapefile at most 50 MB uncompressed and 200 entries; and the shape must touch
-  the U.S. study area. A feature's own name (KML's `<name>`, or a `name`/`title`/`label` property on
-  GeoJSON/shapefile/etc., case-insensitive) names its place; only a feature carrying none of those
-  falls back to the file name, numbered. A file with several features becomes one place per feature
-  (up to 20) or one merged place, your choice.
+  `extensions.duckdb.org` (the one deliberately non-mirrored third-party download, 22.4 MB); each
+  `.gpkg` upload asks first, not just the first one in a session. A GeoPackage with no
+  vector layer (raster tiles, or a plain attribute table) is refused when `ST_Read` fails to read
+  it (see Known limitations), not by a dedicated check. Other rules that cause a refusal: polygons
+  only (points and lines are refused, never buffered); a shapefile needs its `.prj` (projected
+  coordinates are refused); at most 50,000 vertices; a zipped shapefile at most 50 MB uncompressed
+  and 200 entries; and the shape must touch the U.S. study area. A feature's own name (KML's
+  `<name>`, or a `name`/`title`/`label` property on GeoJSON/shapefile/etc., case-insensitive) —
+  auto-detected from the file's **first** feature and applied to every feature — names each place;
+  a file with no such property falls back to the file name, numbered. A file with several features
+  becomes one place per feature (up to 20), each named this way, or one merged place, named after
+  the file, your choice.
 
-![The Places panel with two places, both analysed: a Program Area ("ALA," 28.3 composite) and a selected, entered-coordinates place ("bounding box," 100% coverage, 42.7 composite) showing its coverage note and flower below.](/images/atlas/desktop-places.png){#fig-atlas-places fig-alt="The Places panel: pick mode, the Program Area chooser, draw tools, Enter coordinates, an upload drop zone reading GeoPackage (not yet), a Program Area row showing 28.3 composite, and a selected drawn place showing 100% inside the study area, a 42.7 composite score and the start of a flower plot."}
+![The Places panel with two places, both analysed: a Program Area ("ALA," 28.3 composite) and a selected, entered-coordinates place ("bounding box," 100% coverage, 42.7 composite) showing its coverage note and flower below. Captured on 0.10.48, before GeoPackage support (0.10.52) and Program Area names (0.10.56).](/images/atlas/desktop-places.png){#fig-atlas-places fig-alt="The Places panel: pick mode, the Program Area chooser, draw tools, Enter coordinates, an upload drop zone reading GeoPackage (not yet), a Program Area row showing 28.3 composite, and a selected typed bounding-box place showing 100% inside the study area, a 42.7 composite score and the start of a flower plot."}
 
 ![The "Enter coordinates" dialog, showing a refusal for input that matches none of the three accepted shapes.](/images/atlas/desktop-coordinate-dialog.png){#fig-atlas-coords fig-alt="The Enter coordinates dialog with a single-point entry and a refusal message explaining what was expected instead."}
 
 Each row shows its area and, as soon as it is analysed, its data coverage percentage and composite
 score directly in the row — for a **drawn, typed or uploaded** place the same analysis runs for
 every such place in the list, not only the one currently selected; a **Program Area** row shows
-its own published composite the same way (e.g. "ALA … 28.3 composite"). Row actions: an inline
-**rename** (≤ 60 characters, drawn/uploaded places only), **zoom to**, **duplicate**
+its own published composite the same way (e.g. "Aleutian Arc (ALA) … 28.3 composite"). Row actions:
+an inline **rename** (≤ 60 characters, drawn/uploaded places only), **zoom to**, **duplicate**
 (drawn/uploaded only), **delete**, and **Open in report**. Selecting **any** place — drawn, typed,
-uploaded, or a **Program Area** — expands the same **results** panel below the list: a coverage
-note ("*N*% of this place is inside the US study area (*a* of *b* cells)", or "This place is
-outside US waters here: no scores can be computed"), a flower plot, a component table, and — on
-request, with a "Loading species needs *N* tiles, about *X* MB. Continue?" prompt — a species
-table. A single selected Program Area reads all of this straight off the release (the same path the
-Scores lens's **Table › Zones** tool uses, @sec-atlas-flower-table); a multi-Program-Area selection
-(several picks added as one place) still sums area and means the composite for the list row, but
-its flower/component/species panel asks you to select a single Program Area instead of guessing
-which one's to draw. **Show analysis cells** paints the analysed 0.05° cells (up to 20,000 of them)
-for a drawn, typed or uploaded place; for a Program Area it says plainly that per-zone analysis
-cells are not yet published for this unit, rather than showing a disabled control with a misleading
-reason. The list caps at 20 places ("*n* / 20 places"); **Recent** (this browser only) offers to add
-a removed place back. The footer holds **Share**, **Download places** (GeoJSON) and **Report**, each
-disabled with zero places.
+uploaded, or a **Program Area** — expands the same **results** panel below the list, though the
+note at its top differs by kind: a drawn, typed or uploaded place shows a coverage note ("*N*% of
+this place is inside the US study area (*a* of *b* cells)", or "This place is outside US waters
+here: no scores can be computed"); a Program Area shows its own note instead ("*N* cells, *A* km²;
+published composite *C*."). Both then show a flower plot and a component table, and a species
+table on request — a drawn/typed/uploaded place behind a "Loading species needs *N* tiles, about
+*X* MB. Continue?" prompt (species come from map tiles), a Program Area behind a plain **Load
+species** button with no such prompt (its species table is a precomputed release table, not
+tiles). A single selected Program Area reads all of this straight off the release (the same path
+the Scores lens's **Table › Zones** tool uses, @sec-atlas-flower-table); a multi-Program-Area
+selection (several picks added as one place) still sums area and means the composite for the list
+row, but its flower/component/species panel asks you to select a single Program Area instead of
+guessing which one's to draw. **Show analysis cells** paints the analysed 0.05° cells (up to 20,000
+of them) for a drawn, typed or uploaded place; for a Program Area it reads plainly *"Show analysis
+cells: not available for Program Areas yet"* — the app bundle the Atlas reads does not yet carry
+per-zone cells, even though the release's own tables do (see Known limitations) — rather than
+showing a disabled control with a misleading reason. The list caps at 20 places ("*n* / 20
+places"); **Recent** (this browser only) offers to add a removed place back. The footer holds
+**Share**, **Download places** (GeoJSON) and **Report**, each disabled with zero places.
 
 **Two different Share buttons.** The top-bar **Share** simply copies the current address bar to
 the clipboard — no dialog, no summary, no length check. **Places › Share** opens the real dialog
@@ -229,8 +239,8 @@ Each ring is quantized to a fixed precision (3 decimal digits, ~110 m — 4 digi
 bounding box is under 0.5° in **both** directions), delta-encoded vertex-to-vertex as zigzag
 varints running across rings and polygons, and base64url-encoded with no general-purpose
 compression (delta varints are already dense). Longitudes are stored unwrapped, so a place crossing
-the antimeridian round-trips without a special case. An R decoder in `msens` is in preparation; the
-shared test fixture (`tests/fixtures/place_codec.json`) is written to match it byte for byte.
+the antimeridian round-trips without a special case. `msens::place_decode()` is the R decoder; the
+shared test fixture (`tests/fixtures/place_codec.json`) matches it byte for byte.
 :::
 
 **The link's length is checked only when you open Places › Share.** Adding a place, or copying the
@@ -302,10 +312,10 @@ reports just that row's place. The document renders progressively as its data ar
   dropped it;
 - a **Summary of Species** per place (a category × count cross-tab, plus the top 20 by score);
 - **Sources and Method**, with the release's own citations — each query behind these numbers is a
-  parity-tested twin (`npm run parity`, max|Δ| < 1e-9) of an `msens` R function, though *"Reproduce
-  in R"* itself is not yet usable: it prints calls to `msens::place_decode()`,
-  `cells_in_polygon_grid()` and `scores_for_cells()` that exist only on an unreleased `msens`
-  branch;
+  parity-tested twin (`npm run parity`, max|Δ| < 1e-9) of an `msens` R function; *"Reproduce in
+  R"* prints the exact calls to `msens::place_decode()`, `cells_in_polygon_grid()` and
+  `scores_for_cells()` that reproduce it, needing `msens` ≥ 0.44.0 and a local copy of the
+  release's `sdm.duckdb`;
 - a **Provenance** section (release, status/access, app build SHA, DuckDB-WASM version, tables
   read, SQL run).
 
@@ -335,19 +345,19 @@ budgets may have moved since; see the linked reports for current numbers.
 
 ## When a service is down
 
-The Atlas depends on two external services it does not control: **titiler-v8** (every score and
-species map tile) and the **S3 data origin** each release's own files are fetched from. The app
-checks both at boot, and again whenever a map tile actually fails to load for a real reason — a
-5xx, a network error, or a timeout; a normal "this release has no data here" 403/404 is never
-treated as an outage. A manual **Retry** in the banner always re-checks immediately; otherwise it
-never polls in the background while everything is fine.
+Since 0.10.59, the Atlas checks two external services it does not control: **titiler-v8** (every
+score and species map tile) and the **S3 data origin** each release's own files are fetched from.
+Both are checked at boot and on a manual **Retry**; a map tile that actually fails to load for a
+real reason — a 5xx, a network error, or a timeout, never a normal "this release has no data here"
+403/404 — re-checks only the tile server. It never polls in the background while everything is
+fine.
 
 When either is down, a dismissible top banner names the failing host, the reason (timeout or HTTP
 status), and what still works — places, tables and reports already built from data already loaded,
-just no new tiles or new fetches from the down host — and the legend switches to a compact **"tiles
-unavailable"** state instead of a bare colour ramp. This was added 2026-09-24 after titiler-v8 and
-the API were unreachable for an hour and the live app kept rendering a perfectly normal-looking map
-with no raster and no word to anyone.
+just no new tiles or new fetches from the down host; when it is specifically the **tile server**
+that is down, the legend also switches to a compact **"tiles unavailable"** state instead of a bare
+colour ramp. Built 2026-09-24 after titiler-v8 and the API were unreachable for an hour and the
+live app kept rendering a perfectly normal-looking map with no raster and no word to anyone.
 
 **What it cannot detect:** a partial outage (some tiles or objects failing, others not — only a
 further real request surfaces it), a degraded-but-200 response (a tile that loads but paints wrong
@@ -362,59 +372,61 @@ those would not trip the banner.
 **Feedback** opens a dialog: a kind (bug / idea / question / data), a title, a description, an
 optional email, an annotatable screenshot, and a privacy checkbox (off by default) for including
 the current view's link. **Send** is live: it posts to a Google Apps Script endpoint that writes a
-Sheet row, mails the team, and — for a **public** release, only when no email was given — also
-files a public GitHub issue in `MarineSensitivity/atlas` with the screenshot attached; a
-**restricted** release never gets a public issue either way. No email is stored anywhere beyond the
-notification it triggers (see `docs/feedback.md` in the atlas repo for the dialog's exact privacy
-wording). The original zero-backend fallback stays alongside Send, not replaced by it: **"Open as
-GitHub issue"** opens its own prefilled public issue, labelled by kind, with the screenshot copied
-to your clipboard to paste in — offered on every public release whether or not Send is configured,
-and the only option on a build with no endpoint set. Tell an analyst plainly: either route can end
-up as a public GitHub issue. A restricted release never offers the GitHub route; on a build with no
+Sheet row, mails the team, and — for a **public** release — also files a public GitHub issue in
+`MarineSensitivity/atlas` with the screenshot attached (your email, if given, is never included in
+it); a **restricted** release never gets a public issue either way. An email, if given, is kept
+only in the team's Sheet row and mail (plus a copy to you), never in the issue (see
+`docs/feedback.md` in the atlas repo for the dialog's exact privacy wording). The original
+zero-backend fallback stays alongside Send, not replaced by it: **"Open as GitHub issue"** opens
+its own prefilled public issue, labelled by kind, with the screenshot copied to your clipboard to
+paste in — offered on every public release whether or not Send is configured, and the only option
+on a build with no endpoint set. Tell an analyst plainly: on a public release, both routes end in a
+public GitHub issue. A restricted release never offers the GitHub route; on a build with no
 endpoint configured it says plainly that "feedback cannot be sent from here right now."
 
-Besides GA4 page views, the app may also log interaction events to the same batched usage-log Sheet
-the Shiny `scores`/`species` apps already write (`app = "atlas"` distinguishes its rows) — never the
-URL fragment, which the app's own analytics code is source-scanned to never read.
+GA4 receives interaction events as well as page views, and the app also logs those same events to
+the batched usage-log Sheet the Shiny `scores`/`species` apps already write (`app = "atlas"`
+distinguishes its rows) — never the URL fragment, which the app's own analytics code is
+source-scanned to never read.
 
 **Versions** follow the same public/restricted split as the rest of the MST (see @sec-releases): a
 public release opens directly on the public host; a restricted pre-release's Atlas is reached only
 through the signed-in preview host, at its own `/{ver}/atlas/` path. Requesting a release the
 current host cannot show opens the version picker automatically: a restricted one offers "Continue
-on the preview host" — which now goes straight to that route — an unrecognized one reads "is not a
-version this host recognizes," and either way the promoted release loads underneath while the
-picker explains why. In the picker, every public release other than the current one offers
-**Switch**.
+on the preview host" (from 0.10.59, that link goes straight to the Atlas there), an unrecognized
+one reads "is not a version this host recognizes," and either way the promoted release loads
+underneath while the picker explains why. In the picker, every public release other than the
+current one offers **Switch**.
 
-![The release picker.](/images/atlas/desktop-version-picker.png){#fig-atlas-versions fig-alt="The release picker listing every published release with its status and date: restricted pre-releases offering Continue on the preview host, and other public releases offering Switch."}
+![The release picker.](/images/atlas/desktop-version-picker.png){#fig-atlas-versions fig-alt="The release picker listing every published release with its status and date: restricted pre-releases offering Continue on the preview host (its Atlas link works from 0.10.59), and other public releases offering Switch."}
 
-## Known limitations (as of 0.10.58)
+## Known limitations (as of 0.10.59)
 
-- For v7, every input pill in the Species card still shows struck through, the leatherback's six
-  included (@fig-atlas-species) — as of this writing, the app bundles that would resolve the
-  model-asset registry lookup (see Species lens above) for 10,247 of v7's 12,120 inputs are still
-  being republished; once they land, only the remaining 1,873 (its `rng_iucn` range models, which
-  carry no raster of their own) will still show this way.
-- **GeoPackage**'s declared-CRS and no-feature-table checks cannot actually run against an uploaded
-  file — DuckDB-WASM's `sqlite_scan()` cannot open a file registered only through
-  `registerFileBuffer`, the way an uploaded GeoPackage is — so both checks silently fall through and
-  `ST_Read`, or the normal out-of-range magnitude check, is left to catch a projected or empty file
-  instead (still refused, just by a different, honest rule).
+- For every release before v8 (v2–v7b), every input pill in the Species card still shows struck
+  through, the leatherback's six included (@fig-atlas-species) — as of this writing, the app
+  bundles that would resolve the model-asset registry lookup (see Species lens above) for 10,247 of
+  v7's 12,120 inputs have not yet been republished; once they land, only 1,873 of its 2,619
+  `rng_iucn` range inputs, which have no model-asset registry row (struck through in the Species
+  Shiny app too), will still show this way.
+- **GeoPackage** is refused (see the Places section above) whenever `ST_Read` fails to parse it,
+  including a file with no vector layer — its declared-CRS and no-feature-table checks cannot
+  actually run against an uploaded file, because DuckDB-WASM's `sqlite_scan()` cannot open a file
+  registered only through `registerFileBuffer`, the way an uploaded GeoPackage is, so both checks
+  silently fall through and `ST_Read`, or the normal out-of-range magnitude check, is left to catch
+  a projected or empty file instead (still refused, just by a different, honest rule).
 - A multi-Program-Area selection (several picks added as one place) sums area and means the
   composite for its list row, but its flower, component table and species table are not aggregated
   — the results panel asks you to select a single Program Area for those.
-- **Show analysis cells** is not available for a Program Area place: a release publishes each zone's
-  cell count, area, composite and component scores, but not the underlying cells themselves.
+- **Show analysis cells** is not available for a Program Area place: the app bundle the Atlas reads
+  carries each zone's count, area and scores but not its cells.
 - The Atlas's report is a print-first document built and exported entirely client-side
   (HTML/ZIP/DOCX from the same source), not the Shiny apps' own report.
-- The report's "Reproduce in R" snippets call `msens` functions that exist only on an unreleased
-  branch.
 
 ## Generating Screenshots
 
 The atlas repository's own `scripts/eyes-shots.mjs` captures the standard states most of this
-chapter's figures come from (18 states, phone 390×844 at 2x pixel density and desktop 1280×800,
-dark theme), run against a live or locally built app:
+chapter's figures come from (18 numbered shots per viewport, about 11 states, phone 390×844 at 2x
+pixel density and desktop 1280×800, dark theme), run against a live or locally built app:
 
 ```sh
 ATLAS_URL=https://marinesensitivity.org/atlas OUT=.tmp/eyes node scripts/eyes-shots.mjs
