@@ -55,11 +55,11 @@ tab bar**, and the panel becomes a **bottom sheet** with three heights (peek, ha
 
 1. Open **Places**, and either choose a Program Area from its list or draw a **Rectangle**
    (click, move, click, then **Done**).
-2. Select the place in the list to see its coverage note, flower and component table, and (on
-   request) its species table.
+2. Select the drawn place in the list to see its coverage note, flower and component table, and
+   (on request) its species table (a Program Area's row already shows its composite).
 3. Rename it inline if you like.
-4. **Places ▸ Share ▸ Copy link** — the fastest way to hand someone the same place.
-5. **Places ▸ Report** for a printable, downloadable document (Print, HTML, ZIP or Word).
+4. **Places › Share › Copy link** — the fastest way to hand someone the same place.
+5. **Places › Report** for a printable, downloadable document (Print, HTML, ZIP or Word).
 
 **Phone:** the tool rail is the bottom tab bar; use the Program Area chooser or **Enter
 coordinates** rather than drawing, and the file picker rather than dropping a file on the map
@@ -70,10 +70,10 @@ coordinates** rather than drawing, and the file picker rather than dropping a fi
 **The top bar**, left to right on desktop: the MST mark and title; a **release chip** that opens
 the version picker; a **Scores | Species lens switch**; a **search field**; then, right-aligned,
 **Share**, **Report**, a **(?) Help** menu (Take a tour, keyboard shortcuts, a Docs link), a
-**Feedback** button, an **(i) About** button, and a sun/moon **theme toggle**. Below 381 px the
-mark hides and everything past the lens switch collapses into one **More (⋯)** button holding
-Share, Report, Feedback, About this release, Take a tour, Docs and the theme toggle; a **search**
-button appears beside it. The keyboard-shortcut list is desktop-only.
+**Feedback** button, an **(i) About** button, and a sun/moon **theme toggle**. On a phone (below
+900 px) the title collapses to the mark, and Share, Report, Help, Feedback, About and the theme
+toggle fold into one **More (⋯)** button beside a **search** button; below 381 px the mark hides
+too. The keyboard-shortcut list is desktop-only.
 
 **The tool rail** is five controls, always in the same order, on every viewport:
 **Layers · Places · Flower plot · Table · Report**. In the Species lens the Flower control fades in
@@ -83,8 +83,10 @@ place — it has no meaning for a single species — but stays visible with a to
 by dragging its map-facing edge or with arrow keys; maximize to the whole stage; or collapse to a
 small labelled pill (clicking any rail tool re-opens it). Its dock/size/collapsed state is chrome,
 remembered per viewport, never written into the shareable URL. On a phone the same panel is the
-bottom **sheet**, with peek/half/full detents. A floating **legend chip** tracks the current
-layer's color ramp, moving inline into the sheet at full height on a phone.
+bottom **sheet**, with peek/half/full detents. On a desktop the map's **legend** floats in a corner
+clear of the panel, on whichever side it is docked, and hides while the panel is maximized; on a
+phone it is a compact **Legend** chip above the sheet that opens the full legend, moving into the
+sheet's own header at full height.
 
 ## Scores lens {#sec-atlas-scores}
 
@@ -100,26 +102,28 @@ and most can be reordered — **Data** can never move above **Zone outlines**, s
 raster can never hide the boundaries it is measured against — and **Reset layers** restores the
 default stack.
 
-![The Layers panel docked, scrolled to show the basemap sub-layer rows below Data.](/images/atlas/desktop-layers.png){#fig-atlas-layers fig-alt="The Layers panel showing the layer stack: Selection, Zone outlines, Data (expanded with study area, spatial units, layer, palette, Sphere and Cells-outside-Program-Areas controls), then the basemap rows."}
+![The Layers panel docked, with Place labels moved above Data (one "move up" click) to show the reorder feature, and Data expanded to its study area, spatial units, layer and palette controls.](/images/atlas/desktop-layers.png){#fig-atlas-layers fig-alt="The Layers panel showing the layer stack: Selection, Zone outlines, Place labels (moved above Data), and Data expanded with study area, spatial units, layer and color palette controls."}
 
 Clicking a cell or a Program Area selects it: the URL gains a `sel=cell:<id>` or
 `sel=zone:<unit>:<key>` token, which the **Flower plot** and **Table** tools then describe
-(@sec-atlas-flower-table).
+(@sec-atlas-flower-table). A click on land or outside the scored area shows *"No scored cell
+here"* with its coordinates and leaves the selection unchanged.
 
 ## Species lens
 
 Switching to **Species** turns the top-bar search into a species picker (common or scientific
 name, with an "Only species in US waters" checkbox), and replaces the **Data** row's contents
-inside **Layers** with the species **card**: the merged model as a filled pill, plus one pill per
-contributing input dataset, green for the merged model and orange for each input. An input this
-release published **no surface** for renders as a **struck-through, non-interactive pill** — never
-simply omitted. Where the selected input publishes both, one **representation** toggle appears
-("Original" vs. "Interpolated," or "Delivered" vs. "As ingested" for a dataset already on the
-scoring grid). Clicking the map returns that cell's modelled value; the legend floats in a corner
-of the map (a legend chip on a phone), titled with the species' scientific name and its 1–100
-range.
+inside **Layers** with the species **card**: the merged model as a filled pill marked **✓** with a
+gold edge, plus one pill per contributing input dataset marked **▶** with a grey edge. An input
+this release published **no surface** for renders as a **struck-through, non-interactive pill** —
+never simply omitted. Where the selected input publishes both, one **representation** toggle
+appears ("Original" vs. "Interpolated," or "Delivered" vs. "As ingested" for a dataset already on
+the scoring grid). Selecting a species flies the map to that model's extent; clicking it then
+returns that cell's modelled value, or *"No scored cell here"* outside the model's range. The
+legend floats in a corner of the map (a legend chip on a phone), titled with the species'
+scientific name and its 1–100 range.
 
-![The Species lens' card for the leatherback turtle (*Dermochelys coriacea*): the merged model with every one of its six inputs struck through — a v7 release-side gap, not the app's design (see Known Limitations).](/images/atlas/desktop-species.png){#fig-atlas-species fig-alt="The Species lens card for the leatherback turtle: a Merged Model pill and six struck-through input pills, beside the species' ESA, IUCN and WoRMS panel."}
+![The Species lens' card for the leatherback turtle (*Dermochelys coriacea*): the merged model with every one of its six inputs struck through — a v7 release-side gap, not the app's design (see Known Limitations).](/images/atlas/desktop-species.png){#fig-atlas-species fig-alt="The Species lens card for the leatherback turtle: a Merged Model pill and six struck-through input pills, with the species' ESA, IUCN and WoRMS panel below."}
 
 ## Places {#sec-atlas-places}
 
@@ -134,21 +138,21 @@ coordinates, or drop a file on the map."*
   chooser**, which needs no pointer and works on a phone. Program Areas are shown by their bare key
   (e.g. `GEO`) today; a release that publishes names shows "St. George Basin (GEO)" instead.
 - **Draw** a Polygon, Rectangle or Circle: **click, move, click** for each vertex or corner (not a
-  drag), then press **Done**. A circle is stored as a 64-sided polygon. Corners stay draggable
-  afterward.
+  drag), then press **Done** — a polygon also closes when you click its first vertex again, or
+  press Enter. A circle is stored as a 64-sided polygon. Dragging a finished shape's corner does
+  **not** edit it (see Known limitations).
 - **Enter coordinates** — the keyboard/screen-reader alternative to drawing, in a modal dialog: a
   bounding box (`xmin, ymin, xmax, ymax`), a list of `lon, lat` vertices one per line, or pasted
   WKT/GeoJSON. A refusal is shown verbatim — what went wrong, why, and how to fix it.
 - **Upload a file**, through the picker or by dropping it anywhere on the map: *"GeoJSON, zipped
   shapefile, KML, GPX, FlatGeobuf, WKT or GeoPackage (not yet), up to 10 MB."* GeoPackage cannot
-  actually be read yet — every `.gpkg` ends in a refusal; export the layer to GeoJSON, FlatGeobuf
-  or a zipped shapefile instead. Other rules that cause a refusal: polygons only
-  (points and lines are refused, never buffered); a shapefile needs its `.prj` (projected
-  coordinates are refused); at most 50,000 vertices; a zipped shapefile at most 50 MB uncompressed
-  and 200 entries; and the shape must touch the U.S. study area. A file with several features
-  becomes one place per feature (up to 20, named "Uploaded place N") or one merged place, your
-  choice; a GeoPackage additionally prompts consent for a one-time ~22 MB download before it fails
-  at the "no runtime" refusal above.
+  actually be read yet — every `.gpkg` refuses immediately, reading *"GeoPackage is not supported
+  yet"*; export the layer as GeoJSON or a zipped shapefile instead. Other rules that cause a
+  refusal: polygons only (points and lines are refused, never buffered); a shapefile needs its
+  `.prj` (projected coordinates are refused); at most 50,000 vertices; a zipped shapefile at most
+  50 MB uncompressed and 200 entries; and the shape must touch the U.S. study area. A file with
+  several features becomes one place per feature (up to 20, named after the file and numbered) or
+  one merged place, your choice.
 
 ![The Places panel with two places, both analysed: a Program Area ("ALA," 28.3 composite) and a selected, entered-coordinates place ("bounding box," 100% coverage, 42.7 composite) showing its coverage note and flower below.](/images/atlas/desktop-places.png){#fig-atlas-places fig-alt="The Places panel: pick mode, the Program Area chooser, draw tools, Enter coordinates, an upload drop zone reading GeoPackage (not yet), a Program Area row showing 28.3 composite, and a selected drawn place showing 100% inside the study area, a 42.7 composite score and the start of a flower plot."}
 
@@ -161,8 +165,9 @@ its own published composite the same way (e.g. "ALA … 28.3 composite"). Row ac
 **rename** (≤ 60 characters, drawn/uploaded places only), **zoom to**, **duplicate**
 (drawn/uploaded only), **delete**, and **Open in report**. Selecting a **drawn, typed or
 uploaded** place additionally expands its **results** panel below the list — a Program Area
-place does not get one here (its scores live in the Flower/Table tools instead,
-@sec-atlas-flower-table): a coverage note ("*N*% of this place is inside the US study area (*a* of
+place does not get one here: to see its flower and species, click it on the map (spatial unit:
+Program Areas) or choose it in **Table › Zones** instead (@sec-atlas-flower-table). The results
+panel shows a coverage note ("*N*% of this place is inside the US study area (*a* of
 *b* cells)", or "This place is outside US waters here: no scores can be computed"), a flower plot,
 a component table, and — on request, with a "Loading species needs *N* tiles, about *X* MB.
 Continue?" prompt — a species table. **Show analysis cells** paints the analysed 0.05° cells (up to 20,000 of them).
@@ -171,7 +176,7 @@ removed place back. The footer holds **Share**, **Download places** (GeoJSON) an
 disabled with zero places.
 
 **Two different Share buttons.** The top-bar **Share** simply copies the current address bar to
-the clipboard — no dialog, no summary, no length check. **Places ▸ Share** opens the real dialog
+the clipboard — no dialog, no summary, no length check. **Places › Share** opens the real dialog
 described next, and is the one to use whenever places are involved.
 
 ## How places are stored in the link {#sec-atlas-place-links}
@@ -205,20 +210,23 @@ the antimeridian round-trips without a special case. An R decoder in `msens` is 
 shared test fixture (`tests/fixtures/place_codec.json`) is written to match it byte for byte.
 :::
 
-**The link's length is checked only when you open Places ▸ Share.** Adding a place, or copying the
-top-bar Share link, carries the full-precision geometry regardless of length. In that dialog: up to
-**2,000 characters** silently, up to **8,000** with a "long link" note, and the ladder — Douglas-
-Peucker at 0.001° doubling to 0.016°, a rung accepted only while the area changes by no more than
-1% and every ring stays simple — **aims to bring the link back under 2,000 characters**; it stops
-at the first rung that does, or, if none does, uses the coarsest accepted rung provided that still
-fits under 8,000. This is never silent: the dialog shows the before/after (vertices, area change,
-cells, @fig-atlas-share-ladder), and you click **"Simplify and update the numbers"** to accept it — which is also what
-rewrites `#pl=`, so the copied link and the displayed numbers can never disagree. If even the
-coarsest rung is still too long, **every** drawn, typed or uploaded place in the link (zone places
-are unaffected) becomes a `u.` token: the recipient sees a named row with no results and a
-"not analysed yet" chip, never a prompt. The dialog's own advice at that point is to **download the
-place as GeoJSON** and send that alongside the link. A single small rectangle almost always fits
-in the silent budget; that is not guaranteed for several places together, or a long base URL.
+**The link's length is checked only when you open Places › Share.** Adding a place, or copying the
+top-bar Share link, carries the unsimplified geometry (already quantized to 3–4 decimals) regardless
+of length. In that dialog: up to **2,000 characters** silently; between 2,000 and 8,000 a note reads
+"This link is over 2,000 characters — some chat apps and older browsers truncate very long links,"
+with **Copy anyway**; only **above 8,000** does the Douglas-Peucker ladder run — 0.001° doubling to
+0.016°, a rung accepted only while the area changes by no more than 1% and every ring stays simple —
+**aiming to bring the link back under 2,000 characters**; it stops at the first rung that does, or,
+if none does, uses the coarsest accepted rung provided that still fits under 8,000. This is never
+silent: the dialog shows the before/after (vertices, area change, cells, @fig-atlas-share-ladder),
+and you click **"Simplify and update the numbers"** to accept it — which is also what rewrites
+`#pl=`, so the copied link and the displayed numbers can never disagree. If even the coarsest rung
+is still too long, **Copy link anyway** copies **every** drawn, typed or uploaded place (zone places
+are unaffected) as a `u.` token instead — your own address bar and session keep the real shapes; the
+recipient of that copied link sees a named row with no results and a "not analysed yet" chip, never
+a prompt. The dialog's own advice at that point is to **download the place as GeoJSON** and send
+that alongside the link. A single small rectangle almost always fits in the silent budget; that is
+not guaranteed for several places together, or a long base URL.
 
 ![The Share dialog: what the link carries and its exact length.](/images/atlas/desktop-share-dialog.png){#fig-atlas-share fig-alt="The Share dialog showing a one-sentence summary of what the link carries and its character length, with a Copy link button."}
 
@@ -234,11 +242,11 @@ The rest of the view travels the same URL-is-the-state way, in the query string:
 Species lens, Table is a placeholder, and a drawn Place's flower and species table live in the
 Places results panel instead (@sec-atlas-places), not here.
 
-The flower draws one equal-width annular petal per species category, scaled to its rescaled score;
+The flower draws one equal-width annular petal per score component, scaled to its rescaled score;
 the hub shows the **plain mean** of the components present (not a weighted mean). Since 0.10.41 the
 values also list in a real table (swatch, component, score, and a Mean row) below the plot.
 
-![The Flower plot for a clicked cell in the Gulf of America: one petal per category, and the values table with a Mean row below it.](/images/atlas/desktop-flower.png){#fig-atlas-flower fig-alt="A flower plot with colored petals around a centre value, and below it a table listing each category and its score with a Mean row."}
+![The Flower plot for a clicked cell in the Gulf of America: one petal per score component, and the values table with a Mean row below it.](/images/atlas/desktop-flower.png){#fig-atlas-flower fig-alt="A flower plot with colored petals around a centre value, and below it a table listing each component and its score with a Mean row."}
 
 **Table** opens three tabs: a sortable **species table** (Category, Taxon, Scientific name, Common
 name, **ER code**, ER score, Model, MMPA, MBTA, Area (km²), Avg. suitability, % of category — ESA
@@ -247,18 +255,17 @@ and IUCN status are folded into ER code), a **zones table** (every Program Area 
 (one box per species category, sized by suitability × extinction risk × area). Only the **species**
 table has the phone's compact default columns and a **Columns** control; both tables get sticky
 headers/first column and horizontal scrolling that never spills the panel. Only the species
-table's **Download CSV** actually works — the zones table, the composition treemap, and the Places
-results tables' own "Export CSV" buttons do not export anything yet (a report or the data-package
-ZIP are the working ways to get a species CSV for a place).
+table's **Download CSV** exports it; the zones table and the composition treemap have no export
+yet. A drawn place's Components and Species tables in the Places results panel each have their own
+working **Export CSV**.
 
 ![The Table tool's species tab.](/images/atlas/desktop-table.png){#fig-atlas-table fig-alt="The Table tool's species tab: a sortable table of species for the selected cell, with Zones and Composition as the other two tabs."}
 
 ## Report
 
 **Report** reports **every place currently in the link** (`#pl=`); with no places, it reports the
-single selected Program Area; with neither, it shows a chooser. A row's own "Open in report" link
-opens the same report — every place, not just that row. The document renders progressively as its
-data arrives:
+single selected Program Area; with neither, it shows a chooser. A row's own **Open in report**
+reports just that row's place. The document renders progressively as its data arrives:
 
 - a **header band** — mark, release chip, generation time, permalink and QR code (a restricted
   release also gets a PREVIEW banner and print watermark);
@@ -279,7 +286,7 @@ data arrives:
 - a **Provenance** section (release, status/access, app build SHA, DuckDB-WASM version, tables
   read, SQL run).
 
-![The report document's header band and introduction, on the live host: the MMA seal, a real permalink and QR code (never `localhost`), Parameters, and the start of the interactive map.](/images/atlas/desktop-report.png){#fig-atlas-report fig-alt="The report document: the Marine Minerals Administration seal and lockup, title, release chip, generation time, a real permalink and QR code, an introduction, a Parameters disclosure, and the start of the interactive map."}
+![The report document's header band and introduction: the MMA seal, a permalink and QR code, Parameters, and the start of the interactive map.](/images/atlas/desktop-report.png){#fig-atlas-report fig-alt="The report document: the Marine Minerals Administration seal and lockup, title, release chip, generation time, a real permalink and QR code, an introduction, a Parameters disclosure, and the start of the interactive map."}
 
 ![The report's Table of Scores and the start of the Summary of Species, for the same Program Area.](/images/atlas/desktop-report-scores.png){#fig-atlas-report-scores fig-alt="A flower plot legend, the Table of Scores with one row of component and overall scores, and the beginning of the Summary of Species section."}
 
@@ -336,8 +343,10 @@ current one offers **Switch**.
   release-side gap in what v7 publishes, not the app's design; the Species app can still draw them.
 - Program Areas are shown by their bare key; "Name (KEY)" needs a release that publishes names.
 - Selecting a Program Area place opens no results panel in Places (its row does show a real
-  composite score, but there is no coverage note or flower there) — its scores live in the Flower
-  plot/Table tools instead.
+  composite score, but there is no coverage note or flower there) — click it on the map or choose
+  it in Table › Zones to see its flower and species instead.
+- Dragging a drawn shape's corner **adds a new place** rather than editing the original: delete
+  the extra row, or redraw.
 - Feedback **Send** is not configured on the live app; use "Open as GitHub issue" (public).
 - The preview-host Atlas (`/{ver}/atlas/`) is not yet served; "Continue on the preview host"
   currently leads to a sign-in and then the landing page, not the Atlas.
@@ -346,13 +355,18 @@ current one offers **Switch**.
 
 ## Generating Screenshots
 
-The atlas repository's own `scripts/eyes-shots.mjs` captures the standard states this chapter's
-figures come from (18 states, phone 390×844 at 2x pixel density and desktop 1280×800, dark theme),
-run against a live or locally built app:
+The atlas repository's own `scripts/eyes-shots.mjs` captures the standard states most of this
+chapter's figures come from (18 states, phone 390×844 at 2x pixel density and desktop 1280×800,
+dark theme), run against a live or locally built app:
 
 ```sh
 ATLAS_URL=https://marinesensitivity.org/atlas OUT=.tmp/eyes node scripts/eyes-shots.mjs
 ```
+
+A few figures here (the Share dialog and its simplification ladder, the Coordinate dialog's
+refusal state, the version picker, and one Report scroll position) are not among that script's own
+states; they were captured by hand from the same live build, driving the app to the specific state
+each caption describes.
 
 ## Source Code
 

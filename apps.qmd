@@ -37,7 +37,7 @@ tiles, zone outlines and the basemap still come from the project's titiler, PMTi
 It combines what Scores and Species do separately — mapping composite scores and mapping
 individual species — with a capability neither Shiny app has, **Places**: drawing, typing or
 uploading any area of interest (not only the built-in Program Areas) and getting the same scores,
-species tables and an exportable report for it, sharable entirely through the URL.
+species tables and an exportable report for it, shareable entirely through the URL.
 
 See @sec-app-atlas for the full walkthrough, including how a drawn place is encoded into a shareable link.
 
