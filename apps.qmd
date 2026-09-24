@@ -59,7 +59,7 @@ Under the hood the Scores app composes three kinds of map layer (@fig-architectu
 - **"Cells outside Program Areas" mask** — a single-color overlay published the same way.
 - **Zone choropleth** — polygon geometry from a static PMTiles archive published per geometry **vintage**, with per-zone fill colors pushed live into the paint spec from the release's `zone_metric` (see @fig-choropleth).
 
-Because every one of those is resolved from the manifest rather than hardcoded, switching `?ver=` switches all three together — including drawing the boundary vintage that release actually used.
+Because every one of those is resolved from the manifest rather than hardcoded, switching the URL's version segment (e.g. `/v3/` → `/v4/`) switches all three together — including drawing the boundary vintage that release actually used.
 
 See @sec-app-scores for details.
 
