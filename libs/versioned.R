@@ -106,6 +106,19 @@ doc_app_url <- function(app = c("scores", "species"), ver = doc_ver()) {
   sprintf("%s/%s/%s/", base, ver, app)
 }
 
+#' URL of the Atlas for a version. Unlike `doc_app_url()`, the Atlas lives on a
+#' different host (`marinesensitivity.org`, not `app.marinesensitivity.org`) and
+#' resolves its release from `?ver=` on the public host rather than a path
+#' segment (msens::preview_app_url() does not cover it). The preview branch
+#' mirrors `previewLink.ts`'s own `/{ver}/atlas/` shape but is not yet SERVED —
+#' `server` main has no Atlas route as of this writing (see apps/atlas.qmd's
+#' Known Limitations); it is written now so nothing here has to change once it is.
+doc_atlas_url <- function(ver = doc_ver()) {
+  if (identical(doc_access(ver), "restricted"))
+    sprintf("%s/%s/atlas/", doc_preview_url(), ver)
+  else sprintf("https://marinesensitivity.org/atlas/?ver=%s", ver)
+}
+
 #' URL of a version's own book: GitHub Pages, or the preview host when restricted.
 doc_docs_url <- function(ver = doc_ver()) {
   if (identical(doc_access(ver), "restricted")) sprintf("%s/docs/%s/", doc_preview_url(), ver)

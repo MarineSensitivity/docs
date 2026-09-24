@@ -1,5 +1,5 @@
 ---
-description: "interactive applications using Shiny"
+description: "interactive applications: two Shiny apps plus the static, in-browser Atlas"
 image: /figures/components/apps.png
 output: html_document
 editor_options:
@@ -11,21 +11,35 @@ editor_options:
 ```{r}
 #| include: false
 # knitr evaluates inline `r ...` only in a document that has at least one code
-# chunk; the app links below are doc_app_url() calls (they follow this release's
-# host and carry ?ver=), so without this they would print as literal text.
+# chunk; the app links below are doc_app_url()/doc_atlas_url() calls (they
+# follow this release's host and version), so without this they would print
+# as literal text.
 ```
 
-The MST provides two interactive web applications, plus several legacy applications from earlier development phases.
+The MST provides three interactive web applications — two Shiny apps (Scores, Species) plus a newer, static, in-browser Atlas — along with several legacy applications from earlier development phases.
 
 ::: {.callout-note}
 ## One application, every release
 
-Both apps render **any published release** from a `?ver=` parameter — `?ver=v3` shows v3 — defaulting to the promoted release when none is given. There is no per-version fork: the version is data, settled by the release's published manifest, so a fix reaches every version at once. The 18 former per-version instances are retired, and their URLs redirect permanently to the equivalent `?ver=`, so links printed in earlier reports still resolve to the release they always showed.
+Every one of the three current apps renders **any published release** rather than shipping a per-version fork. Scores and Species do this from the URL (`/v3/scores/`; older `?ver=v3` links redirect there) — the version is data, settled by the release's published manifest, so a fix reaches every version at once, and the 18 former per-version Shiny instances are retired with their URLs redirecting permanently to the equivalent path. The Atlas follows the same rule with a different mechanism (@sec-app-atlas): one static build reads the same published `versions.json`, resolving the release from `?ver=` on its public host, and — once its preview route ships — from the URL path on its signed-in preview host.
 :::
 
 These tools allow stakeholders, scientists, and decision-makers to understand the underlying components contributing to an area's sensitivity to offshore energy development, supporting better planning and impact assessment.
 
 ## Current Applications
+
+### Atlas (beta) — static, in-browser scores, species and places
+
+The [Atlas](`r doc_atlas_url()`) is a newer, third way to explore the MST, currently labelled
+**beta**: one static Svelte/MapLibre app with **no application server of its own** — scores,
+clicks, flowers and reports are computed in your browser by a DuckDB-WASM instance, though score
+tiles, zone outlines and the basemap still come from the project's titiler, PMTiles and CARTO.
+It combines what Scores and Species do separately — mapping composite scores and mapping
+individual species — with a capability neither Shiny app has, **Places**: drawing, typing or
+uploading any area of interest (not only the built-in Program Areas) and getting the same scores,
+species tables and an exportable report for it, shareable entirely through the URL.
+
+See @sec-app-atlas for the full walkthrough, including how a drawn place is encoded into a shareable link.
 
 ### Scores — mapper of aggregate sensitivity scores
 
