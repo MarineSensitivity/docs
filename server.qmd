@@ -74,7 +74,7 @@ The server is running the following services. Subdomains with 🔒 are internal 
 ### App + data plane
 
 -   [**app**](https://app.marinesensitivity.org) / [**shiny**](https://shiny.marinesensitivity.org)\
-    *interactive Shiny applications* — proxied to the `rstudio` container's Shiny Server on internal port 3838. There are now **two** applications, `/scores` and `/species`, each rendering any published release from `?ver=`. The former per-version instances (`mapgl`, `mapsp`, `mapgl_v1`…`mapsp_v6`, `scores_v6`/`v8`, `species_v6`/`v8`) are retired, with Caddy issuing a **301 to the equivalent `?ver=`** so every existing link — including any printed in a published report — still resolves to the release it always showed.\
+    *interactive Shiny applications* — proxied to the `rstudio` container's Shiny Server on internal port 3838. There are now **two** applications, `/scores` and `/species`, each rendering any published release from the URL path (e.g. `/v8/scores/`). The former per-version instances (`mapgl`, `mapsp`, `mapgl_v1`…`mapsp_v6`, `scores_v6`/`v8`, `species_v6`/`v8`) are retired, with Caddy issuing a **301 to the equivalent path** so every existing link — including any printed in a published report or an older `?ver=` deep link — still resolves to the release it always showed.\
     ![](figures/server/shiny.png){width="300"}\
     [Shiny Server docs](https://shiny.posit.co/)
 

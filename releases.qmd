@@ -101,7 +101,7 @@ for (v in rel$ver) doc_changes_callout(v)
 Every release remains published and readable:
 
 - **Documentation** — this book, at `/{version}/`; the sidebar switcher moves between builds and marks any version whose docs are not built.
-- **Applications** — [`/scores/?ver=v3`](https://app.marinesensitivity.org/scores/?ver=v3) and [`/species/?ver=v3`](https://app.marinesensitivity.org/species/?ver=v3), substituting any published version. The per-version application forks are retired; their old URLs 301 to the equivalent `?ver=`, so links printed in earlier reports still resolve to the release they always showed.
+- **Applications** — [`/v3/scores/`](`r doc_app_url("scores", "v3")`) and [`/v3/species/`](`r doc_app_url("species", "v3")`), substituting any published version in the path. The per-version application forks are retired; their old URLs 301 to the equivalent path, so links printed in earlier reports — including an older `?ver=v3` deep link — still resolve to the release they always showed.
 - **Data** — `marine-atlas/{version}/tables/*.parquet` on S3, readable directly by DuckDB (including in a browser) without downloading a database.
 
 ```{r}

@@ -234,12 +234,12 @@ pre-built pyramid would disagree with it at low zoom.\n\n", sep = "")
 
 ### Interactive maps
 
-Two Shiny applications present the results, each rendering **any published release** from a `?ver=` parameter rather than being frozen to one:
+Two Shiny applications present the results, each rendering **any published release** from the URL path rather than being frozen to one:
 
 - **[Scores](`r doc_app_url("scores")`)** — composite and per-category sensitivity by zone, with flower plots and treemaps (see @sec-app-scores)
 - **[Species](`r doc_app_url("species")`)** — individual and merged distribution models with regulatory status (see @sec-app-species)
 
-Append `?ver=v3` (or any published version) to view that release. See @sec-apps.
+Substitute the version in the path (e.g. `/v3/scores/`) to view that release; an older `?ver=v3` deep link still resolves, 301'd to the equivalent path. See @sec-apps.
 
 ## Implementation
 
