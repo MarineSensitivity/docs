@@ -824,7 +824,7 @@ ul.task-list li input[type="checkbox"] {
 <h1 data-number="C"><span class="header-section-number">C</span> Scores</h1>
 <section id="overview" class="level2" data-number="C.1">
 <h2 data-number="C.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">C.1</span> Overview</h2>
-<p>The <strong>Scores</strong> application (<a href="https://app.marinesensitivity.org/scores/">app.marinesensitivity.org/scores</a>) is the primary interactive tool for exploring composite marine sensitivity scores. It renders <strong>any published release</strong> from a <code>?ver=</code> parameter — <code>?ver=v3</code> shows v3 — defaulting to the promoted release when none is given. It enables users to visualize extinction risk weighted species presence at multiple spatial resolutions, with integrated flower plot and treemap summaries.</p>
+<p>The <strong>Scores</strong> application (<a href="https://preview.marinesensitivity.org/v7b/scores/">preview.marinesensitivity.org/v7b/scores/</a>) is the primary interactive tool for exploring composite marine sensitivity scores. It renders <strong>any published release</strong> from the URL path — <code>/v3/scores/</code> shows v3 — defaulting to the promoted release when none is given; an older <code>?ver=v3</code> deep link still resolves, 301’d to the equivalent path. It enables users to visualize extinction risk weighted species presence at multiple spatial resolutions, with integrated flower plot and treemap summaries.</p>
 <p><a href="#fig-scores-map" class="quarto-xref">Figure&nbsp;<span>C.1</span></a> shows the global view of cell-level sensitivity scores across all US waters. The sidebar provides controls for study area, spatial units (raster cells or program areas), and layer selection.</p>
 <div id="fig-scores-map" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -900,7 +900,7 @@ Figure&nbsp;C.2: The Scores application showing the flower plot panel for Southe
 </section>
 <section id="source-code" class="level2" data-number="C.4">
 <h2 data-number="C.4" class="anchored" data-anchor-id="source-code"><span class="header-section-number">C.4</span> Source Code</h2>
-<p><a href="https://github.com/MarineSensitivity/apps/tree/main/scores"><code>scores/app.R</code></a> on the <code>apps</code> repository’s <code>main</code> branch. There is <strong>one</strong> checkout, not one per release: the version is data, resolved from the published manifest, so the per-version forks (<code>mapgl</code>, <code>mapgl_v1</code>…<code>v6</code>, <code>scores_v6</code>, <code>scores_v8</code>) are retired and their URLs 301 to <code>/scores/?ver=…</code>.</p>
+<p><a href="https://github.com/MarineSensitivity/apps/tree/main/scores"><code>scores/app.R</code></a> on the <code>apps</code> repository’s <code>main</code> branch. There is <strong>one</strong> checkout, not one per release: the version is data, resolved from the published manifest, so the per-version forks (<code>mapgl</code>, <code>mapgl_v1</code>…<code>v6</code>, <code>scores_v6</code>, <code>scores_v8</code>) are retired and their URLs 301 to the equivalent <code>/v{n}/scores/</code> path (an older <code>?ver=</code> deep link 301s the same way).</p>
 
 
 </section>
