@@ -48,7 +48,11 @@ The target list is built by parsing those blocks, so **adding a dataset means ad
 | **merge** | Resolves every model to a common taxon, computes each taxon's governing extinction risk, and merges the per-dataset surfaces into one surface per taxon (@sec-model-merging). |
 | **score** | Computes per-cell metrics, rescales within ecoregions, and aggregates to each spatial unit (@sec-scoring). |
 | **schema** | Consolidates the registry tables — `dataset`, `model`, `taxon_model`, `listing` — that describe what the release contains. |
-| **release** | Publishes the release to S3 as partitioned Parquet, COGs, PMTiles and a STAC catalog, writes the version manifest, and (gated) deploys the serving tier. |
+| **release** | Publishes the release to S3 as partitioned Parquet, COGs, PMTiles and a STAC catalog, writes the version manifest, and (gated) deploys the serving tier. From the asset-store migration (2026-10) the COG and PMTiles files are written to the shared store, not to the release (@sec-asset-store). |
+
+## Publishing to the asset store {#sec-workflows-asset-store}
+
+From the asset-store migration (2026-10), the publishers write only to the content-addressed stores (`cog/`, `native/`) and to the catalog `assets.parquet`; a release prefix receives tables, a manifest and an app bundle, never a distribution file (@sec-asset-store). A file whose key is already in the catalog is not built or uploaded again, and an object is stored only after its decoded pixels are verified against the rows its key was computed from. A **publish gate** fails the release if any `.tif` or `.pmtiles` object exists under `{ver}/`, or if any URL in the release's `native_asset` table is missing from the catalog.
 
 ## Reproducibility rules
 

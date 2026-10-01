@@ -191,6 +191,11 @@ AquaMaps is the foundational dataset for most taxa: environmental-envelope model
 
 Models are native to a 0.5° grid (c-squares) and are interpolated onto the analysis grid **bilinearly**, implemented as a precomputed weight join rather than a per-species raster resample. Source cells that are absent contribute zero, so a distribution fades to zero within about one cell of its edge rather than ending on a hard step.
 
+### Where each representation lives
+
+Several inputs are published in two representations: the **Original**, at the source's own resolution (AquaMaps' 0.5° grid, or a vector range as delivered), and the **Interpolated** surface on the 0.05° analysis grid that scoring used. From the asset-store migration (2026-10) the originals are stored under `native/{ds_key}/` and the gridded surfaces under `cog/{grid_id}/` in the shared, content-addressed store (@sec-asset-store), and each release's `native_asset` table points at both. Because the file name is derived from the source content, a dataset that is unchanged between releases is stored once and pointed at by each release that uses it, rather than copied into every release. Not every input has an original: an input delivered directly on the analysis grid has a single representation.
+
+
 ```{r}
 #| label: aquax-note
 #| output: asis

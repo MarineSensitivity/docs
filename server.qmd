@@ -79,7 +79,7 @@ The server is running the following services. Subdomains with 🔒 are internal 
     [Shiny Server docs](https://shiny.posit.co/)
 
 -   [**file**](https://file.marinesensitivity.org)\
-    *static file server for PMTiles archives, report downloads, reference GeoPackages* — served by Caddy's `file_server` directive directly from the `/share` bind-mount. This replaces the old `pg_tileserv` vector-tile path for Program Areas, Ecoregions, Planning Areas, protractions, blocks and aliquots; each layer is a single `.pmtiles` file that the browser range-reads for only the tiles it needs.
+    *static file server for PMTiles archives, report downloads, reference GeoPackages* — served by Caddy's `file_server` directive directly from the `/share` bind-mount. This replaces the old `pg_tileserv` vector-tile path for Program Areas, Ecoregions, Planning Areas, protractions, blocks and aliquots; each layer is a single `.pmtiles` file that the browser range-reads for only the tiles it needs. It no longer hosts the per-species range tiles (the `pmtiles/{v8,v9}/` copies): from the asset-store migration (2026-10) those are served from the S3 store (`native/{ds_key}/{hash}.pmtiles`, @sec-asset-store), which answers range requests with CORS. The file host keeps serving the zone and reference layers, report downloads and reference GeoPackages, and the species copies are retained there until the prune that follows the migration.
 
 -   [**titiler**](https://titiler.marinesensitivity.org) + **titiler-v8** 🟢\
     *[TiTiler](https://developmentseed.org/titiler/) serving the published raster assets.*\

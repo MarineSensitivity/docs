@@ -3,6 +3,10 @@ title: "Apps User Guide"
 subtitle: "Step-by-step walkthrough of the Scores and Species applications"
 ---
 
+::: callout-note
+The Atlas is the current application; the Shiny **Scores** and **Species** apps described here are being retired in favour of it (see @sec-apps and @sec-app-atlas).
+:::
+
 This guide walks through the two interactive applications — **Scores**
 ([`r sub("^https://", "", doc_app_url("scores"))`](`r doc_app_url("scores")`))
 and **Species**

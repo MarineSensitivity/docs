@@ -57,7 +57,7 @@ purposes <- c(
   zone_cell   = "Zone membership: which cells belong to which zone.",
   zone_metric = "Pre-aggregated per-zone score for each metric — what drives the choropleth.",
   zone_taxon  = "Per-zone species list with each species' contribution to the zone score.",
-  native_asset = "Per-model native-format assets (COGs, PMTiles) served to the species app.")
+  native_asset = "Per-release pointers from each model to its distribution files (COGs, PMTiles) in the asset store (@sec-asset-store); the Atlas reads it to draw each input.")
 
 tbls <- doc_tables()
 rows <- vapply(tbls, function(t) tryCatch(doc_nrow(t), error = function(e) NA_real_), numeric(1))
@@ -103,6 +103,64 @@ for (t in tbls) {
   cat("\n")
 }
 ```
+
+## Asset store {#sec-asset-store}
+
+::: {.callout-note}
+## Layout being rolled out
+
+This section describes the storage layout from the **asset-store migration (2026-10)**, which is being rolled out and is not yet the only layout. Until the old copies are pruned, the v8 and v9 distribution files also still exist under their release prefixes (`v8/native/`, `v9/native/`) and on the file host. A listing on 2026-10-01 found 145,452 objects (33.08 GB) under `v8/native` and `v9/native`, which collapse to 86,421 distinct keys (19.63 GB) in the store, because the two releases carry the same files for most datasets.
+:::
+
+**A release owns pointers, never distribution files.** Every cloud-optimized distribution file lives exactly once in an unversioned, content-addressed store, and each release publishes tables whose rows point into it. From the migration, nothing ending in `.tif` or `.pmtiles` is written under a release's `{ver}/` prefix. A release prefix holds only its manifest, its tables, its app bundle and its serving files.
+
+There are two stores, both in the project's public S3 bucket:
+
+| Store | Key | Holds |
+|:------|:----|:------|
+| `cog/` | `cog/{grid_id}/{hash}.tif` | rasters *on an analysis grid*: each input's gridded surface, merged models and score surfaces |
+| `native/` | `native/{ds_key}/{hash}.{tif\|pmtiles}` | each source dataset's own resolution original: a raster (`.tif`) or a vector range (`.pmtiles`) |
+
+### The key comes from the content
+
+The `hash` in a key is computed **before** any file is built, from the *source content* of the model plus an **encoding tag**, and never from the bytes of the file or from the release:
+
+- for a gridded surface, the model's `(cell_id, val)` rows;
+- for a native raster, the source grid's `(cell_id, val)` rows;
+- for a native vector range, the normalized geometry and the attributes that reach the tile;
+- the encoding tag names how the file is written (data type, nodata, overviews, tile scheme), so a different encoding of the same content is deliberately a different object.
+
+Two consequences follow. A surface that did not change between releases is found in the store by its key, so it costs neither a build nor an upload; a source dataset such as AquaMaps that is unchanged between releases is registered by a new pointer row and nothing else. And a merged model that equals its only input has the same rows, hence the same key, hence is the same object as that input, with no special case. A re-ingested dataset adds objects only for the models whose content changed; the old objects stay for the releases that still point at them. Scores are always new, because they are per-release tables.
+
+```{mermaid}
+%%| label: fig-asset-store
+%%| fig-cap: "A release's pointer table refers to objects in the shared stores; the catalog lists every stored object."
+flowchart LR
+  v8["v8 native_asset"] --> store[("cog/ and native/")]
+  v9["v9 native_asset"] --> store
+  v10["next release native_asset"] --> store
+  cat["assets.parquet"] -.lists.-> store
+```
+
+### The catalog and the pointer table
+
+- **`assets.parquet`** at the bucket root is the catalog, with one row per stored object (store, key, content hash, encoding tag, asset type, grid or dataset key, size, MD5, creation time and the first release that used it). "Is it already stored?" is an anti-join against this file, not a bucket listing.
+- **`native_asset`** is the per-release pointer table (@tbl-db-tables). Its `representation = model` rows point into `cog/`, its `native` rows point into `native/`, and a merged model is a row with `ds_key = ms_merge`. Each row carries the content hash and the asset URL. From the migration every release has one in this shape; the earliest releases keep `model_asset` beside it so that old links still resolve.
+- An object no release points at is garbage. Nothing is deleted except through a check that joins the catalog against every release's pointer tables.
+
+### Finding a file
+
+The bucket denies anonymous listing, so a file is found through a pointer, not by browsing:
+
+1. read the catalog `assets.parquet` to see what exists and where;
+2. read a release's `native_asset` table to see which objects that release uses for each model;
+3. or follow the release's STAC catalog, which links the same URLs.
+
+### Verify before store
+
+An object is admitted to the store under key *K* only if its decoded pixels equal the rows *K* was computed from. A file that fails the check is repainted from the model's current rows and uploaded under its key; it is never copied across from an old location. This keeps what a map draws identical to what the scores used.
+
+See @sec-workflows for how a publish writes to the store and what the publish gate checks.
 
 ## How the tables feed the serving tier
 
