@@ -107,12 +107,12 @@ for (t in tbls) {
 ## Asset store {#sec-asset-store}
 
 ::: {.callout-note}
-## Layout being rolled out
+## Old copies remain until the prune
 
-This section describes the storage layout from the **asset-store migration (2026-10)**, which is being rolled out and is not yet the only layout. Until the old copies are pruned, the v8 and v9 distribution files also still exist under their release prefixes (`v8/native/`, `v9/native/`) and on the file host. A listing on 2026-10-01 found 145,452 objects (33.08 GB) under `v8/native` and `v9/native`, which collapse to 86,421 distinct keys (19.63 GB) in the store, because the two releases carry the same files for most datasets.
+Every published release (v7, v7b, v8, v9) has pointed only into the store since the **asset-store migration of 2026-10-02**. The copies the v8 and v9 releases carried before it still exist under their release prefixes (`v8/native/`, `v9/native/`) and on the file host, unreferenced, until a prune that follows a soak period. The migration's listing on 2026-10-01 found 145,452 objects (33.08 GB) under those two prefixes, which collapse to 86,421 distinct keys (19.63 GB) in the store, because the two releases carry the same files for most datasets.
 :::
 
-**A release owns pointers, never distribution files.** Every cloud-optimized distribution file lives exactly once in an unversioned, content-addressed store, and each release publishes tables whose rows point into it. From the migration, nothing ending in `.tif` or `.pmtiles` is written under a release's `{ver}/` prefix. A release prefix holds only its manifest, its tables, its app bundle and its serving files.
+**A release owns pointers, never distribution files.** Every cloud-optimized distribution file lives exactly once in an unversioned, content-addressed store, and each release publishes tables whose rows point into it. Nothing ending in `.tif` or `.pmtiles` is written under a release's `{ver}/` prefix. A release prefix holds only its manifest, its tables, its app bundle and its serving files.
 
 There are two stores, both in the project's public S3 bucket:
 
@@ -144,8 +144,8 @@ flowchart LR
 
 ### The catalog and the pointer table
 
-- **`assets.parquet`** at the bucket root is the catalog, with one row per stored object (store, key, content hash, encoding tag, asset type, grid or dataset key, size, MD5, creation time and the first release that used it). "Is it already stored?" is an anti-join against this file, not a bucket listing.
-- **`native_asset`** is the per-release pointer table (@tbl-db-tables). Its `representation = model` rows point into `cog/`, its `native` rows point into `native/`, and a merged model is a row with `ds_key = ms_merge`. Each row carries the content hash and the asset URL. From the migration every release has one in this shape; the earliest releases keep `model_asset` beside it so that old links still resolve.
+- **`assets.parquet`** at the atlas root (beside the `cog/` and `native/` stores, under the same `marine-atlas/` prefix as the releases) is the catalog, with one row per stored object (store, key, content hash, encoding tag, asset type, grid or dataset key, size, MD5, creation time and the first release that used it). "Is it already stored?" is an anti-join against this file, not a bucket listing.
+- **`native_asset`** is the per-release pointer table (@tbl-db-tables). Its `representation = model` rows point into `cog/`, its `native` rows point into `native/`, and a merged model is a row with `ds_key = ms_merge`. Each row carries the content hash and the asset URL; a PMTiles row also carries `source_key`, the model key the tile's features are tagged with, which is how a viewer filters one range out of the archive. Every published release has one in this shape; the earlier releases keep `model_asset` beside it so that old links still resolve.
 - An object no release points at is garbage. Nothing is deleted except through a check that joins the catalog against every release's pointer tables.
 
 ### Finding a file
@@ -153,14 +153,13 @@ flowchart LR
 The bucket denies anonymous listing, so a file is found through a pointer, not by browsing:
 
 1. read the catalog `assets.parquet` to see what exists and where;
-2. read a release's `native_asset` table to see which objects that release uses for each model;
-3. or follow the release's STAC catalog, which links the same URLs.
+2. read a release's `native_asset` table (`{ver}/tables/native_asset.parquet`) to see which objects that release uses for each model.
 
 ### Verify before store
 
-An object is admitted to the store under key *K* only if its decoded pixels equal the rows *K* was computed from. A file that fails the check is repainted from the model's current rows and uploaded under its key; it is never copied across from an old location. This keeps what a map draws identical to what the scores used.
+An object is admitted to the store under key *K* only if its decoded pixels equal the rows *K* was computed from. In the migration, a file that failed the check was repainted from the model's current rows and uploaded under its key (2,934 of the raster objects; the rest were copied once their pixels had been verified). A publish applies the same check to every new file before it is uploaded. This keeps what a map draws identical to what the scores used.
 
-See @sec-workflows for how a publish writes to the store and what the publish gate checks.
+See @sec-workflows-asset-store for how a publish writes to the store and what the publish gate checks.
 
 ## How the tables feed the serving tier
 
