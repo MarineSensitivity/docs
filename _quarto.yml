@@ -83,10 +83,10 @@ book:
     - part: Applications (Current)
       chapters:
         - apps/atlas.qmd
-    - part: Applications (Legacy)
-      chapters:
         - apps/scores.qmd
         - apps/species.qmd
+    - part: Applications (Legacy)
+      chapters:
         - apps/aoi.qmd
         - apps/bird_hotspots.qmd
         - apps/map.qmd
