@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.10.19">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -1434,69 +1434,71 @@ xvdb     202:16   0    60G  0 disk</code></pre>
 <span id="cb13-435"><a href="#cb13-435" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">WEB_CONCURRENCY</span><span class="kw">:</span><span class="at">   </span><span class="st">"4"</span></span>
 <span id="cb13-436"><a href="#cb13-436" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">BACKEND</span><span class="kw">:</span><span class="at">           duckdb</span></span>
 <span id="cb13-437"><a href="#cb13-437" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">STAC_FILE_PATH</span><span class="kw">:</span><span class="at">    /app/stac_collections</span></span>
-<span id="cb13-438"><a href="#cb13-438" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PARQUET_URLS_JSON</span><span class="kw">:</span><span class="at"> ${PARQUET_URLS_JSON}</span></span>
+<span id="cb13-438"><a href="#cb13-438" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">PARQUET_URLS_JSON</span><span class="kw">:</span><span class="at"> ${PARQUET_URLS_JSON:?written to .env by workflows/publish_stac_api.qmd}</span></span>
 <span id="cb13-439"><a href="#cb13-439" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb13-440"><a href="#cb13-440" aria-hidden="true" tabindex="-1"></a><span class="co">      # read-only: the API must never mutate the published catalog</span></span>
-<span id="cb13-441"><a href="#cb13-441" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share/data/derived/stac-api/v8:/app/stac_collections:ro</span></span>
-<span id="cb13-442"><a href="#cb13-442" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb13-443"><a href="#cb13-443" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8085:8084"</span></span>
-<span id="cb13-444"><a href="#cb13-444" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> unless-stopped</span></span>
-<span id="cb13-445"><a href="#cb13-445" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">command</span><span class="kw">:</span><span class="at"> bash -c "python -m stac_fastapi.duckdb.app"</span></span>
-<span id="cb13-446"><a href="#cb13-446" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-447"><a href="#cb13-447" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">titilecache</span><span class="kw">:</span></span>
-<span id="cb13-448"><a href="#cb13-448" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> titilecache</span></span>
-<span id="cb13-449"><a href="#cb13-449" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> varnish:latest</span><span class="co"> # 7.4.2  # last updated: 2023-12-26</span></span>
-<span id="cb13-450"><a href="#cb13-450" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb13-451"><a href="#cb13-451" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
-<span id="cb13-452"><a href="#cb13-452" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"./varnish/titiler.vcl:/etc/varnish/default.vcl:ro"</span></span>
-<span id="cb13-453"><a href="#cb13-453" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb13-454"><a href="#cb13-454" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 6082:6082</span></span>
-<span id="cb13-455"><a href="#cb13-455" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb13-456"><a href="#cb13-456" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_HOST</span><span class="kw">:</span><span class="at"> titiler</span></span>
-<span id="cb13-457"><a href="#cb13-457" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">8000</span></span>
-<span id="cb13-458"><a href="#cb13-458" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_HTTP_PORT</span><span class="kw">:</span><span class="at">    </span><span class="dv">6082</span></span>
-<span id="cb13-459"><a href="#cb13-459" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">command</span><span class="kw">:</span><span class="at"> </span><span class="st">"-p default_keep=604800"</span><span class="co"> # 7d, matches vcl TTL</span></span>
-<span id="cb13-460"><a href="#cb13-460" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
-<span id="cb13-461"><a href="#cb13-461" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
-<span id="cb13-462"><a href="#cb13-462" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"titiler"</span></span>
-<span id="cb13-463"><a href="#cb13-463" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-464"><a href="#cb13-464" aria-hidden="true" tabindex="-1"></a><span class="co">  # h3t: OBIS biodiversity-by-hex tile factory (DuckDB SELECT -&gt; h3j JSON tiles)</span></span>
-<span id="cb13-465"><a href="#cb13-465" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">h3t</span><span class="kw">:</span></span>
-<span id="cb13-466"><a href="#cb13-466" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> h3t</span></span>
-<span id="cb13-467"><a href="#cb13-467" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./h3t</span></span>
-<span id="cb13-468"><a href="#cb13-468" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb13-469"><a href="#cb13-469" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_DBS</span><span class="kw">:</span><span class="at">             </span><span class="st">"obis:/share/data/obis/obis_h3.duckdb"</span></span>
-<span id="cb13-470"><a href="#cb13-470" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_DEFAULT_DB</span><span class="kw">:</span><span class="at">      obis</span></span>
-<span id="cb13-471"><a href="#cb13-471" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_MAX_ROWS</span><span class="kw">:</span><span class="at">        </span><span class="st">"50000"</span></span>
-<span id="cb13-472"><a href="#cb13-472" aria-hidden="true" tabindex="-1"></a><span class="co">      # common filtered maps now hit precomputed idx_h3 / idx_h3_taxon layers;</span></span>
-<span id="cb13-473"><a href="#cb13-473" aria-hidden="true" tabindex="-1"></a><span class="co">      # these caps are the stopgap for the remaining live occ_h3 paths (year</span></span>
-<span id="cb13-474"><a href="#cb13-474" aria-hidden="true" tabindex="-1"></a><span class="co">      # filters, multi-value / fine-rank taxa). raise the timeout above the</span></span>
-<span id="cb13-475"><a href="#cb13-475" aria-hidden="true" tabindex="-1"></a><span class="co">      # app-side client timeout in apps/h3-db/app.R.</span></span>
-<span id="cb13-476"><a href="#cb13-476" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_STMT_TIMEOUT_MS</span><span class="kw">:</span><span class="at"> </span><span class="st">"8000"</span></span>
-<span id="cb13-477"><a href="#cb13-477" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_THREADS</span><span class="kw">:</span><span class="at">         </span><span class="st">"4"</span><span class="co">      # cap serving CPU (don't peg all cores)</span></span>
-<span id="cb13-478"><a href="#cb13-478" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_MEMORY_LIMIT</span><span class="kw">:</span><span class="at">    </span><span class="st">"6GB"</span><span class="co">    # cap serving RAM (occ_h3 rollups can spill)</span></span>
-<span id="cb13-479"><a href="#cb13-479" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb13-480"><a href="#cb13-480" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
-<span id="cb13-481"><a href="#cb13-481" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb13-482"><a href="#cb13-482" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8889:8889"</span></span>
-<span id="cb13-483"><a href="#cb13-483" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
-<span id="cb13-484"><a href="#cb13-484" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-485"><a href="#cb13-485" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">h3tcache</span><span class="kw">:</span></span>
-<span id="cb13-486"><a href="#cb13-486" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> h3tcache</span></span>
-<span id="cb13-487"><a href="#cb13-487" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> varnish:latest</span><span class="co"> # 7.4.2  # last updated: 2023-12-26</span></span>
-<span id="cb13-488"><a href="#cb13-488" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb13-489"><a href="#cb13-489" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
-<span id="cb13-490"><a href="#cb13-490" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"./varnish/h3t.vcl:/etc/varnish/default.vcl:ro"</span></span>
-<span id="cb13-491"><a href="#cb13-491" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb13-492"><a href="#cb13-492" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 6083:6083</span></span>
-<span id="cb13-493"><a href="#cb13-493" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb13-494"><a href="#cb13-494" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_HOST</span><span class="kw">:</span><span class="at"> h3t</span></span>
-<span id="cb13-495"><a href="#cb13-495" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">8889</span></span>
-<span id="cb13-496"><a href="#cb13-496" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_HTTP_PORT</span><span class="kw">:</span><span class="at">    </span><span class="dv">6083</span></span>
-<span id="cb13-497"><a href="#cb13-497" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">command</span><span class="kw">:</span><span class="at"> </span><span class="st">"-p default_keep=604800"</span><span class="co"> # 7d, matches vcl TTL</span></span>
-<span id="cb13-498"><a href="#cb13-498" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
-<span id="cb13-499"><a href="#cb13-499" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
-<span id="cb13-500"><a href="#cb13-500" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"h3t"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-440"><a href="#cb13-440" aria-hidden="true" tabindex="-1"></a><span class="co">      # read-only: the API must never mutate the published catalog. The version is STAC_API_VER in .env,</span></span>
+<span id="cb13-441"><a href="#cb13-441" aria-hidden="true" tabindex="-1"></a><span class="co">      # written by publish_stac_api.qmd beside PARQUET_URLS_JSON: a hardcoded v8 here once served v9's</span></span>
+<span id="cb13-442"><a href="#cb13-442" aria-hidden="true" tabindex="-1"></a><span class="co">      # PARQUET_URLS_JSON against v8's tree, and every collection answered "No Parquet configured" (2026-10-07)</span></span>
+<span id="cb13-443"><a href="#cb13-443" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share/data/derived/stac-api/${STAC_API_VER:?written to .env by workflows/publish_stac_api.qmd}:/app/stac_collections:ro</span></span>
+<span id="cb13-444"><a href="#cb13-444" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-445"><a href="#cb13-445" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8085:8084"</span></span>
+<span id="cb13-446"><a href="#cb13-446" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> unless-stopped</span></span>
+<span id="cb13-447"><a href="#cb13-447" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">command</span><span class="kw">:</span><span class="at"> bash -c "python -m stac_fastapi.duckdb.app"</span></span>
+<span id="cb13-448"><a href="#cb13-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-449"><a href="#cb13-449" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">titilecache</span><span class="kw">:</span></span>
+<span id="cb13-450"><a href="#cb13-450" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> titilecache</span></span>
+<span id="cb13-451"><a href="#cb13-451" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> varnish:latest</span><span class="co"> # 7.4.2  # last updated: 2023-12-26</span></span>
+<span id="cb13-452"><a href="#cb13-452" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-453"><a href="#cb13-453" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-454"><a href="#cb13-454" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"./varnish/titiler.vcl:/etc/varnish/default.vcl:ro"</span></span>
+<span id="cb13-455"><a href="#cb13-455" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-456"><a href="#cb13-456" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 6082:6082</span></span>
+<span id="cb13-457"><a href="#cb13-457" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-458"><a href="#cb13-458" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_HOST</span><span class="kw">:</span><span class="at"> titiler</span></span>
+<span id="cb13-459"><a href="#cb13-459" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">8000</span></span>
+<span id="cb13-460"><a href="#cb13-460" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_HTTP_PORT</span><span class="kw">:</span><span class="at">    </span><span class="dv">6082</span></span>
+<span id="cb13-461"><a href="#cb13-461" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">command</span><span class="kw">:</span><span class="at"> </span><span class="st">"-p default_keep=604800"</span><span class="co"> # 7d, matches vcl TTL</span></span>
+<span id="cb13-462"><a href="#cb13-462" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb13-463"><a href="#cb13-463" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb13-464"><a href="#cb13-464" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"titiler"</span></span>
+<span id="cb13-465"><a href="#cb13-465" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-466"><a href="#cb13-466" aria-hidden="true" tabindex="-1"></a><span class="co">  # h3t: OBIS biodiversity-by-hex tile factory (DuckDB SELECT -&gt; h3j JSON tiles)</span></span>
+<span id="cb13-467"><a href="#cb13-467" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">h3t</span><span class="kw">:</span></span>
+<span id="cb13-468"><a href="#cb13-468" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> h3t</span></span>
+<span id="cb13-469"><a href="#cb13-469" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./h3t</span></span>
+<span id="cb13-470"><a href="#cb13-470" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-471"><a href="#cb13-471" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_DBS</span><span class="kw">:</span><span class="at">             </span><span class="st">"obis:/share/data/obis/obis_h3.duckdb"</span></span>
+<span id="cb13-472"><a href="#cb13-472" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_DEFAULT_DB</span><span class="kw">:</span><span class="at">      obis</span></span>
+<span id="cb13-473"><a href="#cb13-473" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_MAX_ROWS</span><span class="kw">:</span><span class="at">        </span><span class="st">"50000"</span></span>
+<span id="cb13-474"><a href="#cb13-474" aria-hidden="true" tabindex="-1"></a><span class="co">      # common filtered maps now hit precomputed idx_h3 / idx_h3_taxon layers;</span></span>
+<span id="cb13-475"><a href="#cb13-475" aria-hidden="true" tabindex="-1"></a><span class="co">      # these caps are the stopgap for the remaining live occ_h3 paths (year</span></span>
+<span id="cb13-476"><a href="#cb13-476" aria-hidden="true" tabindex="-1"></a><span class="co">      # filters, multi-value / fine-rank taxa). raise the timeout above the</span></span>
+<span id="cb13-477"><a href="#cb13-477" aria-hidden="true" tabindex="-1"></a><span class="co">      # app-side client timeout in apps/h3-db/app.R.</span></span>
+<span id="cb13-478"><a href="#cb13-478" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_STMT_TIMEOUT_MS</span><span class="kw">:</span><span class="at"> </span><span class="st">"8000"</span></span>
+<span id="cb13-479"><a href="#cb13-479" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_THREADS</span><span class="kw">:</span><span class="at">         </span><span class="st">"4"</span><span class="co">      # cap serving CPU (don't peg all cores)</span></span>
+<span id="cb13-480"><a href="#cb13-480" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">H3T_MEMORY_LIMIT</span><span class="kw">:</span><span class="at">    </span><span class="st">"6GB"</span><span class="co">    # cap serving RAM (occ_h3 rollups can spill)</span></span>
+<span id="cb13-481"><a href="#cb13-481" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-482"><a href="#cb13-482" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-483"><a href="#cb13-483" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-484"><a href="#cb13-484" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8889:8889"</span></span>
+<span id="cb13-485"><a href="#cb13-485" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb13-486"><a href="#cb13-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-487"><a href="#cb13-487" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">h3tcache</span><span class="kw">:</span></span>
+<span id="cb13-488"><a href="#cb13-488" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> h3tcache</span></span>
+<span id="cb13-489"><a href="#cb13-489" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> varnish:latest</span><span class="co"> # 7.4.2  # last updated: 2023-12-26</span></span>
+<span id="cb13-490"><a href="#cb13-490" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-491"><a href="#cb13-491" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /share:/share</span></span>
+<span id="cb13-492"><a href="#cb13-492" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"./varnish/h3t.vcl:/etc/varnish/default.vcl:ro"</span></span>
+<span id="cb13-493"><a href="#cb13-493" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-494"><a href="#cb13-494" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> 6083:6083</span></span>
+<span id="cb13-495"><a href="#cb13-495" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-496"><a href="#cb13-496" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_HOST</span><span class="kw">:</span><span class="at"> h3t</span></span>
+<span id="cb13-497"><a href="#cb13-497" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_BACKEND_PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">8889</span></span>
+<span id="cb13-498"><a href="#cb13-498" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">VARNISH_HTTP_PORT</span><span class="kw">:</span><span class="at">    </span><span class="dv">6083</span></span>
+<span id="cb13-499"><a href="#cb13-499" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">command</span><span class="kw">:</span><span class="at"> </span><span class="st">"-p default_keep=604800"</span><span class="co"> # 7d, matches vcl TTL</span></span>
+<span id="cb13-500"><a href="#cb13-500" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb13-501"><a href="#cb13-501" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb13-502"><a href="#cb13-502" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"h3t"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="dns" class="level2" data-number="13.3">
 <h2 data-number="13.3" class="anchored" data-anchor-id="dns"><span class="header-section-number">13.3</span> DNS</h2>
@@ -1617,12 +1619,81 @@ xvdb     202:16   0    60G  0 disk</code></pre>
     }
 }
 
+# Every vhost logs (2026-10-02 egress review: only storage/preview/file did, so
+# nobody could say who was crawling the other ~17). Every byte served is EC2
+# egress, so the log is what turns a surprise bill into a name.
+#   import access_log &lt;name&gt;   -&gt; /share/logs/caddy/&lt;name&gt;.log (JSON, rotated)
+(access_log) {
+    log {
+        output file /share/logs/caddy/{args[0]}.log {
+            roll_size 64MiB
+            roll_keep 14
+            roll_keep_for 2160h
+        }
+        format json
+    }
+}
+
+# Crawler policy for the DATA hosts (tiles, COGs, API, files). These are used by
+# browsers through the apps, never meant to be walked: tell well-behaved crawlers
+# to stay out, and refuse the AI/SEO scrapers outright.
+(robots_none) {
+    handle /robots.txt {
+        header Content-Type "text/plain; charset=utf-8"
+        respond `User-agent: *
+Disallow: /
+` 200
+    }
+}
+
+# 403 for AI-training / SEO scrapers by User-Agent (case-insensitive substring).
+# Deliberately NOT listed: Claude-User, ChatGPT-User -- a person asking an
+# assistant to fetch one URL is wanted. Arguments are the paths exempt from the
+# block (always /robots.txt; the file host also exempts its small browsable
+# trees). This is a `handle`, not a bare `respond`, so that it also runs on a
+# vhost made of sibling `handle` blocks (file), where a respond would sort AFTER
+# them and never fire.
+(no_ai_bots) {
+    @ai_bots {
+        header_regexp ai_bot User-Agent (?i)(GPTBot|OAI-SearchBot|ClaudeBot|Claude-SearchBot|anthropic-ai|Amazonbot|Bytespider|CCBot|PerplexityBot|Google-Extended|meta-externalagent|AhrefsBot|SemrushBot|MJ12bot|DotBot)
+        not path {args[:]}
+    }
+    handle @ai_bots {
+        header Content-Type "text/plain; charset=utf-8"
+        respond "Automated crawling of these data hosts is not permitted. See https://marinesensitivity.org/ for the catalog." 403
+    }
+}
+
 api.marinesensitivity.org {
+    import access_log api
+    import robots_none
+    import no_ai_bots /robots.txt
+
     reverse_proxy plumber:8888
 }
 
 file.marinesensitivity.org {
     import cors
+
+    # This host had no access log and no robots.txt while it listed ~80 GB of
+    # data as browsable directories (2026-10-02 egress review). Every byte it
+    # serves is VM egress, so: log it, tell crawlers to stay out of the data,
+    # and serve files by exact URL only -- no directory listings on the data
+    # trees. The browsable front door for data is the S3 index at
+    # storage.marinesensitivity.org; /stac/ and /branding/ stay browsable (small).
+    import access_log file
+    import no_ai_bots /robots.txt /stac/* /branding/*
+
+    handle /robots.txt {
+        header Content-Type "text/plain; charset=utf-8"
+        respond `# The STAC catalog and the brand set: crawl away. Data files: please do not.
+User-agent: *
+Crawl-delay: 10
+Allow: /stac/
+Allow: /branding/
+Disallow: /
+` 200
+    }
 
     # the brand set, served straight from the repo checkout: a `git pull` on the
     # server publishes it, so there is no copy step to forget. Used by the
@@ -1637,17 +1708,34 @@ file.marinesensitivity.org {
     # raw pmtiles for client-side PMTiles protocol (add_pmtiles_source)
     handle_path /pmtiles/* {
         root * /share/data/derived/pmtiles
-        file_server browse
+        file_server
+    }
+
+    # The per-model PMTiles of v8 and v9 (6,776 files each, hardlinked to one
+    # another) live OUTSIDE /share/data/derived on purpose. The BOEM internal
+    # mirror ran `rclone sync …:/share/data/derived --include "*.pmtiles"` every
+    # hour; when v9's copy appeared there on 2026-08-27 its disk filled and it
+    # re-read the same 3,950 files hourly for five weeks (~150 GB/day of egress,
+    # $450). host/pmtiles_native.sh moved them here; the URLs every published
+    # v8/v9 `native_asset` row points at are unchanged. These go away with the
+    # asset-store prune (PMTiles served from S3 only).
+    handle_path /pmtiles/v8/* {
+        root * /share/data/pmtiles_native/v8
+        file_server
+    }
+    handle_path /pmtiles/v9/* {
+        root * /share/data/pmtiles_native/v9
+        file_server
     }
 
     # legacy versioned pmtiles routes (backwards compat for old apps)
     handle_path /pmtiles/v4/* {
         root * /share/data/derived/v4/pmtiles
-        file_server browse
+        file_server
     }
     handle_path /pmtiles/v3/* {
         root * /share/data/derived/v3/pmtiles
-        file_server browse
+        file_server
     }
 
     # stac catalog (sdm extension) — static JSON tree
@@ -1659,7 +1747,7 @@ file.marinesensitivity.org {
     # versioned derived data (geoparquet, cogs, gpkg) referenced by stac assets
     handle_path /derived/* {
         root * /share/data/derived
-        file_server browse
+        file_server
     }
 
     # force reports to download (especially HTML which otherwise renders inline)
@@ -1671,13 +1759,13 @@ file.marinesensitivity.org {
 
     handle {
         root * /share/public
-        file_server browse {
+        file_server {
             precompressed zstd br gzip
         }
     }
 }
 
-# Browsable front door for the PUBLIC S3 bucket.
+# Browsable front door for the PUBLIC S3 bucket -- folder PAGES only.
 #
 # Why this exists: S3 serves OBJECTS, not directories. A URL ending in "/" 404s
 # unless an object literally has that key, and anonymous ListBucket is DENIED on
@@ -1685,8 +1773,16 @@ file.marinesensitivity.org {
 # workflows notebook publish_storage_index.qmd generates a real index.html per
 # directory; this vhost rewrites folder URLs to them:
 #
-#   storage.marinesensitivity.org/marine-atlas/v8/  -&gt; .../v8/index.html
-#   storage.marinesensitivity.org/marine-atlas/latest.txt -&gt; the object
+#   storage.marinesensitivity.org/marine-atlas/v8/  -&gt; .../v8/index.html  (proxied)
+#   storage.marinesensitivity.org/marine-atlas/latest.txt -&gt; 302 to the object
+#
+# ONLY the small pages transit this server: folder URLs, */index.html and
+# */README.md. EVERY OTHER object is a 302 to the bucket's own HTTPS endpoint,
+# so none of its bytes -- Range requests included, a redirect ignores Range --
+# is billed as VM egress (it used to be proxied: 18 GB across ~90,000 objects,
+# 2026-10-02 egress review). The index pages already link files at that endpoint
+# directly. 302, not 301, because the store may move to another provider and a
+# cached 301 would pin clients to the old one.
 #
 # Named "storage" rather than "s3" so the URL survives a move to another
 # provider.
@@ -1695,20 +1791,12 @@ file.marinesensitivity.org {
 storage.marinesensitivity.org, storage.oceanmetrics.io {
     encode zstd gzip
 
-    log {
-        output file /share/logs/caddy/storage.log {
-            roll_size 64MiB
-            roll_keep 14
-            roll_keep_for 2160h
-        }
-        format json
-    }
+    import access_log storage
 
     # robots.txt inline, BEFORE the bucket handler, so it cannot be lost by an
     # index regeneration. The catalog pages are welcome in search results; the
-    # objects behind them are not. Every byte is PROXIED through this server
-    # (reverse_proxy, not a redirect), and the tree is 18 GB across ~90,000
-    # objects, so a crawl would be billed as VM egress.
+    # objects behind them are not (they are now redirected to S3, but a crawler
+    # that follows the redirect still walks 90,000 of them).
     handle /robots.txt {
         header Content-Type "text/plain; charset=utf-8"
         respond `# Catalog pages: crawl away. Data objects: please do not.
@@ -1730,11 +1818,27 @@ Disallow: /*.zip$
     @atlas path_regexp atlas ^/(marine-atlas|gazetteer)(/|$)
     handle @atlas {
         # folder URL -&gt; the index.html object standing in for a listing
-        @dir path_regexp dir ^(.*)/$
-        rewrite @dir {re.dir.1}/index.html
-        reverse_proxy https://s3.us-east-1.amazonaws.com {
-            header_up Host s3.us-east-1.amazonaws.com
-            rewrite /oceanmetrics.io-public{uri}
+        @dir path */
+        handle @dir {
+            rewrite * {path}index.html
+            reverse_proxy https://s3.us-east-1.amazonaws.com {
+                header_up Host s3.us-east-1.amazonaws.com
+                rewrite /oceanmetrics.io-public{uri}
+            }
+        }
+
+        # the pages themselves: small, and what a browser needs on this host
+        @page path */index.html */README.md
+        handle @page {
+            reverse_proxy https://s3.us-east-1.amazonaws.com {
+                header_up Host s3.us-east-1.amazonaws.com
+                rewrite /oceanmetrics.io-public{uri}
+            }
+        }
+
+        # everything else is a data object: hand the client to S3, move no bytes
+        handle {
+            redir https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public{uri} 302
         }
     }
 
@@ -1753,6 +1857,8 @@ Start here: https://storage.marinesensitivity.org/marine-atlas/
 }
 
 pgadmin.marinesensitivity.org {
+    import access_log pgadmin
+
     reverse_proxy pgadmin:8088
 }
 
@@ -1763,18 +1869,27 @@ pgadmin.marinesensitivity.org {
 # searchable STAC API (one Item per model) — complements the STATIC catalog served
 # from file.marinesensitivity.org/stac, which stays exactly as it is.
 stac-api.marinesensitivity.org {
+    import access_log stac-api
+    import robots_none
+
     reverse_proxy stac-api:8084
 }
 
 rstudio.marinesensitivity.org {
+    import access_log rstudio
+
     reverse_proxy rstudio:8787
 }
 
 shiny.marinesensitivity.org {
+    import access_log shiny
+
     reverse_proxy rstudio:3838
 }
 
 app.marinesensitivity.org {
+    import access_log app
+
     # ---- MST app cutover -------------------------------------------------
     #
     # /scores and /species are now ONE app that renders any published release
@@ -1890,14 +2005,7 @@ app.marinesensitivity.org {
 # everyone) rather than open. Which versions are restricted is NOT known here:
 # that is `access` in versions.json, enforced by the app process's MS_PREVIEW.
 preview.marinesensitivity.org {
-    log {
-        output file /share/logs/caddy/preview.log {
-            roll_size 64MiB
-            roll_keep 14
-            roll_keep_for 2160h
-        }
-        format json
-    }
+    import access_log preview
 
     jwtauth {
         jwk_url https://{$CF_ACCESS_TEAM:unconfigured}.cloudflareaccess.com/cdn-cgi/access/certs
@@ -1944,6 +2052,8 @@ preview.marinesensitivity.org {
 }
 
 shiny.oceanmetrics.io {
+    import access_log shiny-oceanmetrics
+
     reverse_proxy rstudio:3838
 }
 
@@ -1952,35 +2062,66 @@ shiny.oceanmetrics.io {
 # }
 
 tile.marinesensitivity.org {
+    import access_log tile
+    import robots_none
+    import no_ai_bots /robots.txt
+
     reverse_proxy tile:7800
 }
 
 tilecache.marinesensitivity.org {
+    import access_log tilecache
+    import robots_none
+    import no_ai_bots /robots.txt
+
     reverse_proxy tilecache:6081
 }
 
 titiler.marinesensitivity.org {
+    import access_log titiler
+    import robots_none
+    import no_ai_bots /robots.txt
+
     reverse_proxy titiler:8000
 }
 
 titiler-v8.marinesensitivity.org {
+    import access_log titiler-v8
+    import robots_none
+    import no_ai_bots /robots.txt
+
     reverse_proxy titiler-v8:8000
 }
 
 titilecache.marinesensitivity.org {
+    import access_log titilecache
+    import robots_none
+    import no_ai_bots /robots.txt
+
     reverse_proxy titilecache:6082
 }
 
 h3t.marinesensitivity.org {
+    import access_log h3t
+    import robots_none
+    import no_ai_bots /robots.txt
+
     reverse_proxy h3t:8889
 }
 
 h3tcache.marinesensitivity.org {
+    import access_log h3tcache
+    import robots_none
+    import no_ai_bots /robots.txt
+
     reverse_proxy h3tcache:6083
 }
 
 pmtiles.marinesensitivity.org {
+    import access_log pmtiles
     import cors
+    import robots_none
+    import no_ai_bots /robots.txt
 
     # server-side tile decoding: ZXY + TileJSON (for QGIS, leaflet, etc.)
     handle_path /tiles/* {
@@ -2010,7 +2151,7 @@ import /share/github/oceanmetrics/erddap/caddy/Caddyfile.erddap
 <img src="figures/server/shiny.png" class="img-fluid" width="300"><br>
 <a href="https://shiny.posit.co/">Shiny Server docs</a></p></li>
 <li><p><a href="https://file.marinesensitivity.org"><strong>file</strong></a><br>
-<em>static file server for PMTiles archives, report downloads, reference GeoPackages</em> — served by Caddy’s <code>file_server</code> directive directly from the <code>/share</code> bind-mount. This replaces the old <code>pg_tileserv</code> vector-tile path for Program Areas, Ecoregions, Planning Areas, protractions, blocks and aliquots; each layer is a single <code>.pmtiles</code> file that the browser range-reads for only the tiles it needs.</p></li>
+<em>static file server for PMTiles archives, report downloads, reference GeoPackages</em> — served by Caddy’s <code>file_server</code> directive directly from the <code>/share</code> bind-mount. This replaces the old <code>pg_tileserv</code> vector-tile path for Program Areas, Ecoregions, Planning Areas, protractions, blocks and aliquots; each layer is a single <code>.pmtiles</code> file that the browser range-reads for only the tiles it needs. It no longer hosts the per-species range tiles (the <code>pmtiles/{v8,v9}/</code> copies): from the asset-store migration (2026-10) those are served from the S3 store (<code>native/{ds_key}/{hash}.pmtiles</code>, <a href="db.html#sec-asset-store" class="quarto-xref"><span>Section 14.3</span></a>), which answers range requests with CORS. The file host keeps serving the zone and reference layers, report downloads and reference GeoPackages, and the species copies are retained there until the prune that follows the migration.</p></li>
 <li><p><a href="https://titiler.marinesensitivity.org"><strong>titiler</strong></a> + <strong>titiler-v8</strong> 🟢<br>
 <em><a href="https://developmentseed.org/titiler/">TiTiler</a> serving the published raster assets.</em><br>
 Every map layer the applications draw is now a <strong>pre-rendered Cloud-Optimized GeoTIFF</strong> read through titiler’s stock <code>/cog</code> routes — score surfaces per metric × subregion, and per-model distributions. <code>titiler-v8</code> runs in parallel with the v7 instance, reading a kilobyte-sized view-only DuckDB whose <code>model_cell</code> is a <em>view</em> over the partitioned Parquet on S3, so no multi-gigabyte database is copied to the server.</p></li>

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.10.19">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -64,7 +64,7 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -811,8 +811,9 @@ div.csl-indent {
   <li><a href="#notes-on-individual-sources" id="toc-notes-on-individual-sources" class="nav-link" data-scroll-target="#notes-on-individual-sources"><span class="header-section-number">5.3</span> Notes on individual sources</a>
   <ul class="collapse">
   <li><a href="#aquamaps-vintage" id="toc-aquamaps-vintage" class="nav-link" data-scroll-target="#aquamaps-vintage"><span class="header-section-number">5.3.1</span> AquaMaps vintage</a></li>
-  <li><a href="#sea-turtles-why-a-dedicated-range-dataset" id="toc-sea-turtles-why-a-dedicated-range-dataset" class="nav-link" data-scroll-target="#sea-turtles-why-a-dedicated-range-dataset"><span class="header-section-number">5.3.2</span> Sea turtles: why a dedicated range dataset</a></li>
-  <li><a href="#range-maps-as-masks" id="toc-range-maps-as-masks" class="nav-link" data-scroll-target="#range-maps-as-masks"><span class="header-section-number">5.3.3</span> Range maps as masks</a></li>
+  <li><a href="#where-each-representation-lives" id="toc-where-each-representation-lives" class="nav-link" data-scroll-target="#where-each-representation-lives"><span class="header-section-number">5.3.2</span> Where each representation lives</a></li>
+  <li><a href="#sea-turtles-why-a-dedicated-range-dataset" id="toc-sea-turtles-why-a-dedicated-range-dataset" class="nav-link" data-scroll-target="#sea-turtles-why-a-dedicated-range-dataset"><span class="header-section-number">5.3.3</span> Sea turtles: why a dedicated range dataset</a></li>
+  <li><a href="#range-maps-as-masks" id="toc-range-maps-as-masks" class="nav-link" data-scroll-target="#range-maps-as-masks"><span class="header-section-number">5.3.4</span> Range maps as masks</a></li>
   </ul></li>
   <li><a href="#standard-grid" id="toc-standard-grid" class="nav-link" data-scroll-target="#standard-grid"><span class="header-section-number">5.4</span> Standard grid</a></li>
   <li><a href="#sec-primary-productivity" id="toc-sec-primary-productivity" class="nav-link" data-scroll-target="#sec-primary-productivity"><span class="header-section-number">5.5</span> Primary productivity</a></li>
@@ -1095,13 +1096,17 @@ Table&nbsp;5.1: Source datasets in v6, ordered by merge priority. <em>Mask</em> 
 <p>AquaMaps is the foundational dataset for most taxa: environmental-envelope models of habitat suitability as a function of depth, temperature, salinity, primary productivity, ice concentration and distance from land <span class="citation" data-cites="kaschner2019">(<a href="references.html#ref-kaschner2019" role="doc-biblioref">Kaschner et al. 2019</a>)</span>. The <strong>model vintage is AquaMaps Version 10/2019</strong> — the release named in the citation above, and the one the registry records as its environmental end date. Later dates that appear alongside AquaMaps in project records are <em>retrieval</em> dates for that same 2019 release, not a newer one; the underlying suitability surfaces have not changed.</p>
 <p>Models are native to a 0.5° grid (c-squares) and are interpolated onto the analysis grid <strong>bilinearly</strong>, implemented as a precomputed weight join rather than a per-species raster resample. Source cells that are absent contribute zero, so a distribution fades to zero within about one cell of its edge rather than ending on a hard step.</p>
 </section>
-<section id="sea-turtles-why-a-dedicated-range-dataset" class="level3" data-number="5.3.2">
-<h3 data-number="5.3.2" class="anchored" data-anchor-id="sea-turtles-why-a-dedicated-range-dataset"><span class="header-section-number">5.3.2</span> Sea turtles: why a dedicated range dataset</h3>
+<section id="where-each-representation-lives" class="level3" data-number="5.3.2">
+<h3 data-number="5.3.2" class="anchored" data-anchor-id="where-each-representation-lives"><span class="header-section-number">5.3.2</span> Where each representation lives</h3>
+<p>Several inputs are published in two representations: the <strong>Original</strong>, at the source’s own resolution (AquaMaps’ 0.5° grid, or a vector range as delivered), and the <strong>Interpolated</strong> surface on the 0.05° analysis grid that scoring used. The originals are stored under <code>native/{ds_key}/</code> and the gridded surfaces under <code>cog/{grid_id}/</code> in the shared, content-addressed store (<a href="db.html#sec-asset-store" class="quarto-xref"><span>Section 14.3</span></a>), and each release’s <code>native_asset</code> table points at both. Because the file name is derived from the source content, a dataset that is unchanged between releases is stored once and pointed at by each release that uses it, rather than copied into every release. An input delivered directly on the analysis grid has nothing to interpolate, but may still have two representations that differ in content rather than resolution: AquaX (v9) publishes the band <strong>as delivered</strong> beside the surface <strong>as ingested</strong> (the thresholded, integer values the merge consumed), and the Atlas labels that pair <em>Delivered / As ingested</em>. An input that is gridded from the start with nothing else to show (the NMFS DPS extinction-risk surfaces, and the v7 ranges whose original could not be matched) has a single representation.</p>
+</section>
+<section id="sea-turtles-why-a-dedicated-range-dataset" class="level3" data-number="5.3.3">
+<h3 data-number="5.3.3" class="anchored" data-anchor-id="sea-turtles-why-a-dedicated-range-dataset"><span class="header-section-number">5.3.3</span> Sea turtles: why a dedicated range dataset</h3>
 <p>Sea turtle distributions from AquaMaps and from IUCN range maps were both too broad, extending well beyond where the species actually occur. Several species also carry <strong>different ESA protection in different parts of their range</strong>, through NOAA Fisheries Distinct Population Segments (DPS) — which a single global range map cannot express.</p>
 <p>The SWOT+DPS dataset replaces the IUCN range as the global mask for all six sea turtle species, combining SWOT Global Distributions <span class="citation" data-cites="wallace2023">(<a href="references.html#ref-wallace2023" role="doc-biblioref">Wallace et al. 2023</a>)</span> for realistic range polygons with the NOAA Fisheries ESA Species Range Geodatabase <span class="citation" data-cites="noaafisheries2025dps">(<a href="references.html#ref-noaafisheries2025dps" role="doc-biblioref">NOAA Fisheries 2025</a>)</span> for DPS listing status. Where DPS data exist (Loggerhead, Green, Olive Ridley), Endangered DPS areas take the Endangered value and the remainder of the SWOT range the Threatened value; for species Endangered throughout (Leatherback, Hawksbill, Kemp’s Ridley) the entire range takes the Endangered value.</p>
 </section>
-<section id="range-maps-as-masks" class="level3" data-number="5.3.3">
-<h3 data-number="5.3.3" class="anchored" data-anchor-id="range-maps-as-masks"><span class="header-section-number">5.3.3</span> Range maps as masks</h3>
+<section id="range-maps-as-masks" class="level3" data-number="5.3.4">
+<h3 data-number="5.3.4" class="anchored" data-anchor-id="range-maps-as-masks"><span class="header-section-number">5.3.4</span> Range maps as masks</h3>
 <p>Datasets marked <em>Mask</em> do double duty: they contribute cell values <strong>and</strong> define the spatial extent a taxon’s merged distribution may occupy. This is what stops an environmental-envelope model from asserting presence far outside a species’ known range — see <a href="model-merging.html" class="quarto-xref"><span>Chapter 8</span></a>.</p>
 </section>
 </section>
