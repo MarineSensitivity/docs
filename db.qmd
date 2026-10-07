@@ -153,7 +153,8 @@ flowchart LR
 The bucket denies anonymous listing, so a file is found through a pointer, not by browsing:
 
 1. read the catalog `assets.parquet` to see what exists and where;
-2. read a release's `native_asset` table (`{ver}/tables/native_asset.parquet`) to see which objects that release uses for each model.
+2. read a release's `native_asset` table (`{ver}/tables/native_asset.parquet`) to see which objects that release uses for each model;
+3. or ask STAC: the searchable STAC API is built from the pointer table, so each Item's `model` and `native` assets carry the same store URLs, and the static STAC catalog of a release links them once its tree is rebuilt from the pointer table (v7 and v7b today).
 
 ### Verify before store
 
