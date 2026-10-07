@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.10.19">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -46,10 +46,13 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -790,7 +793,14 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset"><span class="header-section-number">14.2.10</span> <code>dataset</code></a></li>
   <li><a href="#taxon_model" id="toc-taxon_model" class="nav-link" data-scroll-target="#taxon_model"><span class="header-section-number">14.2.11</span> <code>taxon_model</code></a></li>
   </ul></li>
-  <li><a href="#how-the-tables-feed-the-serving-tier" id="toc-how-the-tables-feed-the-serving-tier" class="nav-link" data-scroll-target="#how-the-tables-feed-the-serving-tier"><span class="header-section-number">14.3</span> How the tables feed the serving tier</a></li>
+  <li><a href="#sec-asset-store" id="toc-sec-asset-store" class="nav-link" data-scroll-target="#sec-asset-store"><span class="header-section-number">14.3</span> Asset store</a>
+  <ul class="collapse">
+  <li><a href="#the-key-comes-from-the-content" id="toc-the-key-comes-from-the-content" class="nav-link" data-scroll-target="#the-key-comes-from-the-content"><span class="header-section-number">14.3.1</span> The key comes from the content</a></li>
+  <li><a href="#the-catalog-and-the-pointer-table" id="toc-the-catalog-and-the-pointer-table" class="nav-link" data-scroll-target="#the-catalog-and-the-pointer-table"><span class="header-section-number">14.3.2</span> The catalog and the pointer table</a></li>
+  <li><a href="#finding-a-file" id="toc-finding-a-file" class="nav-link" data-scroll-target="#finding-a-file"><span class="header-section-number">14.3.3</span> Finding a file</a></li>
+  <li><a href="#verify-before-store" id="toc-verify-before-store" class="nav-link" data-scroll-target="#verify-before-store"><span class="header-section-number">14.3.4</span> Verify before store</a></li>
+  </ul></li>
+  <li><a href="#how-the-tables-feed-the-serving-tier" id="toc-how-the-tables-feed-the-serving-tier" class="nav-link" data-scroll-target="#how-the-tables-feed-the-serving-tier"><span class="header-section-number">14.4</span> How the tables feed the serving tier</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/db.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -1499,8 +1509,101 @@ Table&nbsp;14.1: Tables published by v1, with row counts read from the release i
 </table>
 </section>
 </section>
-<section id="how-the-tables-feed-the-serving-tier" class="level2" data-number="14.3">
-<h2 data-number="14.3" class="anchored" data-anchor-id="how-the-tables-feed-the-serving-tier"><span class="header-section-number">14.3</span> How the tables feed the serving tier</h2>
+<section id="sec-asset-store" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="sec-asset-store"><span class="header-section-number">14.3</span> Asset store</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Old copies remain until the prune
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Every published release (v7, v7b, v8, v9) has pointed only into the store since the <strong>asset-store migration of 2026-10-02</strong>. The copies the v8 and v9 releases carried before it still exist under their release prefixes (<code>v8/native/</code>, <code>v9/native/</code>) and on the file host, unreferenced, until a prune that follows a soak period. The migration’s listing on 2026-10-01 found 145,452 objects (33.08 GB) under those two prefixes, which collapse to 86,421 distinct keys (19.63 GB) in the store, because the two releases carry the same files for most datasets.</p>
+</div>
+</div>
+<p><strong>A release owns pointers, never distribution files.</strong> Every cloud-optimized distribution file lives exactly once in an unversioned, content-addressed store, and each release publishes tables whose rows point into it. Nothing ending in <code>.tif</code> or <code>.pmtiles</code> is written under a release’s <code>{ver}/</code> prefix. A release prefix holds only its manifest, its tables, its app bundle and its serving files.</p>
+<p>There are two stores, both in the project’s public S3 bucket:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 36%">
+<col style="width: 26%">
+<col style="width: 36%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Store</th>
+<th style="text-align: left;">Key</th>
+<th style="text-align: left;">Holds</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>cog/</code></td>
+<td style="text-align: left;"><code>cog/{grid_id}/{hash}.tif</code></td>
+<td style="text-align: left;">rasters <em>on an analysis grid</em>: each input’s gridded surface, merged models and score surfaces</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>native/</code></td>
+<td style="text-align: left;"><code>native/{ds_key}/{hash}.{tif\|pmtiles}</code></td>
+<td style="text-align: left;">each source dataset’s own resolution original: a raster (<code>.tif</code>) or a vector range (<code>.pmtiles</code>)</td>
+</tr>
+</tbody>
+</table>
+<section id="the-key-comes-from-the-content" class="level3" data-number="14.3.1">
+<h3 data-number="14.3.1" class="anchored" data-anchor-id="the-key-comes-from-the-content"><span class="header-section-number">14.3.1</span> The key comes from the content</h3>
+<p>The <code>hash</code> in a key is computed <strong>before</strong> any file is built, from the <em>source content</em> of the model plus an <strong>encoding tag</strong>, and never from the bytes of the file or from the release:</p>
+<ul>
+<li>for a gridded surface, the model’s <code>(cell_id, val)</code> rows;</li>
+<li>for a native raster, the source grid’s <code>(cell_id, val)</code> rows;</li>
+<li>for a native vector range, the normalized geometry and the attributes that reach the tile;</li>
+<li>the encoding tag names how the file is written (data type, nodata, overviews, tile scheme), so a different encoding of the same content is deliberately a different object.</li>
+</ul>
+<p>Two consequences follow. A surface that did not change between releases is found in the store by its key, so it costs neither a build nor an upload; a source dataset such as AquaMaps that is unchanged between releases is registered by a new pointer row and nothing else. And a merged model that equals its only input has the same rows, hence the same key, hence is the same object as that input, with no special case. A re-ingested dataset adds objects only for the models whose content changed; the old objects stay for the releases that still point at them. Scores are always new, because they are per-release tables.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-asset-store" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-asset-store-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<p><a href="db_files/figure-html/mermaid-figure-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;14.1: A release’s pointer table refers to objects in the shared stores; the catalog lists every stored object."><img src="db_files/figure-html/mermaid-figure-1.png" style="width:4.94in;height:3.98in" class="figure-img"></a></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-asset-store-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.1: A release’s pointer table refers to objects in the shared stores; the catalog lists every stored object.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="the-catalog-and-the-pointer-table" class="level3" data-number="14.3.2">
+<h3 data-number="14.3.2" class="anchored" data-anchor-id="the-catalog-and-the-pointer-table"><span class="header-section-number">14.3.2</span> The catalog and the pointer table</h3>
+<ul>
+<li><strong><code>assets.parquet</code></strong> at the atlas root (beside the <code>cog/</code> and <code>native/</code> stores, under the same <code>marine-atlas/</code> prefix as the releases) is the catalog, with one row per stored object (store, key, content hash, encoding tag, asset type, grid or dataset key, size, MD5, creation time and the first release that used it). “Is it already stored?” is an anti-join against this file, not a bucket listing.</li>
+<li><strong><code>native_asset</code></strong> is the per-release pointer table (<a href="#tbl-db-tables" class="quarto-xref">Table&nbsp;<span>14.1</span></a>). Its <code>representation = model</code> rows point into <code>cog/</code>, its <code>native</code> rows point into <code>native/</code>, and a merged model is a row with <code>ds_key = ms_merge</code>. Each row carries the content hash and the asset URL; a PMTiles row also carries <code>source_key</code>, the model key the tile’s features are tagged with, which is how a viewer filters one range out of the archive. Every published release has one in this shape; the earlier releases keep <code>model_asset</code> beside it so that old links still resolve.</li>
+<li>An object no release points at is garbage. Nothing is deleted except through a check that joins the catalog against every release’s pointer tables.</li>
+</ul>
+</section>
+<section id="finding-a-file" class="level3" data-number="14.3.3">
+<h3 data-number="14.3.3" class="anchored" data-anchor-id="finding-a-file"><span class="header-section-number">14.3.3</span> Finding a file</h3>
+<p>The bucket denies anonymous listing, so a file is found through a pointer, not by browsing:</p>
+<ol type="1">
+<li>read the catalog <code>assets.parquet</code> to see what exists and where;</li>
+<li>read a release’s <code>native_asset</code> table (<code>{ver}/tables/native_asset.parquet</code>) to see which objects that release uses for each model;</li>
+<li>or ask STAC: the searchable STAC API is built from the pointer table, so each Item’s <code>model</code> and <code>native</code> assets carry the same store URLs, and the static STAC catalog of a release links them once its tree is rebuilt from the pointer table (every published release today).</li>
+</ol>
+</section>
+<section id="verify-before-store" class="level3" data-number="14.3.4">
+<h3 data-number="14.3.4" class="anchored" data-anchor-id="verify-before-store"><span class="header-section-number">14.3.4</span> Verify before store</h3>
+<p>An object is admitted to the store under key <em>K</em> only if its decoded pixels equal the rows <em>K</em> was computed from. In the migration, a file that failed the check was repainted from the model’s current rows and uploaded under its key (2,934 of the raster objects; the rest were copied once their pixels had been verified). A publish applies the same check to every new file before it is uploaded. This keeps what a map draws identical to what the scores used.</p>
+<p>See <a href="workflows.html#sec-workflows-asset-store" class="quarto-xref"><span>Section 15.3</span></a> for how a publish writes to the store and what the publish gate checks.</p>
+</section>
+</section>
+<section id="how-the-tables-feed-the-serving-tier" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="how-the-tables-feed-the-serving-tier"><span class="header-section-number">14.4</span> How the tables feed the serving tier</h2>
 <ul>
 <li><strong>Score rasters</strong> — per-cell scores are published as <strong>Cloud-Optimized GeoTIFFs</strong>, one per metric × subregion, and the app reads the href and rescale range straight from the release manifest. Earlier releases rendered them by sending SQL to a tile factory per request; that path is retired (see <a href="server.html" class="quarto-xref"><span>Chapter 13</span></a>).</li>
 <li><strong>Per-model distributions</strong> — <code>model_cell</code> is published partitioned by a dense integer model id, so a tile request reads exactly one partition as a point read rather than scanning the surface.</li>
@@ -1939,6 +2042,38 @@ Table&nbsp;14.1: Tables published by v1, with row counts read from the release i
 </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
