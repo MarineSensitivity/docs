@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.10.19">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -812,9 +812,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#the-pipeline-is-a-graph-generated-from-the-notebooks" id="toc-the-pipeline-is-a-graph-generated-from-the-notebooks" class="nav-link active" data-scroll-target="#the-pipeline-is-a-graph-generated-from-the-notebooks"><span class="header-section-number">15.1</span> The pipeline is a graph, generated from the notebooks</a></li>
   <li><a href="#stages" id="toc-stages" class="nav-link" data-scroll-target="#stages"><span class="header-section-number">15.2</span> Stages</a></li>
-  <li><a href="#reproducibility-rules" id="toc-reproducibility-rules" class="nav-link" data-scroll-target="#reproducibility-rules"><span class="header-section-number">15.3</span> Reproducibility rules</a></li>
-  <li><a href="#content-addressed-checkpoints" id="toc-content-addressed-checkpoints" class="nav-link" data-scroll-target="#content-addressed-checkpoints"><span class="header-section-number">15.4</span> Content-addressed checkpoints</a></li>
-  <li><a href="#guarding-the-science" id="toc-guarding-the-science" class="nav-link" data-scroll-target="#guarding-the-science"><span class="header-section-number">15.5</span> Guarding the science</a></li>
+  <li><a href="#sec-workflows-asset-store" id="toc-sec-workflows-asset-store" class="nav-link" data-scroll-target="#sec-workflows-asset-store"><span class="header-section-number">15.3</span> Publishing to the asset store</a></li>
+  <li><a href="#reproducibility-rules" id="toc-reproducibility-rules" class="nav-link" data-scroll-target="#reproducibility-rules"><span class="header-section-number">15.4</span> Reproducibility rules</a></li>
+  <li><a href="#content-addressed-checkpoints" id="toc-content-addressed-checkpoints" class="nav-link" data-scroll-target="#content-addressed-checkpoints"><span class="header-section-number">15.5</span> Content-addressed checkpoints</a></li>
+  <li><a href="#guarding-the-science" id="toc-guarding-the-science" class="nav-link" data-scroll-target="#guarding-the-science"><span class="header-section-number">15.6</span> Guarding the science</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/workflows.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -895,13 +896,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td style="text-align: left;"><strong>release</strong></td>
-<td style="text-align: left;">Publishes the release to S3 as partitioned Parquet, COGs, PMTiles and a STAC catalog, writes the version manifest, and (gated) deploys the serving tier.</td>
+<td style="text-align: left;">Publishes the release to S3 as partitioned Parquet, COGs, PMTiles and a STAC catalog, writes the version manifest, and (gated) deploys the serving tier. The COG and PMTiles files are written to the shared store, not to the release (<a href="db.html#sec-asset-store" class="quarto-xref"><span>Section 14.3</span></a>).</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="reproducibility-rules" class="level2" data-number="15.3">
-<h2 data-number="15.3" class="anchored" data-anchor-id="reproducibility-rules"><span class="header-section-number">15.3</span> Reproducibility rules</h2>
+<section id="sec-workflows-asset-store" class="level2" data-number="15.3">
+<h2 data-number="15.3" class="anchored" data-anchor-id="sec-workflows-asset-store"><span class="header-section-number">15.3</span> Publishing to the asset store</h2>
+<p>The publisher of distribution files (<code>publish_native.qmd</code>) writes only to the content-addressed stores (<code>cog/</code>, <code>native/</code>) and to the catalog <code>assets.parquet</code>; a release prefix receives tables, a manifest and an app bundle, never a distribution file (<a href="db.html#sec-asset-store" class="quarto-xref"><span>Section 14.3</span></a>). The order is fixed: the key of every file is computed from its content first, a file whose key is already in the catalog is neither built nor uploaded, each new file is decoded and checked against its key before upload, the uploaded objects are appended to the catalog, and only then is the release’s <code>native_asset</code> table written. A <strong>publish gate</strong> stops the run before that last step if any URL in the pointer table is not a catalogued store object, or if any <code>.tif</code> or <code>.pmtiles</code> object is listed under <code>{ver}/</code> (for v8 and v9 that check is a warning rather than a stop until their pre-migration copies are pruned).</p>
+</section>
+<section id="reproducibility-rules" class="level2" data-number="15.4">
+<h2 data-number="15.4" class="anchored" data-anchor-id="reproducibility-rules"><span class="header-section-number">15.4</span> Reproducibility rules</h2>
 <p>These are load-bearing, not stylistic. Each one exists because its absence caused a specific failure.</p>
 <p><strong>Every process is a chunk in a committed notebook, run by rendering to HTML.</strong> Including the parts that touch the outside world — the S3 sync, the server deploy, the app reload. Not an ad-hoc shell command. Rendering is what produces the tracked HTML output and the content-hash checkpoint; executing the code without rendering skips both, so it is a diagnostic, never a run.</p>
 <p><strong>Side effects are opt-in.</strong> Anything expensive or outward-facing sits behind an environment flag that defaults to off, so a routine render cannot publish or restart anything by accident.</p>
@@ -909,12 +914,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>A version number is not proof.</strong> A notebook whose logic lives in the <code>msens</code> package is only as current as the <em>installed</em> package. The server once reported the right package version while running an older function, and seven release manifests were regenerated missing their zone tiles as a result — with nothing failing. So every behavior change gets a version bump <em>and</em> a changelog entry, and the container pins move with it.</p>
 <p><strong>Reproducibility beats uptime.</strong> Where a reproducible fix and a fast in-place workaround are both available, the reproducible one wins even at the cost of brief downtime. Drift between a running container and the image it was built from is a bug to fix immediately, not a reason to avoid rebuilding.</p>
 </section>
-<section id="content-addressed-checkpoints" class="level2" data-number="15.4">
-<h2 data-number="15.4" class="anchored" data-anchor-id="content-addressed-checkpoints"><span class="header-section-number">15.4</span> Content-addressed checkpoints</h2>
+<section id="content-addressed-checkpoints" class="level2" data-number="15.5">
+<h2 data-number="15.5" class="anchored" data-anchor-id="content-addressed-checkpoints"><span class="header-section-number">15.5</span> Content-addressed checkpoints</h2>
 <p>Each notebook writes a manifest recording a <strong>content hash</strong> of what it produced. A downstream stage can then tell whether its input actually changed, rather than trusting a timestamp — which is what makes a re-run cheap when nothing moved, and what makes an unexpected change visible.</p>
 </section>
-<section id="guarding-the-science" class="level2" data-number="15.5">
-<h2 data-number="15.5" class="anchored" data-anchor-id="guarding-the-science"><span class="header-section-number">15.5</span> Guarding the science</h2>
+<section id="guarding-the-science" class="level2" data-number="15.6">
+<h2 data-number="15.6" class="anchored" data-anchor-id="guarding-the-science"><span class="header-section-number">15.6</span> Guarding the science</h2>
 <p>Scientific rules live in the <code>msens</code> package as documented functions, not as SQL strings inside a notebook — so a notebook <em>calls</em> the rule and a unit test <em>asserts</em> it, and the two cannot drift. Every non-trivial rule has a test with a small fixture asserting its exact expected output, and every bug that is found becomes a permanent named assertion.</p>
 <p>This matters more than the aggregate checks. Whole-pipeline validation — comparing a release’s zone scores against the previous one — catches broad drift but hides rule-level breakage: one lost exclusion affected ~750 species while barely moving any aggregate score (<a href="model-merging.html" class="quarto-xref"><span>Chapter 8</span></a>).</p>
 <p>See <a href="db.html" class="quarto-xref"><span>Chapter 14</span></a> for the schema these workflows produce, and <a href="releases.html" class="quarto-xref"><span>Chapter 2</span></a> for what each release changed.</p>
