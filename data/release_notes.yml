@@ -228,7 +228,7 @@ v7c:
     A **second surgical patch of v7**, superseding v7b for review: three method changes,
     everything else re-executes v7's own scoring verbatim, and turning all three off reproduces v7
     exactly. (1) **The turtle record rule replaces v7b's suitability threshold.** A sea-turtle
-    species is dropped from an ecoregion where it has **never been recorded** in any observational
+    species is dropped from an Alaska ecoregion where it has **never been recorded** in any observational
     channel (NOAA Alaska sightings, strandings and bycatch since 1963, fishery observers, OBIS, GBIF,
     iNaturalist, and the Washington and Gulf/Atlantic stranding networks), and kept at its v7 value
     everywhere else. On v7's data that drops loggerhead, green, leatherback and olive ridley from the

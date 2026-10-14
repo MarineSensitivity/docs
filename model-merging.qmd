@@ -137,7 +137,7 @@ under designated critical habitat is never removed."))
   cat("\n\n")
   if (on("turtle_record_rule")) cat(
 "- **Turtle record rule** (`turtle_record_rule = on`): a sea-turtle species is excluded from an
-  ecoregion where it has **never been recorded** in any observational channel — sightings,
+  Alaska ecoregion where it has **never been recorded** in any observational channel — sightings,
   strandings, bycatch, fishery observers, OBIS, GBIF and iNaturalist. Where it has been recorded,
   however rarely, it keeps its v7 value: a down-weight shared across an ecoregion would cancel under
   the ecoregional rescale (@eq-ecoregion-rescale), and no weight can take a species out of a cell under

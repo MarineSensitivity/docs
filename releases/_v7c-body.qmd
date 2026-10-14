@@ -51,7 +51,7 @@ att <- function(d, w, r) {
 
 v7c, titled **v7.2**, is the second surgical patch of the public v7 release, built the way v7b was. It is not a new build: v7's database is cloned, the merged models of six sea turtles and the North Atlantic right whale are edited under their existing model ids, and v7's own scoring is re-executed verbatim. It replaces v7b as the version under review. Three rules change, and nothing else does:
 
-1. **The turtle record rule.** A sea-turtle species is dropped from an ecoregion where it has never been recorded through any observational channel: sightings, strandings, bycatch, fishery observers, survey and opportunistic records. This replaces v7b's suitability threshold.
+1. **The turtle record rule.** A sea-turtle species is dropped from an Alaska ecoregion where it has never been recorded through any observational channel: sightings, strandings, bycatch, fishery observers, survey and opportunistic records. This replaces v7b's suitability threshold.
 2. **The right whale Gulf rule.** The North Atlantic right whale is dropped from the two Gulf of America ecoregions, which lie outside its range.
 3. **The coverage floor κ**, carried over unchanged from v7b.
 
@@ -115,13 +115,13 @@ where $p_{c,e}$ is the percentage of cell $c$ covered by ecoregion $e$. A tie go
 
 ### Rule 1: the turtle record rule
 
-For species $s$, ecoregion $e$ and observational channel $k$, let $n_{s,e,k}$ be the number of records of $s$ in $e$ from channel $k$, and $K_e$ the channels that reach $e$. Let $R_s$ be the cells of the species' v7 merged model. The species is dropped from the ecoregion when no channel has ever recorded it there and v7 gives it range there:
+For species $s$, Alaska ecoregion $e$ (Gulf of Alaska, East Bering Sea, Chukchi and Beaufort Seas, High Arctic) and observational channel $k$, let $n_{s,e,k}$ be the number of records of $s$ in $e$ from channel $k$, and $K_e$ the channels that reach $e$. Let $R_s$ be the cells of the species' v7 merged model. The species is dropped from the ecoregion when no channel has ever recorded it there and v7 gives it range there:
 
 $$
 \text{drop}_{s,e} \;=\; \mathbb{1}\!\left[\sum_{k \in K_e} n_{s,e,k} = 0\right] \cdot \mathbb{1}\!\left[\,\lvert \{c \in R_s : e(c) = e\} \rvert \ge 1\,\right]
 $$ {#eq-v7c-record-rule}
 
-A channel that does not reach an ecoregion is left out of the sum rather than counted as a zero. A channel that reaches it and finds nothing counts as a zero. The rule is a yes/no question over all channels together; the channels are reported separately below so that what each can and cannot see stays visible.
+The evidence table is built over the four Alaska ecoregions only; v7c does not apply the rule elsewhere. A channel that does not reach an ecoregion is left out of the sum rather than counted as a zero. A channel that reaches it and finds nothing counts as a zero. The rule is a yes/no question over all channels together; the channels are reported separately below so that what each can and cannot see stays visible.
 
 ### Rule 2: the right whale Gulf rule
 
@@ -166,7 +166,7 @@ $$ {#eq-v7c-weight}
 
 where $\lambda$ is turtles found per unit of looking and $\bar S$ is mean modeled suitability per cell. v7c does not use it, because a weight cannot reach the score:
 
-- **The ecoregional rescale cancels it.** Each component is rescaled to 0–100 within its ecoregion (@eq-ecoregion-rescale). A weight $w$ shared by every turtle cell of an ecoregion scales the cell scores and both endpoints alike, so it divides out:
+- **The ecoregional rescale cancels it.** Each component is rescaled to 0–100 within its ecoregion (@eq-ecoregion-rescale). A weight $w$ shared by every turtle cell of an ecoregion scales the cell scores and both endpoints alike, so it divides out, apart from rounding to whole numbers (next point):
   $$
   \frac{w\,x_c - w\,x_{\min}}{w\,x_{\max} - w\,x_{\min}} = \frac{x_c - x_{\min}}{x_{\max} - x_{\min}}
   $$ {#eq-v7c-cancel}
@@ -447,4 +447,4 @@ v7c_kbl(data.frame(
 
 ## Reproducing v7c
 
-The exclusions are data: `data/v7c/zone_exclusions.csv` in the workflows repository, written by `build_v7c_exclusions.qmd`, applied by `build_v7c.qmd` through `msens::cell_zone_major_sql()` and `msens::zone_exclude_sql()`, each guarded by unit tests (a straddling cell goes with the larger side, a tie keeps the cell, a critical-habitat cell survives, one taxon's exclusion never touches another). The release records the rules it applied in its `release_method` table, including the exclusion table's digest, and a build with the same flags on any machine must reproduce the committed reference digests (`build_v7c.json`).
+The exclusions are data: `data/v7c/zone_exclusions.csv` in the workflows repository, written by `build_v7c_exclusions.qmd`, applied by `build_v7c.qmd` through `msens::cell_zone_major_sql()` and `msens::zone_exclude_sql()`, each guarded by unit tests (a straddling cell goes with the larger side, a tie goes to the ecoregion key that sorts first, a critical-habitat cell survives, one taxon's exclusion never touches another). The release records the rules it applied in its `release_method` table, including the exclusion table's digest, and a build with the same flags on any machine must reproduce the committed reference digests (`build_v7c.json`).
