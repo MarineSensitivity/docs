@@ -121,6 +121,40 @@ marine mammals [@kaschner2011] — no Alaska Program Area would retain turtles.\
 }
 ```
 
+```{r}
+#| output: asis
+mth <- doc_manifest()$methods
+if (!is.null(mth) && "turtle_record_rule" %in% mth$method_key) {
+  g  <- function(k) if (k %in% mth$method_key) mth$value[mth$method_key == k][1] else NA_character_
+  on <- function(k) identical(g(k), "on")
+  cat(glue::glue(
+"**{doc_ver()} edits the merged models after this rule, by ecoregion and by evidence**, and leaves
+@eq-merge-turtle and the suitability surfaces exactly as v7 had them (no suitability threshold, the
+range fill at 1 kept). Each cell belongs to the ecoregion covering most of it, and a species is
+removed — the cell dropped, never set to zero — from an ecoregion listed in an evidence table of
+species × ecoregion exclusions; every other cell keeps its v7 value, and a cell the species holds
+under designated critical habitat is never removed."))
+  cat("\n\n")
+  if (on("turtle_record_rule")) cat(
+"- **Turtle record rule** (`turtle_record_rule = on`): a sea-turtle species is excluded from an
+  ecoregion where it has **never been recorded** in any observational channel — sightings,
+  strandings, bycatch, fishery observers, OBIS, GBIF and iNaturalist. Where it has been recorded,
+  however rarely, it keeps its v7 value: a down-weight shared across an ecoregion would cancel under
+  the ecoregional rescale (@eq-ecoregion-rescale), and no weight can take a species out of a cell under
+  the integer floor of 1.\n")
+  if (on("right_whale_gulf_rule")) cat(
+"- **Right whale Gulf rule** (`right_whale_gulf_rule = on`): the North Atlantic right whale is
+  excluded from the two Gulf of America ecoregions, outside its range, where its v7 presence came
+  only from the IUCN range polygon and AquaMaps [@roberts2016; @ward_geiger2011].\n")
+  cat("\n")
+  cat(glue::glue(
+"The table applied is fingerprinted in the release as `zone_exclusions_hash = {g('zone_exclusions_hash')}`;
+the rules as equations, the evidence per species, ecoregion and channel, and the cells each row
+removes are in @sec-release-v7c. Turning both rules off reproduces v7's merged models exactly."))
+  cat("\n\n")
+}
+```
+
 Because risk is already inside the merged values, turtles receive `er_score = 100` at scoring time as a pass-through multiplier (flagged `is_er_spatial`), which cancels in the division by 100 rather than double-counting.
 
 ### Step 5 — NMFS DPS-listed species: the model stays the distribution, risk varies by cell

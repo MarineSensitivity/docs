@@ -222,3 +222,32 @@ v7b:
     ecoregion-relative rescaling the year-integration barely moves scores (and moves some the
     wrong way); it lands with v10, whose national reference is where the correction actually
     counts.
+
+v7c:
+  methods: >
+    A **second surgical patch of v7**, superseding v7b for review: three method changes,
+    everything else re-executes v7's own scoring verbatim, and turning all three off reproduces v7
+    exactly. (1) **The turtle record rule replaces v7b's suitability threshold.** A sea-turtle
+    species is dropped from an ecoregion where it has **never been recorded** in any observational
+    channel (NOAA Alaska sightings, strandings and bycatch since 1963, fishery observers, OBIS, GBIF,
+    iNaturalist, and the Washington and Gulf/Atlantic stranding networks), and kept at its v7 value
+    everywhere else. On v7's data that drops loggerhead, green, leatherback and olive ridley from the
+    East Bering Sea; the Gulf of Alaska, where all four have been recorded, keeps them — v7b's
+    threshold had removed three of them there. AquaMaps suitability is no longer thresholded and the
+    floor-of-1 range fill is back as in v7. (2) **The North Atlantic right whale leaves the Gulf of
+    America**: it is dropped from both Gulf ecoregions, which lie outside its range — a handful of
+    vagrant records against thousands in the Atlantic, and no critical habitat, density model or
+    distribution-model ensemble placing it there. Both drops are rows of one evidence table, and
+    critical habitat is never dropped. (3) **The coverage floor stays** at 5%, as in v7b; here it
+    removes the last sliver of turtle cells from the Aleutian Arc and St. George Basin, so the two
+    rules together leave both Program Areas without a turtle component. A down-weight in place of
+    a drop was worked through and set aside: under ecoregion-relative rescaling a weight common to a
+    species group cancels, and stored values are floored at 1, so only a drop reaches the score.
+    **Productivity is untouched** — every productivity value equals v7's; the year-integration fix
+    still lands with v10.
+  scope: >
+    Which taxa count where, not which taxa count: no species is added or removed, and the
+    definition of a valid species is v7's. Four sea turtles no longer occur in the East Bering Sea,
+    and the North Atlantic right whale no longer occurs in the Gulf of America, so the Aleutian Arc and
+    St. George Basin Program Areas lose their turtle component and the Gulf of America Program Areas' mammal
+    component is rescaled without the right whale. Every other Program Area scores as in v7.

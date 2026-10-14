@@ -80,6 +80,10 @@ doc_version_row <- function(ver = doc_ver()) {
 #' registry predates the column).
 doc_access <- function(ver = doc_ver()) {
   row <- doc_version_row(ver)
+  # a version the published registry does not list yet (registered in versions.csv,
+  # versions.json not pushed) is restricted until the registry says otherwise: its
+  # NA status would otherwise fall through to "public" -- fail closed
+  if (!nrow(row) || is.na(row$ver[1])) return("restricted")
   a <- if ("access" %in% names(row)) as.character(row$access) else NA_character_
   if (is.na(a) || !nzchar(a)) a <- if (identical(as.character(row$status), "prerelease")) "restricted" else "public"
   a

@@ -1,0 +1,39 @@
+---
+description: "v7c (v7.2): sea turtles and the North Atlantic right whale where the observational record places them"
+---
+
+# v7c — sea turtles and the North Atlantic right whale where the record places them {#sec-release-v7c}
+
+```{r}
+#| include: false
+# The full chapter lives in releases/_v7c-body.qmd (the leading underscore keeps
+# Quarto from rendering it on its own). It renders in the v7c book, and in every
+# book once the registry lists v7c as public. Until then a restricted release
+# must never reach GitHub Pages (CLAUDE.md), so the public books of the other
+# releases carry only the short note below, with no link to the review host.
+# doc_access() fails closed for a version the published registry does not list.
+v7c_row    <- doc_version_row("v7c")
+v7c_public <- nrow(v7c_row) == 1 && !is.na(v7c_row$ver[1]) &&
+  identical(doc_access("v7c"), "public")
+v7c_full   <- identical(doc_ver(), "v7c") || v7c_public
+```
+
+```{r}
+#| label: v7c-body
+#| output: asis
+if (v7c_full) {
+  cat(knitr::knit_child(
+    here::here("releases/_v7c-body.qmd"), quiet = TRUE, envir = environment()))
+} else {
+  cat(
+"::: {.callout-note}
+## A release under review
+
+v7c (titled v7.2) is a pre-release under review. It patches v7's sea-turtle and North Atlantic
+right whale distributions where the observational record places them. Its chapter (the rules,
+the evidence behind them and what moved in the scores) is published with the v7c documentation
+on the signed-in review host, and appears in every version of this book once v7c is released.
+:::
+")
+}
+```

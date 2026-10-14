@@ -169,10 +169,20 @@ where $A_c$ is the area of cell $c$ — which is latitude-dependent on a 0.05° 
 mth <- doc_manifest()$methods
 if (!is.null(mth) && "coverage_floor_pct" %in% mth$method_key) {
   kappa <- mth$value[mth$method_key == "coverage_floor_pct"]
+  on    <- function(k) k %in% mth$method_key && identical(mth$value[mth$method_key == k][1], "on")
+  # what the floor removes depends on which turtle rule the release carries
+  turtle_note <- if ("turtle_suit_min" %in% mth$method_key) glue::glue(
+"in {doc_ver()} the turtle core-habitat threshold has already emptied that area of turtles, so the
+floor removes no further pair and stands as the reporting rule.") else if (on("turtle_record_rule")) glue::glue(
+"in {doc_ver()} the turtle record rule removes all but a sliver of the turtle cells of St. George
+Basin and the Aleutian Arc (cells that belong by majority to the Gulf of Alaska ecoregion), and the
+floor then removes both remaining pairs, at a small fraction of one percent coverage, so the two rules
+together leave neither area with a turtle component (@sec-release-v7c).") else glue::glue(
+"in {doc_ver()} the floor stands as the reporting rule.")
   cat(glue::glue(
 "### Coverage floor
 
-**Since {doc_ver()}**, a component (a species category, or primary productivity) is *reportable*
+**In {doc_ver()}**, a component (a species category, or primary productivity) is *reportable*
 for a Program Area only where its scored cells cover a large enough share of that area:
 
 $$
@@ -186,9 +196,8 @@ exactly as a component with no scored cells already is, and is never published a
 would pull the composite down for a reason unrelated to sensitivity). The rule is geometric — defined
 on which cells carry a value, not on the value itself. The composite itself is not subject to the
 floor; it averages whichever components are reportable. On v7's data the floor removes exactly one
-of 151 Program Area × component pairs (sea turtles in St. George Basin, at 1.5 % coverage); in
-{doc_ver()} the turtle core-habitat threshold has already emptied that area of turtles, so the
-floor removes no further pair and stands as the reporting rule. The next-lowest pair is High Arctic
+of 151 Program Area × component pairs (sea turtles in St. George Basin, at 1.5 % coverage); {turtle_note}
+The next-lowest pair is High Arctic
 corals at 7.3 %, so any floor between 2 % and 7 % gives the same answer.\n\n"))
 }
 ```

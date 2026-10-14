@@ -1,0 +1,884 @@
+aphia,common,eco,region,channel,covers,n,unit,year_first,year_last,source
+137205,Loggerhead,CAC,Pacific CA/OR/WA,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,CAC,Pacific CA/OR/WA,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,CAC,Pacific CA/OR/WA,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,CAC,Pacific CA/OR/WA,ak_fishery_observer,FALSE,,records,,,benaka2019
+137205,Loggerhead,CAC,Pacific CA/OR/WA,obis_all,TRUE,46,records,1996,2021,obis2025
+137205,Loggerhead,CAC,Pacific CA/OR/WA,obis_survey,TRUE,30,records,1996,2014,obis2025
+137205,Loggerhead,CAC,Pacific CA/OR/WA,gbif,TRUE,68,records,1963,2026,gbif2026
+137205,Loggerhead,CAC,Pacific CA/OR/WA,inat,TRUE,15,records,2012,2026,inaturalist2026
+137205,Loggerhead,CAC,Pacific CA/OR/WA,speciesgrids,TRUE,40,0.05° cells,,,speciesgrids2025
+137205,Loggerhead,CAC,Pacific CA/OR/WA,wdfw_wa,FALSE,,records,,,wdfw2017
+137205,Loggerhead,CAC,Pacific CA/OR/WA,stssn,FALSE,,strandings,,,stssn2026
+137205,Loggerhead,CBS,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,CBS,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,CBS,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,CBS,Bering–Arctic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137205,Loggerhead,CBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137205,Loggerhead,CBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137205,Loggerhead,CBS,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137205,Loggerhead,CBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137205,Loggerhead,CBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137205,Loggerhead,CBS,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137205,Loggerhead,CBS,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137205,Loggerhead,EBS,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,EBS,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,EBS,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,EBS,Bering–Arctic,ak_fishery_observer,TRUE,0,records,2014,2015,benaka2019
+137205,Loggerhead,EBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137205,Loggerhead,EBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137205,Loggerhead,EBS,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137205,Loggerhead,EBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137205,Loggerhead,EBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137205,Loggerhead,EBS,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137205,Loggerhead,EBS,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137205,Loggerhead,EGOA,Gulf of America,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,EGOA,Gulf of America,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,EGOA,Gulf of America,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,EGOA,Gulf of America,ak_fishery_observer,FALSE,,records,,,benaka2019
+137205,Loggerhead,EGOA,Gulf of America,obis_all,TRUE,1150,records,1992,2019,obis2025
+137205,Loggerhead,EGOA,Gulf of America,obis_survey,TRUE,1012,records,1992,2018,obis2025
+137205,Loggerhead,EGOA,Gulf of America,gbif,TRUE,1115,records,1992,2026,gbif2026
+137205,Loggerhead,EGOA,Gulf of America,inat,TRUE,115,records,2005,2026,inaturalist2026
+137205,Loggerhead,EGOA,Gulf of America,speciesgrids,TRUE,564,0.05° cells,,,speciesgrids2025
+137205,Loggerhead,EGOA,Gulf of America,wdfw_wa,FALSE,,records,,,wdfw2017
+137205,Loggerhead,EGOA,Gulf of America,stssn,TRUE,4482,strandings,2016,2025,stssn2026
+137205,Loggerhead,GOA,Gulf of Alaska,noaa_ak_sighting,TRUE,1,records,1993,1993,noaa_ak_turtles_2026
+137205,Loggerhead,GOA,Gulf of Alaska,noaa_ak_stranding,TRUE,1,records,1991,1991,noaa_ak_turtles_2026
+137205,Loggerhead,GOA,Gulf of Alaska,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,GOA,Gulf of Alaska,ak_fishery_observer,TRUE,0,records,2014,2015,benaka2019
+137205,Loggerhead,GOA,Gulf of Alaska,obis_all,TRUE,0,records,,,obis2025
+137205,Loggerhead,GOA,Gulf of Alaska,obis_survey,TRUE,0,records,,,obis2025
+137205,Loggerhead,GOA,Gulf of Alaska,gbif,TRUE,0,records,,,gbif2026
+137205,Loggerhead,GOA,Gulf of Alaska,inat,TRUE,0,records,,,inaturalist2026
+137205,Loggerhead,GOA,Gulf of Alaska,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137205,Loggerhead,GOA,Gulf of Alaska,wdfw_wa,FALSE,,records,,,wdfw2017
+137205,Loggerhead,GOA,Gulf of Alaska,stssn,FALSE,,strandings,,,stssn2026
+137205,Loggerhead,HAR,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,HAR,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,HAR,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,HAR,Bering–Arctic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137205,Loggerhead,HAR,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137205,Loggerhead,HAR,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137205,Loggerhead,HAR,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137205,Loggerhead,HAR,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137205,Loggerhead,HAR,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137205,Loggerhead,HAR,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137205,Loggerhead,HAR,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137205,Loggerhead,NECS,Atlantic,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,NECS,Atlantic,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,NECS,Atlantic,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,NECS,Atlantic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137205,Loggerhead,NECS,Atlantic,obis_all,TRUE,17168,records,1963,2023,obis2025
+137205,Loggerhead,NECS,Atlantic,obis_survey,TRUE,15926,records,1963,2023,obis2025
+137205,Loggerhead,NECS,Atlantic,gbif,TRUE,18125,records,1923,2026,gbif2026
+137205,Loggerhead,NECS,Atlantic,inat,TRUE,259,records,1980,2026,inaturalist2026
+137205,Loggerhead,NECS,Atlantic,speciesgrids,TRUE,3574,0.05° cells,,,speciesgrids2025
+137205,Loggerhead,NECS,Atlantic,wdfw_wa,FALSE,,records,,,wdfw2017
+137205,Loggerhead,NECS,Atlantic,stssn,FALSE,,strandings,,,stssn2026
+137205,Loggerhead,PIS,PIS,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,PIS,PIS,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,PIS,PIS,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,PIS,PIS,ak_fishery_observer,FALSE,,records,,,benaka2019
+137205,Loggerhead,PIS,PIS,obis_all,TRUE,501,records,1996,2013,obis2025
+137205,Loggerhead,PIS,PIS,obis_survey,TRUE,5,records,2004,2013,obis2025
+137205,Loggerhead,PIS,PIS,gbif,TRUE,358,records,1996,2025,gbif2026
+137205,Loggerhead,PIS,PIS,inat,TRUE,1,records,2025,2025,inaturalist2026
+137205,Loggerhead,PIS,PIS,speciesgrids,TRUE,290,0.05° cells,,,speciesgrids2025
+137205,Loggerhead,PIS,PIS,wdfw_wa,FALSE,,records,,,wdfw2017
+137205,Loggerhead,PIS,PIS,stssn,FALSE,,strandings,,,stssn2026
+137205,Loggerhead,PUR,PUR,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,PUR,PUR,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,PUR,PUR,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,PUR,PUR,ak_fishery_observer,FALSE,,records,,,benaka2019
+137205,Loggerhead,PUR,PUR,obis_all,TRUE,190,records,1995,2017,obis2025
+137205,Loggerhead,PUR,PUR,obis_survey,TRUE,27,records,1995,2005,obis2025
+137205,Loggerhead,PUR,PUR,gbif,TRUE,180,records,1995,2017,gbif2026
+137205,Loggerhead,PUR,PUR,inat,TRUE,3,records,2002,2017,inaturalist2026
+137205,Loggerhead,PUR,PUR,speciesgrids,TRUE,56,0.05° cells,,,speciesgrids2025
+137205,Loggerhead,PUR,PUR,wdfw_wa,FALSE,,records,,,wdfw2017
+137205,Loggerhead,PUR,PUR,stssn,FALSE,,strandings,,,stssn2026
+137205,Loggerhead,SECS,Atlantic,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,SECS,Atlantic,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,SECS,Atlantic,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,SECS,Atlantic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137205,Loggerhead,SECS,Atlantic,obis_all,TRUE,12023,records,1964,2023,obis2025
+137205,Loggerhead,SECS,Atlantic,obis_survey,TRUE,11282,records,1964,2023,obis2025
+137205,Loggerhead,SECS,Atlantic,gbif,TRUE,13707,records,1860,2026,gbif2026
+137205,Loggerhead,SECS,Atlantic,inat,TRUE,650,records,1980,2026,inaturalist2026
+137205,Loggerhead,SECS,Atlantic,speciesgrids,TRUE,2735,0.05° cells,,,speciesgrids2025
+137205,Loggerhead,SECS,Atlantic,wdfw_wa,FALSE,,records,,,wdfw2017
+137205,Loggerhead,SECS,Atlantic,stssn,FALSE,,strandings,,,stssn2026
+137205,Loggerhead,WAOR,Pacific CA/OR/WA,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,WAOR,Pacific CA/OR/WA,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,WAOR,Pacific CA/OR/WA,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,WAOR,Pacific CA/OR/WA,ak_fishery_observer,FALSE,,records,,,benaka2019
+137205,Loggerhead,WAOR,Pacific CA/OR/WA,obis_all,TRUE,1,records,2006,2006,obis2025
+137205,Loggerhead,WAOR,Pacific CA/OR/WA,obis_survey,TRUE,0,records,,,obis2025
+137205,Loggerhead,WAOR,Pacific CA/OR/WA,gbif,TRUE,1,records,2006,2006,gbif2026
+137205,Loggerhead,WAOR,Pacific CA/OR/WA,inat,TRUE,0,records,,,inaturalist2026
+137205,Loggerhead,WAOR,Pacific CA/OR/WA,speciesgrids,TRUE,1,0.05° cells,,,speciesgrids2025
+137205,Loggerhead,WAOR,Pacific CA/OR/WA,wdfw_wa,TRUE,6,records,1980,2000,wdfw2017
+137205,Loggerhead,WAOR,Pacific CA/OR/WA,stssn,FALSE,,strandings,,,stssn2026
+137205,Loggerhead,WCGOA,Gulf of America,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,WCGOA,Gulf of America,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,WCGOA,Gulf of America,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137205,Loggerhead,WCGOA,Gulf of America,ak_fishery_observer,FALSE,,records,,,benaka2019
+137205,Loggerhead,WCGOA,Gulf of America,obis_all,TRUE,173,records,1992,2018,obis2025
+137205,Loggerhead,WCGOA,Gulf of America,obis_survey,TRUE,151,records,1992,2018,obis2025
+137205,Loggerhead,WCGOA,Gulf of America,gbif,TRUE,151,records,1980,2026,gbif2026
+137205,Loggerhead,WCGOA,Gulf of America,inat,TRUE,19,records,2013,2026,inaturalist2026
+137205,Loggerhead,WCGOA,Gulf of America,speciesgrids,TRUE,143,0.05° cells,,,speciesgrids2025
+137205,Loggerhead,WCGOA,Gulf of America,wdfw_wa,FALSE,,records,,,wdfw2017
+137205,Loggerhead,WCGOA,Gulf of America,stssn,TRUE,2202,strandings,2016,2025,stssn2026
+137205,Loggerhead,NECS+SECS,Atlantic,stssn,TRUE,16919,strandings,2016,2025,stssn2026
+137206,Green,CAC,Pacific CA/OR/WA,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,CAC,Pacific CA/OR/WA,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,CAC,Pacific CA/OR/WA,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,CAC,Pacific CA/OR/WA,ak_fishery_observer,FALSE,,records,,,benaka2019
+137206,Green,CAC,Pacific CA/OR/WA,obis_all,TRUE,12,records,1997,2022,obis2025
+137206,Green,CAC,Pacific CA/OR/WA,obis_survey,TRUE,3,records,1998,1998,obis2025
+137206,Green,CAC,Pacific CA/OR/WA,gbif,TRUE,352,records,1964,2026,gbif2026
+137206,Green,CAC,Pacific CA/OR/WA,inat,TRUE,335,records,2007,2026,inaturalist2026
+137206,Green,CAC,Pacific CA/OR/WA,speciesgrids,TRUE,43,0.05° cells,,,speciesgrids2025
+137206,Green,CAC,Pacific CA/OR/WA,wdfw_wa,FALSE,,records,,,wdfw2017
+137206,Green,CAC,Pacific CA/OR/WA,stssn,FALSE,,strandings,,,stssn2026
+137206,Green,CBS,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137206,Green,CBS,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137206,Green,CBS,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137206,Green,CBS,Bering–Arctic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137206,Green,CBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137206,Green,CBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137206,Green,CBS,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137206,Green,CBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137206,Green,CBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137206,Green,CBS,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137206,Green,CBS,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137206,Green,EBS,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137206,Green,EBS,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137206,Green,EBS,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137206,Green,EBS,Bering–Arctic,ak_fishery_observer,TRUE,0,records,2014,2015,benaka2019
+137206,Green,EBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137206,Green,EBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137206,Green,EBS,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137206,Green,EBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137206,Green,EBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137206,Green,EBS,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137206,Green,EBS,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137206,Green,EGOA,Gulf of America,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,EGOA,Gulf of America,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,EGOA,Gulf of America,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,EGOA,Gulf of America,ak_fishery_observer,FALSE,,records,,,benaka2019
+137206,Green,EGOA,Gulf of America,obis_all,TRUE,160,records,1999,2018,obis2025
+137206,Green,EGOA,Gulf of America,obis_survey,TRUE,151,records,1999,2018,obis2025
+137206,Green,EGOA,Gulf of America,gbif,TRUE,233,records,1985,2026,gbif2026
+137206,Green,EGOA,Gulf of America,inat,TRUE,77,records,1985,2026,inaturalist2026
+137206,Green,EGOA,Gulf of America,speciesgrids,TRUE,107,0.05° cells,,,speciesgrids2025
+137206,Green,EGOA,Gulf of America,wdfw_wa,FALSE,,records,,,wdfw2017
+137206,Green,EGOA,Gulf of America,stssn,TRUE,8059,strandings,2016,2025,stssn2026
+137206,Green,GOA,Gulf of Alaska,noaa_ak_sighting,TRUE,4,records,1976,1999,noaa_ak_turtles_2026
+137206,Green,GOA,Gulf of Alaska,noaa_ak_stranding,TRUE,13,records,1976,2018,noaa_ak_turtles_2026
+137206,Green,GOA,Gulf of Alaska,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137206,Green,GOA,Gulf of Alaska,ak_fishery_observer,TRUE,0,records,2014,2015,benaka2019
+137206,Green,GOA,Gulf of Alaska,obis_all,TRUE,0,records,,,obis2025
+137206,Green,GOA,Gulf of Alaska,obis_survey,TRUE,0,records,,,obis2025
+137206,Green,GOA,Gulf of Alaska,gbif,TRUE,0,records,,,gbif2026
+137206,Green,GOA,Gulf of Alaska,inat,TRUE,0,records,,,inaturalist2026
+137206,Green,GOA,Gulf of Alaska,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137206,Green,GOA,Gulf of Alaska,wdfw_wa,FALSE,,records,,,wdfw2017
+137206,Green,GOA,Gulf of Alaska,stssn,FALSE,,strandings,,,stssn2026
+137206,Green,HAR,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137206,Green,HAR,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137206,Green,HAR,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137206,Green,HAR,Bering–Arctic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137206,Green,HAR,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137206,Green,HAR,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137206,Green,HAR,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137206,Green,HAR,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137206,Green,HAR,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137206,Green,HAR,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137206,Green,HAR,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137206,Green,NECS,Atlantic,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,NECS,Atlantic,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,NECS,Atlantic,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,NECS,Atlantic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137206,Green,NECS,Atlantic,obis_all,TRUE,1112,records,1979,2021,obis2025
+137206,Green,NECS,Atlantic,obis_survey,TRUE,463,records,1979,2021,obis2025
+137206,Green,NECS,Atlantic,gbif,TRUE,1122,records,1893,2026,gbif2026
+137206,Green,NECS,Atlantic,inat,TRUE,54,records,2012,2026,inaturalist2026
+137206,Green,NECS,Atlantic,speciesgrids,TRUE,597,0.05° cells,,,speciesgrids2025
+137206,Green,NECS,Atlantic,wdfw_wa,FALSE,,records,,,wdfw2017
+137206,Green,NECS,Atlantic,stssn,FALSE,,strandings,,,stssn2026
+137206,Green,PIS,PIS,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,PIS,PIS,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,PIS,PIS,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,PIS,PIS,ak_fishery_observer,FALSE,,records,,,benaka2019
+137206,Green,PIS,PIS,obis_all,TRUE,543,records,1923,2022,obis2025
+137206,Green,PIS,PIS,obis_survey,TRUE,527,records,1923,2017,obis2025
+137206,Green,PIS,PIS,gbif,TRUE,9028,records,1901,2026,gbif2026
+137206,Green,PIS,PIS,inat,TRUE,8372,records,1969,2026,inaturalist2026
+137206,Green,PIS,PIS,speciesgrids,TRUE,782,0.05° cells,,,speciesgrids2025
+137206,Green,PIS,PIS,wdfw_wa,FALSE,,records,,,wdfw2017
+137206,Green,PIS,PIS,stssn,FALSE,,strandings,,,stssn2026
+137206,Green,PUR,PUR,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,PUR,PUR,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,PUR,PUR,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,PUR,PUR,ak_fishery_observer,FALSE,,records,,,benaka2019
+137206,Green,PUR,PUR,obis_all,TRUE,126,records,2000,2019,obis2025
+137206,Green,PUR,PUR,obis_survey,TRUE,115,records,2000,2019,obis2025
+137206,Green,PUR,PUR,gbif,TRUE,863,records,1975,2026,gbif2026
+137206,Green,PUR,PUR,inat,TRUE,734,records,1995,2026,inaturalist2026
+137206,Green,PUR,PUR,speciesgrids,TRUE,154,0.05° cells,,,speciesgrids2025
+137206,Green,PUR,PUR,wdfw_wa,FALSE,,records,,,wdfw2017
+137206,Green,PUR,PUR,stssn,FALSE,,strandings,,,stssn2026
+137206,Green,SECS,Atlantic,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,SECS,Atlantic,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,SECS,Atlantic,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,SECS,Atlantic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137206,Green,SECS,Atlantic,obis_all,TRUE,727,records,1979,2023,obis2025
+137206,Green,SECS,Atlantic,obis_survey,TRUE,179,records,1979,2023,obis2025
+137206,Green,SECS,Atlantic,gbif,TRUE,8456,records,1860,2026,gbif2026
+137206,Green,SECS,Atlantic,inat,TRUE,768,records,2002,2026,inaturalist2026
+137206,Green,SECS,Atlantic,speciesgrids,TRUE,359,0.05° cells,,,speciesgrids2025
+137206,Green,SECS,Atlantic,wdfw_wa,FALSE,,records,,,wdfw2017
+137206,Green,SECS,Atlantic,stssn,FALSE,,strandings,,,stssn2026
+137206,Green,WAOR,Pacific CA/OR/WA,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,WAOR,Pacific CA/OR/WA,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,WAOR,Pacific CA/OR/WA,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,WAOR,Pacific CA/OR/WA,ak_fishery_observer,FALSE,,records,,,benaka2019
+137206,Green,WAOR,Pacific CA/OR/WA,obis_all,TRUE,0,records,,,obis2025
+137206,Green,WAOR,Pacific CA/OR/WA,obis_survey,TRUE,0,records,,,obis2025
+137206,Green,WAOR,Pacific CA/OR/WA,gbif,TRUE,1,records,1990,1990,gbif2026
+137206,Green,WAOR,Pacific CA/OR/WA,inat,TRUE,0,records,,,inaturalist2026
+137206,Green,WAOR,Pacific CA/OR/WA,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137206,Green,WAOR,Pacific CA/OR/WA,wdfw_wa,TRUE,28,records,1950,2010,wdfw2017
+137206,Green,WAOR,Pacific CA/OR/WA,stssn,FALSE,,strandings,,,stssn2026
+137206,Green,WCGOA,Gulf of America,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,WCGOA,Gulf of America,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,WCGOA,Gulf of America,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137206,Green,WCGOA,Gulf of America,ak_fishery_observer,FALSE,,records,,,benaka2019
+137206,Green,WCGOA,Gulf of America,obis_all,TRUE,40,records,1994,2018,obis2025
+137206,Green,WCGOA,Gulf of America,obis_survey,TRUE,39,records,1994,2018,obis2025
+137206,Green,WCGOA,Gulf of America,gbif,TRUE,116,records,1994,2026,gbif2026
+137206,Green,WCGOA,Gulf of America,inat,TRUE,76,records,2006,2026,inaturalist2026
+137206,Green,WCGOA,Gulf of America,speciesgrids,TRUE,34,0.05° cells,,,speciesgrids2025
+137206,Green,WCGOA,Gulf of America,wdfw_wa,FALSE,,records,,,wdfw2017
+137206,Green,WCGOA,Gulf of America,stssn,TRUE,12274,strandings,2016,2025,stssn2026
+137206,Green,NECS+SECS,Atlantic,stssn,TRUE,33546,strandings,2016,2025,stssn2026
+137207,Hawksbill,CAC,Pacific CA/OR/WA,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,CAC,Pacific CA/OR/WA,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,CAC,Pacific CA/OR/WA,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,CAC,Pacific CA/OR/WA,ak_fishery_observer,FALSE,,records,,,benaka2019
+137207,Hawksbill,CAC,Pacific CA/OR/WA,obis_all,TRUE,1,records,1998,1998,obis2025
+137207,Hawksbill,CAC,Pacific CA/OR/WA,obis_survey,TRUE,1,records,1998,1998,obis2025
+137207,Hawksbill,CAC,Pacific CA/OR/WA,gbif,TRUE,1,records,1998,1998,gbif2026
+137207,Hawksbill,CAC,Pacific CA/OR/WA,inat,TRUE,0,records,,,inaturalist2026
+137207,Hawksbill,CAC,Pacific CA/OR/WA,speciesgrids,TRUE,1,0.05° cells,,,speciesgrids2025
+137207,Hawksbill,CAC,Pacific CA/OR/WA,wdfw_wa,FALSE,,records,,,wdfw2017
+137207,Hawksbill,CAC,Pacific CA/OR/WA,stssn,FALSE,,strandings,,,stssn2026
+137207,Hawksbill,CBS,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,CBS,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,CBS,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,CBS,Bering–Arctic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137207,Hawksbill,CBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137207,Hawksbill,CBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137207,Hawksbill,CBS,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137207,Hawksbill,CBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137207,Hawksbill,CBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137207,Hawksbill,CBS,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137207,Hawksbill,CBS,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137207,Hawksbill,EBS,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,EBS,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,EBS,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,EBS,Bering–Arctic,ak_fishery_observer,TRUE,0,records,2014,2015,benaka2019
+137207,Hawksbill,EBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137207,Hawksbill,EBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137207,Hawksbill,EBS,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137207,Hawksbill,EBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137207,Hawksbill,EBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137207,Hawksbill,EBS,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137207,Hawksbill,EBS,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137207,Hawksbill,EGOA,Gulf of America,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,EGOA,Gulf of America,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,EGOA,Gulf of America,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,EGOA,Gulf of America,ak_fishery_observer,FALSE,,records,,,benaka2019
+137207,Hawksbill,EGOA,Gulf of America,obis_all,TRUE,10,records,2000,2009,obis2025
+137207,Hawksbill,EGOA,Gulf of America,obis_survey,TRUE,10,records,2000,2009,obis2025
+137207,Hawksbill,EGOA,Gulf of America,gbif,TRUE,6,records,2000,2021,gbif2026
+137207,Hawksbill,EGOA,Gulf of America,inat,TRUE,1,records,2021,2021,inaturalist2026
+137207,Hawksbill,EGOA,Gulf of America,speciesgrids,TRUE,8,0.05° cells,,,speciesgrids2025
+137207,Hawksbill,EGOA,Gulf of America,wdfw_wa,FALSE,,records,,,wdfw2017
+137207,Hawksbill,EGOA,Gulf of America,stssn,TRUE,51,strandings,2016,2025,stssn2026
+137207,Hawksbill,GOA,Gulf of Alaska,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,GOA,Gulf of Alaska,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,GOA,Gulf of Alaska,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,GOA,Gulf of Alaska,ak_fishery_observer,TRUE,0,records,2014,2015,benaka2019
+137207,Hawksbill,GOA,Gulf of Alaska,obis_all,TRUE,0,records,,,obis2025
+137207,Hawksbill,GOA,Gulf of Alaska,obis_survey,TRUE,0,records,,,obis2025
+137207,Hawksbill,GOA,Gulf of Alaska,gbif,TRUE,0,records,,,gbif2026
+137207,Hawksbill,GOA,Gulf of Alaska,inat,TRUE,0,records,,,inaturalist2026
+137207,Hawksbill,GOA,Gulf of Alaska,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137207,Hawksbill,GOA,Gulf of Alaska,wdfw_wa,FALSE,,records,,,wdfw2017
+137207,Hawksbill,GOA,Gulf of Alaska,stssn,FALSE,,strandings,,,stssn2026
+137207,Hawksbill,HAR,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,HAR,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,HAR,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,HAR,Bering–Arctic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137207,Hawksbill,HAR,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137207,Hawksbill,HAR,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137207,Hawksbill,HAR,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137207,Hawksbill,HAR,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137207,Hawksbill,HAR,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137207,Hawksbill,HAR,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137207,Hawksbill,HAR,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137207,Hawksbill,NECS,Atlantic,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,NECS,Atlantic,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,NECS,Atlantic,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,NECS,Atlantic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137207,Hawksbill,NECS,Atlantic,obis_all,TRUE,11,records,1992,1999,obis2025
+137207,Hawksbill,NECS,Atlantic,obis_survey,TRUE,11,records,1992,1999,obis2025
+137207,Hawksbill,NECS,Atlantic,gbif,TRUE,11,records,1968,2012,gbif2026
+137207,Hawksbill,NECS,Atlantic,inat,TRUE,0,records,,,inaturalist2026
+137207,Hawksbill,NECS,Atlantic,speciesgrids,TRUE,9,0.05° cells,,,speciesgrids2025
+137207,Hawksbill,NECS,Atlantic,wdfw_wa,FALSE,,records,,,wdfw2017
+137207,Hawksbill,NECS,Atlantic,stssn,FALSE,,strandings,,,stssn2026
+137207,Hawksbill,PIS,PIS,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,PIS,PIS,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,PIS,PIS,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,PIS,PIS,ak_fishery_observer,FALSE,,records,,,benaka2019
+137207,Hawksbill,PIS,PIS,obis_all,TRUE,15,records,1989,2017,obis2025
+137207,Hawksbill,PIS,PIS,obis_survey,TRUE,15,records,1989,2017,obis2025
+137207,Hawksbill,PIS,PIS,gbif,TRUE,113,records,2001,2026,gbif2026
+137207,Hawksbill,PIS,PIS,inat,TRUE,92,records,2001,2026,inaturalist2026
+137207,Hawksbill,PIS,PIS,speciesgrids,TRUE,75,0.05° cells,,,speciesgrids2025
+137207,Hawksbill,PIS,PIS,wdfw_wa,FALSE,,records,,,wdfw2017
+137207,Hawksbill,PIS,PIS,stssn,FALSE,,strandings,,,stssn2026
+137207,Hawksbill,PUR,PUR,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,PUR,PUR,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,PUR,PUR,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,PUR,PUR,ak_fishery_observer,FALSE,,records,,,benaka2019
+137207,Hawksbill,PUR,PUR,obis_all,TRUE,195,records,1994,2015,obis2025
+137207,Hawksbill,PUR,PUR,obis_survey,TRUE,65,records,1994,2007,obis2025
+137207,Hawksbill,PUR,PUR,gbif,TRUE,293,records,1862,2026,gbif2026
+137207,Hawksbill,PUR,PUR,inat,TRUE,106,records,1996,2026,inaturalist2026
+137207,Hawksbill,PUR,PUR,speciesgrids,TRUE,170,0.05° cells,,,speciesgrids2025
+137207,Hawksbill,PUR,PUR,wdfw_wa,FALSE,,records,,,wdfw2017
+137207,Hawksbill,PUR,PUR,stssn,FALSE,,strandings,,,stssn2026
+137207,Hawksbill,SECS,Atlantic,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,SECS,Atlantic,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,SECS,Atlantic,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,SECS,Atlantic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137207,Hawksbill,SECS,Atlantic,obis_all,TRUE,16,records,1992,2019,obis2025
+137207,Hawksbill,SECS,Atlantic,obis_survey,TRUE,16,records,1992,2019,obis2025
+137207,Hawksbill,SECS,Atlantic,gbif,TRUE,125,records,1856,2026,gbif2026
+137207,Hawksbill,SECS,Atlantic,inat,TRUE,58,records,2002,2026,inaturalist2026
+137207,Hawksbill,SECS,Atlantic,speciesgrids,TRUE,29,0.05° cells,,,speciesgrids2025
+137207,Hawksbill,SECS,Atlantic,wdfw_wa,FALSE,,records,,,wdfw2017
+137207,Hawksbill,SECS,Atlantic,stssn,FALSE,,strandings,,,stssn2026
+137207,Hawksbill,WAOR,Pacific CA/OR/WA,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,WAOR,Pacific CA/OR/WA,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,WAOR,Pacific CA/OR/WA,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,WAOR,Pacific CA/OR/WA,ak_fishery_observer,FALSE,,records,,,benaka2019
+137207,Hawksbill,WAOR,Pacific CA/OR/WA,obis_all,TRUE,0,records,,,obis2025
+137207,Hawksbill,WAOR,Pacific CA/OR/WA,obis_survey,TRUE,0,records,,,obis2025
+137207,Hawksbill,WAOR,Pacific CA/OR/WA,gbif,TRUE,0,records,,,gbif2026
+137207,Hawksbill,WAOR,Pacific CA/OR/WA,inat,TRUE,0,records,,,inaturalist2026
+137207,Hawksbill,WAOR,Pacific CA/OR/WA,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137207,Hawksbill,WAOR,Pacific CA/OR/WA,wdfw_wa,TRUE,0,records,,,wdfw2017
+137207,Hawksbill,WAOR,Pacific CA/OR/WA,stssn,FALSE,,strandings,,,stssn2026
+137207,Hawksbill,WCGOA,Gulf of America,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,WCGOA,Gulf of America,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,WCGOA,Gulf of America,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137207,Hawksbill,WCGOA,Gulf of America,ak_fishery_observer,FALSE,,records,,,benaka2019
+137207,Hawksbill,WCGOA,Gulf of America,obis_all,TRUE,9,records,1994,2014,obis2025
+137207,Hawksbill,WCGOA,Gulf of America,obis_survey,TRUE,9,records,1994,2014,obis2025
+137207,Hawksbill,WCGOA,Gulf of America,gbif,TRUE,8,records,1994,2014,gbif2026
+137207,Hawksbill,WCGOA,Gulf of America,inat,TRUE,3,records,2002,2014,inaturalist2026
+137207,Hawksbill,WCGOA,Gulf of America,speciesgrids,TRUE,8,0.05° cells,,,speciesgrids2025
+137207,Hawksbill,WCGOA,Gulf of America,wdfw_wa,FALSE,,records,,,wdfw2017
+137207,Hawksbill,WCGOA,Gulf of America,stssn,TRUE,108,strandings,2016,2025,stssn2026
+137207,Hawksbill,NECS+SECS,Atlantic,stssn,TRUE,285,strandings,2016,2025,stssn2026
+137208,Kemp's ridley,CAC,Pacific CA/OR/WA,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,CAC,Pacific CA/OR/WA,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,CAC,Pacific CA/OR/WA,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,CAC,Pacific CA/OR/WA,ak_fishery_observer,FALSE,,records,,,benaka2019
+137208,Kemp's ridley,CAC,Pacific CA/OR/WA,obis_all,TRUE,1,records,2009,2009,obis2025
+137208,Kemp's ridley,CAC,Pacific CA/OR/WA,obis_survey,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,CAC,Pacific CA/OR/WA,gbif,TRUE,1,records,2009,2009,gbif2026
+137208,Kemp's ridley,CAC,Pacific CA/OR/WA,inat,TRUE,0,records,,,inaturalist2026
+137208,Kemp's ridley,CAC,Pacific CA/OR/WA,speciesgrids,TRUE,1,0.05° cells,,,speciesgrids2025
+137208,Kemp's ridley,CAC,Pacific CA/OR/WA,wdfw_wa,FALSE,,records,,,wdfw2017
+137208,Kemp's ridley,CAC,Pacific CA/OR/WA,stssn,FALSE,,strandings,,,stssn2026
+137208,Kemp's ridley,CBS,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,CBS,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,CBS,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,CBS,Bering–Arctic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137208,Kemp's ridley,CBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,CBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,CBS,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137208,Kemp's ridley,CBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137208,Kemp's ridley,CBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137208,Kemp's ridley,CBS,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137208,Kemp's ridley,CBS,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137208,Kemp's ridley,EBS,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,EBS,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,EBS,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,EBS,Bering–Arctic,ak_fishery_observer,TRUE,0,records,2014,2015,benaka2019
+137208,Kemp's ridley,EBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,EBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,EBS,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137208,Kemp's ridley,EBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137208,Kemp's ridley,EBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137208,Kemp's ridley,EBS,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137208,Kemp's ridley,EBS,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137208,Kemp's ridley,EGOA,Gulf of America,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,EGOA,Gulf of America,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,EGOA,Gulf of America,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,EGOA,Gulf of America,ak_fishery_observer,FALSE,,records,,,benaka2019
+137208,Kemp's ridley,EGOA,Gulf of America,obis_all,TRUE,177,records,1994,2018,obis2025
+137208,Kemp's ridley,EGOA,Gulf of America,obis_survey,TRUE,153,records,1994,2018,obis2025
+137208,Kemp's ridley,EGOA,Gulf of America,gbif,TRUE,171,records,1994,2025,gbif2026
+137208,Kemp's ridley,EGOA,Gulf of America,inat,TRUE,16,records,2013,2025,inaturalist2026
+137208,Kemp's ridley,EGOA,Gulf of America,speciesgrids,TRUE,88,0.05° cells,,,speciesgrids2025
+137208,Kemp's ridley,EGOA,Gulf of America,wdfw_wa,FALSE,,records,,,wdfw2017
+137208,Kemp's ridley,EGOA,Gulf of America,stssn,TRUE,2012,strandings,2016,2025,stssn2026
+137208,Kemp's ridley,GOA,Gulf of Alaska,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,GOA,Gulf of Alaska,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,GOA,Gulf of Alaska,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,GOA,Gulf of Alaska,ak_fishery_observer,TRUE,0,records,2014,2015,benaka2019
+137208,Kemp's ridley,GOA,Gulf of Alaska,obis_all,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,GOA,Gulf of Alaska,obis_survey,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,GOA,Gulf of Alaska,gbif,TRUE,0,records,,,gbif2026
+137208,Kemp's ridley,GOA,Gulf of Alaska,inat,TRUE,0,records,,,inaturalist2026
+137208,Kemp's ridley,GOA,Gulf of Alaska,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137208,Kemp's ridley,GOA,Gulf of Alaska,wdfw_wa,FALSE,,records,,,wdfw2017
+137208,Kemp's ridley,GOA,Gulf of Alaska,stssn,FALSE,,strandings,,,stssn2026
+137208,Kemp's ridley,HAR,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,HAR,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,HAR,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,HAR,Bering–Arctic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137208,Kemp's ridley,HAR,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,HAR,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,HAR,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137208,Kemp's ridley,HAR,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137208,Kemp's ridley,HAR,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137208,Kemp's ridley,HAR,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137208,Kemp's ridley,HAR,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137208,Kemp's ridley,NECS,Atlantic,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,NECS,Atlantic,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,NECS,Atlantic,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,NECS,Atlantic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137208,Kemp's ridley,NECS,Atlantic,obis_all,TRUE,1030,records,1979,2021,obis2025
+137208,Kemp's ridley,NECS,Atlantic,obis_survey,TRUE,384,records,1979,2021,obis2025
+137208,Kemp's ridley,NECS,Atlantic,gbif,TRUE,1151,records,1953,2026,gbif2026
+137208,Kemp's ridley,NECS,Atlantic,inat,TRUE,44,records,2011,2026,inaturalist2026
+137208,Kemp's ridley,NECS,Atlantic,speciesgrids,TRUE,577,0.05° cells,,,speciesgrids2025
+137208,Kemp's ridley,NECS,Atlantic,wdfw_wa,FALSE,,records,,,wdfw2017
+137208,Kemp's ridley,NECS,Atlantic,stssn,FALSE,,strandings,,,stssn2026
+137208,Kemp's ridley,PIS,PIS,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,PIS,PIS,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,PIS,PIS,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,PIS,PIS,ak_fishery_observer,FALSE,,records,,,benaka2019
+137208,Kemp's ridley,PIS,PIS,obis_all,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,PIS,PIS,obis_survey,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,PIS,PIS,gbif,TRUE,0,records,,,gbif2026
+137208,Kemp's ridley,PIS,PIS,inat,TRUE,0,records,,,inaturalist2026
+137208,Kemp's ridley,PIS,PIS,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137208,Kemp's ridley,PIS,PIS,wdfw_wa,FALSE,,records,,,wdfw2017
+137208,Kemp's ridley,PIS,PIS,stssn,FALSE,,strandings,,,stssn2026
+137208,Kemp's ridley,PUR,PUR,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,PUR,PUR,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,PUR,PUR,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,PUR,PUR,ak_fishery_observer,FALSE,,records,,,benaka2019
+137208,Kemp's ridley,PUR,PUR,obis_all,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,PUR,PUR,obis_survey,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,PUR,PUR,gbif,TRUE,0,records,,,gbif2026
+137208,Kemp's ridley,PUR,PUR,inat,TRUE,0,records,,,inaturalist2026
+137208,Kemp's ridley,PUR,PUR,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137208,Kemp's ridley,PUR,PUR,wdfw_wa,FALSE,,records,,,wdfw2017
+137208,Kemp's ridley,PUR,PUR,stssn,FALSE,,strandings,,,stssn2026
+137208,Kemp's ridley,SECS,Atlantic,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,SECS,Atlantic,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,SECS,Atlantic,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,SECS,Atlantic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137208,Kemp's ridley,SECS,Atlantic,obis_all,TRUE,1058,records,1978,2020,obis2025
+137208,Kemp's ridley,SECS,Atlantic,obis_survey,TRUE,876,records,1978,2020,obis2025
+137208,Kemp's ridley,SECS,Atlantic,gbif,TRUE,1083,records,1858,2026,gbif2026
+137208,Kemp's ridley,SECS,Atlantic,inat,TRUE,39,records,2010,2026,inaturalist2026
+137208,Kemp's ridley,SECS,Atlantic,speciesgrids,TRUE,553,0.05° cells,,,speciesgrids2025
+137208,Kemp's ridley,SECS,Atlantic,wdfw_wa,FALSE,,records,,,wdfw2017
+137208,Kemp's ridley,SECS,Atlantic,stssn,FALSE,,strandings,,,stssn2026
+137208,Kemp's ridley,WAOR,Pacific CA/OR/WA,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,WAOR,Pacific CA/OR/WA,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,WAOR,Pacific CA/OR/WA,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,WAOR,Pacific CA/OR/WA,ak_fishery_observer,FALSE,,records,,,benaka2019
+137208,Kemp's ridley,WAOR,Pacific CA/OR/WA,obis_all,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,WAOR,Pacific CA/OR/WA,obis_survey,TRUE,0,records,,,obis2025
+137208,Kemp's ridley,WAOR,Pacific CA/OR/WA,gbif,TRUE,0,records,,,gbif2026
+137208,Kemp's ridley,WAOR,Pacific CA/OR/WA,inat,TRUE,0,records,,,inaturalist2026
+137208,Kemp's ridley,WAOR,Pacific CA/OR/WA,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137208,Kemp's ridley,WAOR,Pacific CA/OR/WA,wdfw_wa,TRUE,0,records,,,wdfw2017
+137208,Kemp's ridley,WAOR,Pacific CA/OR/WA,stssn,FALSE,,strandings,,,stssn2026
+137208,Kemp's ridley,WCGOA,Gulf of America,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,WCGOA,Gulf of America,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,WCGOA,Gulf of America,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137208,Kemp's ridley,WCGOA,Gulf of America,ak_fishery_observer,FALSE,,records,,,benaka2019
+137208,Kemp's ridley,WCGOA,Gulf of America,obis_all,TRUE,1822,records,1993,2018,obis2025
+137208,Kemp's ridley,WCGOA,Gulf of America,obis_survey,TRUE,252,records,1993,2018,obis2025
+137208,Kemp's ridley,WCGOA,Gulf of America,gbif,TRUE,1480,records,1921,2026,gbif2026
+137208,Kemp's ridley,WCGOA,Gulf of America,inat,TRUE,48,records,2010,2026,inaturalist2026
+137208,Kemp's ridley,WCGOA,Gulf of America,speciesgrids,TRUE,642,0.05° cells,,,speciesgrids2025
+137208,Kemp's ridley,WCGOA,Gulf of America,wdfw_wa,FALSE,,records,,,wdfw2017
+137208,Kemp's ridley,WCGOA,Gulf of America,stssn,TRUE,3254,strandings,2016,2025,stssn2026
+137208,Kemp's ridley,NECS+SECS,Atlantic,stssn,TRUE,14070,strandings,2016,2025,stssn2026
+137209,Leatherback,CAC,Pacific CA/OR/WA,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,CAC,Pacific CA/OR/WA,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,CAC,Pacific CA/OR/WA,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,CAC,Pacific CA/OR/WA,ak_fishery_observer,FALSE,,records,,,benaka2019
+137209,Leatherback,CAC,Pacific CA/OR/WA,obis_all,TRUE,86,records,1980,2021,obis2025
+137209,Leatherback,CAC,Pacific CA/OR/WA,obis_survey,TRUE,31,records,1980,2021,obis2025
+137209,Leatherback,CAC,Pacific CA/OR/WA,gbif,TRUE,128,records,1947,2021,gbif2026
+137209,Leatherback,CAC,Pacific CA/OR/WA,inat,TRUE,29,records,2000,2021,inaturalist2026
+137209,Leatherback,CAC,Pacific CA/OR/WA,speciesgrids,TRUE,90,0.05° cells,,,speciesgrids2025
+137209,Leatherback,CAC,Pacific CA/OR/WA,wdfw_wa,FALSE,,records,,,wdfw2017
+137209,Leatherback,CAC,Pacific CA/OR/WA,wc_leatherback_strandings,TRUE,113,strandings,1963,2020,benson2026
+137209,Leatherback,CAC,Pacific CA/OR/WA,wc_groundfish_observer,FALSE,,turtles seen,,,benson2026
+137209,Leatherback,CAC,Pacific CA/OR/WA,stssn,FALSE,,strandings,,,stssn2026
+137209,Leatherback,CBS,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137209,Leatherback,CBS,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137209,Leatherback,CBS,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137209,Leatherback,CBS,Bering–Arctic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137209,Leatherback,CBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137209,Leatherback,CBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137209,Leatherback,CBS,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137209,Leatherback,CBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137209,Leatherback,CBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137209,Leatherback,CBS,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137209,Leatherback,CBS,Bering–Arctic,wc_leatherback_strandings,FALSE,,strandings,,,benson2026
+137209,Leatherback,CBS,Bering–Arctic,wc_groundfish_observer,FALSE,,turtles seen,,,benson2026
+137209,Leatherback,CBS,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137209,Leatherback,EBS,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137209,Leatherback,EBS,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137209,Leatherback,EBS,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137209,Leatherback,EBS,Bering–Arctic,ak_fishery_observer,TRUE,0,records,2014,2015,benaka2019
+137209,Leatherback,EBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137209,Leatherback,EBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137209,Leatherback,EBS,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137209,Leatherback,EBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137209,Leatherback,EBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137209,Leatherback,EBS,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137209,Leatherback,EBS,Bering–Arctic,wc_leatherback_strandings,FALSE,,strandings,,,benson2026
+137209,Leatherback,EBS,Bering–Arctic,wc_groundfish_observer,FALSE,,turtles seen,,,benson2026
+137209,Leatherback,EBS,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137209,Leatherback,EGOA,Gulf of America,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,EGOA,Gulf of America,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,EGOA,Gulf of America,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,EGOA,Gulf of America,ak_fishery_observer,FALSE,,records,,,benaka2019
+137209,Leatherback,EGOA,Gulf of America,obis_all,TRUE,279,records,1981,2018,obis2025
+137209,Leatherback,EGOA,Gulf of America,obis_survey,TRUE,279,records,1981,2018,obis2025
+137209,Leatherback,EGOA,Gulf of America,gbif,TRUE,296,records,1992,2024,gbif2026
+137209,Leatherback,EGOA,Gulf of America,inat,TRUE,2,records,2020,2021,inaturalist2026
+137209,Leatherback,EGOA,Gulf of America,speciesgrids,TRUE,174,0.05° cells,,,speciesgrids2025
+137209,Leatherback,EGOA,Gulf of America,wdfw_wa,FALSE,,records,,,wdfw2017
+137209,Leatherback,EGOA,Gulf of America,wc_leatherback_strandings,FALSE,,strandings,,,benson2026
+137209,Leatherback,EGOA,Gulf of America,wc_groundfish_observer,FALSE,,turtles seen,,,benson2026
+137209,Leatherback,EGOA,Gulf of America,stssn,TRUE,13,strandings,2016,2025,stssn2026
+137209,Leatherback,GOA,Gulf of Alaska,noaa_ak_sighting,TRUE,11,records,1963,1993,noaa_ak_turtles_2026
+137209,Leatherback,GOA,Gulf of Alaska,noaa_ak_stranding,TRUE,2,records,1983,1990,noaa_ak_turtles_2026
+137209,Leatherback,GOA,Gulf of Alaska,noaa_ak_bycatch,TRUE,6,records,1963,1979,noaa_ak_turtles_2026
+137209,Leatherback,GOA,Gulf of Alaska,ak_fishery_observer,TRUE,0,records,2014,2015,benaka2019
+137209,Leatherback,GOA,Gulf of Alaska,obis_all,TRUE,0,records,,,obis2025
+137209,Leatherback,GOA,Gulf of Alaska,obis_survey,TRUE,0,records,,,obis2025
+137209,Leatherback,GOA,Gulf of Alaska,gbif,TRUE,1,records,1978,1978,gbif2026
+137209,Leatherback,GOA,Gulf of Alaska,inat,TRUE,0,records,,,inaturalist2026
+137209,Leatherback,GOA,Gulf of Alaska,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137209,Leatherback,GOA,Gulf of Alaska,wdfw_wa,FALSE,,records,,,wdfw2017
+137209,Leatherback,GOA,Gulf of Alaska,wc_leatherback_strandings,TRUE,7,strandings,1963,2020,benson2026
+137209,Leatherback,GOA,Gulf of Alaska,wc_groundfish_observer,FALSE,,turtles seen,,,benson2026
+137209,Leatherback,GOA,Gulf of Alaska,stssn,FALSE,,strandings,,,stssn2026
+137209,Leatherback,HAR,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+137209,Leatherback,HAR,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+137209,Leatherback,HAR,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+137209,Leatherback,HAR,Bering–Arctic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137209,Leatherback,HAR,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+137209,Leatherback,HAR,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+137209,Leatherback,HAR,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+137209,Leatherback,HAR,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+137209,Leatherback,HAR,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+137209,Leatherback,HAR,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+137209,Leatherback,HAR,Bering–Arctic,wc_leatherback_strandings,FALSE,,strandings,,,benson2026
+137209,Leatherback,HAR,Bering–Arctic,wc_groundfish_observer,FALSE,,turtles seen,,,benson2026
+137209,Leatherback,HAR,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+137209,Leatherback,NECS,Atlantic,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,NECS,Atlantic,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,NECS,Atlantic,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,NECS,Atlantic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137209,Leatherback,NECS,Atlantic,obis_all,TRUE,1898,records,1966,2023,obis2025
+137209,Leatherback,NECS,Atlantic,obis_survey,TRUE,1894,records,1966,2023,obis2025
+137209,Leatherback,NECS,Atlantic,gbif,TRUE,1992,records,1951,2026,gbif2026
+137209,Leatherback,NECS,Atlantic,inat,TRUE,91,records,1990,2026,inaturalist2026
+137209,Leatherback,NECS,Atlantic,speciesgrids,TRUE,1317,0.05° cells,,,speciesgrids2025
+137209,Leatherback,NECS,Atlantic,wdfw_wa,FALSE,,records,,,wdfw2017
+137209,Leatherback,NECS,Atlantic,wc_leatherback_strandings,FALSE,,strandings,,,benson2026
+137209,Leatherback,NECS,Atlantic,wc_groundfish_observer,FALSE,,turtles seen,,,benson2026
+137209,Leatherback,NECS,Atlantic,stssn,FALSE,,strandings,,,stssn2026
+137209,Leatherback,PIS,PIS,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,PIS,PIS,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,PIS,PIS,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,PIS,PIS,ak_fishery_observer,FALSE,,records,,,benaka2019
+137209,Leatherback,PIS,PIS,obis_all,TRUE,179,records,2005,2008,obis2025
+137209,Leatherback,PIS,PIS,obis_survey,TRUE,0,records,,,obis2025
+137209,Leatherback,PIS,PIS,gbif,TRUE,167,records,2005,2008,gbif2026
+137209,Leatherback,PIS,PIS,inat,TRUE,0,records,,,inaturalist2026
+137209,Leatherback,PIS,PIS,speciesgrids,TRUE,164,0.05° cells,,,speciesgrids2025
+137209,Leatherback,PIS,PIS,wdfw_wa,FALSE,,records,,,wdfw2017
+137209,Leatherback,PIS,PIS,wc_leatherback_strandings,FALSE,,strandings,,,benson2026
+137209,Leatherback,PIS,PIS,wc_groundfish_observer,FALSE,,turtles seen,,,benson2026
+137209,Leatherback,PIS,PIS,stssn,FALSE,,strandings,,,stssn2026
+137209,Leatherback,PUR,PUR,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,PUR,PUR,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,PUR,PUR,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,PUR,PUR,ak_fishery_observer,FALSE,,records,,,benaka2019
+137209,Leatherback,PUR,PUR,obis_all,TRUE,56,records,1985,2010,obis2025
+137209,Leatherback,PUR,PUR,obis_survey,TRUE,56,records,1985,2010,obis2025
+137209,Leatherback,PUR,PUR,gbif,TRUE,83,records,1985,2026,gbif2026
+137209,Leatherback,PUR,PUR,inat,TRUE,28,records,1986,2026,inaturalist2026
+137209,Leatherback,PUR,PUR,speciesgrids,TRUE,49,0.05° cells,,,speciesgrids2025
+137209,Leatherback,PUR,PUR,wdfw_wa,FALSE,,records,,,wdfw2017
+137209,Leatherback,PUR,PUR,wc_leatherback_strandings,FALSE,,strandings,,,benson2026
+137209,Leatherback,PUR,PUR,wc_groundfish_observer,FALSE,,turtles seen,,,benson2026
+137209,Leatherback,PUR,PUR,stssn,FALSE,,strandings,,,stssn2026
+137209,Leatherback,SECS,Atlantic,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,SECS,Atlantic,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,SECS,Atlantic,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,SECS,Atlantic,ak_fishery_observer,FALSE,,records,,,benaka2019
+137209,Leatherback,SECS,Atlantic,obis_all,TRUE,3132,records,1977,2020,obis2025
+137209,Leatherback,SECS,Atlantic,obis_survey,TRUE,3124,records,1977,2020,obis2025
+137209,Leatherback,SECS,Atlantic,gbif,TRUE,3154,records,1957,2026,gbif2026
+137209,Leatherback,SECS,Atlantic,inat,TRUE,54,records,2003,2026,inaturalist2026
+137209,Leatherback,SECS,Atlantic,speciesgrids,TRUE,973,0.05° cells,,,speciesgrids2025
+137209,Leatherback,SECS,Atlantic,wdfw_wa,FALSE,,records,,,wdfw2017
+137209,Leatherback,SECS,Atlantic,wc_leatherback_strandings,FALSE,,strandings,,,benson2026
+137209,Leatherback,SECS,Atlantic,wc_groundfish_observer,FALSE,,turtles seen,,,benson2026
+137209,Leatherback,SECS,Atlantic,stssn,FALSE,,strandings,,,stssn2026
+137209,Leatherback,WAOR,Pacific CA/OR/WA,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,WAOR,Pacific CA/OR/WA,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,WAOR,Pacific CA/OR/WA,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,WAOR,Pacific CA/OR/WA,ak_fishery_observer,FALSE,,records,,,benaka2019
+137209,Leatherback,WAOR,Pacific CA/OR/WA,obis_all,TRUE,45,records,1989,2007,obis2025
+137209,Leatherback,WAOR,Pacific CA/OR/WA,obis_survey,TRUE,28,records,1989,2005,obis2025
+137209,Leatherback,WAOR,Pacific CA/OR/WA,gbif,TRUE,47,records,1942,2022,gbif2026
+137209,Leatherback,WAOR,Pacific CA/OR/WA,inat,TRUE,1,records,2022,2022,inaturalist2026
+137209,Leatherback,WAOR,Pacific CA/OR/WA,speciesgrids,TRUE,41,0.05° cells,,,speciesgrids2025
+137209,Leatherback,WAOR,Pacific CA/OR/WA,wdfw_wa,TRUE,77,records,1976,2013,wdfw2017
+137209,Leatherback,WAOR,Pacific CA/OR/WA,wc_leatherback_strandings,TRUE,10,strandings,1963,2020,benson2026
+137209,Leatherback,WAOR,Pacific CA/OR/WA,wc_groundfish_observer,FALSE,,turtles seen,,,benson2026
+137209,Leatherback,WAOR,Pacific CA/OR/WA,stssn,FALSE,,strandings,,,stssn2026
+137209,Leatherback,WCGOA,Gulf of America,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,WCGOA,Gulf of America,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,WCGOA,Gulf of America,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+137209,Leatherback,WCGOA,Gulf of America,ak_fishery_observer,FALSE,,records,,,benaka2019
+137209,Leatherback,WCGOA,Gulf of America,obis_all,TRUE,621,records,1980,2018,obis2025
+137209,Leatherback,WCGOA,Gulf of America,obis_survey,TRUE,621,records,1980,2018,obis2025
+137209,Leatherback,WCGOA,Gulf of America,gbif,TRUE,444,records,1992,2024,gbif2026
+137209,Leatherback,WCGOA,Gulf of America,inat,TRUE,8,records,2009,2024,inaturalist2026
+137209,Leatherback,WCGOA,Gulf of America,speciesgrids,TRUE,519,0.05° cells,,,speciesgrids2025
+137209,Leatherback,WCGOA,Gulf of America,wdfw_wa,FALSE,,records,,,wdfw2017
+137209,Leatherback,WCGOA,Gulf of America,wc_leatherback_strandings,FALSE,,strandings,,,benson2026
+137209,Leatherback,WCGOA,Gulf of America,wc_groundfish_observer,FALSE,,turtles seen,,,benson2026
+137209,Leatherback,WCGOA,Gulf of America,stssn,TRUE,27,strandings,2016,2025,stssn2026
+137209,Leatherback,CAC+WAOR,Pacific CA/OR/WA,wc_groundfish_observer,TRUE,5,turtles seen,2005,2014,benson2026
+137209,Leatherback,NECS+SECS,Atlantic,stssn,TRUE,759,strandings,2016,2025,stssn2026
+220293,Olive ridley,CAC,Pacific CA/OR/WA,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,CAC,Pacific CA/OR/WA,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,CAC,Pacific CA/OR/WA,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,CAC,Pacific CA/OR/WA,ak_fishery_observer,FALSE,,records,,,benaka2019
+220293,Olive ridley,CAC,Pacific CA/OR/WA,obis_all,TRUE,1,records,1996,1996,obis2025
+220293,Olive ridley,CAC,Pacific CA/OR/WA,obis_survey,TRUE,1,records,1996,1996,obis2025
+220293,Olive ridley,CAC,Pacific CA/OR/WA,gbif,TRUE,22,records,1969,2026,gbif2026
+220293,Olive ridley,CAC,Pacific CA/OR/WA,inat,TRUE,13,records,2015,2026,inaturalist2026
+220293,Olive ridley,CAC,Pacific CA/OR/WA,speciesgrids,TRUE,7,0.05° cells,,,speciesgrids2025
+220293,Olive ridley,CAC,Pacific CA/OR/WA,wdfw_wa,FALSE,,records,,,wdfw2017
+220293,Olive ridley,CAC,Pacific CA/OR/WA,stssn,FALSE,,strandings,,,stssn2026
+220293,Olive ridley,CBS,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,CBS,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,CBS,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,CBS,Bering–Arctic,ak_fishery_observer,FALSE,,records,,,benaka2019
+220293,Olive ridley,CBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+220293,Olive ridley,CBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+220293,Olive ridley,CBS,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+220293,Olive ridley,CBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+220293,Olive ridley,CBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+220293,Olive ridley,CBS,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+220293,Olive ridley,CBS,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+220293,Olive ridley,EBS,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,EBS,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,EBS,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,EBS,Bering–Arctic,ak_fishery_observer,TRUE,0,records,2014,2015,benaka2019
+220293,Olive ridley,EBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+220293,Olive ridley,EBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+220293,Olive ridley,EBS,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+220293,Olive ridley,EBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+220293,Olive ridley,EBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+220293,Olive ridley,EBS,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+220293,Olive ridley,EBS,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+220293,Olive ridley,EGOA,Gulf of America,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,EGOA,Gulf of America,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,EGOA,Gulf of America,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,EGOA,Gulf of America,ak_fishery_observer,FALSE,,records,,,benaka2019
+220293,Olive ridley,EGOA,Gulf of America,obis_all,TRUE,1,records,2011,2011,obis2025
+220293,Olive ridley,EGOA,Gulf of America,obis_survey,TRUE,0,records,,,obis2025
+220293,Olive ridley,EGOA,Gulf of America,gbif,TRUE,0,records,,,gbif2026
+220293,Olive ridley,EGOA,Gulf of America,inat,TRUE,0,records,,,inaturalist2026
+220293,Olive ridley,EGOA,Gulf of America,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+220293,Olive ridley,EGOA,Gulf of America,wdfw_wa,FALSE,,records,,,wdfw2017
+220293,Olive ridley,EGOA,Gulf of America,stssn,TRUE,0,strandings,2016,2025,stssn2026
+220293,Olive ridley,GOA,Gulf of Alaska,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,GOA,Gulf of Alaska,noaa_ak_stranding,TRUE,3,records,1969,2000,noaa_ak_turtles_2026
+220293,Olive ridley,GOA,Gulf of Alaska,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,GOA,Gulf of Alaska,ak_fishery_observer,TRUE,0,records,2014,2015,benaka2019
+220293,Olive ridley,GOA,Gulf of Alaska,obis_all,TRUE,0,records,,,obis2025
+220293,Olive ridley,GOA,Gulf of Alaska,obis_survey,TRUE,0,records,,,obis2025
+220293,Olive ridley,GOA,Gulf of Alaska,gbif,TRUE,0,records,,,gbif2026
+220293,Olive ridley,GOA,Gulf of Alaska,inat,TRUE,0,records,,,inaturalist2026
+220293,Olive ridley,GOA,Gulf of Alaska,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+220293,Olive ridley,GOA,Gulf of Alaska,wdfw_wa,FALSE,,records,,,wdfw2017
+220293,Olive ridley,GOA,Gulf of Alaska,stssn,FALSE,,strandings,,,stssn2026
+220293,Olive ridley,HAR,Bering–Arctic,noaa_ak_sighting,TRUE,0,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,HAR,Bering–Arctic,noaa_ak_stranding,TRUE,0,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,HAR,Bering–Arctic,noaa_ak_bycatch,TRUE,0,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,HAR,Bering–Arctic,ak_fishery_observer,FALSE,,records,,,benaka2019
+220293,Olive ridley,HAR,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+220293,Olive ridley,HAR,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+220293,Olive ridley,HAR,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+220293,Olive ridley,HAR,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+220293,Olive ridley,HAR,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+220293,Olive ridley,HAR,Bering–Arctic,wdfw_wa,FALSE,,records,,,wdfw2017
+220293,Olive ridley,HAR,Bering–Arctic,stssn,FALSE,,strandings,,,stssn2026
+220293,Olive ridley,NECS,Atlantic,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,NECS,Atlantic,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,NECS,Atlantic,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,NECS,Atlantic,ak_fishery_observer,FALSE,,records,,,benaka2019
+220293,Olive ridley,NECS,Atlantic,obis_all,TRUE,0,records,,,obis2025
+220293,Olive ridley,NECS,Atlantic,obis_survey,TRUE,0,records,,,obis2025
+220293,Olive ridley,NECS,Atlantic,gbif,TRUE,0,records,,,gbif2026
+220293,Olive ridley,NECS,Atlantic,inat,TRUE,0,records,,,inaturalist2026
+220293,Olive ridley,NECS,Atlantic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+220293,Olive ridley,NECS,Atlantic,wdfw_wa,FALSE,,records,,,wdfw2017
+220293,Olive ridley,NECS,Atlantic,stssn,FALSE,,strandings,,,stssn2026
+220293,Olive ridley,PIS,PIS,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,PIS,PIS,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,PIS,PIS,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,PIS,PIS,ak_fishery_observer,FALSE,,records,,,benaka2019
+220293,Olive ridley,PIS,PIS,obis_all,TRUE,425,records,1987,2005,obis2025
+220293,Olive ridley,PIS,PIS,obis_survey,TRUE,2,records,1987,1989,obis2025
+220293,Olive ridley,PIS,PIS,gbif,TRUE,401,records,1997,2025,gbif2026
+220293,Olive ridley,PIS,PIS,inat,TRUE,3,records,2012,2025,inaturalist2026
+220293,Olive ridley,PIS,PIS,speciesgrids,TRUE,372,0.05° cells,,,speciesgrids2025
+220293,Olive ridley,PIS,PIS,wdfw_wa,FALSE,,records,,,wdfw2017
+220293,Olive ridley,PIS,PIS,stssn,FALSE,,strandings,,,stssn2026
+220293,Olive ridley,PUR,PUR,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,PUR,PUR,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,PUR,PUR,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,PUR,PUR,ak_fishery_observer,FALSE,,records,,,benaka2019
+220293,Olive ridley,PUR,PUR,obis_all,TRUE,0,records,,,obis2025
+220293,Olive ridley,PUR,PUR,obis_survey,TRUE,0,records,,,obis2025
+220293,Olive ridley,PUR,PUR,gbif,TRUE,0,records,,,gbif2026
+220293,Olive ridley,PUR,PUR,inat,TRUE,0,records,,,inaturalist2026
+220293,Olive ridley,PUR,PUR,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+220293,Olive ridley,PUR,PUR,wdfw_wa,FALSE,,records,,,wdfw2017
+220293,Olive ridley,PUR,PUR,stssn,FALSE,,strandings,,,stssn2026
+220293,Olive ridley,SECS,Atlantic,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,SECS,Atlantic,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,SECS,Atlantic,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,SECS,Atlantic,ak_fishery_observer,FALSE,,records,,,benaka2019
+220293,Olive ridley,SECS,Atlantic,obis_all,TRUE,0,records,,,obis2025
+220293,Olive ridley,SECS,Atlantic,obis_survey,TRUE,0,records,,,obis2025
+220293,Olive ridley,SECS,Atlantic,gbif,TRUE,3,records,1914,1999,gbif2026
+220293,Olive ridley,SECS,Atlantic,inat,TRUE,0,records,,,inaturalist2026
+220293,Olive ridley,SECS,Atlantic,speciesgrids,TRUE,1,0.05° cells,,,speciesgrids2025
+220293,Olive ridley,SECS,Atlantic,wdfw_wa,FALSE,,records,,,wdfw2017
+220293,Olive ridley,SECS,Atlantic,stssn,FALSE,,strandings,,,stssn2026
+220293,Olive ridley,WAOR,Pacific CA/OR/WA,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,WAOR,Pacific CA/OR/WA,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,WAOR,Pacific CA/OR/WA,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,WAOR,Pacific CA/OR/WA,ak_fishery_observer,FALSE,,records,,,benaka2019
+220293,Olive ridley,WAOR,Pacific CA/OR/WA,obis_all,TRUE,0,records,,,obis2025
+220293,Olive ridley,WAOR,Pacific CA/OR/WA,obis_survey,TRUE,0,records,,,obis2025
+220293,Olive ridley,WAOR,Pacific CA/OR/WA,gbif,TRUE,6,records,2014,2025,gbif2026
+220293,Olive ridley,WAOR,Pacific CA/OR/WA,inat,TRUE,6,records,2014,2025,inaturalist2026
+220293,Olive ridley,WAOR,Pacific CA/OR/WA,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+220293,Olive ridley,WAOR,Pacific CA/OR/WA,wdfw_wa,TRUE,0,records,,,wdfw2017
+220293,Olive ridley,WAOR,Pacific CA/OR/WA,stssn,FALSE,,strandings,,,stssn2026
+220293,Olive ridley,WCGOA,Gulf of America,noaa_ak_sighting,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,WCGOA,Gulf of America,noaa_ak_stranding,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,WCGOA,Gulf of America,noaa_ak_bycatch,FALSE,,records,,,noaa_ak_turtles_2026
+220293,Olive ridley,WCGOA,Gulf of America,ak_fishery_observer,FALSE,,records,,,benaka2019
+220293,Olive ridley,WCGOA,Gulf of America,obis_all,TRUE,0,records,,,obis2025
+220293,Olive ridley,WCGOA,Gulf of America,obis_survey,TRUE,0,records,,,obis2025
+220293,Olive ridley,WCGOA,Gulf of America,gbif,TRUE,0,records,,,gbif2026
+220293,Olive ridley,WCGOA,Gulf of America,inat,TRUE,0,records,,,inaturalist2026
+220293,Olive ridley,WCGOA,Gulf of America,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+220293,Olive ridley,WCGOA,Gulf of America,wdfw_wa,FALSE,,records,,,wdfw2017
+220293,Olive ridley,WCGOA,Gulf of America,stssn,TRUE,1,strandings,2016,2025,stssn2026
+220293,Olive ridley,NECS+SECS,Atlantic,stssn,TRUE,4,strandings,2016,2025,stssn2026
+159023,North Atlantic right whale,CAC,Pacific CA/OR/WA,obis_all,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,CAC,Pacific CA/OR/WA,obis_survey,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,CAC,Pacific CA/OR/WA,gbif,TRUE,2,records,1916,1916,gbif2026
+159023,North Atlantic right whale,CAC,Pacific CA/OR/WA,inat,TRUE,0,records,,,inaturalist2026
+159023,North Atlantic right whale,CAC,Pacific CA/OR/WA,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+159023,North Atlantic right whale,CBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,CBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,CBS,Bering–Arctic,gbif,TRUE,2,records,1905,1905,gbif2026
+159023,North Atlantic right whale,CBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+159023,North Atlantic right whale,CBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+159023,North Atlantic right whale,EBS,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,EBS,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,EBS,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+159023,North Atlantic right whale,EBS,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+159023,North Atlantic right whale,EBS,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+159023,North Atlantic right whale,EGOA,Gulf of America,obis_all,TRUE,5,records,1963,1963,obis2025
+159023,North Atlantic right whale,EGOA,Gulf of America,obis_survey,TRUE,5,records,1963,1963,obis2025
+159023,North Atlantic right whale,EGOA,Gulf of America,gbif,TRUE,1,records,1994,1994,gbif2026
+159023,North Atlantic right whale,EGOA,Gulf of America,inat,TRUE,0,records,,,inaturalist2026
+159023,North Atlantic right whale,EGOA,Gulf of America,speciesgrids,TRUE,2,0.05° cells,,,speciesgrids2025
+159023,North Atlantic right whale,GOA,Gulf of Alaska,obis_all,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,GOA,Gulf of Alaska,obis_survey,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,GOA,Gulf of Alaska,gbif,TRUE,0,records,,,gbif2026
+159023,North Atlantic right whale,GOA,Gulf of Alaska,inat,TRUE,0,records,,,inaturalist2026
+159023,North Atlantic right whale,GOA,Gulf of Alaska,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+159023,North Atlantic right whale,HAR,Bering–Arctic,obis_all,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,HAR,Bering–Arctic,obis_survey,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,HAR,Bering–Arctic,gbif,TRUE,0,records,,,gbif2026
+159023,North Atlantic right whale,HAR,Bering–Arctic,inat,TRUE,0,records,,,inaturalist2026
+159023,North Atlantic right whale,HAR,Bering–Arctic,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+159023,North Atlantic right whale,NECS,Atlantic,obis_all,TRUE,3850,records,1960,2024,obis2025
+159023,North Atlantic right whale,NECS,Atlantic,obis_survey,TRUE,3583,records,1960,2024,obis2025
+159023,North Atlantic right whale,NECS,Atlantic,gbif,TRUE,11889,records,1898,2026,gbif2026
+159023,North Atlantic right whale,NECS,Atlantic,inat,TRUE,209,records,1986,2026,inaturalist2026
+159023,North Atlantic right whale,NECS,Atlantic,speciesgrids,TRUE,1613,0.05° cells,,,speciesgrids2025
+159023,North Atlantic right whale,PIS,PIS,obis_all,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,PIS,PIS,obis_survey,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,PIS,PIS,gbif,TRUE,0,records,,,gbif2026
+159023,North Atlantic right whale,PIS,PIS,inat,TRUE,0,records,,,inaturalist2026
+159023,North Atlantic right whale,PIS,PIS,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+159023,North Atlantic right whale,PUR,PUR,obis_all,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,PUR,PUR,obis_survey,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,PUR,PUR,gbif,TRUE,0,records,,,gbif2026
+159023,North Atlantic right whale,PUR,PUR,inat,TRUE,0,records,,,inaturalist2026
+159023,North Atlantic right whale,PUR,PUR,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+159023,North Atlantic right whale,SECS,Atlantic,obis_all,TRUE,283,records,1935,2023,obis2025
+159023,North Atlantic right whale,SECS,Atlantic,obis_survey,TRUE,267,records,1935,2019,obis2025
+159023,North Atlantic right whale,SECS,Atlantic,gbif,TRUE,399,records,1898,2026,gbif2026
+159023,North Atlantic right whale,SECS,Atlantic,inat,TRUE,16,records,2010,2026,inaturalist2026
+159023,North Atlantic right whale,SECS,Atlantic,speciesgrids,TRUE,119,0.05° cells,,,speciesgrids2025
+159023,North Atlantic right whale,WAOR,Pacific CA/OR/WA,obis_all,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,WAOR,Pacific CA/OR/WA,obis_survey,TRUE,0,records,,,obis2025
+159023,North Atlantic right whale,WAOR,Pacific CA/OR/WA,gbif,TRUE,0,records,,,gbif2026
+159023,North Atlantic right whale,WAOR,Pacific CA/OR/WA,inat,TRUE,0,records,,,inaturalist2026
+159023,North Atlantic right whale,WAOR,Pacific CA/OR/WA,speciesgrids,TRUE,0,0.05° cells,,,speciesgrids2025
+159023,North Atlantic right whale,WCGOA,Gulf of America,obis_all,TRUE,6,records,1994,1994,obis2025
+159023,North Atlantic right whale,WCGOA,Gulf of America,obis_survey,TRUE,6,records,1994,1994,obis2025
+159023,North Atlantic right whale,WCGOA,Gulf of America,gbif,TRUE,2,records,1994,1994,gbif2026
+159023,North Atlantic right whale,WCGOA,Gulf of America,inat,TRUE,0,records,,,inaturalist2026
+159023,North Atlantic right whale,WCGOA,Gulf of America,speciesgrids,TRUE,4,0.05° cells,,,speciesgrids2025

@@ -1,0 +1,155 @@
+region,eco,channel,unit,n,year_first,year_last,source
+Gulf of America,EGOA,gbif,records,1,1994,1994,gbif2026
+Gulf of America,EGOA,inat,records,0,,,inaturalist2026
+Gulf of America,EGOA,noaa_2006_release,sighting events,2,1963,2004,noaa_sero2006
+Gulf of America,EGOA,obis_all,records,5,1963,1963,obis2025
+Gulf of America,EGOA,obis_sdm_p10,0.05° cells,0,,,obis_sdm2025
+Gulf of America,EGOA,obis_survey,records,5,1963,1963,obis2025
+Gulf of America,EGOA,speciesgrids,0.05° cells,2,,,speciesgrids2025
+Gulf of America,EGOA,v7_am_0.05,v7 cells,9412,,,v7
+Gulf of America,EGOA,v7_ch_nmfs,v7 cells,0,,,nmfs_ch
+Gulf of America,EGOA,v7_ms_merge,v7 cells,5626,,,v7
+Gulf of America,EGOA,v7_rng_iucn,v7 cells,5626,,,v7
+Gulf of America,EGOA+WCGOA,gbif,records,3,1994,1994,gbif2026
+Gulf of America,EGOA+WCGOA,inat,records,0,,,inaturalist2026
+Gulf of America,EGOA+WCGOA,noaa_2006_release,sighting events,3,1963,2006,noaa_sero2006
+Gulf of America,EGOA+WCGOA,obis_all,records,11,1963,1994,obis2025
+Gulf of America,EGOA+WCGOA,obis_sdm_p10,0.05° cells,0,,,obis_sdm2025
+Gulf of America,EGOA+WCGOA,obis_survey,records,11,1963,1994,obis2025
+Gulf of America,EGOA+WCGOA,speciesgrids,0.05° cells,6,,,speciesgrids2025
+Gulf of America,EGOA+WCGOA,v7_am_0.05,v7 cells,18546,,,v7
+Gulf of America,EGOA+WCGOA,v7_ch_nmfs,v7 cells,0,,,nmfs_ch
+Gulf of America,EGOA+WCGOA,v7_ms_merge,v7 cells,12917,,,v7
+Gulf of America,EGOA+WCGOA,v7_rng_iucn,v7 cells,12917,,,v7
+Gulf of America,WCGOA,gbif,records,2,1994,1994,gbif2026
+Gulf of America,WCGOA,inat,records,0,,,inaturalist2026
+Gulf of America,WCGOA,noaa_2006_release,sighting events,1,2006,2006,noaa_sero2006
+Gulf of America,WCGOA,obis_all,records,6,1994,1994,obis2025
+Gulf of America,WCGOA,obis_sdm_p10,0.05° cells,0,,,obis_sdm2025
+Gulf of America,WCGOA,obis_survey,records,6,1994,1994,obis2025
+Gulf of America,WCGOA,speciesgrids,0.05° cells,4,,,speciesgrids2025
+Gulf of America,WCGOA,v7_am_0.05,v7 cells,9134,,,v7
+Gulf of America,WCGOA,v7_ch_nmfs,v7 cells,0,,,nmfs_ch
+Gulf of America,WCGOA,v7_ms_merge,v7 cells,7291,,,v7
+Gulf of America,WCGOA,v7_rng_iucn,v7 cells,7291,,,v7
+Atlantic,NECS,gbif,records,11889,1898,2026,gbif2026
+Atlantic,NECS,inat,records,209,1986,2026,inaturalist2026
+Atlantic,NECS,noaa_2006_release,sighting events,0,,,noaa_sero2006
+Atlantic,NECS,obis_all,records,3850,1960,2024,obis2025
+Atlantic,NECS,obis_sdm_p10,0.05° cells,8644,,,obis_sdm2025
+Atlantic,NECS,obis_survey,records,3583,1960,2024,obis2025
+Atlantic,NECS,speciesgrids,0.05° cells,1613,,,speciesgrids2025
+Atlantic,NECS,v7_am_0.05,v7 cells,18677,,,v7
+Atlantic,NECS,v7_ch_nmfs,v7 cells,3055,,,nmfs_ch
+Atlantic,NECS,v7_ms_merge,v7 cells,25286,,,v7
+Atlantic,NECS,v7_rng_iucn,v7 cells,25286,,,v7
+Atlantic,NECS+SECS,gbif,records,12288,1898,2026,gbif2026
+Atlantic,NECS+SECS,inat,records,225,1986,2026,inaturalist2026
+Atlantic,NECS+SECS,noaa_2006_release,sighting events,0,,,noaa_sero2006
+Atlantic,NECS+SECS,obis_all,records,4133,1935,2024,obis2025
+Atlantic,NECS+SECS,obis_sdm_p10,0.05° cells,10349,,,obis_sdm2025
+Atlantic,NECS+SECS,obis_survey,records,3850,1935,2024,obis2025
+Atlantic,NECS+SECS,speciesgrids,0.05° cells,1732,,,speciesgrids2025
+Atlantic,NECS+SECS,v7_am_0.05,v7 cells,33201,,,v7
+Atlantic,NECS+SECS,v7_ch_nmfs,v7 cells,4070,,,nmfs_ch
+Atlantic,NECS+SECS,v7_ms_merge,v7 cells,44683,,,v7
+Atlantic,NECS+SECS,v7_rng_iucn,v7 cells,44683,,,v7
+Atlantic,SECS,gbif,records,399,1898,2026,gbif2026
+Atlantic,SECS,inat,records,16,2010,2026,inaturalist2026
+Atlantic,SECS,noaa_2006_release,sighting events,0,,,noaa_sero2006
+Atlantic,SECS,obis_all,records,283,1935,2023,obis2025
+Atlantic,SECS,obis_sdm_p10,0.05° cells,1705,,,obis_sdm2025
+Atlantic,SECS,obis_survey,records,267,1935,2019,obis2025
+Atlantic,SECS,speciesgrids,0.05° cells,119,,,speciesgrids2025
+Atlantic,SECS,v7_am_0.05,v7 cells,14524,,,v7
+Atlantic,SECS,v7_ch_nmfs,v7 cells,1015,,,nmfs_ch
+Atlantic,SECS,v7_ms_merge,v7 cells,19397,,,v7
+Atlantic,SECS,v7_rng_iucn,v7 cells,19397,,,v7
+Pacific / Alaska,CAC,gbif,records,2,1916,1916,gbif2026
+Pacific / Alaska,CAC,inat,records,0,,,inaturalist2026
+Pacific / Alaska,CAC,noaa_2006_release,sighting events,0,,,noaa_sero2006
+Pacific / Alaska,CAC,obis_all,records,0,,,obis2025
+Pacific / Alaska,CAC,obis_sdm_p10,0.05° cells,5,,,obis_sdm2025
+Pacific / Alaska,CAC,obis_survey,records,0,,,obis2025
+Pacific / Alaska,CAC,speciesgrids,0.05° cells,0,,,speciesgrids2025
+Pacific / Alaska,CAC,v7_am_0.05,v7 cells,0,,,v7
+Pacific / Alaska,CAC,v7_ch_nmfs,v7 cells,0,,,nmfs_ch
+Pacific / Alaska,CAC,v7_ms_merge,v7 cells,0,,,v7
+Pacific / Alaska,CAC,v7_rng_iucn,v7 cells,0,,,v7
+Pacific / Alaska,CBS,gbif,records,2,1905,1905,gbif2026
+Pacific / Alaska,CBS,inat,records,0,,,inaturalist2026
+Pacific / Alaska,CBS,noaa_2006_release,sighting events,0,,,noaa_sero2006
+Pacific / Alaska,CBS,obis_all,records,0,,,obis2025
+Pacific / Alaska,CBS,obis_sdm_p10,0.05° cells,0,,,obis_sdm2025
+Pacific / Alaska,CBS,obis_survey,records,0,,,obis2025
+Pacific / Alaska,CBS,speciesgrids,0.05° cells,0,,,speciesgrids2025
+Pacific / Alaska,CBS,v7_am_0.05,v7 cells,0,,,v7
+Pacific / Alaska,CBS,v7_ch_nmfs,v7 cells,0,,,nmfs_ch
+Pacific / Alaska,CBS,v7_ms_merge,v7 cells,0,,,v7
+Pacific / Alaska,CBS,v7_rng_iucn,v7 cells,0,,,v7
+Pacific / Alaska,EBS,gbif,records,0,,,gbif2026
+Pacific / Alaska,EBS,inat,records,0,,,inaturalist2026
+Pacific / Alaska,EBS,noaa_2006_release,sighting events,0,,,noaa_sero2006
+Pacific / Alaska,EBS,obis_all,records,0,,,obis2025
+Pacific / Alaska,EBS,obis_sdm_p10,0.05° cells,387,,,obis_sdm2025
+Pacific / Alaska,EBS,obis_survey,records,0,,,obis2025
+Pacific / Alaska,EBS,speciesgrids,0.05° cells,0,,,speciesgrids2025
+Pacific / Alaska,EBS,v7_am_0.05,v7 cells,0,,,v7
+Pacific / Alaska,EBS,v7_ch_nmfs,v7 cells,0,,,nmfs_ch
+Pacific / Alaska,EBS,v7_ms_merge,v7 cells,0,,,v7
+Pacific / Alaska,EBS,v7_rng_iucn,v7 cells,0,,,v7
+Pacific / Alaska,GOA,gbif,records,0,,,gbif2026
+Pacific / Alaska,GOA,inat,records,0,,,inaturalist2026
+Pacific / Alaska,GOA,noaa_2006_release,sighting events,0,,,noaa_sero2006
+Pacific / Alaska,GOA,obis_all,records,0,,,obis2025
+Pacific / Alaska,GOA,obis_sdm_p10,0.05° cells,0,,,obis_sdm2025
+Pacific / Alaska,GOA,obis_survey,records,0,,,obis2025
+Pacific / Alaska,GOA,speciesgrids,0.05° cells,0,,,speciesgrids2025
+Pacific / Alaska,GOA,v7_am_0.05,v7 cells,0,,,v7
+Pacific / Alaska,GOA,v7_ch_nmfs,v7 cells,0,,,nmfs_ch
+Pacific / Alaska,GOA,v7_ms_merge,v7 cells,0,,,v7
+Pacific / Alaska,GOA,v7_rng_iucn,v7 cells,0,,,v7
+Pacific / Alaska,HAR,gbif,records,0,,,gbif2026
+Pacific / Alaska,HAR,inat,records,0,,,inaturalist2026
+Pacific / Alaska,HAR,noaa_2006_release,sighting events,0,,,noaa_sero2006
+Pacific / Alaska,HAR,obis_all,records,0,,,obis2025
+Pacific / Alaska,HAR,obis_sdm_p10,0.05° cells,0,,,obis_sdm2025
+Pacific / Alaska,HAR,obis_survey,records,0,,,obis2025
+Pacific / Alaska,HAR,speciesgrids,0.05° cells,0,,,speciesgrids2025
+Pacific / Alaska,HAR,v7_am_0.05,v7 cells,0,,,v7
+Pacific / Alaska,HAR,v7_ch_nmfs,v7 cells,0,,,nmfs_ch
+Pacific / Alaska,HAR,v7_ms_merge,v7 cells,0,,,v7
+Pacific / Alaska,HAR,v7_rng_iucn,v7 cells,0,,,v7
+Pacific / Alaska,PIS,gbif,records,0,,,gbif2026
+Pacific / Alaska,PIS,inat,records,0,,,inaturalist2026
+Pacific / Alaska,PIS,noaa_2006_release,sighting events,0,,,noaa_sero2006
+Pacific / Alaska,PIS,obis_all,records,0,,,obis2025
+Pacific / Alaska,PIS,obis_sdm_p10,0.05° cells,162,,,obis_sdm2025
+Pacific / Alaska,PIS,obis_survey,records,0,,,obis2025
+Pacific / Alaska,PIS,speciesgrids,0.05° cells,0,,,speciesgrids2025
+Pacific / Alaska,PIS,v7_am_0.05,v7 cells,0,,,v7
+Pacific / Alaska,PIS,v7_ch_nmfs,v7 cells,0,,,nmfs_ch
+Pacific / Alaska,PIS,v7_ms_merge,v7 cells,0,,,v7
+Pacific / Alaska,PIS,v7_rng_iucn,v7 cells,0,,,v7
+Caribbean,PUR,gbif,records,0,,,gbif2026
+Caribbean,PUR,inat,records,0,,,inaturalist2026
+Caribbean,PUR,noaa_2006_release,sighting events,0,,,noaa_sero2006
+Caribbean,PUR,obis_all,records,0,,,obis2025
+Caribbean,PUR,obis_sdm_p10,0.05° cells,19,,,obis_sdm2025
+Caribbean,PUR,obis_survey,records,0,,,obis2025
+Caribbean,PUR,speciesgrids,0.05° cells,0,,,speciesgrids2025
+Caribbean,PUR,v7_am_0.05,v7 cells,1748,,,v7
+Caribbean,PUR,v7_ch_nmfs,v7 cells,0,,,nmfs_ch
+Caribbean,PUR,v7_ms_merge,v7 cells,0,,,v7
+Caribbean,PUR,v7_rng_iucn,v7 cells,0,,,v7
+Pacific / Alaska,WAOR,gbif,records,0,,,gbif2026
+Pacific / Alaska,WAOR,inat,records,0,,,inaturalist2026
+Pacific / Alaska,WAOR,noaa_2006_release,sighting events,0,,,noaa_sero2006
+Pacific / Alaska,WAOR,obis_all,records,0,,,obis2025
+Pacific / Alaska,WAOR,obis_sdm_p10,0.05° cells,0,,,obis_sdm2025
+Pacific / Alaska,WAOR,obis_survey,records,0,,,obis2025
+Pacific / Alaska,WAOR,speciesgrids,0.05° cells,0,,,speciesgrids2025
+Pacific / Alaska,WAOR,v7_am_0.05,v7 cells,0,,,v7
+Pacific / Alaska,WAOR,v7_ch_nmfs,v7 cells,0,,,nmfs_ch
+Pacific / Alaska,WAOR,v7_ms_merge,v7 cells,0,,,v7
+Pacific / Alaska,WAOR,v7_rng_iucn,v7 cells,0,,,v7

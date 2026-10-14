@@ -1,0 +1,29 @@
+region,channel,effort,n_effort,n_turtle,rate
+Bering–Arctic,A. surveys,OBIS turtle-recording surveys: 0.5° block-years searched,62,0,0
+Gulf of Alaska,A. surveys,OBIS turtle-recording surveys: 0.5° block-years searched,58,0,0
+Gulf of America,A. surveys,OBIS turtle-recording surveys: 0.5° block-years searched,1745,715,409.74212034383953
+Pacific CA/OR/WA,A. surveys,OBIS turtle-recording surveys: 0.5° block-years searched,3020,67,22.185430463576157
+Bering–Arctic,B. all records,OBIS + GBIF: 0.05° cells with a marine mammal record,13317,0,0
+Gulf of Alaska,B. all records,OBIS + GBIF: 0.05° cells with a marine mammal record,3683,0,0
+Gulf of America,B. all records,OBIS + GBIF: 0.05° cells with a marine mammal record,5649,2069,366.25951495839973
+Pacific CA/OR/WA,B. all records,OBIS + GBIF: 0.05° cells with a marine mammal record,8988,211,23.47574543836226
+Gulf of Alaska,C. public reports,iNaturalist (1° coastal buffer): marine mammal + turtle observations,8125,0,0
+Gulf of America,C. public reports,iNaturalist (1° coastal buffer): marine mammal + turtle observations,6308,2039,323.24032974001267
+Pacific CA/OR/WA,C. public reports,iNaturalist (1° coastal buffer): marine mammal + turtle observations,76849,495,6.441202878371872
+Gulf of Alaska,D. strandings,"marine mammal strandings, same coast (Washington for the Pacific)",4324,17,3.93154486586494
+Gulf of America,D. strandings,"marine mammal strandings, same coast (Washington for the Pacific)",3750,32325,8620
+Pacific CA/OR/WA,D. strandings,"marine mammal strandings, same coast (Washington for the Pacific)",13294,32,2.4071009477959984
+Bering–Arctic,"OBIS, all",OBIS marine mammal records,38477,0,0
+Gulf of Alaska,"OBIS, all",OBIS marine mammal records,13103,0,0
+Gulf of America,"OBIS, all",OBIS marine mammal records,12375,5430,438.7878787878788
+Pacific CA/OR/WA,"OBIS, all",OBIS marine mammal records,77523,235,3.031358435561059
+Bering–Arctic,"GBIF, all",GBIF marine mammal records (0.1° ecoregion buffer),78534,0,0
+Gulf of Alaska,"GBIF, all",GBIF marine mammal records (0.1° ecoregion buffer),32359,1,0.0309033035631509
+Gulf of America,"GBIF, all",GBIF marine mammal records (0.1° ecoregion buffer),16051,4962,309.13961746931653
+Pacific CA/OR/WA,"GBIF, all",GBIF marine mammal records (0.1° ecoregion buffer),198387,671,3.3822780726559705
+Bering–Arctic,iNaturalist,iNaturalist marine mammal observations (0.1° ecoregion buffer),708,0,0
+Gulf of Alaska,iNaturalist,iNaturalist marine mammal observations (0.1° ecoregion buffer),1509,0,0
+Gulf of America,iNaturalist,iNaturalist marine mammal observations (0.1° ecoregion buffer),834,365,437.64988009592327
+Pacific CA/OR/WA,iNaturalist,iNaturalist marine mammal observations (0.1° ecoregion buffer),59842,399,6.6675579024765215
+Bering–Arctic,Alaska fishery observers 2014–15,"observed federal groundfish hauls, Bering Sea–Aleutians and Gulf of Alaska",,0,
+Gulf of Alaska,Alaska fishery observers 2014–15,"observed federal groundfish hauls, Bering Sea–Aleutians and Gulf of Alaska",,0,
