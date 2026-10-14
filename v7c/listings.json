@@ -1,0 +1,14 @@
+[
+  {
+    "listing": "/software.html",
+    "items": [
+      "/apis.html",
+      "/apps.html",
+      "/db.html",
+      "/docs.html",
+      "/libraries.html",
+      "/server.html",
+      "/workflows.html"
+    ]
+  }
+]

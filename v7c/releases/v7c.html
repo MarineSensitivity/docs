@@ -1,0 +1,3044 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="v7c (v7.2): sea turtles and the North Atlantic right whale where the observational record places them">
+
+<title>4&nbsp; v7c — sea turtles and the North Atlantic right whale where the record places them – Marine Sensitivity</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../science.html" rel="next">
+<link href="../releases/v1.html" rel="prev">
+<link href="../images/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google tag (gtag.js) — GA4 property 413466008 -->
+<!--
+  ONE measurement ID across every MarineSensitivity product (see the homepage
+  repo's _analytics.html for why). Products are separated in reporting by
+  `content_group`; this book reports as 'docs'.
+
+  This replaces the `google-analytics:` key, which cannot set content_group and
+  would double-count page views if both were enabled.
+-->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-9HW6L751XG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-9HW6L751XG', { content_group: 'docs' });
+
+  // Quarto's `downloads: [pdf, docx]` buttons are plain anchors — the gtag
+  // config above counts the page view but not the download, so track them
+  // explicitly. Delegated so it survives Quarto's client-side navigation.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    var m = href.match(/\.(pdf|docx|epub|csv|zip|gpkg|tif|parquet)(\?|$)/i);
+    if (!m) return;
+    gtag('event', 'file_download', {
+      content_group: 'docs',
+      file_extension: m[1].toLowerCase(),
+      file_name: href.split('/').pop().slice(0, 100),
+      link_text: (a.textContent || '').trim().slice(0, 100)
+    });
+  }, true);
+</script>
+<!--
+  Interactive apps + core links, on every page (docs#6).
+
+  The app links DO exist — on the Preface, under "Interactive Apps", which is
+  where marinesensitivity.org/docs/ lands. But a Quarto book keeps them on that
+  one page: follow a search hit, a bookmark or a chapter link and the sidebar
+  shows only chapters, so the viewer is no longer reachable from anywhere on
+  screen. Tim White found it in §13 Server — a page that happens to list service
+  URLs — which is the failure, not the destination:
+
+    "after misplacing the link on my desktop, it took me quite some time to
+     locate it in the documentation ... could we create a box on the
+     Introduction page, or possibly across all pages"
+
+  There was no GitHub link on any page either: `repo-url` is set, but
+  `repo-actions: [edit]` renders only a small "Edit this page" action in the
+  right-hand TOC, which is not what someone looking for the source is scanning
+  for.
+
+  WHY CLIENT-SIDE, and why here. This mirrors _version-switcher.html deliberately
+  — same include-in-header mechanism, same sidebar host, so the two read as one
+  control strip and neither needs a Quarto feature that books do not have. It
+  also means the version comes from the page's own URL (/{ver}/...), which cannot
+  drift from where the file actually sits, rather than from a build-time
+  injection.
+
+  This DUPLICATES msens::product_urls() in JavaScript, which is a real cost worth
+  naming: the R side is the authority and is unit-tested, but a static book has
+  no R at read time. Kept deliberately identical in shape — ?ver= for a public
+  release, the preview host's PATH form for a restricted one — and the same
+  fail-closed access default the switcher and msens::atlas_versions() use
+  (prerelease -> restricted). If one changes, change both.
+
+  If anything fails — offline, registry unreachable, an unversioned local preview
+  — the box simply does not appear. A docs page must never fail to render over
+  its own chrome.
+-->
+<script>
+(function () {
+  var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
+  var APP      = "https://app.marinesensitivity.org";
+  var PREVIEW  = "https://preview.marinesensitivity.org";
+  var HOME     = "https://marinesensitivity.org";
+  var GITHUB   = "https://github.com/MarineSensitivity";
+  var REPO     = "https://github.com/MarineSensitivity/docs";
+
+  function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
+
+  // Same rule as msens::product_urls(): the version is a QUERY parameter on the
+  // public host and a PATH segment on the signed-in preview host, because
+  // Cloudflare Access scopes its per-version reviewer policies by path.
+  function appUrls(ver, acc) {
+    if (acc === "restricted")
+      return { scores: PREVIEW + "/" + ver + "/scores/",
+               species: PREVIEW + "/" + ver + "/species/" };
+    return { scores: APP + "/scores/?ver=" + ver,
+             species: APP + "/species/?ver=" + ver };
+  }
+
+  function parseVer() {
+    var m = location.pathname.match(/^(.*?\/)(v\d+[a-z]?)(\/.*)?$/);
+    return m ? m[2] : null;
+  }
+
+  // The script is injected into <head>, so on a fast/cached load it can run
+  // before the body exists — mounting into a null host silently does nothing.
+  function whenReady(fn) {
+    if (document.readyState === "loading")
+      document.addEventListener("DOMContentLoaded", fn, { once: true });
+    else fn();
+  }
+
+  // Both this and the version switcher mount at host.firstChild once their own
+  // fetch resolves, so whichever lands LAST ends up on top and the pair's order
+  // flips between page loads (observed live: core-links first locally, switcher
+  // first on marinesensitivity.org). Each now anchors on the other instead, so
+  // the strip reads the same way whichever wins the race: links, then switcher.
+  function mount(el) {
+    var host = document.querySelector("#quarto-margin-sidebar")
+            || document.querySelector("#quarto-sidebar")
+            || document.querySelector(".nav-footer")
+            || document.body;
+    // if the switcher already mounted, go directly above it; else take the top
+    var sw = host.querySelector(".docs-version-switcher");
+    host.insertBefore(el, sw || host.firstChild);
+  }
+
+  // label is HTML, not text: the app links bold the noun that distinguishes them
+  // ("Composite **scores**" / "Individual **species**"). Every label here is a
+  // literal in this file, so there is nothing untrusted to interpolate.
+  function link(href, label, title) {
+    var a = document.createElement("a");
+    a.href = href; a.innerHTML = label;
+    if (title) a.title = title;
+    a.style.cssText = "display:block;padding:0.1rem 0;";
+    return a;
+  }
+
+  function box(ver, acc) {
+    var u = appUrls(ver, acc);
+    var wrap = document.createElement("div");
+    wrap.className = "docs-core-links";
+    wrap.style.cssText =
+      "margin:0.75rem 0;padding:0.6rem 0.75rem;font-size:0.85rem;" +
+      "border:1px solid rgba(128,128,128,0.35);border-radius:0.35rem;";
+
+    var h = document.createElement("div");
+    h.textContent = "Interactive apps";
+    h.style.cssText = "font-weight:600;margin-bottom:0.35rem;";
+    wrap.appendChild(h);
+
+    // The apps are what Tim could not find, so they lead — and they point at
+    // THIS book's release, never the promoted one, so the reader is not moved
+    // to a different version than the page they are reading.
+    wrap.appendChild(link(u.scores,  "▶ Composite <strong>scores</strong>",
+                          "sensitivity scores by zone (" + ver + ")"));
+    wrap.appendChild(link(u.species, "▶ Individual <strong>species</strong>",
+                          "individual species models (" + ver + ")"));
+
+    var hr = document.createElement("div");
+    hr.style.cssText = "border-top:1px solid rgba(128,128,128,0.25);margin:0.4rem 0;";
+    wrap.appendChild(hr);
+
+    wrap.appendChild(link(HOME,   "⌂ Project home", "marinesensitivity.org"));
+    wrap.appendChild(link(GITHUB, "◇ GitHub — all repositories", GITHUB));
+    wrap.appendChild(link(REPO,   "◇ GitHub — these docs", REPO));
+    return wrap;
+  }
+
+  var ver = parseVer();
+  if (!ver) return;   // unversioned local preview: nothing reliable to link to
+
+  fetch(REGISTRY, { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (j) {
+      var versions = (j && j.versions) || j;
+      if (!versions || !versions.length) return;
+      var me = versions.filter(function (v) { return v.ver === ver; })[0];
+      // A book can be published for a release the registry has not caught up
+      // with; fail CLOSED so a restricted pre-release is never linked at the
+      // public host, where it would 404 or leak that it exists.
+      var acc = me ? access(me) : "restricted";
+      whenReady(function () { mount(box(ver, acc)); });
+    })
+    .catch(function () { /* registry unreachable: show nothing */ });
+})();
+</script>
+<!--
+  Documentation version switcher.
+
+  One book documented eight model releases, so a reader could not tell which
+  version a page described, and a citation to the v4 methods had nowhere to
+  point. Docs are now published per release under /{ver}/, and this widget moves
+  between them.
+
+  It reads the SAME versions.json that drives the pipeline and the apps, so the
+  three cannot disagree about what exists. The bucket serves it with
+  `Access-Control-Allow-Origin: *`, so the fetch works from the browser.
+
+  `access` (public | restricted) decides WHERE a version's book lives: public
+  books are on GitHub Pages under marinesensitivity.org/docs/{ver}/, restricted
+  ones (a pre-release under review) only on the signed-in preview host. So the
+  switcher links by ABSOLUTE URL per access -- a reviewer on the preview host can
+  step to a public version and a public reader sees a locked entry that leads to
+  the sign-in, never a dead relative link. A registry that predates the field is
+  read the way msens::atlas_versions() reads it: prerelease -> restricted.
+
+  The page's own version comes from its URL, not from a build-time injection:
+  the published layout is /{ver}/..., so the path is the source of truth and
+  cannot drift from where the file actually sits. If anything fails — offline,
+  registry unreachable, an unversioned preview render — the widget simply does
+  not appear, because a docs page must never fail to render over its own chrome.
+-->
+<script>
+(function () {
+  var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
+  var PUBLIC_DOCS  = "https://marinesensitivity.org/docs/";          // GitHub Pages
+  var PREVIEW_DOCS = "https://preview.marinesensitivity.org/docs/";  // signed-in reviewers
+
+  function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
+  function base(v)   { return access(v) === "restricted" ? PREVIEW_DOCS : PUBLIC_DOCS; }
+
+  function parsePath() {
+    var m = location.pathname.match(/^(.*?\/)(v\d+[a-z]?)(\/.*)?$/);
+    if (!m) return null;
+    return { prefix: m[1], ver: m[2], rest: m[3] || "/" };
+  }
+
+  function label(v) {
+    var s = v.ver;
+    if (v.status === "prerelease") s += " (pre-release)";
+    else if (v.status === "retired") s += " (retired)";
+    if (access(v) === "restricted") s += " \uD83D\uDD12 restricted";   // sign-in required
+    return v.title ? s + " — " + v.title : s;
+  }
+
+  // The script is injected into <head>, so on a fast/cached load the fetch can
+  // resolve BEFORE the body exists -- and mounting into a null host silently
+  // does nothing. Observed exactly that: the switcher appeared on the index but
+  // not on an inner page whose registry response came from cache.
+  function whenReady(fn) {
+    if (document.readyState === "loading")
+      document.addEventListener("DOMContentLoaded", fn, { once: true });
+    else fn();
+  }
+
+  function mount(el) {
+    // the book sidebar is the natural home; fall back to the footer, then body
+    var host = document.querySelector("#quarto-margin-sidebar")
+            || document.querySelector("#quarto-sidebar")
+            || document.querySelector(".nav-footer")
+            || document.body;
+    // Sit BELOW the core-links box (_nav-links.html) when it has already
+    // mounted. Both widgets used to insert at firstChild once their own fetch
+    // resolved, so whichever landed last ended up on top and the pair's order
+    // flipped between page loads. Anchoring on each other makes the strip read
+    // the same way whichever wins the race: links, then switcher.
+    var links = host.querySelector(".docs-core-links");
+    if (links && links.nextSibling) host.insertBefore(el, links.nextSibling);
+    else if (links)                 host.appendChild(el);
+    else                            host.insertBefore(el, host.firstChild);
+  }
+
+  var here = parsePath();
+  if (!here) return;   // unversioned (local preview) — nothing to switch between
+
+  fetch(REGISTRY, { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (j) {
+      var versions = (j && j.versions) || j;
+      if (!versions || !versions.length) return;
+
+      versions = versions.slice().sort(function (a, b) {
+        return String(b.released || b.ver).localeCompare(String(a.released || a.ver));
+      });
+
+      var wrap = document.createElement("div");
+      wrap.className = "docs-version-switcher";
+      wrap.style.cssText = "margin:0.75rem 0;font-size:0.85rem;";
+
+      var lab = document.createElement("label");
+      lab.textContent = "Docs version";
+      lab.style.cssText = "display:block;font-weight:600;margin-bottom:0.25rem;";
+      lab.setAttribute("for", "docs-version-select");
+
+      var sel = document.createElement("select");
+      sel.id = "docs-version-select";
+      sel.className = "form-select form-select-sm";
+
+      versions.forEach(function (v) {
+        var o = document.createElement("option");
+        o.value = v.ver;
+        o.textContent = label(v);
+        if (v.ver === here.ver) o.selected = true;
+        sel.appendChild(o);
+      });
+
+      // A release exists in the registry long before its DOCS are built -- today
+      // only v8 is published, so offering v1-v7 as live options would hand the
+      // reader a 404. Probe each one and mark the unbuilt ones, rather than
+      // maintaining a second list that would drift from what is actually there.
+      // Only SAME-ORIGIN targets can be probed: a cross-origin HEAD (GitHub
+      // Pages sends no CORS headers; the preview host answers with a sign-in
+      // redirect) always fails and would mislabel a published book.
+      versions.forEach(function (v) {
+        if (v.ver === here.ver) return;
+        var target = base(v) + v.ver + "/";
+        if (target.indexOf(location.origin + "/") !== 0) return;
+        fetch(target, { method: "HEAD" })
+          .then(function (r) {
+            if (r.ok) return;
+            var o = sel.querySelector("option[value='" + v.ver + "']");
+            if (o) { o.disabled = true; o.textContent = label(v) + " — docs not published"; }
+          })
+          .catch(function () {
+            var o = sel.querySelector("option[value='" + v.ver + "']");
+            if (o) { o.disabled = true; o.textContent = label(v) + " — docs not published"; }
+          });
+      });
+
+      sel.addEventListener("change", function () {
+        // keep the reader on the SAME page in the other version; if that page
+        // did not exist then, the server 404s and they can climb to its index —
+        // better than always dumping them at the top of an unfamiliar book.
+        // Absolute per access: a restricted version lives only on the preview
+        // host (sign-in), a public one only on GitHub Pages.
+        var v = versions.filter(function (x) { return x.ver === sel.value; })[0];
+        location.href = (v ? base(v) : here.prefix) + sel.value + here.rest;
+      });
+
+      wrap.appendChild(lab);
+      wrap.appendChild(sel);
+      whenReady(function () { mount(wrap); });
+    })
+    .catch(function () { /* registry unreachable: show nothing */ });
+})();
+</script>
+<!-- The cover banner on the Preface: full column width, square corners softened,
+     and no figure caption chrome. Kept in its own include so the book's other
+     images are untouched. -->
+<style>
+  .mst-hero {
+    display:       block;
+    width:         100%;
+    height:        auto;
+    margin:        0 0 1.75rem 0;
+    border-radius: 10px;
+  }
+  figure:has(> p > .mst-hero), figure:has(> .mst-hero) { margin: 0; }
+</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../releases.html">Releases</a></li><li class="breadcrumb-item"><a href="../releases/v7c.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">v7c — sea turtles and the North Atlantic right whale where the record places them</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Marine Sensitivity</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/MarineSensitivity/docs/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="../Marine-Sensitivity.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="../Marine-Sensitivity.docx">
+              <i class="bi bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Releases</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../releases.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Releases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../releases/v1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">v1 — Planning Areas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../releases/v7c.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">v7c — sea turtles and the North Atlantic right whale where the record places them</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Science</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../science.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Science</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data-sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Sources</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../taxonomy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Taxonomy</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../extinction-risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extinction Risk</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../model-merging.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Model Merging</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../scoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Scoring</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../scoring-walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Scoring Walkthrough</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stressors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Stressors</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../server.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Server</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../db.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Database</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../workflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Workflows</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">APIs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../libraries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Libraries</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Apps</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps-guide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Apps User Guide</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../docs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Applications (Current)</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/atlas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Atlas (beta) — the static, in-browser scores, species and places app</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/scores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/species.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Applications (Legacy)</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/aoi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Areas of Interest</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/bird_hotspots.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bird Hotspots</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Regional Map</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/scores_0.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scores Explorer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/sdm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, Vector</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/sdm-cog.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, Raster</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/vmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vulnerability Mapper</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#three-rules-each-off-in-the-control-run" id="toc-three-rules-each-off-in-the-control-run" class="nav-link active" data-scroll-target="#three-rules-each-off-in-the-control-run"><span class="header-section-number">4.1</span> Three rules, each off in the control run</a></li>
+  <li><a href="#the-rules-as-equations" id="toc-the-rules-as-equations" class="nav-link" data-scroll-target="#the-rules-as-equations"><span class="header-section-number">4.2</span> The rules as equations</a>
+  <ul class="collapse">
+  <li><a href="#a-cell-belongs-to-one-ecoregion" id="toc-a-cell-belongs-to-one-ecoregion" class="nav-link" data-scroll-target="#a-cell-belongs-to-one-ecoregion"><span class="header-section-number">4.2.1</span> A cell belongs to one ecoregion</a></li>
+  <li><a href="#rule-1-the-turtle-record-rule" id="toc-rule-1-the-turtle-record-rule" class="nav-link" data-scroll-target="#rule-1-the-turtle-record-rule"><span class="header-section-number">4.2.2</span> Rule 1: the turtle record rule</a></li>
+  <li><a href="#rule-2-the-right-whale-gulf-rule" id="toc-rule-2-the-right-whale-gulf-rule" class="nav-link" data-scroll-target="#rule-2-the-right-whale-gulf-rule"><span class="header-section-number">4.2.3</span> Rule 2: the right whale Gulf rule</a></li>
+  <li><a href="#applying-a-drop-critical-habitat-is-never-excluded" id="toc-applying-a-drop-critical-habitat-is-never-excluded" class="nav-link" data-scroll-target="#applying-a-drop-critical-habitat-is-never-excluded"><span class="header-section-number">4.2.4</span> Applying a drop: critical habitat is never excluded</a></li>
+  <li><a href="#rule-3-the-coverage-floor-κ" id="toc-rule-3-the-coverage-floor-κ" class="nav-link" data-scroll-target="#rule-3-the-coverage-floor-κ"><span class="header-section-number">4.2.5</span> Rule 3: the coverage floor κ</a></li>
+  <li><a href="#why-a-drop-and-not-a-weight" id="toc-why-a-drop-and-not-a-weight" class="nav-link" data-scroll-target="#why-a-drop-and-not-a-weight"><span class="header-section-number">4.2.6</span> Why a drop, and not a weight</a></li>
+  </ul></li>
+  <li><a href="#the-evidence" id="toc-the-evidence" class="nav-link" data-scroll-target="#the-evidence"><span class="header-section-number">4.3</span> The evidence</a>
+  <ul class="collapse">
+  <li><a href="#the-channels" id="toc-the-channels" class="nav-link" data-scroll-target="#the-channels"><span class="header-section-number">4.3.1</span> The channels</a></li>
+  <li><a href="#looking-against-finding" id="toc-looking-against-finding" class="nav-link" data-scroll-target="#looking-against-finding"><span class="header-section-number">4.3.2</span> Looking against finding</a></li>
+  <li><a href="#records-per-species-in-alaska" id="toc-records-per-species-in-alaska" class="nav-link" data-scroll-target="#records-per-species-in-alaska"><span class="header-section-number">4.3.3</span> Records per species in Alaska</a></li>
+  <li><a href="#records-against-each-species-range" id="toc-records-against-each-species-range" class="nav-link" data-scroll-target="#records-against-each-species-range"><span class="header-section-number">4.3.4</span> Records against each species’ range</a></li>
+  <li><a href="#sec-v7c-right-whale" id="toc-sec-v7c-right-whale" class="nav-link" data-scroll-target="#sec-v7c-right-whale"><span class="header-section-number">4.3.5</span> The right whale</a></li>
+  <li><a href="#sec-v7c-links" id="toc-sec-v7c-links" class="nav-link" data-scroll-target="#sec-v7c-links"><span class="header-section-number">4.3.6</span> Interactive map and the rendered notebooks</a></li>
+  </ul></li>
+  <li><a href="#what-changes-on-the-map" id="toc-what-changes-on-the-map" class="nav-link" data-scroll-target="#what-changes-on-the-map"><span class="header-section-number">4.4</span> What changes on the map</a></li>
+  <li><a href="#what-moved-in-the-program-area-scores" id="toc-what-moved-in-the-program-area-scores" class="nav-link" data-scroll-target="#what-moved-in-the-program-area-scores"><span class="header-section-number">4.5</span> What moved in the Program-Area scores</a></li>
+  <li><a href="#compared-with-v7b" id="toc-compared-with-v7b" class="nav-link" data-scroll-target="#compared-with-v7b"><span class="header-section-number">4.6</span> Compared with v7b</a></li>
+  <li><a href="#caveats" id="toc-caveats" class="nav-link" data-scroll-target="#caveats"><span class="header-section-number">4.7</span> Caveats</a></li>
+  <li><a href="#reproducing-v7c" id="toc-reproducing-v7c" class="nav-link" data-scroll-target="#reproducing-v7c"><span class="header-section-number">4.8</span> Reproducing v7c</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/releases/v7c.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../releases.html">Releases</a></li><li class="breadcrumb-item"><a href="../releases/v7c.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">v7c — sea turtles and the North Atlantic right whale where the record places them</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-release-v7c" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">v7c — sea turtles and the North Atlantic right whale where the record places them</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>v7c, titled <strong>v7.2</strong>, is the second surgical patch of the public v7 release, built the way v7b was. It is not a new build: v7’s database is cloned, the merged models of six sea turtles and the North Atlantic right whale are edited under their existing model ids, and v7’s own scoring is re-executed verbatim. It replaces v7b as the version under review. Three rules change, and nothing else does:</p>
+<ol type="1">
+<li><strong>The turtle record rule.</strong> A sea-turtle species is dropped from an Alaska ecoregion where it has never been recorded through any observational channel: sightings, strandings, bycatch, fishery observers, survey and opportunistic records. This replaces v7b’s suitability threshold.</li>
+<li><strong>The right whale Gulf rule.</strong> The North Atlantic right whale is dropped from the two Gulf of America ecoregions, which lie outside its range.</li>
+<li><strong>The coverage floor κ</strong>, carried over unchanged from v7b.</li>
+</ol>
+<p>Productivity, the national score and everything else planned for v10 are untouched. Every primary-productivity row of v7c equals v7’s, and a build gate checks this in every run.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Served on the review host only
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>v7c is a restricted pre-release. It is served only through the signed-in review host: <a href="https://preview.marinesensitivity.org/v7c/scores/">Scores</a>, <a href="https://preview.marinesensitivity.org/v7c/species/">Species</a>, <a href="https://preview.marinesensitivity.org/v7c/atlas/">Atlas</a> and <a href="https://preview.marinesensitivity.org/docs/v7c/">this documentation</a>. It is never what a reader gets by default, and promoting it is a separate decision.</p>
+</div>
+</div>
+<section id="three-rules-each-off-in-the-control-run" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="three-rules-each-off-in-the-control-run"><span class="header-section-number">4.1</span> Three rules, each off in the control run</h2>
+<p>Each rule is a flag in the build notebook, and each flag’s control value is <em>off</em>. With all three off, the same code reproduces v7 exactly: the same cells, the same values and the same scores. That gate makes every difference below attributable to one rule. The build also runs each rule on its own, so the Program-Area table further down shows what each rule moves.</p>
+<table class="caption-top table">
+<caption>The three v7c rules. Rules 1 and 2 are one mechanism, a taxon × ecoregion exclusion read from one evidence table; the release records that table’s digest as <code>zone_exclusions_hash</code>.</caption>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Rule</th>
+<th>Unit</th>
+<th>Flag (control = off)</th>
+<th>Recorded in the release as</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Turtle record rule</td>
+<td>sea-turtle species × ecoregion</td>
+<td><code>EXCLUDE_TURTLES=0</code></td>
+<td><code>turtle_record_rule</code></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Right whale Gulf rule</td>
+<td>right whale × ecoregion</td>
+<td><code>EXCLUDE_RIGHT_WHALE=0</code></td>
+<td><code>right_whale_gulf_rule</code></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Coverage floor κ</td>
+<td>Program Area × component</td>
+<td><code>COVERAGE_FLOOR=0</code></td>
+<td><code>coverage_floor_pct</code></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<caption>Cells of the six merged sea-turtle models and the merged right whale model in each build run (<code>tbl_gates_v7c.csv</code>). The control run reproduces v7 with zero differences; no run adds a cell, and no run moves a productivity row.</caption>
+<colgroup>
+<col style="width: 17%">
+<col style="width: 9%">
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 9%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Run</th>
+<th style="text-align: right;">Turtle cells</th>
+<th style="text-align: right;">Turtle cells removed</th>
+<th style="text-align: right;">Right whale cells</th>
+<th style="text-align: right;">Right whale cells removed</th>
+<th style="text-align: right;">Cells gained</th>
+<th style="text-align: center;">Productivity == v7</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">all rules off (control)</td>
+<td style="text-align: right;">2,022,909</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">60,690</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">record rule only</td>
+<td style="text-align: right;">1,881,430</td>
+<td style="text-align: right;">141,479</td>
+<td style="text-align: right;">60,690</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">right whale rule only</td>
+<td style="text-align: right;">2,022,909</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">47,773</td>
+<td style="text-align: right;">12,917</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">κ only</td>
+<td style="text-align: right;">2,022,909</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">60,690</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">v7c (all three)</td>
+<td style="text-align: right;">1,881,430</td>
+<td style="text-align: right;">141,479</td>
+<td style="text-align: right;">47,773</td>
+<td style="text-align: right;">12,917</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: center;">yes</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="the-rules-as-equations" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="the-rules-as-equations"><span class="header-section-number">4.2</span> The rules as equations</h2>
+<section id="a-cell-belongs-to-one-ecoregion" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="a-cell-belongs-to-one-ecoregion"><span class="header-section-number">4.2.1</span> A cell belongs to one ecoregion</h3>
+<p>Ecoregions are the unit of exclusion because they are the frame the score is rescaled in (<a href="../scoring.html#eq-ecoregion-rescale" class="quarto-xref">Equation&nbsp;<span>10.4</span></a>), and because the evidence is stated at that scale (“never recorded in the Bering Sea”; “the Gulf is outside its range”). A cell that straddles two ecoregions belongs to the one covering most of it:</p>
+<p><span id="eq-v7c-cell-ecoregion"><span class="math display">\[
+e(c) = \underset{e}{\arg\max}\; p_{c,e}
+\tag{4.1}\]</span></span></p>
+<p>where <span class="math inline">\(p_{c,e}\)</span> is the percentage of cell <span class="math inline">\(c\)</span> covered by ecoregion <span class="math inline">\(e\)</span>. A tie goes to the ecoregion whose key sorts first, so the assignment is deterministic (<code>msens::cell_zone_major_sql()</code>).</p>
+</section>
+<section id="rule-1-the-turtle-record-rule" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="rule-1-the-turtle-record-rule"><span class="header-section-number">4.2.2</span> Rule 1: the turtle record rule</h3>
+<p>For species <span class="math inline">\(s\)</span>, Alaska ecoregion <span class="math inline">\(e\)</span> (Gulf of Alaska, East Bering Sea, Chukchi and Beaufort Seas, High Arctic) and observational channel <span class="math inline">\(k\)</span>, let <span class="math inline">\(n_{s,e,k}\)</span> be the number of records of <span class="math inline">\(s\)</span> in <span class="math inline">\(e\)</span> from channel <span class="math inline">\(k\)</span>, and <span class="math inline">\(K_e\)</span> the channels that reach <span class="math inline">\(e\)</span>. Let <span class="math inline">\(R_s\)</span> be the cells of the species’ v7 merged model. The species is dropped from the ecoregion when no channel has ever recorded it there and v7 gives it range there:</p>
+<p><span id="eq-v7c-record-rule"><span class="math display">\[
+\text{drop}_{s,e} \;=\; \mathbb{1}\!\left[\sum_{k \in K_e} n_{s,e,k} = 0\right] \cdot \mathbb{1}\!\left[\,\lvert \{c \in R_s : e(c) = e\} \rvert \ge 1\,\right]
+\tag{4.2}\]</span></span></p>
+<p>The evidence table is built over the four Alaska ecoregions only; v7c does not apply the rule elsewhere. A channel that does not reach an ecoregion is left out of the sum rather than counted as a zero. A channel that reaches it and finds nothing counts as a zero. The rule is a yes/no question over all channels together; the channels are reported separately below so that what each can and cannot see stays visible.</p>
+</section>
+<section id="rule-2-the-right-whale-gulf-rule" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="rule-2-the-right-whale-gulf-rule"><span class="header-section-number">4.2.3</span> Rule 2: the right whale Gulf rule</h3>
+<p><span id="eq-v7c-right-whale"><span class="math display">\[
+\text{drop}_{\textit{E. glacialis},\,e} = 1 \quad \text{for } e \in \{\text{EGOA},\ \text{WCGOA}\}
+\tag{4.3}\]</span></span></p>
+<p>The evidence is of a different kind from rule 1: the species has a handful of Gulf records, all vagrants, against thousands in the Atlantic, and none of the independent range sources places it in the Gulf (see <a href="#sec-v7c-right-whale">The right whale</a>).</p>
+</section>
+<section id="applying-a-drop-critical-habitat-is-never-excluded" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="applying-a-drop-critical-habitat-is-never-excluded"><span class="header-section-number">4.2.4</span> Applying a drop: critical habitat is never excluded</h3>
+<p>Both rules edit the merged model the same way (<code>msens::zone_exclude_sql()</code>):</p>
+<p><span id="eq-v7c-apply"><span class="math display">\[
+v'_{s,c} =
+\begin{cases}
+\text{absent} &amp; \text{if } \text{drop}_{s,e(c)} = 1 \text{ and } c \notin H_s \\
+v_{s,c} &amp; \text{otherwise}
+\end{cases}
+\tag{4.4}\]</span></span></p>
+<p>where <span class="math inline">\(v_{s,c}\)</span> is the v7 merged value and <span class="math inline">\(H_s\)</span> the cells the species holds under a designated critical-habitat dataset. A dropped cell is removed from the model, not set to zero, and every kept cell keeps its v7 value exactly. No v7 critical habitat for these species lies in an excluded ecoregion, so the guard is asserted by the build rather than exercised (<code>n_ch_lost</code> = 0 in <code>build_v7c.json</code>).</p>
+</section>
+<section id="rule-3-the-coverage-floor-κ" class="level3" data-number="4.2.5">
+<h3 data-number="4.2.5" class="anchored" data-anchor-id="rule-3-the-coverage-floor-κ"><span class="header-section-number">4.2.5</span> Rule 3: the coverage floor κ</h3>
+<p>Unchanged from v7b. A component (a species category, or primary productivity) is reportable for a Program Area only where its scored cells cover enough of the area:</p>
+<p><span id="eq-v7c-coverage"><span class="math display">\[
+\text{coverage}_{z,g} = \frac{\sum_{c \in z,\ \text{scored}} w_c}{\sum_{c \in z} w_c}
+\,, \qquad \text{reportable}_{z,g} \iff \text{coverage}_{z,g} \ge \kappa
+\tag{4.5}\]</span></span></p>
+<p>with <span class="math inline">\(w_c\)</span> the share of cell <span class="math inline">\(c\)</span> inside Program Area <span class="math inline">\(z\)</span> and <span class="math inline">\(\kappa\)</span> = 5 %. Below the floor the component is not reportable: it is left out of the composite, never published as a zero.</p>
+</section>
+<section id="why-a-drop-and-not-a-weight" class="level3" data-number="4.2.6">
+<h3 data-number="4.2.6" class="anchored" data-anchor-id="why-a-drop-and-not-a-weight"><span class="header-section-number">4.2.6</span> Why a drop, and not a weight</h3>
+<p>An alternative was worked through first: keep a turtle where it has been recorded rarely, but down-weight it by how rarely. The weight is the encounter rate per unit of looking, relative to a reference coast (California, Oregon and Washington), divided by what the distribution model already says about the same contrast (the encounter-rate notebook, <a href="#sec-v7c-links" class="quarto-xref"><span>Section 4.3.6</span></a>):</p>
+<p><span id="eq-v7c-weight"><span class="math display">\[
+w_{s,e} = \min\left(1,\; \frac{\lambda_{s,e} / \lambda_{s,\text{ref}}}{\bar S_{s,e} / \bar S_{s,\text{ref}}}\right)
+\tag{4.6}\]</span></span></p>
+<p>where <span class="math inline">\(\lambda\)</span> is turtles found per unit of looking and <span class="math inline">\(\bar S\)</span> is mean modeled suitability per cell. v7c does not use it, because a weight cannot reach the score:</p>
+<ul>
+<li><strong>The ecoregional rescale cancels it.</strong> Each component is rescaled to 0–100 within its ecoregion (<a href="../scoring.html#eq-ecoregion-rescale" class="quarto-xref">Equation&nbsp;<span>10.4</span></a>). A weight <span class="math inline">\(w\)</span> shared by every turtle cell of an ecoregion scales the cell scores and both endpoints alike, so it divides out, apart from rounding to whole numbers (next point): <span id="eq-v7c-cancel"><span class="math display">\[
+\frac{w\,x_c - w\,x_{\min}}{w\,x_{\max} - w\,x_{\min}} = \frac{x_c - x_{\min}}{x_{\max} - x_{\min}}
+\tag{4.7}\]</span></span> A weight that differs between species changes only the mix of species within the ecoregion.</li>
+<li><strong>The integer floor keeps every cell.</strong> The scoring database stores merged values as integers floored at 1, <span class="math inline">\(v' = \max(1, \mathrm{round}(w\,v))\)</span>. Even a weight near 0 (the posterior never reaches exactly 0 for a species with no records) leaves the species in every cell at a value of 1. That is a flat surface the rescale treats like any other, and it still counts in the composite.</li>
+</ul>
+<p>A weight can therefore at most reshuffle species within an ecoregion; taking a species out of an ecoregion’s score takes a drop. Where a species <em>has</em> been recorded, v7c keeps it at its v7 value. In the Gulf of Alaska the two fair comparisons disagree: the strandings line puts the weight at 1 for all four recorded species, while the iNaturalist line, which covers only the years since about 2008, would down-weight them strongly. The Alaska Region’s records since 2003 (request 1 below) would settle which holds today.</p>
+</section>
+</section>
+<section id="the-evidence" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="the-evidence"><span class="header-section-number">4.3</span> The evidence</h2>
+<p>The evidence notebook gathers every observational channel that could be obtained, counts records per species × ecoregion × channel, and writes the exclusion table this release applies. The build asserts that the exclusions it applies are exactly that table’s rows.</p>
+<section id="the-channels" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="the-channels"><span class="header-section-number">4.3.1</span> The channels</h3>
+<table class="caption-top table">
+<caption>Every observational channel used or cited (<code>sources.csv</code>). <em>used</em>: counted per species × ecoregion; <em>cited</em>: a published figure quoted from the report. The channels overlap — one record can be in OBIS, GBIF and a NOAA file at once — so they are never summed into a total, only asked the record rule’s yes/no question.</caption>
+<colgroup>
+<col style="width: 8%">
+<col style="width: 47%">
+<col style="width: 11%">
+<col style="width: 3%">
+<col style="width: 18%">
+<col style="width: 8%">
+<col style="width: 1%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Channel</th>
+<th style="text-align: left;">Records</th>
+<th style="text-align: left;">Coverage</th>
+<th style="text-align: left;">Years</th>
+<th style="text-align: left;">Looking (effort proxy)</th>
+<th style="text-align: left;">Source</th>
+<th style="text-align: left;">Use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">noaa_ak_sighting / _stranding / _bycatch</td>
+<td style="text-align: left;">Alaska sea turtle records typed by how found (sighting at sea, stranding, netted)</td>
+<td style="text-align: left;">Alaska (all located records in the Gulf of Alaska)</td>
+<td style="text-align: left;">1963–2020</td>
+<td style="text-align: left;">marine mammal strandings, Alaska Region: 188 a year 2006–2017</td>
+<td style="text-align: left;"><span class="citation" data-cites="noaa_ak_turtles_2026 hodgewing2000">(<a href="../references.html#ref-noaa_ak_turtles_2026" role="doc-biblioref">NOAA Fisheries Alaska Region 2026</a>; <a href="../references.html#ref-hodgewing2000" role="doc-biblioref">Hodge and Wing 2000</a>)</span></td>
+<td style="text-align: left;">used</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">obis_all / obis_survey</td>
+<td style="text-align: left;">OBIS presence records (surveys = no telemetry, machine observation or photo-ID)</td>
+<td style="text-align: left;">global</td>
+<td style="text-align: left;">1850s–2024</td>
+<td style="text-align: left;">OBIS marine mammal records; turtle-recording datasets’ block-years</td>
+<td style="text-align: left;"><span class="citation" data-cites="obis2025">(<a href="../references.html#ref-obis2025" role="doc-biblioref">OBIS 2025b</a>)</span></td>
+<td style="text-align: left;">used</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gbif</td>
+<td style="text-align: left;">GBIF presence records, occurrence API counts per ecoregion (0.1° buffer)</td>
+<td style="text-align: left;">global</td>
+<td style="text-align: left;">to 2026</td>
+<td style="text-align: left;">GBIF marine mammal records</td>
+<td style="text-align: left;"><span class="citation" data-cites="gbif2026">(<a href="../references.html#ref-gbif2026" role="doc-biblioref">GBIF.org 2026</a>)</span></td>
+<td style="text-align: left;">used</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">inat</td>
+<td style="text-align: left;">iNaturalist research-grade observations via GBIF</td>
+<td style="text-align: left;">global</td>
+<td style="text-align: left;">about 2008–2026</td>
+<td style="text-align: left;">iNaturalist marine mammal observations</td>
+<td style="text-align: left;"><span class="citation" data-cites="inaturalist2026">(<a href="../references.html#ref-inaturalist2026" role="doc-biblioref"><span class="nocase">iNaturalist contributors and iNaturalist</span> 2026</a>)</span></td>
+<td style="text-align: left;">used</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">speciesgrids</td>
+<td style="text-align: left;">OBIS + GBIF records merged onto the 0.05° grid (cells)</td>
+<td style="text-align: left;">global</td>
+<td style="text-align: left;">undated</td>
+<td style="text-align: left;">0.05° cells with a marine mammal record</td>
+<td style="text-align: left;"><span class="citation" data-cites="speciesgrids2025">(<a href="../references.html#ref-speciesgrids2025" role="doc-biblioref">Provoost 2026</a>)</span></td>
+<td style="text-align: left;">used</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wdfw_wa</td>
+<td style="text-align: left;">every Washington sea turtle record (stranding, bycatch, at sea, aerial), Appendix A</td>
+<td style="text-align: left;">Washington</td>
+<td style="text-align: left;">1950–2013</td>
+<td style="text-align: left;">marine mammal strandings, Washington: 578 a year 2007–2016</td>
+<td style="text-align: left;"><span class="citation" data-cites="wdfw2017">(<a href="../references.html#ref-wdfw2017" role="doc-biblioref">Sato 2017</a>)</span></td>
+<td style="text-align: left;">used</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">stssn</td>
+<td style="text-align: left;">sea turtle strandings by state, species and encounter type (preliminary data application)</td>
+<td style="text-align: left;">Gulf (TX–FL) and Atlantic (FL–ME)</td>
+<td style="text-align: left;">2016–2025</td>
+<td style="text-align: left;">marine mammal strandings, Gulf: 375 a year 2000–2014 (Litz 2015)</td>
+<td style="text-align: left;"><span class="citation" data-cites="stssn2026">(<a href="../references.html#ref-stssn2026" role="doc-biblioref">NOAA Fisheries Southeast Fisheries Science Center 2026</a>)</span></td>
+<td style="text-align: left;">used</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wc_groundfish_observer</td>
+<td style="text-align: left;">West Coast Groundfish Observer Program: 1 leatherback killed (2008, open-access pot) and 4 seen (2005, 2007, 2011, 2014); the only observed leatherback take</td>
+<td style="text-align: left;">CA/OR/WA</td>
+<td style="text-align: left;">2002–2019</td>
+<td style="text-align: left;">observer coverage 3–12 % (open-access fixed gear) to 100 % (catch shares)</td>
+<td style="text-align: left;"><span class="citation" data-cites="benson2026">(<a href="../references.html#ref-benson2026" role="doc-biblioref">Benson et al. 2026</a>)</span></td>
+<td style="text-align: left;">cited</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wc_leatherback_strandings</td>
+<td style="text-align: left;">leatherback strandings: AK 7, WA 9, OR 1, CA 113; none in Alaska since 1993</td>
+<td style="text-align: left;">AK, WA, OR, CA</td>
+<td style="text-align: left;">1963–2020</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><span class="citation" data-cites="benson2026">(<a href="../references.html#ref-benson2026" role="doc-biblioref">Benson et al. 2026</a>)</span></td>
+<td style="text-align: left;">cited</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ak_fishery_observer</td>
+<td style="text-align: left;">‘No sea turtles were observed caught in 2014 or 2015 in Alaska Region fisheries under federal or joint federal/international management authority’ (§5.6)</td>
+<td style="text-align: left;">Bering Sea–Aleutians, Gulf of Alaska</td>
+<td style="text-align: left;">2014–2015</td>
+<td style="text-align: left;">North Pacific Observer Program coverage of federal groundfish and halibut fisheries</td>
+<td style="text-align: left;"><span class="citation" data-cites="benaka2019">(<a href="../references.html#ref-benaka2019" role="doc-biblioref">Benaka et al. 2019</a>)</span></td>
+<td style="text-align: left;">cited</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hi_longline_observer</td>
+<td style="text-align: left;">Hawaii shallow-set longline, 100 % observer coverage: 46 sea turtle interactions in 2025 (35 loggerhead, 10 leatherback, 1 unidentified hardshell); the fleet fishes mostly outside the EEZ, so not placed in an ecoregion</td>
+<td style="text-align: left;">Hawaii-based fleet, mostly high seas</td>
+<td style="text-align: left;">2025</td>
+<td style="text-align: left;">59 observed departures</td>
+<td style="text-align: left;"><span class="citation" data-cites="piro2026">(<a href="../references.html#ref-piro2026" role="doc-biblioref">NOAA Fisheries Pacific Islands Regional Office 2026</a>)</span></td>
+<td style="text-align: left;">cited</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">right whale — noaa_2006_release</td>
+<td style="text-align: left;">confirmed Gulf right whale sightings: 1963 Longboat Key, 2004 Panama City, 2006 mother and calf off Corpus Christi</td>
+<td style="text-align: left;">Gulf of America</td>
+<td style="text-align: left;">1963–2006</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><span class="citation" data-cites="noaa_sero2006 ward_geiger2011">(<a href="../references.html#ref-noaa_sero2006" role="doc-biblioref">NOAA Fisheries Service Southeast Regional Office and Florida Fish and Wildlife Conservation Commission 2006</a>; <a href="../references.html#ref-ward_geiger2011" role="doc-biblioref">Ward-Geiger et al. 2011</a>)</span></td>
+<td style="text-align: left;">cited</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">right whale — density model</td>
+<td style="text-align: left;">habitat-based density models from line-transect surveys; the right whale is modelled in the Atlantic only</td>
+<td style="text-align: left;">US Atlantic and Gulf</td>
+<td style="text-align: left;">1992–2014</td>
+<td style="text-align: left;">aerial and shipboard line-transect effort</td>
+<td style="text-align: left;"><span class="citation" data-cites="roberts2016">(<a href="../references.html#ref-roberts2016" role="doc-biblioref">Roberts et al. 2016</a>)</span></td>
+<td style="text-align: left;">cited</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">right whale — obis_sdm_p10</td>
+<td style="text-align: left;">OBIS published SDM ensemble cells at or above the 10th-percentile training presence threshold</td>
+<td style="text-align: left;">global</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><span class="citation" data-cites="obis_sdm2025">(<a href="../references.html#ref-obis_sdm2025" role="doc-biblioref">OBIS 2025a</a>)</span></td>
+<td style="text-align: left;">used</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="looking-against-finding" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="looking-against-finding"><span class="header-section-number">4.3.2</span> Looking against finding</h3>
+<p>A zero means something only where somebody was looking. For each region and channel, the table gives the looking (that channel’s effort proxy), the turtles found (any sea turtle species), and turtles per 1,000 units of looking.</p>
+<table class="caption-top table">
+<caption>Looking against finding (<code>looking_vs_finding.csv</code>): turtles found / looking (turtles per 1,000 units of looking), by region. Lines A–D pair turtles and effort from the same reporting channel; the OBIS, GBIF and iNaturalist rows count whole ecoregions. — = the channel does not reach the region.</caption>
+<colgroup>
+<col style="width: 17%">
+<col style="width: 40%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Channel</th>
+<th style="text-align: left;">Looking</th>
+<th style="text-align: right;">Bering–Arctic</th>
+<th style="text-align: right;">Gulf of Alaska</th>
+<th style="text-align: right;">Pacific CA/OR/WA</th>
+<th style="text-align: right;">Gulf of America</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">A. surveys</td>
+<td style="text-align: left;">OBIS turtle-recording surveys: 0.5° block-years searched</td>
+<td style="text-align: right;">0 / 62 (0)</td>
+<td style="text-align: right;">0 / 58 (0)</td>
+<td style="text-align: right;">67 / 3,020 (22)</td>
+<td style="text-align: right;">715 / 1,745 (410)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B. all records</td>
+<td style="text-align: left;">OBIS + GBIF: 0.05° cells with a marine mammal record</td>
+<td style="text-align: right;">0 / 13,317 (0)</td>
+<td style="text-align: right;">0 / 3,683 (0)</td>
+<td style="text-align: right;">211 / 8,988 (23)</td>
+<td style="text-align: right;">2,069 / 5,649 (370)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C. public reports</td>
+<td style="text-align: left;">iNaturalist (1° coastal buffer): marine mammal + turtle observations</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">0 / 8,125 (0)</td>
+<td style="text-align: right;">495 / 76,849 (6.4)</td>
+<td style="text-align: right;">2,039 / 6,308 (320)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D. strandings</td>
+<td style="text-align: left;">marine mammal strandings, same coast (Washington for the Pacific)</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">17 / 4,324 (3.9)</td>
+<td style="text-align: right;">32 / 13,294 (2.4)</td>
+<td style="text-align: right;">32,325 / 3,750 (8,600)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">OBIS, all</td>
+<td style="text-align: left;">OBIS marine mammal records</td>
+<td style="text-align: right;">0 / 38,477 (0)</td>
+<td style="text-align: right;">0 / 13,103 (0)</td>
+<td style="text-align: right;">235 / 77,523 (3)</td>
+<td style="text-align: right;">5,430 / 12,375 (440)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GBIF, all</td>
+<td style="text-align: left;">GBIF marine mammal records (0.1° ecoregion buffer)</td>
+<td style="text-align: right;">0 / 78,534 (0)</td>
+<td style="text-align: right;">1 / 32,359 (0.031)</td>
+<td style="text-align: right;">671 / 198,387 (3.4)</td>
+<td style="text-align: right;">4,962 / 16,051 (310)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">iNaturalist</td>
+<td style="text-align: left;">iNaturalist marine mammal observations (0.1° ecoregion buffer)</td>
+<td style="text-align: right;">0 / 708 (0)</td>
+<td style="text-align: right;">0 / 1,509 (0)</td>
+<td style="text-align: right;">399 / 59,842 (6.7)</td>
+<td style="text-align: right;">365 / 834 (440)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Alaska fishery observers 2014–15</td>
+<td style="text-align: left;">observed federal groundfish hauls, Bering Sea–Aleutians and Gulf of Alaska</td>
+<td style="text-align: right;">0 turtles</td>
+<td style="text-align: right;">0 turtles</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+</tr>
+</tbody>
+</table>
+<p>The Bering Sea to Arctic is the one region with a large amount of looking and no turtle on any channel. The Gulf of America shows what a turtle coast looks like on the same measures. Fishery observers in Alaska reported no sea turtle caught in federally managed fisheries in 2014 or 2015 <span class="citation" data-cites="benaka2019">(<a href="../references.html#ref-benaka2019" role="doc-biblioref">Benaka et al. 2019</a>)</span>; that line has no effort count of its own.</p>
+</section>
+<section id="records-per-species-in-alaska" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="records-per-species-in-alaska"><span class="header-section-number">4.3.3</span> Records per species in Alaska</h3>
+<table class="caption-top table">
+<caption>Sea-turtle records per Alaska ecoregion and channel (<code>records_species_ecoregion.csv</code>). A blank cell is a channel that does not reach that ecoregion or species; a 0 is a channel that reaches it and found nothing. <em>no v7 range</em>: never recorded, but v7 gives the species no range there, so there is nothing to drop. The seven West Coast leatherback strandings in Alaska are the same animals as the NOAA Alaska file’s, so the columns must not be added across.</caption>
+<colgroup>
+<col style="width: 14%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 2%">
+<col style="width: 5%">
+<col style="width: 2%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 15%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ecoregion</th>
+<th style="text-align: left;">Species</th>
+<th style="text-align: right;">NOAA AK sighting</th>
+<th style="text-align: right;">NOAA AK stranding</th>
+<th style="text-align: right;">NOAA AK bycatch</th>
+<th style="text-align: right;">AK fishery observers</th>
+<th style="text-align: right;">OBIS</th>
+<th style="text-align: right;">OBIS surveys</th>
+<th style="text-align: right;">GBIF</th>
+<th style="text-align: right;">iNaturalist</th>
+<th style="text-align: right;">OBIS + GBIF cells</th>
+<th style="text-align: right;">West Coast leatherback strandings</th>
+<th style="text-align: left;">In v7c</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Gulf of Alaska (GOA)</td>
+<td style="text-align: left;">Loggerhead</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">kept (recorded)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gulf of Alaska (GOA)</td>
+<td style="text-align: left;">Green</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">kept (recorded)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Gulf of Alaska (GOA)</td>
+<td style="text-align: left;">Hawksbill</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gulf of Alaska (GOA)</td>
+<td style="text-align: left;">Leatherback</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: left;">kept (recorded)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Gulf of Alaska (GOA)</td>
+<td style="text-align: left;">Kemp’s ridley</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gulf of Alaska (GOA)</td>
+<td style="text-align: left;">Olive ridley</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">kept (recorded)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">East Bering Sea (EBS)</td>
+<td style="text-align: left;">Loggerhead</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;"><strong>dropped</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">East Bering Sea (EBS)</td>
+<td style="text-align: left;">Green</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;"><strong>dropped</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">East Bering Sea (EBS)</td>
+<td style="text-align: left;">Hawksbill</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">East Bering Sea (EBS)</td>
+<td style="text-align: left;">Leatherback</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;"><strong>dropped</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">East Bering Sea (EBS)</td>
+<td style="text-align: left;">Kemp’s ridley</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">East Bering Sea (EBS)</td>
+<td style="text-align: left;">Olive ridley</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;"><strong>dropped</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chukchi and Beaufort Seas (CBS)</td>
+<td style="text-align: left;">Loggerhead</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chukchi and Beaufort Seas (CBS)</td>
+<td style="text-align: left;">Green</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chukchi and Beaufort Seas (CBS)</td>
+<td style="text-align: left;">Hawksbill</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chukchi and Beaufort Seas (CBS)</td>
+<td style="text-align: left;">Leatherback</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chukchi and Beaufort Seas (CBS)</td>
+<td style="text-align: left;">Kemp’s ridley</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chukchi and Beaufort Seas (CBS)</td>
+<td style="text-align: left;">Olive ridley</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">High Arctic (HAR)</td>
+<td style="text-align: left;">Loggerhead</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">High Arctic (HAR)</td>
+<td style="text-align: left;">Green</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">High Arctic (HAR)</td>
+<td style="text-align: left;">Hawksbill</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">High Arctic (HAR)</td>
+<td style="text-align: left;">Leatherback</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">High Arctic (HAR)</td>
+<td style="text-align: left;">Kemp’s ridley</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">High Arctic (HAR)</td>
+<td style="text-align: left;">Olive ridley</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;">no v7 range</td>
+</tr>
+</tbody>
+</table>
+<p>Every turtle record in Alaska is in the Gulf of Alaska, and it holds at least one record for each of loggerhead, green, leatherback and olive ridley, which therefore keep their v7 values there. The East Bering Sea, where v7 gave those four species range, has no record of any of them on any channel. The Chukchi and Beaufort Seas and the High Arctic have no record either, but v7 gives no turtle range there. Hawksbill and Kemp’s ridley have never been recorded in Alaska and have no v7 range in Alaska, the Washington/Oregon coast or California. The records summarize six decades of reports <span class="citation" data-cites="noaa_ak_turtles_2026 hodgewing2000">(<a href="../references.html#ref-noaa_ak_turtles_2026" role="doc-biblioref">NOAA Fisheries Alaska Region 2026</a>; <a href="../references.html#ref-hodgewing2000" role="doc-biblioref">Hodge and Wing 2000</a>)</span>.</p>
+</section>
+<section id="records-against-each-species-range" class="level3" data-number="4.3.4">
+<h3 data-number="4.3.4" class="anchored" data-anchor-id="records-against-each-species-range"><span class="header-section-number">4.3.4</span> Records against each species’ range</h3>
+<p>Each map shows the species’ v7 merged range (green where v7c keeps it, orange where it drops it) and every record that has a location: the NOAA Alaska file and OBIS at their coordinates, and OBIS + GBIF cells (which include the iNaturalist records) at cell centres. The left panel frames Alaska and the North Pacific, the right all US waters on the v7 grid; records outside the frame are cut. Each map’s subtitle sums the records over all channels for the Bering–Arctic and the Gulf of Alaska.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">Loggerhead</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Green</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Leatherback</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Olive ridley</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false" href="">Hawksbill</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-6" role="tab" aria-controls="tabset-1-6" aria-selected="false" href="">Kemp’s ridley</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div id="fig-v7c-turtle-cc" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Two maps of the loggerhead's v7 range. The East Bering Sea part along the Aleutians is orange (dropped in v7c); the Gulf of Alaska and the lower-48, Hawaii and territories ranges are green. Record points sit in the Gulf of Alaska and on the lower-48 coasts, none in the Bering Sea.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-v7c-turtle-cc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../figures/v7c/turtle_cc_records.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;4.1: Loggerhead (Caretta caretta): v7 merged range, with the East Bering Sea dropped in v7c (orange), and every located record by channel."><img src="../figures/v7c/turtle_cc_records.png" class="img-fluid figure-img" alt="Two maps of the loggerhead's v7 range. The East Bering Sea part along the Aleutians is orange (dropped in v7c); the Gulf of Alaska and the lower-48, Hawaii and territories ranges are green. Record points sit in the Gulf of Alaska and on the lower-48 coasts, none in the Bering Sea."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-v7c-turtle-cc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.1: Loggerhead (<em>Caretta caretta</em>): v7 merged range, with the East Bering Sea dropped in v7c (orange), and every located record by channel.
+</figcaption>
+</figure>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div id="fig-v7c-turtle-cm" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Two maps of the green turtle's v7 range, orange along the Aleutians in the East Bering Sea and green elsewhere, with record points in the Gulf of Alaska and further south, none in the Bering Sea.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-v7c-turtle-cm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../figures/v7c/turtle_cm_records.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;4.2: Green turtle (Chelonia mydas): v7 merged range, with the East Bering Sea dropped in v7c (orange), and every located record by channel."><img src="../figures/v7c/turtle_cm_records.png" class="img-fluid figure-img" alt="Two maps of the green turtle's v7 range, orange along the Aleutians in the East Bering Sea and green elsewhere, with record points in the Gulf of Alaska and further south, none in the Bering Sea."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-v7c-turtle-cm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.2: Green turtle (<em>Chelonia mydas</em>): v7 merged range, with the East Bering Sea dropped in v7c (orange), and every located record by channel.
+</figcaption>
+</figure>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div id="fig-v7c-turtle-dc" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Two maps of the leatherback's v7 range: an orange band along the Aleutians (East Bering Sea, dropped) and green across the Gulf of Alaska, the West Coast, Hawaii and the Atlantic and Gulf coasts. NOAA Alaska sightings, strandings and bycatch cluster in Southeast Alaska; none lie in the Bering Sea.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-v7c-turtle-dc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../figures/v7c/turtle_dc_records.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;4.3: Leatherback (Dermochelys coriacea): v7 merged range, with the East Bering Sea dropped in v7c (orange), and every located record by channel."><img src="../figures/v7c/turtle_dc_records.png" class="img-fluid figure-img" alt="Two maps of the leatherback's v7 range: an orange band along the Aleutians (East Bering Sea, dropped) and green across the Gulf of Alaska, the West Coast, Hawaii and the Atlantic and Gulf coasts. NOAA Alaska sightings, strandings and bycatch cluster in Southeast Alaska; none lie in the Bering Sea."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-v7c-turtle-dc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.3: Leatherback (<em>Dermochelys coriacea</em>): v7 merged range, with the East Bering Sea dropped in v7c (orange), and every located record by channel.
+</figcaption>
+</figure>
+</div>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div id="fig-v7c-turtle-lo" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Two maps of the olive ridley's v7 range, orange in the East Bering Sea and green elsewhere in the Pacific, with record points in the Gulf of Alaska and further south.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-v7c-turtle-lo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../figures/v7c/turtle_lo_records.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4.4: Olive ridley (Lepidochelys olivacea): v7 merged range, with the East Bering Sea dropped in v7c (orange), and every located record by channel."><img src="../figures/v7c/turtle_lo_records.png" class="img-fluid figure-img" alt="Two maps of the olive ridley's v7 range, orange in the East Bering Sea and green elsewhere in the Pacific, with record points in the Gulf of Alaska and further south."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-v7c-turtle-lo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.4: Olive ridley (<em>Lepidochelys olivacea</em>): v7 merged range, with the East Bering Sea dropped in v7c (orange), and every located record by channel.
+</figcaption>
+</figure>
+</div>
+</div>
+<div id="tabset-1-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-5-tab">
+<div id="fig-v7c-turtle-ei" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Two maps of the hawksbill's v7 range, all green: the Pacific islands, the Gulf of America, the Southeast Atlantic and the Caribbean. The Alaska and North Pacific panel is empty of range and records.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-v7c-turtle-ei-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../figures/v7c/turtle_ei_records.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;4.5: Hawksbill (Eretmochelys imbricata): v7 merged range and every located record. v7 gives it no range in Alaska, so v7c drops nothing."><img src="../figures/v7c/turtle_ei_records.png" class="img-fluid figure-img" alt="Two maps of the hawksbill's v7 range, all green: the Pacific islands, the Gulf of America, the Southeast Atlantic and the Caribbean. The Alaska and North Pacific panel is empty of range and records."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-v7c-turtle-ei-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.5: Hawksbill (<em>Eretmochelys imbricata</em>): v7 merged range and every located record. v7 gives it no range in Alaska, so v7c drops nothing.
+</figcaption>
+</figure>
+</div>
+</div>
+<div id="tabset-1-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-6-tab">
+<div id="fig-v7c-turtle-lk" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Two maps of Kemp's ridley's v7 range, all green, along the northern Gulf of America and the Atlantic coast, with records dense along those coasts. The Alaska and North Pacific panel is empty of range and records.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-v7c-turtle-lk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../figures/v7c/turtle_lk_records.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;4.6: Kemp’s ridley (Lepidochelys kempii): v7 merged range and every located record. v7 gives it no range in Alaska or the Pacific, so v7c drops nothing."><img src="../figures/v7c/turtle_lk_records.png" class="img-fluid figure-img" alt="Two maps of Kemp's ridley's v7 range, all green, along the northern Gulf of America and the Atlantic coast, with records dense along those coasts. The Alaska and North Pacific panel is empty of range and records."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-v7c-turtle-lk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.6: Kemp’s ridley (<em>Lepidochelys kempii</em>): v7 merged range and every located record. v7 gives it no range in Alaska or the Pacific, so v7c drops nothing.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-v7c-right-whale" class="level3" data-number="4.3.5">
+<h3 data-number="4.3.5" class="anchored" data-anchor-id="sec-v7c-right-whale"><span class="header-section-number">4.3.5</span> The right whale</h3>
+<p>In v7 the North Atlantic right whale’s Gulf of America range comes from two inputs only: the IUCN range polygon, valued at a flat 50, and AquaMaps. Every other line of evidence stops at the Atlantic. Designated critical habitat lies entirely in the Atlantic. The OBIS distribution-model ensemble, at its 10th-percentile training-presence threshold, has no Gulf cell. The habitat-based density models of <span class="citation" data-cites="roberts2016">Roberts et al. (<a href="../references.html#ref-roberts2016" role="doc-biblioref">2016</a>)</span>, fitted to line-transect surveys of both the Atlantic and the Gulf, model the species in the Atlantic only. The Gulf records are a handful against thousands in the Atlantic, channel by channel. They are vagrants: NOAA’s 2006 release names the confirmed Gulf sightings of the time — 1963 off Longboat Key, 2004 off Panama City, and a mother and calf first seen off Corpus Christi in January 2006 <span class="citation" data-cites="noaa_sero2006 ward_geiger2011">(<a href="../references.html#ref-noaa_sero2006" role="doc-biblioref">NOAA Fisheries Service Southeast Regional Office and Florida Fish and Wildlife Conservation Commission 2006</a>; <a href="../references.html#ref-ward_geiger2011" role="doc-biblioref">Ward-Geiger et al. 2011</a>)</span>.</p>
+<table class="caption-top table">
+<caption>North Atlantic right whale, Gulf of America (Eastern, EGOA; Western and Central, WCGOA) against the Atlantic (Northeast and Southeast Continental Shelf), by channel (<code>right_whale_records.csv</code>). The v7 rows are the cells v7 gave the species in each ecoregion, by input.</caption>
+<colgroup>
+<col style="width: 37%">
+<col style="width: 14%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 10%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Channel</th>
+<th style="text-align: left;">Unit</th>
+<th style="text-align: right;">EGOA</th>
+<th style="text-align: right;">WCGOA</th>
+<th style="text-align: right;">Gulf total</th>
+<th style="text-align: right;">NECS</th>
+<th style="text-align: right;">SECS</th>
+<th style="text-align: right;">Atlantic total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">OBIS records</td>
+<td style="text-align: left;">records</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">3,850</td>
+<td style="text-align: right;">283</td>
+<td style="text-align: right;">4,133</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">OBIS survey records</td>
+<td style="text-align: left;">records</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">3,583</td>
+<td style="text-align: right;">267</td>
+<td style="text-align: right;">3,850</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GBIF records</td>
+<td style="text-align: left;">records</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">11,889</td>
+<td style="text-align: right;">399</td>
+<td style="text-align: right;">12,288</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">iNaturalist observations</td>
+<td style="text-align: left;">records</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">209</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">225</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">OBIS + GBIF 0.05° cells</td>
+<td style="text-align: left;">0.05° cells</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1,613</td>
+<td style="text-align: right;">119</td>
+<td style="text-align: right;">1,732</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">confirmed sightings named by NOAA (2006)</td>
+<td style="text-align: left;">sighting events</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">OBIS SDM ensemble cells ≥ P10 threshold</td>
+<td style="text-align: left;">0.05° cells</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8,644</td>
+<td style="text-align: right;">1,705</td>
+<td style="text-align: right;">10,349</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">v7 input: IUCN range cells</td>
+<td style="text-align: left;">v7 cells</td>
+<td style="text-align: right;">5,626</td>
+<td style="text-align: right;">7,291</td>
+<td style="text-align: right;">12,917</td>
+<td style="text-align: right;">25,286</td>
+<td style="text-align: right;">19,397</td>
+<td style="text-align: right;">44,683</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">v7 input: AquaMaps cells</td>
+<td style="text-align: left;">v7 cells</td>
+<td style="text-align: right;">9,412</td>
+<td style="text-align: right;">9,134</td>
+<td style="text-align: right;">18,546</td>
+<td style="text-align: right;">18,677</td>
+<td style="text-align: right;">14,524</td>
+<td style="text-align: right;">33,201</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">v7 input: critical habitat cells</td>
+<td style="text-align: left;">v7 cells</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3,055</td>
+<td style="text-align: right;">1,015</td>
+<td style="text-align: right;">4,070</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">v7 merged model cells</td>
+<td style="text-align: left;">v7 cells</td>
+<td style="text-align: right;">5,626</td>
+<td style="text-align: right;">7,291</td>
+<td style="text-align: right;">12,917</td>
+<td style="text-align: right;">25,286</td>
+<td style="text-align: right;">19,397</td>
+<td style="text-align: right;">44,683</td>
+</tr>
+</tbody>
+</table>
+<div id="fig-v7c-right-whale" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Four maps of the US Atlantic and Gulf of America with the two Gulf ecoregions outlined in red. The IUCN range and AquaMaps panels shade most of the northern Gulf; the critical-habitat panel shades only the Gulf of Maine and the Southeast Atlantic calving grounds; the records panel has dense points from Florida to Nova Scotia and about ten scattered points in the Gulf.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-v7c-right-whale-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../figures/v7c/right_whale_records.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;4.7: The North Atlantic right whale in v7: its inputs and its record. Top: the IUCN range (flat value 50) and AquaMaps suitability, both reaching into the Gulf of America (ecoregions outlined in red). Bottom left: NMFS critical habitat, Atlantic only. Bottom right: OBIS records and OBIS + GBIF cells — thousands along the Atlantic coast, a handful in the Gulf."><img src="../figures/v7c/right_whale_records.png" class="img-fluid figure-img" alt="Four maps of the US Atlantic and Gulf of America with the two Gulf ecoregions outlined in red. The IUCN range and AquaMaps panels shade most of the northern Gulf; the critical-habitat panel shades only the Gulf of Maine and the Southeast Atlantic calving grounds; the records panel has dense points from Florida to Nova Scotia and about ten scattered points in the Gulf."></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-v7c-right-whale-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.7: The North Atlantic right whale in v7: its inputs and its record. Top: the IUCN range (flat value 50) and AquaMaps suitability, both reaching into the Gulf of America (ecoregions outlined in red). Bottom left: NMFS critical habitat, Atlantic only. Bottom right: OBIS records and OBIS + GBIF cells — thousands along the Atlantic coast, a handful in the Gulf.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-v7c-links" class="level3" data-number="4.3.6">
+<h3 data-number="4.3.6" class="anchored" data-anchor-id="sec-v7c-links"><span class="header-section-number">4.3.6</span> Interactive map and the rendered notebooks</h3>
+<p>The evidence notebook’s <a href="https://marinesensitivity.org/workflows/build_v7c_exclusions.html#interactive-map">interactive map</a> overlays the v7 turtle range (species per cell), the right whale’s v7 range, the excluded ecoregions and the records by channel, with layers toggled at the top right.</p>
+<ul>
+<li><a href="https://marinesensitivity.org/workflows/build_v7c_exclusions.html">Evidence for v7c</a> (<code>build_v7c_exclusions.qmd</code>): every channel, the per-species × ecoregion × channel table, the exclusion table and its assertions, and the maps.</li>
+<li><a href="https://marinesensitivity.org/workflows/build_v7c.html">Build v7.2</a> (<code>build_v7c.qmd</code>): the clone, the exclusions, the control runs, the gates, the Program-Area attribution and the reference digests.</li>
+<li><a href="https://marinesensitivity.org/workflows/explore_turtle-alaska-encounter.html">Sea turtles in Alaska: encounter rates</a> (<code>explore_turtle-alaska-encounter.qmd</code>): the encounter-rate weight (<a href="#eq-v7c-weight" class="quarto-xref">Equation&nbsp;<span>4.6</span></a>), the four lines of evidence with their posterior intervals, and why the rule became a drop.</li>
+</ul>
+</section>
+</section>
+<section id="what-changes-on-the-map" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="what-changes-on-the-map"><span class="header-section-number">4.4</span> What changes on the map</h2>
+<table class="caption-top table">
+<caption>The exclusion table v7c applies (<code>zone_exclusions.csv</code>): one row per species × ecoregion, with the v7 cells removed. A turtle row has zero records on every channel that reaches the ecoregion; the right whale’s records are OBIS + GBIF counts of vagrants. Cells elsewhere keep their v7 values.</caption>
+<colgroup>
+<col style="width: 18%">
+<col style="width: 30%">
+<col style="width: 11%">
+<col style="width: 17%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Species</th>
+<th style="text-align: left;">Ecoregion</th>
+<th style="text-align: right;">v7 cells removed</th>
+<th style="text-align: right;">Records in the ecoregion</th>
+<th style="text-align: left;">Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Loggerhead</td>
+<td style="text-align: left;">East Bering Sea (EBS)</td>
+<td style="text-align: right;">38,064</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">never recorded</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Green</td>
+<td style="text-align: left;">East Bering Sea (EBS)</td>
+<td style="text-align: right;">39,228</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">never recorded</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Leatherback</td>
+<td style="text-align: left;">East Bering Sea (EBS)</td>
+<td style="text-align: right;">39,959</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">never recorded</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Olive ridley</td>
+<td style="text-align: left;">East Bering Sea (EBS)</td>
+<td style="text-align: right;">24,228</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">never recorded</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">North Atlantic right whale</td>
+<td style="text-align: left;">Eastern Gulf of America (EGOA)</td>
+<td style="text-align: right;">5,626</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">outside range: Gulf of America</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">North Atlantic right whale</td>
+<td style="text-align: left;">Western and Central Gulf of America (WCGOA)</td>
+<td style="text-align: right;">7,291</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: left;">outside range: Gulf of America</td>
+</tr>
+</tbody>
+</table>
+<p>On the map, the four turtle species disappear from the East Bering Sea, along the Aleutians and the Bering shelf, and remain in the Gulf of Alaska and everywhere south at their v7 values. The right whale disappears from the Gulf of America and remains along the Atlantic coast at its v7 values.</p>
+</section>
+<section id="what-moved-in-the-program-area-scores" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="what-moved-in-the-program-area-scores"><span class="header-section-number">4.5</span> What moved in the Program-Area scores</h2>
+<p>Scores move only where a rule removes cells, and the build’s attribution table splits each move between the rules. The composite is the equally weighted mean of the reportable components (<a href="../scoring.html" class="quarto-xref"><span>Chapter 10</span></a>).</p>
+<table class="caption-top table">
+<caption>Composite score per Program Area: v7, each rule on its own, and v7c (<code>tbl_attribution_programarea_v7c.csv</code>), with v7b beside it (<code>tbl_attribution_programarea_v7b.csv</code>). Ranks are among the 20 Program Areas, highest first; ties share a rank. Bold marks a change from v7.</caption>
+<colgroup>
+<col style="width: 27%">
+<col style="width: 3%">
+<col style="width: 12%">
+<col style="width: 16%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Program Area</th>
+<th style="text-align: right;">v7</th>
+<th style="text-align: right;">record rule only</th>
+<th style="text-align: right;">right whale rule only</th>
+<th style="text-align: right;">κ only</th>
+<th style="text-align: right;">v7c</th>
+<th style="text-align: right;">Δ v7c − v7</th>
+<th style="text-align: right;">rank v7 → v7c</th>
+<th style="text-align: right;">v7b (rank)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Aleutian Arc (ALA)</td>
+<td style="text-align: right;">28.3</td>
+<td style="text-align: right;">19.5</td>
+<td style="text-align: right;">28.3</td>
+<td style="text-align: right;">28.3</td>
+<td style="text-align: right;"><strong>22.3</strong></td>
+<td style="text-align: right;">-6.0</td>
+<td style="text-align: right;"><strong>10 → 14</strong></td>
+<td style="text-align: right;">22.3 (15)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aleutian Basin (ALB)</td>
+<td style="text-align: right;">12.3</td>
+<td style="text-align: right;">12.3</td>
+<td style="text-align: right;">12.3</td>
+<td style="text-align: right;">12.3</td>
+<td style="text-align: right;">12.3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">12.3 (18)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Beaufort Sea (BFT)</td>
+<td style="text-align: right;">11.3</td>
+<td style="text-align: right;">11.3</td>
+<td style="text-align: right;">11.3</td>
+<td style="text-align: right;">11.3</td>
+<td style="text-align: right;">11.3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">11.3 (19)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bowers Basin (BOW)</td>
+<td style="text-align: right;">18.4</td>
+<td style="text-align: right;">18.4</td>
+<td style="text-align: right;">18.4</td>
+<td style="text-align: right;">18.4</td>
+<td style="text-align: right;">18.4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">18.4 (17)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chukchi Sea (CHU)</td>
+<td style="text-align: right;">24.9</td>
+<td style="text-align: right;">24.9</td>
+<td style="text-align: right;">24.9</td>
+<td style="text-align: right;">24.9</td>
+<td style="text-align: right;">24.9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><strong>14 → 13</strong></td>
+<td style="text-align: right;">24.9 (13)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cook Inlet (COK)</td>
+<td style="text-align: right;">52.6</td>
+<td style="text-align: right;">52.6</td>
+<td style="text-align: right;">52.6</td>
+<td style="text-align: right;">52.6</td>
+<td style="text-align: right;">52.6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">53.2 (1)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">St.&nbsp;George Basin (GEO)</td>
+<td style="text-align: right;">33.9</td>
+<td style="text-align: right;">33.8</td>
+<td style="text-align: right;">33.9</td>
+<td style="text-align: right;">38.6</td>
+<td style="text-align: right;"><strong>38.6</strong></td>
+<td style="text-align: right;">+4.7</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">38.6 (3)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gulf of Alaska (GOA)</td>
+<td style="text-align: right;">39.5</td>
+<td style="text-align: right;">39.5</td>
+<td style="text-align: right;">39.5</td>
+<td style="text-align: right;">39.5</td>
+<td style="text-align: right;">39.5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">32.2 (5)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">High Arctic (HAR)</td>
+<td style="text-align: right;">7.5</td>
+<td style="text-align: right;">7.5</td>
+<td style="text-align: right;">7.5</td>
+<td style="text-align: right;">7.5</td>
+<td style="text-align: right;">7.5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">7.5 (20)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hope Basin (HOP)</td>
+<td style="text-align: right;">52.7</td>
+<td style="text-align: right;">52.7</td>
+<td style="text-align: right;">52.7</td>
+<td style="text-align: right;">52.7</td>
+<td style="text-align: right;">52.7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">52.7 (2)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kodiak (KOD)</td>
+<td style="text-align: right;">32.1</td>
+<td style="text-align: right;">32.1</td>
+<td style="text-align: right;">32.1</td>
+<td style="text-align: right;">32.1</td>
+<td style="text-align: right;">32.1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">29.1 (7)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">St.&nbsp;Matthew-Hall (MAT)</td>
+<td style="text-align: right;">24.9</td>
+<td style="text-align: right;">24.9</td>
+<td style="text-align: right;">24.9</td>
+<td style="text-align: right;">24.9</td>
+<td style="text-align: right;">24.9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><strong>13 → 12</strong></td>
+<td style="text-align: right;">24.9 (12)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Navarin Basin (NAV)</td>
+<td style="text-align: right;">27.3</td>
+<td style="text-align: right;">27.3</td>
+<td style="text-align: right;">27.3</td>
+<td style="text-align: right;">27.3</td>
+<td style="text-align: right;">27.3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><strong>11 → 10</strong></td>
+<td style="text-align: right;">27.3 (9)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Norton Basin (NOR)</td>
+<td style="text-align: right;">29.0</td>
+<td style="text-align: right;">29.0</td>
+<td style="text-align: right;">29.0</td>
+<td style="text-align: right;">29.0</td>
+<td style="text-align: right;">29.0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">29.0 (8)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Shumagin (SHU)</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">27.3 (10)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gulf of America Program Area A (GAA)</td>
+<td style="text-align: right;">33.1</td>
+<td style="text-align: right;">33.1</td>
+<td style="text-align: right;">33.4</td>
+<td style="text-align: right;">33.1</td>
+<td style="text-align: right;"><strong>33.4</strong></td>
+<td style="text-align: right;">+0.3</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">32.8 (4)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Gulf of America Program Area B (GAB)</td>
+<td style="text-align: right;">25.7</td>
+<td style="text-align: right;">25.7</td>
+<td style="text-align: right;">26.3</td>
+<td style="text-align: right;">25.7</td>
+<td style="text-align: right;"><strong>26.3</strong></td>
+<td style="text-align: right;">+0.6</td>
+<td style="text-align: right;"><strong>12 → 11</strong></td>
+<td style="text-align: right;">25.4 (11)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Central California (CEC)</td>
+<td style="text-align: right;">21.9</td>
+<td style="text-align: right;">21.9</td>
+<td style="text-align: right;">21.9</td>
+<td style="text-align: right;">21.9</td>
+<td style="text-align: right;">21.9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">23.0 (14)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Northern California (NOC)</td>
+<td style="text-align: right;">20.7</td>
+<td style="text-align: right;">20.7</td>
+<td style="text-align: right;">20.7</td>
+<td style="text-align: right;">20.7</td>
+<td style="text-align: right;">20.7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">21.8 (16)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Southern California (SOC)</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">30.7 (6)</td>
+</tr>
+</tbody>
+</table>
+<p>Three things move the composite, and nothing else does:</p>
+<ul>
+<li><strong>Aleutian Arc and St.&nbsp;George Basin lose their turtle component.</strong> Both lie mostly in the East Bering Sea. The record rule removes all but a sliver of their turtle cells: the remaining cells belong by majority to the Gulf of Alaska ecoregion. κ then removes that sliver as not reportable (table below). The two rules together empty both Program Areas of turtles. With the record rule alone, the Aleutian Arc would keep a turtle component near 0 and average it into the composite (the <em>record rule only</em> column). St.&nbsp;George Basin’s turtle sliver (1.5 % of the area in v7) was already below κ before the record rule touched it, so its composite change (33.9 → 38.6) is κ’s alone, exactly as in v7b; it rises because the component it loses scored below its average. Dropping a component cannot raise any cell’s sensitivity, but it changes which components the mean is taken over.</li>
+<li><strong>The Gulf of America Program Areas gain on mammals.</strong> Removing the right whale from both Gulf ecoregions moves those ecoregions’ marine-mammal minimum and maximum as well as the cell values, so the rescaled mammal component of GAA and GAB rises (second table below), and the composite with it.</li>
+<li><strong>Every other Program Area is unchanged.</strong> Gulf of Alaska, Kodiak, Cook Inlet and Shumagin keep all four recorded turtle species at their v7 values, so their composites are v7’s.</li>
+</ul>
+<table class="caption-top table">
+<caption>Sea-turtle component per Program Area, rescaled 0–100 (<code>tbl_attribution_programarea_v7c.csv</code>, <code>tbl_component_not_reportable_programarea_v7c.csv</code>, v7b from <code>tbl_attribution_programarea_v7b.csv</code>). — = not reportable, or no turtle cells. The coverage column gives the share of the Program Area still carrying turtles after the record rule, for the pairs κ = 5 % removes.</caption>
+<colgroup>
+<col style="width: 34%">
+<col style="width: 4%">
+<col style="width: 15%">
+<col style="width: 6%">
+<col style="width: 4%">
+<col style="width: 28%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Program Area</th>
+<th style="text-align: right;">v7</th>
+<th style="text-align: right;">record rule only</th>
+<th style="text-align: right;">κ only</th>
+<th style="text-align: right;">v7c</th>
+<th style="text-align: right;">turtle coverage below κ in v7c</th>
+<th style="text-align: right;">v7b</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Aleutian Arc (ALA)</td>
+<td style="text-align: right;">70.4</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">70.4</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">0.017 %</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cook Inlet (COK)</td>
+<td style="text-align: right;">48.7</td>
+<td style="text-align: right;">48.7</td>
+<td style="text-align: right;">48.7</td>
+<td style="text-align: right;">48.7</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">St.&nbsp;George Basin (GEO)</td>
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">0.003 %</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gulf of Alaska (GOA)</td>
+<td style="text-align: right;">69.6</td>
+<td style="text-align: right;">69.6</td>
+<td style="text-align: right;">69.6</td>
+<td style="text-align: right;">69.6</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">11.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kodiak (KOD)</td>
+<td style="text-align: right;">53.1</td>
+<td style="text-align: right;">53.1</td>
+<td style="text-align: right;">53.1</td>
+<td style="text-align: right;">53.1</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Shumagin (SHU)</td>
+<td style="text-align: right;">46.5</td>
+<td style="text-align: right;">46.5</td>
+<td style="text-align: right;">46.5</td>
+<td style="text-align: right;">46.5</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Gulf of America Program Area A (GAA)</td>
+<td style="text-align: right;">54.6</td>
+<td style="text-align: right;">54.6</td>
+<td style="text-align: right;">54.6</td>
+<td style="text-align: right;">54.6</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">52.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gulf of America Program Area B (GAB)</td>
+<td style="text-align: right;">26.4</td>
+<td style="text-align: right;">26.4</td>
+<td style="text-align: right;">26.4</td>
+<td style="text-align: right;">26.4</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">23.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Central California (CEC)</td>
+<td style="text-align: right;">18.6</td>
+<td style="text-align: right;">18.6</td>
+<td style="text-align: right;">18.6</td>
+<td style="text-align: right;">18.6</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">27.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Northern California (NOC)</td>
+<td style="text-align: right;">14.4</td>
+<td style="text-align: right;">14.4</td>
+<td style="text-align: right;">14.4</td>
+<td style="text-align: right;">14.4</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">23.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Southern California (SOC)</td>
+<td style="text-align: right;">26.8</td>
+<td style="text-align: right;">26.8</td>
+<td style="text-align: right;">26.8</td>
+<td style="text-align: right;">26.8</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">35.2</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<caption>Marine-mammal component in the two Gulf of America Program Areas (<code>tbl_attribution_programarea_v7c.csv</code>). No other Program Area’s mammal component moves.</caption>
+<colgroup>
+<col style="width: 53%">
+<col style="width: 7%">
+<col style="width: 31%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Program Area</th>
+<th style="text-align: right;">v7</th>
+<th style="text-align: right;">right whale rule only</th>
+<th style="text-align: right;">v7c</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Gulf of America Program Area A (GAA)</td>
+<td style="text-align: right;">39.8</td>
+<td style="text-align: right;">42.2</td>
+<td style="text-align: right;">42.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gulf of America Program Area B (GAB)</td>
+<td style="text-align: right;">56.6</td>
+<td style="text-align: right;">61.3</td>
+<td style="text-align: right;">61.3</td>
+</tr>
+</tbody>
+</table>
+<p>The Spearman rank correlation of the 20 composites between v7 and v7c is 0.985 (<code>build_v7c.json</code>).</p>
+</section>
+<section id="compared-with-v7b" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="compared-with-v7b"><span class="header-section-number">4.6</span> Compared with v7b</h2>
+<p>v7b answered the same question with a different rule: AquaMaps suitability entered the turtle merge only where it was at least 0.5, and a range cell with none was dropped. In the Bering Sea the two rules agree: Aleutian Arc and St.&nbsp;George Basin carry no turtles in either. They part in the Gulf of Alaska. The threshold left only the leatherback there, at suitability 0.50–0.58 off Southeast Alaska, and removed loggerhead, green and olive ridley from the Gulf of Alaska, where all three have been recorded. It also emptied Kodiak, Cook Inlet and Shumagin of turtles. v7c keeps all four recorded species in the Gulf of Alaska Program Areas at their v7 values (turtle component table above).</p>
+<p>The threshold also reshaped turtle surfaces in the lower 48, raising the turtle component off California and lowering it in the Gulf of America. v7c leaves every turtle cell outside the dropped ecoregion exactly as v7 had it, so those components stay at v7’s values. v7b did not touch the right whale.</p>
+</section>
+<section id="caveats" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="caveats"><span class="header-section-number">4.7</span> Caveats</h2>
+<ul>
+<li><strong>Season is ignored.</strong> Green turtles are reported in Alaska mostly October–December and leatherbacks July–August. An annual rule suits an annual score; a seasonal product would need the same tables by month.</li>
+<li><strong>The channels cover different years.</strong> The NOAA Alaska file runs 1963–2020 and thins after 2002; iNaturalist starts around 2008; OBIS and GBIF pool more than a century, partly undated. A species absent from every channel in every year is the robust case the rule acts on. It is not a forecast: warming may bring turtles further north, and the rule should be re-run as records arrive.</li>
+<li><strong>The ecoregion is coarse.</strong> One record keeps a species across a whole ecoregion at its modeled value: the Gulf of Alaska keeps four species on a few dozen records (Alaska records table above).</li>
+<li><strong>A cell goes with its majority ecoregion.</strong> This is why the Aleutian Arc and St.&nbsp;George Basin keep a sliver of turtle cells under the record rule alone, which κ then removes.</li>
+<li><strong>Five data requests are open.</strong> Their answers could move the evidence, most of all the Alaska Region’s records since 2003:</li>
+</ul>
+<table class="caption-top table">
+<caption>Open data requests (<code>sources.csv</code>). The STSSN counts used here are preliminary and are cited pending the state coordinators’ permission <span class="citation" data-cites="stssn2026">(<a href="../references.html#ref-stssn2026" role="doc-biblioref">NOAA Fisheries Southeast Fisheries Science Center 2026</a>)</span>.</caption>
+<colgroup>
+<col style="width: 33%">
+<col style="width: 51%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 3%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Request</th>
+<th>Asked</th>
+<th>Coverage</th>
+<th>Years</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1. NOAA Alaska Region (Jenna Malek)</td>
+<td>Alaska sea turtle records 2003 to present, typed as the 1963–2020 file; Alaska marine mammal strandings per year by area</td>
+<td>Alaska</td>
+<td>2003–present</td>
+<td>requested</td>
+</tr>
+<tr class="even">
+<td>2. NOAA West Coast Region stranding coordinators</td>
+<td>sea turtle strandings per year by state and species, ideally 1980 to present; marine mammal strandings by state</td>
+<td>CA, OR, WA</td>
+<td>1980–present</td>
+<td>requested</td>
+</tr>
+<tr class="odd">
+<td>3. STSSN state coordinators</td>
+<td>permission to cite the preliminary Gulf and Atlantic counts used here (data release policy)</td>
+<td>Gulf, Atlantic</td>
+<td>2016–2025</td>
+<td>requested</td>
+</tr>
+<tr class="even">
+<td>4. AFSC Marine Mammal Laboratory / Platforms of Opportunity / North Pacific Observer Program</td>
+<td>any sea turtle record from Alaska cetacean surveys, Platforms of Opportunity (1950–present, non-public) and the observer database, with effort</td>
+<td>Alaska</td>
+<td>1950–present</td>
+<td>requested</td>
+</tr>
+<tr class="odd">
+<td>5. SEFSC on-effort database (Lance Garrison)</td>
+<td>on-effort turtle sightings per km surveyed, Gulf and Atlantic</td>
+<td>Gulf, Atlantic</td>
+<td></td>
+<td>requested</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="reproducing-v7c" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="reproducing-v7c"><span class="header-section-number">4.8</span> Reproducing v7c</h2>
+<p>The exclusions are data: <code>data/v7c/zone_exclusions.csv</code> in the workflows repository, written by <code>build_v7c_exclusions.qmd</code>, applied by <code>build_v7c.qmd</code> through <code>msens::cell_zone_major_sql()</code> and <code>msens::zone_exclude_sql()</code>, each guarded by unit tests (a straddling cell goes with the larger side, a tie goes to the ecoregion key that sorts first, a critical-habitat cell survives, one taxon’s exclusion never touches another). The release records the rules it applied in its <code>release_method</code> table, including the exclusion table’s digest, and a build with the same flags on any machine must reproduce the committed reference digests (<code>build_v7c.json</code>).</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-benaka2019" class="csl-entry" role="listitem">
+Benaka, Lee R., Daryl Bullock, Aimee L. Hoover, and Noelle A. Olsen, eds. 2019. <em><span>U.S.</span> National Bycatch Report First Edition Update 3</em>. NOAA Technical Memorandum NMFS-F/SPO-190. U.S. Department of Commerce, National Oceanic; Atmospheric Administration, National Marine Fisheries Service. <a href="https://media.fisheries.noaa.gov/dam-migration/nbr_update_3.pdf">https://media.fisheries.noaa.gov/dam-migration/nbr_update_3.pdf</a>.
+</div>
+<div id="ref-benson2026" class="csl-entry" role="listitem">
+Benson, Scott, Christina Fahy, Jason Jannot, and Jason Eibner. 2026. <em>Leatherback Sea Turtle Bycatch in <span>U.S.</span> <span>West</span> <span>Coast</span> Groundfish Fisheries 2002–2019</em>. NOAA Technical Memorandum NMFS-SWFSC-731. NOAA National Marine Fisheries Service, Southwest Fisheries Science Center. <a href="https://doi.org/10.25923/px0e-gh24">https://doi.org/10.25923/px0e-gh24</a>.
+</div>
+<div id="ref-gbif2026" class="csl-entry" role="listitem">
+GBIF.org. 2026. <em><span>GBIF</span> Occurrence Search <span>API</span>: Sea Turtle and Marine Mammal Record Counts Per Ecoregion</em>. Queried October 2026. <a href="https://api.gbif.org/v1/occurrence/search">https://api.gbif.org/v1/occurrence/search</a>.
+</div>
+<div id="ref-hodgewing2000" class="csl-entry" role="listitem">
+Hodge, R. P., and B. L. Wing. 2000. <span>“Occurrences of Marine Turtles in <span>Alaska</span> Waters: 1960–1998.”</span> <em>Herpetological Review</em> 31: 148–51.
+</div>
+<div id="ref-inaturalist2026" class="csl-entry" role="listitem">
+<span class="nocase">iNaturalist contributors, and iNaturalist</span>. 2026. <em><span class="nocase">iNaturalist</span> Research-Grade Observations</em>. Occurrence dataset, accessed via GBIF.org, October 2026. <a href="https://doi.org/10.15468/ab3s5x">https://doi.org/10.15468/ab3s5x</a>.
+</div>
+<div id="ref-noaa_ak_turtles_2026" class="csl-entry" role="listitem">
+NOAA Fisheries Alaska Region. 2026. <em>Sea Turtle Records in <span>Alaska</span>, 1963–2020: Sightings, Strandings and Bycatch</em>. Data file provided by J. Malek (NOAA Fisheries Alaska Region) to T. White (BOEM), 5 October 2026; see also the feature story <span>“Sea Turtles in Alaska? Yes, We Have Them In the Far North!”</span> (13 June 2022). <a href="https://www.fisheries.noaa.gov/feature-story/sea-turtles-alaska-yes-we-have-them-far-north">https://www.fisheries.noaa.gov/feature-story/sea-turtles-alaska-yes-we-have-them-far-north</a>.
+</div>
+<div id="ref-piro2026" class="csl-entry" role="listitem">
+NOAA Fisheries Pacific Islands Regional Office. 2026. <em>Hawaiʻi Shallow-Set Longline Fishery Quarterly and Annual Status Report 2025</em>. <a href="https://www.fisheries.noaa.gov/resource/data/hawaii-shallow-set-longline-fishery-quarterly-and-annual-status-report-2025">https://www.fisheries.noaa.gov/resource/data/hawaii-shallow-set-longline-fishery-quarterly-and-annual-status-report-2025</a>.
+</div>
+<div id="ref-noaa_sero2006" class="csl-entry" role="listitem">
+NOAA Fisheries Service Southeast Regional Office, and Florida Fish and Wildlife Conservation Commission. 2006. <em><span>NOAA</span> and <span>FWC</span> Confirm Right Whales Off <span>Florida</span> <span>Gulf</span> Coast</em>. No. SER060228. News release SER060228, 28 February 2006. Read from the archived copy in the UNT Libraries Web Archive (captured 14 February 2013). <a href="https://webarchive.library.unt.edu/web/20130214220527/http:/sero.nmfs.noaa.gov/media/pdfs/2006/News%20Release2_28_06.pdf">https://webarchive.library.unt.edu/web/20130214220527/http:/sero.nmfs.noaa.gov/media/pdfs/2006/News%20Release2_28_06.pdf</a>.
+</div>
+<div id="ref-stssn2026" class="csl-entry" role="listitem">
+NOAA Fisheries Southeast Fisheries Science Center. 2026. <em>Sea Turtle Stranding and Salvage Network (<span>STSSN</span>) Data Application: Strandings by State, Species and Encounter Type, 2016–2025 (Preliminary Data)</em>. Online data application, accessed October 2026; preliminary data, cited pending the state coordinators’ permission. <a href="https://connect.fisheries.noaa.gov/content/cb3f4647-9e4f-4f3d-9edf-e7a87a1feef6/">https://connect.fisheries.noaa.gov/content/cb3f4647-9e4f-4f3d-9edf-e7a87a1feef6/</a>.
+</div>
+<div id="ref-obis_sdm2025" class="csl-entry" role="listitem">
+OBIS. 2025a. <em><span>OBIS</span> Published Species Distribution Model Ensembles (<span>MPA</span> <span>Europe</span>), with 10th-Percentile Training-Presence Thresholds</em>. Intergovernmental Oceanographic Commission of UNESCO. <a href="https://github.com/iobis/mpaeu_sdm">https://github.com/iobis/mpaeu_sdm</a>.
+</div>
+<div id="ref-obis2025" class="csl-entry" role="listitem">
+OBIS. 2025b. <em>Ocean Biodiversity Information System (<span>OBIS</span>) Full Occurrence Export, 18 March 2025</em>. Intergovernmental Oceanographic Commission of UNESCO. <a href="https://obis.org/data/access/">https://obis.org/data/access/</a>.
+</div>
+<div id="ref-speciesgrids2025" class="csl-entry" role="listitem">
+Provoost, Pieter. 2026. <em>Speciesgrids: Cloud-Optimized Gridded Dataset of Marine Species Occurrence (<span>OBIS</span> + <span>GBIF</span>)</em>. Zenodo; binned to the global 0.05° cell grid by the Marine Sensitivity Toolkit; Zenodo. <a href="https://doi.org/10.5281/zenodo.21375219">https://doi.org/10.5281/zenodo.21375219</a>.
+</div>
+<div id="ref-roberts2016" class="csl-entry" role="listitem">
+Roberts, Jason J., Benjamin D. Best, Laura Mannocci, et al. 2016. <span>“Habitat-Based Cetacean Density Models for the <span>U.S.</span> <span>Atlantic</span> and <span>Gulf</span> of <span>Mexico</span>.”</span> <em>Scientific Reports</em> 6: 22615. <a href="https://doi.org/10.1038/srep22615">https://doi.org/10.1038/srep22615</a>.
+</div>
+<div id="ref-wdfw2017" class="csl-entry" role="listitem">
+Sato, Chris L. 2017. <em>Periodic Status Review for the Green and Loggerhead Sea Turtles in <span>Washington</span></em>. Washington Department of Fish; Wildlife. <a href="https://wdfw.wa.gov/publications/01870">https://wdfw.wa.gov/publications/01870</a>.
+</div>
+<div id="ref-ward_geiger2011" class="csl-entry" role="listitem">
+Ward-Geiger, Leslie I., Amy R. Knowlton, Anthony F. Amos, Thomas D. Pitchford, Blair Mase-Guthrie, and Barbara J. Zoodsma. 2011. <span>“Recent Sightings of the <span>North</span> <span>Atlantic</span> Right Whale in the <span>Gulf</span> of <span>Mexico</span>.”</span> <em>Gulf of Mexico Science</em> 29 (1). <a href="https://doi.org/10.18785/goms.2901.06">https://doi.org/10.18785/goms.2901.06</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../releases/v1.html" class="pagination-link" aria-label="v1 — Planning Areas">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">v1 — Planning Areas</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../science.html" class="pagination-link" aria-label="Science">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Science</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© <a href="https://bbest.github.io/cv/" target="_blank">Ben Best</a>, <a href="https://www.boem.gov/environment/environmental-studies/environmental-studies-information" target="_blank">BOEM-ESP</a></p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/releases/v7c.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org/" target="_blank">Quarto</a></p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>
