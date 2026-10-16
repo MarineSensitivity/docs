@@ -1,14 +1,20 @@
 ---
 title: "Scores — mapper of aggregate sensitivity scores"
 description: "general sensitivity mapping application"
-categories: [current]
+categories: [legacy]
 ---
 
 # Scores {#sec-app-scores}
 
 ## Overview
 
-The **Scores** application ([`r sub("^https://", "", doc_app_url("scores"))`](`r doc_app_url("scores")`)) is the primary interactive tool for exploring composite marine sensitivity scores. It renders **any published release** from the URL path — `/v3/scores/` shows v3 — defaulting to the promoted release when none is given; an older `?ver=v3` deep link still resolves, 301'd to the equivalent path. It enables users to visualize extinction risk weighted species presence at multiple spatial resolutions, with integrated flower plot and treemap summaries.
+::: {.callout-important}
+## Retired
+
+The Scores Shiny app was retired in October 2026 when the Atlas (@sec-app-atlas) became the project's application; this page documents it as it was. Its URLs (`app.marinesensitivity.org/{ver}/scores/`, the older `?ver=` form) now redirect to the Atlas's Scores lens with the query carried, and its source stays in the [`apps`](https://github.com/MarineSensitivity/apps) repository.
+:::
+
+The **Scores** application (`app.marinesensitivity.org/{ver}/scores/`) was the project's interactive tool for exploring composite marine sensitivity scores. It rendered **any published release** from the URL path — `/v3/scores/` showed v3 — defaulting to the promoted release when none was given. It let users visualize extinction risk weighted species presence at multiple spatial resolutions, with integrated flower plot and treemap summaries.
 
 @fig-scores-map shows the global view of cell-level sensitivity scores across all US waters. The sidebar provides controls for study area, spatial units (raster cells or program areas), and layer selection.
 
@@ -77,4 +83,4 @@ webshot2::webshot(
 
 ## Source Code
 
-[`scores/app.R`](https://github.com/MarineSensitivity/apps/tree/main/scores) on the `apps` repository's `main` branch. There is **one** checkout, not one per release: the version is data, resolved from the published manifest, so the per-version forks (`mapgl`, `mapgl_v1`…`v6`, `scores_v6`, `scores_v8`) are retired and their URLs 301 to the equivalent `/v{n}/scores/` path (an older `?ver=` deep link 301s the same way).
+[`scores/app.R`](https://github.com/MarineSensitivity/apps/tree/main/scores) on the `apps` repository's `main` branch. There is **one** checkout, not one per release: the version is data, resolved from the published manifest, so the per-version forks (`mapgl`, `mapgl_v1`…`v6`, `scores_v6`, `scores_v8`) were retired earlier and 301 to the equivalent `/v{n}/scores/` path; that path, and an older `?ver=` deep link, now 301 on to the Atlas.

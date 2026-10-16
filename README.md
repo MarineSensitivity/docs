@@ -2,7 +2,7 @@
 
 The documentation book for BOEM's offshore environmental sensitivity index products
 (**marinesensitivity.org/docs**): the science (receptors, stressors, extinction risk, scoring), the
-data sources, the applications (Scores, Species, and the Atlas), the API, the server, and the
+data sources, the application (the Atlas; the Scores and Species Shiny apps are retired and kept in a Legacy appendix), the API, the server, and the
 release notes — rendered **once per release version** so every number a chapter prints is computed
 from that release's own published tables.
 
@@ -10,19 +10,27 @@ from that release's own published tables.
 
 - **Versioned rendering.** CI (`.github/workflows/`) renders the book once per version listed in
   the release registry (`versions.json` on S3), passing `DOCS_VER`; `libs/versioned.R` resolves
-  every URL, table and count for that version (`doc_app_url()`, `doc_atlas_url()`, …). Never
+  every URL, table and count for that version (`doc_atlas_url()`, optionally with `lens=` and
+  extra Atlas query parameters; `doc_docs_url()`; …). Never
   hardcode a number a release could change — call the helper inside a code chunk (inline `r` outside
   a chunk silently renders as text).
 - **Public vs restricted.** Public releases publish to GitHub Pages (`marinesensitivity.org/docs/
   {ver}/…`); restricted pre-releases (`access: restricted` in `versions.json`) are pushed to the
   `gh-pages-preview` branch and served only through the signed-in review host
-  (`preview.marinesensitivity.org/docs/{ver}/`). The version is the URL **path** on both app hosts
-  (`/v7/scores/`, `/v9/atlas/`); an old `?ver=` link is 301'd to the path form.
+  (`preview.marinesensitivity.org/docs/{ver}/`). The Atlas takes `?ver=` on the public
+  host (`marinesensitivity.org/atlas/?ver=v7`) and the path on the preview host
+  (`preview.marinesensitivity.org/v9/atlas/`); every old Shiny URL, `?ver=`, `mdl_key` and
+  `mdl_seq` form is 301'd into the Atlas with its query carried.
 - **Rendering locally.** `quarto render <chapter>.qmd` in this project renders the **whole book**
   (34 files) — there is no chapter-only render — and `mermaid-format: png` routes every diagram
   through headless Chrome, which can hang indefinitely. For a quick check use `quarto check`,
   `pandoc -t html` on the chapter (expect `@fig-`/`@sec-` citeproc noise), and verify every
   cross-reference resolves to a defined `{#…}` anchor; leave the real render to CI.
+- **The Atlas user guide** (`apps-guide.qmd`) renders `figures/atlas-guide/steps.json` + PNGs,
+  generated from the Atlas's own tour (`atlas/src/shell/tour.ts`) by running
+  `node scripts/tour-guide.mjs --out <docs>/figures/atlas-guide` in the atlas repository; the page
+  warns when `../atlas/src/shell/tour.ts` (override: `MSENS_ATLAS_DIR`) is newer than the manifest.
+  The retired Shiny guide (`apps/shiny-guide.qmd`) is frozen.
 - **Screenshots.** App figures are captured from real builds by the atlas repo's eyes-on harness
   (`atlas/scripts/eyes-shots.mjs`) or a scripted Playwright state; a figure captured on an older
   build must say so in its caption until recaptured (`images/atlas/desktop-places.png` was captured

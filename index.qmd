@@ -38,10 +38,11 @@ doc_changes_callout()
 
 ### Interactive Apps
 
-- [Composite **scores**](`r doc_app_url("scores")`) — sensitivity scores by zone, with flower-plot summaries
-- [Individual **species**](`r doc_app_url("species")`) — individual species distribution models and habitat suitability
+- [Composite **scores**](`r doc_atlas_url(lens = "scores")`) — sensitivity scores by zone, with flower-plot summaries
+- [Individual **species**](`r doc_atlas_url(lens = "species")`) — individual species distribution models and habitat suitability
+- [Your **area**](`r doc_atlas_url()`) — outline any place in the Atlas (Places) for the same scores and a downloadable report
 
-Both render **any published release**: substitute the version in the URL path (e.g. `/v3/scores/`) to view that one; an older `?ver=v3` link still resolves, 301'd to the equivalent path.
+All three are the [Atlas](`r doc_atlas_url()`), which renders **any published release**: substitute the version in the `?ver=` query parameter (e.g. `?ver=v3`) to view that one. Links to the former Scores and Species Shiny apps redirect to it.
 
 - [Scoring **walkthrough**](scoring-walkthrough.qmd) — step through the scoring pipeline interactively, from input rasters to final scores
 

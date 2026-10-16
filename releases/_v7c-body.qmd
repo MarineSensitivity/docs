@@ -64,10 +64,10 @@ if (identical(doc_access("v7c"), "restricted")) cat(sprintf(
 ## Served on the review host only
 
 v7c is a restricted pre-release. It is served only through the signed-in review host:
-[Scores](%s), [Species](%s), [Atlas](%s) and [this documentation](%s). It is never what a reader gets by default, and promoting it is a
+the [Atlas](%s) ([Scores lens](%s), [Species lens](%s)) and [this documentation](%s). It is never what a reader gets by default, and promoting it is a
 separate decision.
 :::
-", doc_app_url("scores", "v7c"), doc_app_url("species", "v7c"), doc_atlas_url("v7c"),
+", doc_atlas_url("v7c"), doc_atlas_url("v7c", "scores"), doc_atlas_url("v7c", "species"),
    doc_docs_url("v7c")))
 ```
 

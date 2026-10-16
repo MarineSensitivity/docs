@@ -1,5 +1,5 @@
 ---
-title: "Atlas (beta) — the static, in-browser scores, species and places app"
+title: "Atlas — the static, in-browser scores, species and places app"
 description: "one static map app for scores, species, places and reports over U.S. marine areas"
 categories: [current]
 ---
@@ -15,10 +15,10 @@ categories: [current]
 
 ## Overview
 
-The **Atlas** ([`r doc_atlas_url()`](`r doc_atlas_url()`)) is a third, newer way to explore the MST,
-currently labelled **beta**: **one static web app**, built with Svelte and MapLibre, that runs
-entirely in the browser. Where the [Scores](scores.qmd) and [Species](species.qmd) Shiny apps are
-server-rendered R processes, the Atlas has **no application server of its own**: scores, flowers,
+The **Atlas** ([`r doc_atlas_url()`](`r doc_atlas_url()`)) is the MST's interactive application:
+**one static web app**, built with Svelte and MapLibre, that runs entirely in the browser. Where the
+[Scores](scores.qmd) and [Species](species.qmd) Shiny apps it replaced were server-rendered R
+processes, the Atlas has **no application server of its own**: scores, flowers,
 tables and reports are computed in your browser, by a DuckDB instance compiled to WebAssembly
 (DuckDB-WASM) querying the release's published Parquet directly over HTTPS. It still depends on a
 few other services for what a browser cannot compute itself — score and species map tiles come
@@ -27,7 +27,7 @@ from the project's **titiler**, zone outlines from **PMTiles** on S3, and the ba
 
 On the public host the release is a query parameter (`?ver=v7`), resolved client-side against the
 published `versions.json` and defaulting to the promoted release when absent. A `restricted`
-pre-release is served the same way the preview Scores and Species apps are, at
+pre-release is served only through the signed-in preview host, at
 `https://preview.marinesensitivity.org/{ver}/atlas/` (the version as the URL **path**, since
 Cloudflare Access scopes its reviewer policies by path, never by query).
 
@@ -126,7 +126,7 @@ Switching to **Species** turns the top-bar search into a species picker (common 
 name, with an "Only species in US waters" checkbox), and replaces the **Data** row's contents
 inside **Layers** with the species **card**: the merged model as a filled pill marked **✓** with a
 gold edge, plus one pill per contributing input dataset marked **▶** with a grey edge. An input's
-raster is found the same way the Species Shiny app finds it — through the release's **model-asset
+raster is found the way the retired Species Shiny app found it — through the release's **model-asset
 registry**, looked up by model key — and an input whose registry row is missing renders as a
 **struck-through, non-interactive pill**, never simply omitted. Where the selected input publishes
 both, one **representation** toggle appears ("Original" vs. "Interpolated," or "Delivered" vs. "As
@@ -139,7 +139,7 @@ titled with the species' scientific name and its 1–100 range.
 
 ## Places {#sec-atlas-places}
 
-**Places** is the tool the two Shiny apps do not have: any area you outline gets the same scores
+**Places** is the tool the two retired Shiny apps did not have: any area you outline gets the same scores
 and species results the built-in Program Areas get. The empty state reads exactly: *"No places
 yet. Choose a Program Area above, turn on pick mode and click one on the map, draw a shape, enter
 coordinates, or drop a file on the map."*
@@ -385,7 +385,7 @@ public GitHub issue. A restricted release never offers the GitHub route; on a bu
 endpoint configured it says plainly that "feedback cannot be sent from here right now."
 
 GA4 receives interaction events as well as page views, and the app also logs those same events to
-the batched usage-log Sheet the Shiny `scores`/`species` apps already write (`app = "atlas"`
+the batched usage-log Sheet the retired Shiny `scores`/`species` apps also wrote (`app = "atlas"`
 distinguishes its rows) — never the URL fragment, which the app's own analytics code is
 source-scanned to never read.
 
@@ -406,8 +406,8 @@ current one offers **Switch**.
   through, the leatherback's six included (@fig-atlas-species) — as of this writing, the app
   bundles that would resolve the model-asset registry lookup (see Species lens above) for 10,247 of
   v7's 12,120 inputs have not yet been republished; once they land, only 1,873 of its 2,619
-  `rng_iucn` range inputs, which have no model-asset registry row (struck through in the Species
-  Shiny app too), will still show this way.
+  `rng_iucn` range inputs, which have no model-asset registry row (struck through in the retired
+  Species Shiny app too), will still show this way.
 - **GeoPackage** is refused (see the Places section above) whenever `ST_Read` fails to parse it,
   including a file with no vector layer — its declared-CRS and no-feature-table checks cannot
   actually run against an uploaded file, because DuckDB-WASM's `sqlite_scan()` cannot open a file
@@ -420,7 +420,7 @@ current one offers **Switch**.
 - **Show analysis cells** is not available for a Program Area place: the app bundle the Atlas reads
   carries each zone's count, area and scores but not its cells.
 - The Atlas's report is a print-first document built and exported entirely client-side
-  (HTML/ZIP/DOCX from the same source), not the Shiny apps' own report.
+  (HTML/ZIP/DOCX from the same source), not the retired Shiny apps' report.
 
 ## Generating Screenshots
 

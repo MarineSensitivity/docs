@@ -63,11 +63,23 @@ for v in v3 v8; do
   chk $([ "$b" = 0 ] && echo 1 || echo 0) "  $v internal chapter links all resolve" "$b broken"
 done
 
-echo "== 6. Docs match the live apps =="
-for u in https://app.marinesensitivity.org/scores/ https://app.marinesensitivity.org/species/ \
-         "https://app.marinesensitivity.org/scores/?ver=v3" "https://app.marinesensitivity.org/species/?ver=v8"; do
+echo "== 6. Docs match the live app (the Atlas; the Shiny apps are retired) =="
+for u in https://marinesensitivity.org/atlas/ \
+         "https://marinesensitivity.org/atlas/?ver=v3" "https://marinesensitivity.org/atlas/?ver=v7"; do
   c=$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 25 "$u")
   chk $([ "$c" = 200 ] && echo 1 || echo 0) "  $u" "HTTP $c"
+done
+# the retired Shiny URLs must 301 INTO the Atlas with their query carried -- links
+# printed in earlier reports (the BOEM final report) depend on it. No -L: the
+# redirect itself is the thing under test.
+for u in "https://app.marinesensitivity.org/v3/scores/" \
+         "https://app.marinesensitivity.org/v3/species/?mdl_seq=1434" \
+         "https://app.marinesensitivity.org/scores/?ver=v3"; do
+  r=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' --max-time 25 "$u")
+  case "$r" in
+    "301 https://marinesensitivity.org/atlas/"*) ok "  $u -> Atlas" ;;
+    *) no "  $u -> Atlas" "$r" ;;
+  esac
 done
 n=$(grep -rl "pg_tileserv\|PostgREST" *.qmd 2>/dev/null | xargs grep -L "etired\|commented out" 2>/dev/null | wc -l | tr -d ' ')
 chk $([ "$n" = 0 ] && echo 1 || echo 0) "  no chapter presents PostGIS/pg_tileserv as current" "$n"

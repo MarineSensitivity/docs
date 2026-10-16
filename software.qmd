@@ -31,7 +31,7 @@ The software components for achieving this interactively are:
 3. **workflows** — Quarto notebooks to ingest source datasets (AquaMaps, IUCN, NMFS/FWS, BirdLife, WoRMS, BOEM zones), merge taxonomic authorities, and compute scores that are written back to DuckDB;
 4. **APIs** — a custom R [`plumber`](https://www.rplumber.io) API for data requests, [**TiTiler**](https://developmentseed.org/titiler/) serving the published COGs, and a searchable STAC API with one Item per model;
 5. **libraries** — re-usable documented functions as the [`msens`](https://github.com/MarineSensitivities/msens) R package, including the version/manifest registry that lets one application render any release, and the tile-URL helpers the applications use;
-6. **applications** — two Shiny apps (`scores`, `species`) that combine COG raster layers with static [PMTiles](https://protomaps.com/docs/pmtiles/) vector layers and live-pushed choropleth paint rules, each rendering **any published release** from the URL path;
+6. **applications** — the static, in-browser **Atlas**, which combines COG raster layers with static [PMTiles](https://protomaps.com/docs/pmtiles/) vector layers and per-zone choropleth fills computed in the browser, rendering **any published release** (it replaced the earlier `scores` and `species` Shiny apps);
 7. **documentation** — this Quarto book with figures, tables, glossary and references in interactive HTML or static DOCX / PDF output.
 
 This toolbox is intended to primarily serve BOEM needs internally, but by being open-source and fully reproducible the hope is to enlist buy-in and even contributions from external partners, whether from other government agencies, academia, NGOs or industry.
@@ -47,7 +47,7 @@ We ascribe to the philosophy of sharing all code for the sake of reproducibility
 
 ### Interactive Applications
 
-We have developed a series of interactive applications to explore the data and results of the MST project. These applications allow users to visualize the data, explore the results, and interact with the data in a more intuitive way. The applications are built using the [`shiny`](https://shiny.posit.co) package in R [@shiny], which allows us to easily create a user interface with complex reactivity for an interactive web application easily accessed through a web browser. The applications are designed to be user-friendly and intuitive, with interactive maps, charts, and tables that allow users to explore the data in a more dynamic way.
+The project's interactive application, the Atlas (@sec-apps), lets users visualize the data, explore the results, and interact with the data in a more intuitive way. It is a static web app that computes scores, tables and reports in the browser. Earlier editions of the MST were instead served by two applications built with the [`shiny`](https://shiny.posit.co) package in R [@shiny], now retired; the diagrams in this chapter were drawn for that design, so where they show a Shiny server, the Atlas does that work in the browser, with the same COG, PMTiles and Parquet data underneath.
 
 ### Overcoming Challenges with Large Spatial Data
 
@@ -100,7 +100,7 @@ This is a deliberate simplification from the prior architecture which used Postg
 
 The Program Area choropleth is the interesting hybrid case. The *geometry* (Program Area polygons keyed by `programarea_key`) is static — it comes from the same PMTiles file as the polygon outlines. But the *fill color* depends on the currently-selected metric + subregion, which means the per-Program-Area score has to come live from DuckDB.
 
-The Shiny server handles this by querying `zone_metric` (pre-aggregated per-zone values), building a `mapbox-gl` `match` expression that maps `programarea_key → fill_color`, and pushing that paint rule to the map through `mapgl`'s Shiny proxy. No tiles are re-rendered; only the paint specification changes (@fig-choropleth).
+(This describes the retired Shiny design; the Atlas applies the same idea in the browser, coloring the static PMTiles geometry from per-zone scores it reads for the release.) The Shiny server handled this by querying `zone_metric` (pre-aggregated per-zone values), building a `mapbox-gl` `match` expression that mapped `programarea_key → fill_color`, and pushing that paint rule to the map through `mapgl`'s Shiny proxy. No tiles are re-rendered; only the paint specification changes (@fig-choropleth).
 
 ```{mermaid}
 %%| label: fig-choropleth

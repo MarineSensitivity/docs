@@ -75,19 +75,18 @@ book:
         - apis.qmd
         - libraries.qmd
         - apps.qmd
+        - apps/atlas.qmd
         - apps-guide.qmd
         - docs.qmd
     - summary.qmd
     - references.qmd
   appendices:
     - glossary.qmd
-    - part: Applications (Current)
-      chapters:
-        - apps/atlas.qmd
-        - apps/scores.qmd
-        - apps/species.qmd
     - part: Applications (Legacy)
       chapters:
+        - apps/scores.qmd
+        - apps/species.qmd
+        - apps/shiny-guide.qmd
         - apps/aoi.qmd
         - apps/bird_hotspots.qmd
         - apps/map.qmd
