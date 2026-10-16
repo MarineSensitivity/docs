@@ -87,8 +87,8 @@ provenance <- function(steps) {
     "These screenshots were captured from the live Atlas;",
     "the build and capture date are not recorded in this manifest."))
   sprintf("Screenshots captured from the live Atlas %s%s%s.", v,
-          if (!is.null(r) && nzchar(r)) sprintf(" (release %s)", r) else "",
-          if (!is.null(d) && nzchar(d)) sprintf(" on %s", d) else "")
+          if (!is.null(r) && nzchar(r)) sprintf(", release %s", r) else "",
+          if (!is.null(d) && nzchar(d)) sprintf(", %s", d) else "")
 }
 ```
 
