@@ -109,16 +109,17 @@ header at full height.
 ## Scores lens {#sec-atlas-scores}
 
 The Scores lens shows the composite, extinction-risk-weighted score for every 0.05° cell (or,
-aggregated, every Program Area) of U.S. waters. Opening **Layers** (@fig-atlas-layers) expands the
-**Data** row into this lens's own controls — study area, spatial unit, the score layer, color
-palette, a **Sphere** switch (globe vs. flat projection), and a **Cells outside Program Areas**
-switch where the release publishes that overlay — above the rest of the **layer stack**, listed
-top to bottom: **Selection** (pinned at the top), **Zone outlines**, **Data**, **Place labels**,
-**Roads & buildings**, **Boundaries**, **Bathymetry** (present but disabled until a relief layer is
-published) and **Land & water** at the bottom. Every row's visibility and opacity can be changed,
-and most can be reordered — **Data** can never move above **Zone outlines**, so an opaque score
-raster can never hide the boundaries it is measured against — and **Reset layers** restores the
-default stack.
+aggregated, every Program Area) of U.S. waters. **Layers** (@fig-atlas-layers) opens with this
+lens's own controls at the top: a **Raster cells | Program areas** switch for the spatial unit, and
+a **Layer** menu (the composite score or one component) with a one-line description of what it
+shows. Below them, **Layers on the map** lists the rows you can change, top to bottom:
+**Selection** (pinned at the top), **Outlines**, **Data** and **Place labels**. Expanding **Data**
+gives its **Color palette** and, where the release publishes that overlay, a **Cells outside
+Program Areas** switch; a **Sphere (globe projection)** switch sits under the list. Every row's
+visibility and opacity can be changed and most can be reordered, but **Data** can never move
+above **Outlines**, so an opaque score raster can never hide the boundaries it is measured
+against. The basemap's land, boundaries and roads are drawn under everything and have no row of
+their own. **Reset layers** restores the default stack.
 
 ![The Layers panel with Place labels moved above Data (one "move up" click) to show the reorder feature, and Data expanded to its Color palette menu and the Cells outside Program Areas switch. The panel's header names what is on the map ("Score · Raster cells"); the Raster cells and Program areas switch, the Layer menu with a one-line description of the score, and the layer stack sit below it. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-layers.png){#fig-atlas-layers fig-alt="A dark panel titled Score · Raster cells with two header buttons (move the panel, collapse it), a Raster cells and Program areas switch, a Layer menu set to Score with a short description, and a Layers on the map list: Selection (nothing selected, disabled), Outlines, Place labels, then an expanded Data row holding a Spectral Color palette menu and an unchecked Cells outside Program Areas switch. Below the list are a checked Sphere (globe projection) switch and a Reset layers button. Place labels now sits above Data."}
 
