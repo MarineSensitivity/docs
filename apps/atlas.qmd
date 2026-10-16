@@ -31,7 +31,7 @@ pre-release is served only through the signed-in preview host, at
 `https://preview.marinesensitivity.org/{ver}/atlas/` (the version as the URL **path**, since
 Cloudflare Access scopes its reviewer policies by path, never by query).
 
-This chapter describes the Atlas as of version 0.10.91. @fig-atlas-map shows the default Scores
+This chapter describes the Atlas as of version 0.10.93. @fig-atlas-map shows the default Scores
 view: the 0.05° cell grid colored by a composite sensitivity score across U.S. waters, dark theme
 (the app's default). In the current build the four-tool rail is attached to the panel, which opens
 docked on the left with Layers showing, the map's legend sits at the bottom right, and the
@@ -209,7 +209,7 @@ never wipes places you have explicitly added.
   becomes one place per feature (up to 20), each named this way, or one merged place, named after
   the file, your choice.
 
-![The Report tool's list of places with two places, both analysed: a Program Area ("Aleutian Arc (ALA)," 875,225 km², 28.3 composite) and a selected, entered-coordinates place ("bounding box," 98,973 km², 100% coverage, 34.7 composite) whose coverage note reads "100.0% of this place is inside the US study area (3,600 of 3,600 cells)," with its flower plot below; the box is outlined in pink over the Gulf of America on the map. The grey "Component" box over the Open report button is a rendering glitch in this build (a results-table header cell showing through the pinned footer). Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-places.png){#fig-atlas-places fig-alt="The Report panel titled 2 places, with a Places list of two rows: Aleutian Arc (ALA), 875,225 square kilometres, with a 28.3 composite chip, and a highlighted bounding box row, 98,973 square kilometres, 100%, with a 34.7 composite chip and search, copy, remove and Open in report links. Below is the sentence 100.0% of this place is inside the US study area (3,600 of 3,600 cells) and a flower plot of the bounding box with 35 at its hub and 34.7 composite beneath. A pink square outlines the box over the Gulf of America on the globe. A small dark Component filter box overlaps the left end of the Open report button and hides the Share button at the foot of the panel."}
+![The Report tool's list of places with two places, both analysed: a Program Area ("Aleutian Arc (ALA)," 875,225 km², 28.3 composite) and a selected, entered-coordinates place ("bounding box," 98,973 km², 100% coverage, 34.7 composite) whose coverage note reads "100.0% of this place is inside the US study area (3,600 of 3,600 cells)," with its flower plot below; the box is outlined in pink over the Gulf of America on the map. The pinned footer below reads "Reporting on 2 places." above the gold Open report button, Share and Download places. Atlas 0.10.92, release v7, 2026-10-16.](/images/atlas/desktop-places.png){#fig-atlas-places fig-alt="The Report panel titled 2 places, with a Places list of two rows: Aleutian Arc (ALA), 875,225 square kilometres, with a 28.3 composite chip, and a highlighted bounding box row, 98,973 square kilometres, 100%, with a 34.7 composite chip and search, copy, remove and Open in report links. Below is the sentence 100.0% of this place is inside the US study area (3,600 of 3,600 cells) and a flower plot of the bounding box with 35 at its hub and 34.7 composite beneath. A pink square outlines the box over the Gulf of America on the globe. At the foot of the panel, the sentence Reporting on 2 places., a gold Open report button, and Share and Download places buttons."}
 
 ![The "Enter coordinates" dialog after a single longitude, latitude point ("-124.1, 40.2") was entered and **Add place** clicked: it is refused, because the text matches none of the three accepted shapes (a bounding box, a list of coordinates, pasted WKT/GeoJSON). Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-coordinate-dialog.png){#fig-atlas-coords fig-alt="A dialog titled Enter coordinates over the dimmed Report panel: a hint naming the three accepted shapes, a text box holding -124.1, 40.2, a bordered refusal message reading This text doesn't read as a bounding box, a list of coordinates or WKT/GeoJSON, then two explanatory sentences, and a gold Add place button."}
 
@@ -304,7 +304,7 @@ not guaranteed for several places together, or a long base URL.
 
 ![The Share dialog for one place (the Program Area GAA): what the link carries and its exact length. The dialog is opened from the Share button at the foot of the Report tool. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-share-dialog.png){#fig-atlas-share fig-alt="A small dialog titled Share over the dimmed Report panel, reading This link carries release v7, the scores lens, 1 place, then Link length: 66 characters, and a gold Copy link button."}
 
-![The Share dialog's simplification ladder for an oversized place (a 3,600-point coordinate list in the Gulf of America): the link length shown, the before/after vertex count, area change and cell count of the proposed rung, and the "Simplify and update the numbers" button. A results-table header cell ("Component") shows through the panel's footer at the bottom left, a known layout glitch (atlas#7). Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-share-ladder.png){#fig-atlas-share-ladder fig-alt="The Share dialog with the summary This link carries release v7, the scores lens, 1 place, the line Link length: 3,226 characters in red, the text Simplifying to 0.016° would change this place from 3601 to 1135 vertices (-0.00% area, 7789 → 7789 cells), and a gold Simplify and update the numbers button. Behind it the dimmed Report panel lists one coordinate list place of 206,213 square kilometres and 96% coverage, outlined in pink over the Gulf of America."}
+![The Share dialog's simplification ladder for an oversized place (a 3,600-point coordinate list in the Gulf of America): the link length shown, the before/after vertex count, area change and cell count of the proposed rung, and the "Simplify and update the numbers" button. Atlas 0.10.92, release v7, 2026-10-16.](/images/atlas/desktop-share-ladder.png){#fig-atlas-share-ladder fig-alt="The Share dialog with the summary This link carries release v7, the scores lens, 1 place, the line Link length: 3,226 characters in red, the text Simplifying to 0.016° would change this place from 3601 to 1135 vertices (-0.00% area, 7789 → 7789 cells), and a gold Simplify and update the numbers button. Behind it the dimmed Report panel lists one coordinate list place of 206,213 square kilometres and 96% coverage, outlined in pink over the Gulf of America."}
 
 The rest of the view travels the same URL-is-the-state way, in the query string: `ver`, `lens`,
 `lyr`/`sp` (with `in`, `rep` and `us` for a species' input, representation and US-waters filter),
@@ -346,10 +346,9 @@ working **Export CSV**.
 ## Report
 
 The **Open report** button reports **every place currently in the link** (`#pl=`); with no places,
-it reports the single selected Program Area; with neither, it is disabled and the footer says "Add
-a place to open a report." A clicked cell is not reported until you **Add** it as a place: the button
-stays disabled, even though the footer then reads "Reporting on the last clicked place. Add it to
-keep it." A row's own **Open in report** reports just that row's place. The report
+it reports the single selected Program Area, or the single clicked cell (its square, the same place
+**Add** puts in the list); with none of these, it is disabled and the footer says "Add a place to open
+a report." A row's own **Open in report** reports just that row's place. The report
 opens in a new tab and renders progressively as its data arrives:
 
 - a **header band** — mark, release chip, generation time, permalink and QR code (a restricted
@@ -371,9 +370,9 @@ opens in a new tab and renders progressively as its data arrives:
 - a **Provenance** section (release, status/access, app build SHA, DuckDB-WASM version, tables
   read, SQL run).
 
-![The report document for the Program Area GAA, opened from the Report tool's **Open report** button in a new tab: the export buttons, the MMA seal, a release chip, a permalink and QR code, the Introduction, a Parameters disclosure and the start of the interactive map. The title reads "BOEM Marine Sensitivity Report" because the link carries no `t=` title. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-report.png){#fig-atlas-report fig-alt="The report page on a light background: Print, Download HTML, Data package (ZIP) and Word document buttons, the line Done — 1 place, the lockup of the mark and the Marine Minerals Administration seal, the title BOEM Marine Sensitivity Report with a v7 · released · public chip, a generation time and a permalink ending #pl=z.pa.GAA, a QR code, an Introduction paragraph with links to open the release in the Atlas and to its documentation, a Parameters disclosure, and the Map heading with the start of a map of the Gulf coast."}
+![The report document for the Program Area GAA, opened from the Report tool's **Open report** button in a new tab: the export buttons, the MMA seal, a release chip, a permalink and QR code, the Introduction, a Parameters disclosure and the start of the interactive map. The title is the default "Marine Sensitivity Report" because the link carries no `t=` title. Atlas 0.10.92, release v7, 2026-10-16.](/images/atlas/desktop-report.png){#fig-atlas-report fig-alt="The report page on a light background: Print, Download HTML, Data package (ZIP) and Word document buttons, the line Done — 1 place, the lockup of the mark and the Marine Minerals Administration seal, the title Marine Sensitivity Report with a v7 · released · public chip, a generation time and a permalink ending #pl=z.pa.GAA, a QR code, an Introduction paragraph with links to open the release in the Atlas and to its documentation, a Parameters disclosure, and the Map heading with the start of a map of the Gulf coast labelled San Antonio, Houston and New Orleans."}
 
-![The report's Table of Scores and the start of the Summary of Species, for the same Program Area (GOA Program Area A, GAA). The species-count table is wider than the page and is cut at its right edge. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-report-scores.png){#fig-atlas-report-scores fig-alt="The Table of Scores with one row for GOA Program Area A (GAA): 14,256 cells and Bird 59, Coral 12, Fish 31, Invertebrate 32, Mammal 40, Other 26, Turtle 55, Primary production 11 and Overall 33. Below it the Summary of Species section with a species-count table by category and extinction-risk code (5,861 species), cropped at the right edge, and the header of the top-20 species table."}
+![The report's Table of Scores and the start of the Summary of Species, for the same Program Area (GOA Program Area A, GAA). The species-count table's extinction-risk headings take two lines (code over score) so all of its columns fit the page. Atlas 0.10.92, release v7, 2026-10-16.](/images/atlas/desktop-report-scores.png){#fig-atlas-report-scores fig-alt="The Table of Scores with one row for GOA Program Area A (GAA): 14,256 cells and Bird 59, Coral 12, Fish 31, Invertebrate 32, Mammal 40, Other 26, Turtle 55, Primary production 11 and Overall 33. Below it the Summary of Species section with a species-count table by category and extinction-risk code (5,861 species), its columns USA:EN, USA:TN, USA:LC, IUCN:CR, IUCN:EN, IUCN:VU, IUCN:NT and other each headed by the code over its score in parentheses, ending in a Total column, and the header of the top-20 species table."}
 
 Four exports, all built client-side: **Print** (the browser's dialog; roughly five Letter pages);
 **Download HTML** (one self-contained file — the flowers stay inline SVG, only the map is an
@@ -454,7 +453,7 @@ current one offers **Switch**.
 
 ![The release picker (the release chip's dialog), listing v7c, v7b, v9 and v8 as restricted pre-releases each with a Continue on the preview host link, v7 as current, and v6 down to v1 as retired, each with a Switch link and a date. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-version-picker.png){#fig-atlas-versions fig-alt="A dialog titled Data release over the dimmed Atlas: a line saying the app renders one published release at a time, then a dated list of releases: v7c, v7b, v9 and v8, each tagged prerelease and restricted with a Continue on the preview host link; v7 tagged current in bold; and v6, v5, v4b, v4, v3, v2 and v1, each tagged retired with a Switch link."}
 
-## Known limitations (as of 0.10.91)
+## Known limitations (as of 0.10.93)
 
 - In v7, 1,873 of the 2,619 `rng_iucn` range inputs have no model-asset registry row, so their pills
   in the Species lens show struck through (as they did in the retired Species Shiny app); every other
@@ -477,7 +476,7 @@ current one offers **Switch**.
 ## Generating Screenshots
 
 Every figure in this chapter was recaptured on 2026-10-16 from the live Atlas (0.10.91, release v7,
-dark theme) with Playwright's Chromium: desktop at 1280×800 and 1x, phone at 390×844 and 2x with
+dark theme; @fig-atlas-places, @fig-atlas-share-ladder, @fig-atlas-report and @fig-atlas-report-scores from 0.10.92 later that day, after its Report fixes) with Playwright's Chromium: desktop at 1280×800 and 1x, phone at 390×844 and 2x with
 touch, at `https://marinesensitivity.org/atlas/`. The atlas repository's own `scripts/eyes-shots.mjs`
 covers the standard states (about 20 numbered shots per viewport) and was run against the live site:
 
