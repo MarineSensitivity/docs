@@ -1,14 +1,20 @@
 ---
 title: "Species — mapper of individual species distributions"
 description: "individual species distribution mapping application"
-categories: [current]
+categories: [legacy]
 ---
 
 # Species {#sec-app-species}
 
 ## Overview
 
-The **Species** application ([`r sub("^https://", "", doc_app_url("species"))`](`r doc_app_url("species")`)) enables exploration of individual species distribution models. Like the Scores app it renders **any published release** from the URL path — `/v3/species/` shows v3; an older `?ver=v3` deep link still resolves, 301'd to the equivalent path. Users can view merged and source-level models, compare masked vs. unmasked distributions, and access detailed species regulatory status information.
+::: {.callout-important}
+## Retired
+
+The Species Shiny app was retired in October 2026 when the Atlas (@sec-app-atlas) became the project's application; this page documents it as it was. Its URLs (`app.marinesensitivity.org/{ver}/species/`, the older `?ver=`, `mdl_key` and `mdl_seq` forms) now redirect to the Atlas's Species lens with the query carried, and its source stays in the [`apps`](https://github.com/MarineSensitivity/apps) repository.
+:::
+
+The **Species** application (`app.marinesensitivity.org/{ver}/species/`) enabled exploration of individual species distribution models. Like the Scores app it rendered **any published release** from the URL path — `/v3/species/` showed v3. Users could view merged and source-level models, compare masked vs. unmasked distributions, and access detailed species regulatory status information.
 
 @fig-species-blue-whale shows the merged distribution model for the blue whale (*Balaenoptera musculus*). The map displays cell values from 1 (low suitability, blue) to 100 (high suitability, red) across all US program areas where the species occurs.
 

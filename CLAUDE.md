@@ -33,5 +33,14 @@ apply (2-space indent, snake_case, `|>`, lowercase comments).
 
 Branch → change → `quarto check` + pandoc parse + cross-reference sweep → Opus fact-check → merge
 to `main` → CI renders every version → confirm the live page (cache-busted curl for the changed
-heading). The Atlas chapter's open items live in
-`../workflows/.claude/plans_todo/2026-09-25 atlas app plan, round 3.md`.
+heading). The cutover that made the Atlas the book's only app is planned in the notes vault
+(`msens/plans_todo/2026-10-16 atlas cutover (B2) — homepage, docs, redirects.md`).
+
+## Regenerating the Atlas user guide
+
+`apps-guide.qmd` renders `figures/atlas-guide/steps.json` + PNGs, generated from the Atlas's own driver.js
+tour. From the **atlas** repo, against a running build: `node scripts/tour-guide.mjs --out <docs>/figures/atlas-guide`.
+The page warns when `../atlas/src/shell/tour.ts` (override `MSENS_ATLAS_DIR`) is newer than the manifest.
+The old Shiny guide (`apps/shiny-guide.qmd`, `figures/apps-guide/`, `libs/apps-guide-regenerate.R`) is frozen: the
+Shiny apps are retired. App links in the book come from `doc_atlas_url(ver, lens, query)` in `libs/versioned.R`
+(there is no `doc_app_url()` any more); `_nav-links.html` mirrors its public/restricted rule in JavaScript.

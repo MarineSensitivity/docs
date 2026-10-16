@@ -243,12 +243,12 @@ pre-built pyramid would disagree with it at low zoom.\n\n", sep = "")
 
 ### Interactive maps
 
-Two Shiny applications present the results, each rendering **any published release** from the URL path rather than being frozen to one:
+The [Atlas](`r doc_atlas_url()`) presents the results, rendering **any published release** rather than being frozen to one. It has two lenses:
 
-- **[Scores](`r doc_app_url("scores")`)** — composite and per-category sensitivity by zone, with flower plots and treemaps (see @sec-app-scores)
-- **[Species](`r doc_app_url("species")`)** — individual and merged distribution models with regulatory status (see @sec-app-species)
+- **[Scores](`r doc_atlas_url(lens = "scores")`)** — composite and per-category sensitivity by zone, with flower plots and component tables (see @sec-app-atlas)
+- **[Species](`r doc_atlas_url(lens = "species")`)** — individual and merged distribution models with regulatory status (see @sec-app-atlas)
 
-Substitute the version in the path (e.g. `/v3/scores/`) to view that release; an older `?ver=v3` deep link still resolves, 301'd to the equivalent path. See @sec-apps.
+Substitute the version in the `?ver=` query parameter (e.g. `?ver=v3`) to view that release (a restricted pre-release is reached only on the review host, at `/{version}/atlas/`). The separate Scores and Species Shiny apps that earlier editions of this book described are retired, and their links redirect to the Atlas. See @sec-apps.
 
 ## Implementation
 

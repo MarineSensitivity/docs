@@ -71,9 +71,9 @@ doc_version_row <- function(ver = doc_ver()) {
 # colleagues -- is served ONLY through the signed-in preview host, apps and docs
 # alike (msens::atlas_allow_access()). So the app links a book prints must follow
 # its own release: the v8 book under review must send its reader to
-# preview.marinesensitivity.org/scores/?ver=v8, not to the public app, which
-# would refuse the version and fall back to the promoted release. And every
-# link carries ?ver=, so a v4 page opens the v4 app rather than whatever is
+# preview.marinesensitivity.org/v8/atlas/, not to the public Atlas, which would
+# refuse the version and fall back to the promoted release. And every link
+# carries the version, so a v4 page opens the v4 Atlas rather than whatever is
 # promoted that day.
 
 #' `public` or `restricted` for a version (derived fail-closed by msens when the
@@ -97,30 +97,32 @@ doc_preview_url <- function() {
     msens::atlas_preview_url() else "https://preview.marinesensitivity.org"
 }
 
-#' URL of one app (`scores` / `species`) for a version. Public releases: the
-#' public host with `?ver=`. Restricted releases: the signed-in preview host,
-#' where THE VERSION IS THE PATH (`/v9/scores/`) because Cloudflare Access holds
-#' one reviewer policy per version and scopes it by path, never by query
-#' (msens::preview_app_url() is the single source of that shape).
-doc_app_url <- function(app = c("scores", "species"), ver = doc_ver()) {
-  app  <- match.arg(app)
-  # the version is the PATH on both hosts (2026-08-27); ?ver= still 301s there
-  base <- if (identical(doc_access(ver), "restricted")) doc_preview_url()
-          else "https://app.marinesensitivity.org"
-  sprintf("%s/%s/%s/", base, ver, app)
-}
-
-#' URL of the Atlas for a version. Unlike `doc_app_url()`, the Atlas lives on a
-#' different host (`marinesensitivity.org`, not `app.marinesensitivity.org`) and
-#' resolves its release from `?ver=` on the public host rather than a path
-#' segment (msens::preview_app_url() does not cover it). The signed-in preview
-#' host serves the Atlas at `/{ver}/atlas/` (`server/caddy/atlas_preview_routes.caddy`);
-#' the atlas app itself starts using that route, instead of falling back to the
-#' Scores/Species apps there, with its 0.10.59 release (apps/atlas.qmd).
-doc_atlas_url <- function(ver = doc_ver()) {
-  if (identical(doc_access(ver), "restricted"))
-    sprintf("%s/%s/atlas/", doc_preview_url(), ver)
-  else sprintf("https://marinesensitivity.org/atlas/?ver=%s", ver)
+#' URL of the Atlas -- THE app, for every release -- for a version. Public
+#' releases: `https://marinesensitivity.org/atlas/?ver={ver}` (GitHub Pages; the
+#' release is a query parameter, resolved client-side against `versions.json`).
+#' Restricted releases: the signed-in preview host, where THE VERSION IS THE PATH
+#' (`/{ver}/atlas/`) because Cloudflare Access holds one reviewer policy per
+#' version and scopes it by path, never by query
+#' (`server/caddy/atlas_preview_routes.caddy`).
+#'
+#' `lens` (`"scores"` / `"species"`) and `query` (a named list or character
+#' vector of extra Atlas URL parameters, e.g. `list(sp = "ms_merge|WORMS:137209")`)
+#' are appended to the query string, URL-encoded; NULL / empty values are
+#' dropped. The retired Scores and Species Shiny apps (`app.marinesensitivity.org/
+#' {ver}/scores|species/`) redirect to the Atlas with their query carried, so this is
+#' the only app URL the book prints.
+doc_atlas_url <- function(ver = doc_ver(), lens = NULL, query = list()) {
+  q <- c(if (!is.null(lens)) list(lens = lens), as.list(query))
+  q <- Filter(function(x) !is.null(x) && !is.na(x) && nzchar(x), q)
+  restricted <- identical(doc_access(ver), "restricted")
+  if (!restricted) q <- c(list(ver = ver), q)
+  qs <- if (length(q))
+    paste0("?", paste(
+      names(q), vapply(q, function(x) utils::URLencode(as.character(x), reserved = TRUE), ""),
+      sep = "=", collapse = "&"))
+  else ""
+  if (restricted) sprintf("%s/%s/atlas/%s", doc_preview_url(), ver, qs)
+  else sprintf("https://marinesensitivity.org/atlas/%s", qs)
 }
 
 #' URL of a version's own book: GitHub Pages, or the preview host when restricted.

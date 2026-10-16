@@ -1,28 +1,36 @@
 ---
-title: "Apps User Guide"
-subtitle: "Step-by-step walkthrough of the Scores and Species applications"
+title: "Atlas User Guide"
+subtitle: "Step-by-step walkthrough of the Atlas, one control at a time"
 ---
 
-This guide walks through the two interactive applications — **Scores**
-([`r sub("^https://", "", doc_app_url("scores"))`](`r doc_app_url("scores")`))
-and **Species**
-([`r sub("^https://", "", doc_app_url("species"))`](`r doc_app_url("species")`))
-— one control at a time. Each numbered step below mirrors a step in that app's
-built-in **Take a Tour** (click *About → Take a Tour* in either app to walk the
-same path live), with the relevant control highlighted on the screenshot.
+```{r}
+#| include: false
+# knitr evaluates inline `r ...` only in a document that has at least one code
+# chunk; the Atlas links below are doc_atlas_url() calls (they follow this
+# release's host and version), so without this they would print as literal text.
+```
 
-For a feature-by-feature reference instead, see the
-[Scores](apps/scores.qmd) and [Species](apps/species.qmd) appendix pages.
+This guide walks through the **Atlas**
+([`r sub("^https://", "", doc_atlas_url())`](`r doc_atlas_url()`)) one control at a
+time. Each numbered step below mirrors a step in the Atlas's built-in **Take a tour**
+(click **(?) Help › Take a tour** on a desktop, or **⋯ More › Take a tour** on a phone, to
+walk the same path live), with the relevant control highlighted on the screenshot, and links
+to open that step's view in the Atlas itself.
+
+For a feature-by-feature reference instead, see the [Atlas](apps/atlas.qmd) chapter
+(@sec-app-atlas). The Scores and Species Shiny apps that came before the Atlas have their own,
+frozen [step-by-step guide](apps/shiny-guide.qmd) in the Legacy appendix.
 
 ::: callout-tip
 ## How this guide stays in sync
 
-The steps, captions, and highlighted screenshots are generated directly from
-the apps' in-app tours (the `Conductor$new()$step(...)` chains in each
-`app.R`). Running `libs/apps-guide-regenerate.R` re-parses both tours,
-re-highlights the same CSS element each tour points at, and re-captures the
-screenshots, writing `figures/apps-guide/steps.json`. So whenever a tour
-changes, re-running that one script refreshes this whole page.
+The steps, captions, and highlighted screenshots are generated directly from the Atlas's own
+guided tour (the driver.js step data in `src/shell/tour.ts` of the
+[`atlas`](https://github.com/MarineSensitivity/atlas) repository). From the atlas repository,
+`node scripts/tour-guide.mjs --out <docs>/figures/atlas-guide` walks the tour on a running
+build of the Atlas, re-captures a screenshot with each step's control highlighted, and writes
+`figures/atlas-guide/steps.json` into this book. So whenever the tour changes, re-running that
+one script refreshes this whole page.
 :::
 
 ```{r}
@@ -30,16 +38,58 @@ changes, re-running that one script refreshes this whole page.
 #| include: false
 librarian::shelf(jsonlite, here, quiet = TRUE)
 
-manifest <- here::here("figures", "apps-guide", "steps.json")
+manifest <- here::here("figures", "atlas-guide", "steps.json")
 steps    <- if (file.exists(manifest)) jsonlite::read_json(manifest) else list()
 
-# staleness check: is a tour source newer than the generated manifest?
-apps_dir  <- Sys.getenv(
-  "MSENS_APPS_DIR",
-  unset = normalizePath(file.path(here::here(), "..", "apps"), mustWork = FALSE))
-app_files <- file.path(apps_dir, c("scores", "species"), "app.R")
-stale     <- file.exists(manifest) &&
-  any(file.exists(app_files) & file.mtime(app_files) > file.mtime(manifest))
+# staleness check: is the Atlas tour source newer than the generated manifest?
+# MSENS_ATLAS_DIR overrides the sibling checkout (default ../atlas)
+atlas_dir <- Sys.getenv(
+  "MSENS_ATLAS_DIR",
+  unset = normalizePath(file.path(here::here(), "..", "atlas"), mustWork = FALSE))
+tour_file <- file.path(atlas_dir, "src", "shell", "tour.ts")
+stale     <- file.exists(manifest) && file.exists(tour_file) &&
+  file.mtime(tour_file) > file.mtime(manifest)
+
+# releases whose species ids (`sp=` is a v1-v7c `mdl_seq`) are the same numbers: v6, v7,
+# v7b and v7c carry the same humpback id; every other release is its own family
+# (v1-v5 have no such row, v8/v9 key species by `ms_merge|WORMS:...`)
+id_family <- function(ver) {
+  if (is.null(ver) || is.na(ver) || !nzchar(ver)) return(NA_character_)
+  if (ver %in% c("v6", "v7", "v7b", "v7c")) "v6-v7c" else ver
+}
+
+# a step's url is a generic Atlas address for the release it was captured on; rebuild
+# it for THIS book's release so a restricted book links the preview host and a public
+# one the public host. the species parameters (`sp`, `in`) are model ids that mean
+# something only in the capture release's id family, so they are dropped (the step
+# opens the lens without a species) unless this book is in that family. falls back
+# to the Atlas root if the url has no parseable query.
+step_url <- function(u, captured_release = NULL) {
+  if (is.null(u) || !nzchar(u)) return(NULL)
+  q  <- sub("#.*$", "", sub("^[^?]*\\??", "", u))
+  kv <- if (nzchar(q)) strsplit(strsplit(q, "&", fixed = TRUE)[[1]], "=", fixed = TRUE) else list()
+  kv <- Filter(function(p) length(p) == 2L && p[1] != "ver", kv)
+  same_family <- !is.na(id_family(captured_release)) &&
+    identical(id_family(captured_release), id_family(doc_ver()))
+  if (!same_family) kv <- Filter(function(p) !p[1] %in% c("sp", "in"), kv)
+  args <- stats::setNames(
+    lapply(kv, function(p) utils::URLdecode(p[2])),
+    vapply(kv, `[`, "", 1L))
+  doc_atlas_url(query = args)
+}
+
+# provenance line from the manifest's first step (atlas >= 0.10.91 records the build,
+# the release shown and the capture date); a plain fallback when they are absent
+provenance <- function(steps) {
+  s1 <- if (length(steps)) steps[[1]] else list()
+  v  <- s1$atlas_version; r <- s1$release; d <- s1$captured
+  if (is.null(v) || !nzchar(v)) return(paste(
+    "These screenshots were captured from the live Atlas;",
+    "the build and capture date are not recorded in this manifest."))
+  sprintf("Screenshots captured from the live Atlas %s%s%s.", v,
+          if (!is.null(r) && nzchar(r)) sprintf(", release %s", r) else "",
+          if (!is.null(d) && nzchar(d)) sprintf(", %s", d) else "")
+}
 ```
 
 ```{r}
@@ -48,26 +98,32 @@ stale     <- file.exists(manifest) &&
 if (length(steps) == 0) {
   cat(
     "::: callout-warning\n",
-    "No screenshot manifest found. Run ",
-    "`Rscript libs/apps-guide-regenerate.R` (needs the sibling `apps` repo ",
-    "and the live apps) to generate `figures/apps-guide/steps.json` and the ",
-    "annotated screenshots.\n",
+    "No screenshot manifest found. From the atlas repository, run ",
+    "`node scripts/tour-guide.mjs --out <docs>/figures/atlas-guide` ",
+    "(needs a running build of the Atlas) to generate ",
+    "`figures/atlas-guide/steps.json` and the annotated screenshots.\n",
     ":::\n", sep = "")
 } else {
   if (isTRUE(stale)) cat(
     "::: callout-warning\n",
-    "A tour in `app.R` is newer than these screenshots — re-run ",
-    "`libs/apps-guide-regenerate.R` to refresh this page.\n",
+    "The tour in `src/shell/tour.ts` is newer than these screenshots — re-run ",
+    "`node scripts/tour-guide.mjs` from the atlas repository to refresh this page.\n",
     ":::\n\n", sep = "")
+  cat(provenance(steps), "\n\n", sep = "")
 
   for (app in unique(vapply(steps, `[[`, "", "app"))) {
-    cat(sprintf("\n## %s app\n\n", app))
+    cat(sprintf("\n## %s\n\n", app))
     for (s in Filter(function(x) x$app == app, steps)) {
       cat(sprintf("\n### %d. %s\n\n", s$n, s$title))
       cat(s$text, "\n\n")
       cat(sprintf(
         "![%s](%s){#fig-%s-%02d fig-alt=\"%s\"}\n\n",
-        s$title, s$image, s$app_key, s$n, gsub('"', "'", s$text)))
+        s$title, s$image, s$app_key, s$n,
+        gsub('"', "'", sprintf(
+          "Step %d: %s — the Atlas with the control it describes highlighted and the tour popover open.",
+          s$n, s$title))))
+      u <- step_url(s$url, s$release)
+      if (!is.null(u)) cat(sprintf("[Open this step in the Atlas](%s)\n\n", u))
     }
   }
 }

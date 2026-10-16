@@ -59,7 +59,7 @@ Tile URLs were composed via [`msens::cell_tile_url()`](https://marinesensitivity
 - Caches 2xx responses on `/msens/(tiles/|tilejson|bounds|statistics)` for 7 days (`grace=1h`, `keep=24h`); errors for 60 s to prevent stampede.
 - Adds `X-Cache: HIT | MISS` for debugging.
 
-When the source DuckDB regenerates, the Shiny app bumps the `mtime` query parameter to invalidate all cached tiles at once.
+When the source DuckDB regenerates, the retired Shiny apps bumped the `mtime` query parameter to invalidate all cached tiles at once.
 
 ### Derived cell-id COG
 
