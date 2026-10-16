@@ -37,7 +37,7 @@ view: the 0.05° cell grid colored by a composite sensitivity score across U.S. 
 docked on the left with Layers showing, the map's legend sits at the bottom right, and the
 basemap's attribution is just under it.
 
-![The Atlas, Scores lens, default view (desktop, dark theme). Captured on an earlier build (0.10.44); the current layout differs: the panel and its four-tool rail (Layers, Details, Table, Report) open docked on the left rather than the right, the top bar's Report button is gone (the tools are icon-only with tooltips: Share, Download, Help, Feedback, About, theme), and the legend sits at the bottom right.](/images/atlas/desktop-map.png){#fig-atlas-map fig-alt="The Atlas Scores lens on a dark globe centred on North America, a colored score raster over U.S. waters, a score legend at lower left, a five-button tool rail (Layers, Places, Flower plot, Table, Report) at the far left, and the Layers panel open on the right. The top bar shows the release chip, the Scores and Species switch, a search field, and Share, Report, Help, Feedback, About and theme buttons."}
+![The Atlas, Scores lens, default view (desktop, dark theme): the Layers panel and its four-tool rail docked on the left, the score legend at the bottom right. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-map.png){#fig-atlas-map fig-alt="The Atlas Scores lens in dark theme on a globe centred on North America: a Spectral-colored score raster along U.S. coasts outlined by Program Area boundaries, a legend card with a score histogram at lower right, and at the left a rail of four icon buttons (Layers highlighted, Details, Table, Report) beside the open Layers panel titled Score · Raster cells. The top bar shows the release chip (v7), the Scores and Species switch, a search field, and icon buttons for Share, Download, Help, Feedback, About and the theme."}
 
 **Desktop vs. phone layout.** On a wide viewport the four rail tools — **Layers, Details, Table,
 Report**, the same in both lenses — open a single panel attached to the rail. It docks on the left
@@ -47,9 +47,9 @@ whole stage instead of the side panel. On a phone the identical four tools sit i
 @fig-atlas-phone-map shows the phone layout, and @fig-atlas-phone-more its top bar's More (⋯) menu.
 
 ::: {layout-ncol=2}
-![Phone: default view. Captured on an earlier build (0.10.44); the current bottom tab bar has four tabs (Layers, Details, Table, Report), not five.](/images/atlas/phone-map.png){#fig-atlas-phone-map fig-alt="The Atlas on a phone: a thin top bar, the map, and a bottom sheet showing the Layers panel at half height above a bottom tab bar."}
+![Phone: default view, with the Layers sheet at half height above the four-tab bottom bar. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/phone-map.png){#fig-atlas-phone-map fig-alt="The Atlas on a phone: a thin top bar with the release chip, the Scores and Species switch, a search button and a more (three-dot) button; a dark map of the United States with the score raster along the coasts and a Legend · Score chip; a bottom sheet titled Score · Raster cells showing the Raster cells and Program areas switch, a Layer menu and the first rows of the layer stack; and a bottom tab bar with four tabs (Layers, Details, Table, Report)."}
 
-![Phone: the top bar's More (⋯) menu. Captured on an earlier build (0.10.44); the current menu has Share, Download…, Feedback, About this release, Take a tour, Docs and the theme switch, with no Report item, and the bottom tab bar has four tabs.](/images/atlas/phone-more-menu.png){#fig-atlas-phone-more fig-alt="The phone's More menu open over a map: Share, Report, Feedback, About this release, Take a tour, Docs, and Switch to light theme, above the Layers sheet and a five-tab bottom bar (Layers, Places, Flower plot, Table, Report)."}
+![Phone: the top bar's More (⋯) menu, listing Share, Download…, Feedback, About this release, Take a tour, Docs and the theme switch. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/phone-more-menu.png){#fig-atlas-phone-more fig-alt="The phone's more menu open over the map: Share, Download…, Feedback, About this release, Take a tour, Docs and Switch to light theme, above the Layers sheet and the four-tab bottom bar."}
 :::
 
 ## Quick start
@@ -120,7 +120,7 @@ and most can be reordered — **Data** can never move above **Zone outlines**, s
 raster can never hide the boundaries it is measured against — and **Reset layers** restores the
 default stack.
 
-![The Layers panel, with Place labels moved above Data (one "move up" click) to show the reorder feature, and Data expanded to its study area, spatial units, layer and palette controls. Captured on an earlier build (0.10.44); the current panel's header shows what is on the map (for example "Score · Raster cells"), its header buttons move the panel to the other side and collapse it (there is no dock-bottom or maximize button), and the rail is attached to it.](/images/atlas/desktop-layers.png){#fig-atlas-layers fig-alt="A narrow dark panel titled Layers with four header buttons, listing Selection, Zone outlines and Place labels as toggle-and-opacity rows, then an expanded Data row with Study area (All US waters), Spatial units (Raster cells 0.05°), Layer (score) and Color palette (Spectral) selectors."}
+![The Layers panel with Place labels moved above Data (one "move up" click) to show the reorder feature, and Data expanded to its Color palette menu and the Cells outside Program Areas switch. The panel's header names what is on the map ("Score · Raster cells"); the Raster cells and Program areas switch, the Layer menu with a one-line description of the score, and the layer stack sit below it. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-layers.png){#fig-atlas-layers fig-alt="A dark panel titled Score · Raster cells with two header buttons (move the panel, collapse it), a Raster cells and Program areas switch, a Layer menu set to Score with a short description, and a Layers on the map list: Selection (nothing selected, disabled), Outlines, Place labels, then an expanded Data row holding a Spectral Color palette menu and an unchecked Cells outside Program Areas switch. Below the list are a checked Sphere (globe projection) switch and a Reset layers button. Place labels now sits above Data."}
 
 Clicking a cell or a Program Area selects it: the URL gains a `sel=cell:<id>` or
 `sel=zone:<unit>:<key>` token, which the **Details** (flower plot) and **Table** tools then
@@ -157,7 +157,7 @@ modelled value, or *"No scored cell here"* outside the model's range. The legend
 of the map (a legend chip on a phone), titled with the species' common and scientific name, with a
 subtitle naming the layer and its 1–100 range.
 
-![The Species lens' Layers panel for the leatherback turtle (*Dermochelys coriacea*): the merged model with every one of its six inputs struck through. Captured on an earlier build (before 0.10.78), when v7's app bundle had not yet been republished and every input showed struck through; on the live Atlas all six inputs are available. The current Layers panel also leads with a "Model input" picker and a "Zoom to layer on change" checkbox, and the species information shown below the pills here is now in the Details tool.](/images/atlas/desktop-species.png){#fig-atlas-species fig-alt="A narrow dark panel titled Layers with the Selection, Zone outlines and an expanded Data row: the title Dermochelys coriacea and Leatherback Turtle, a gold-edged box with a checked Merged Model pill and six struck-through input pills (AquaMaps SDM, NMFS Critical Habitat, FWS Critical Habitat, FWS Range, IUCN Range, SWOT+DPS Turtle Range), then the species facts: ESA listing, IUCN Red List, WoRMS id."}
+![The Species lens' Layers panel for the leatherback turtle (*Dermochelys coriacea*): the merged model selected, with all six of its inputs available as pills. Below the panel's title the Data row shows the scientific and common names and a US waters / Whole range switch. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-species.png){#fig-atlas-species fig-alt="A dark panel titled Leatherback Turtle (Dermochelys coriacea) with a Model input group: a gold-edged box reading Merged Model (maximum of 6 inputs) with a highlighted Merged Model pill and six outlined input pills (AquaMaps SDM, NMFS Critical Habitat, FWS Critical Habitat, FWS Range, IUCN Range, SWOT+DPS Turtle Range), none struck through, then a Zoom to layer on change checkbox and the layer stack. The Data row shows the scientific and common name with copy buttons and a US waters and Whole range switch. The globe behind shows the merged model's habitat suitability over the Pacific and U.S. coasts, with a legend at lower right."}
 
 ## Places {#sec-atlas-places}
 
@@ -206,9 +206,9 @@ never wipes places you have explicitly added.
   becomes one place per feature (up to 20), each named this way, or one merged place, named after
   the file, your choice.
 
-![The Places panel with two places, both analysed: a Program Area ("Aleutian Arc (ALA)," 875,225 km², 28.3 composite) and a selected, entered-coordinates place ("bounding box," 98,973 km², 100% coverage, 27.1 composite) whose coverage note reads "100.0% of this place is inside the US study area (3,600 of 3,600 cells)"; the drop zone above the list names the accepted formats, GeoPackage included. Captured on 0.10.62; since 0.10.83 this list sits at the top of the Report tool, above an "Add a place" section, not in a separate Places tab.](/images/atlas/desktop-places.png){#fig-atlas-places fig-alt="Desktop Places panel listing Aleutian Arc (ALA) at 28.3 composite and a typed bounding-box place at 27.1 composite with 100% coverage, the bounding box outlined in pink on the Gulf of Mexico map, and a file drop zone reading GeoJSON, zipped shapefile, KML, GPX, FlatGeobuf, WKT or GeoPackage, up to 10 MB."}
+![The Report tool's list of places with two places, both analysed: a Program Area ("Aleutian Arc (ALA)," 875,225 km², 28.3 composite) and a selected, entered-coordinates place ("bounding box," 98,973 km², 100% coverage, 34.7 composite) whose coverage note reads "100.0% of this place is inside the US study area (3,600 of 3,600 cells)," with its flower plot below; the box is outlined in pink over the Gulf of America on the map. The grey "Component" box over the Open report button is a rendering glitch in this build (a results-table header cell showing through the pinned footer). Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-places.png){#fig-atlas-places fig-alt="The Report panel titled 2 places, with a Places list of two rows: Aleutian Arc (ALA), 875,225 square kilometres, with a 28.3 composite chip, and a highlighted bounding box row, 98,973 square kilometres, 100%, with a 34.7 composite chip and search, copy, remove and Open in report links. Below is the sentence 100.0% of this place is inside the US study area (3,600 of 3,600 cells) and a flower plot of the bounding box with 35 at its hub and 34.7 composite beneath. A pink square outlines the box over the Gulf of America on the globe. A small dark Component filter box overlaps the Open report and Download places buttons at the foot of the panel."}
 
-![The "Enter coordinates" dialog, showing a refusal for input that matches none of the three accepted shapes. Captured on an earlier build (0.10.44) and not recaptured since.](/images/atlas/desktop-coordinate-dialog.png){#fig-atlas-coords fig-alt="A dialog titled Enter coordinates with a text box holding a single longitude, latitude point, and a refusal message below it saying what shapes were expected instead."}
+![The "Enter coordinates" dialog after a single longitude, latitude point ("-124.1, 40.2") was entered and **Add place** clicked: it is refused, because the text matches none of the three accepted shapes (a bounding box, a list of coordinates, pasted WKT/GeoJSON). Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-coordinate-dialog.png){#fig-atlas-coords fig-alt="A dialog titled Enter coordinates over the dimmed Report panel: a hint naming the three accepted shapes, a text box holding -124.1, 40.2, a bordered refusal message reading This text doesn't read as a bounding box, a list of coordinates or WKT/GeoJSON, then two explanatory sentences, and a gold Add place button."}
 
 Each row shows its area and, as soon as it is analysed, its data coverage percentage and composite
 score directly in the row — for a **drawn, typed or uploaded** place the same analysis runs for
@@ -299,9 +299,9 @@ a prompt. The dialog's own advice at that point is to **download the place as Ge
 that alongside the link. A single small rectangle almost always fits in the silent budget; that is
 not guaranteed for several places together, or a long base URL.
 
-![The Share dialog: what the link carries and its exact length. Captured on an earlier build (0.10.44) and not recaptured since; the dialog is opened from the Share button at the foot of the Report tool.](/images/atlas/desktop-share-dialog.png){#fig-atlas-share fig-alt="A small dialog titled Share with a one-sentence summary of what the link carries, its length in characters, and a Copy link button."}
+![The Share dialog for one place (the Program Area GAA): what the link carries and its exact length. The dialog is opened from the Share button at the foot of the Report tool. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-share-dialog.png){#fig-atlas-share fig-alt="A small dialog titled Share over the dimmed Report panel, reading This link carries release v7, the scores lens, 1 place, then Link length: 105 characters, and a gold Copy link button."}
 
-![The Share dialog's simplification ladder for an oversized place: before/after vertex count, area change and cell count, with a "Simplify and update the numbers" button. Captured on an earlier build (0.10.44) and not recaptured since.](/images/atlas/desktop-share-ladder.png){#fig-atlas-share-ladder fig-alt="The Share dialog reading link length 1,564 characters, with the text: Simplifying to 0.004 degrees would change this place from 3501 to 411 vertices (-0.03% area, 12059 to 12055 cells), and a Simplify and update the numbers button."}
+![The Share dialog's simplification ladder for an oversized place (a 3,600-point coordinate list in the Gulf of America): the link length shown, the before/after vertex count, area change and cell count of the proposed rung, and the "Simplify and update the numbers" button. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-share-ladder.png){#fig-atlas-share-ladder fig-alt="The Share dialog with the summary This link carries release v7, the scores lens, 1 place, the line Link length: 3,226 characters in red, the text Simplifying to 0.016° would change this place from 3601 to 1135 vertices (-0.00% area, 7789 → 7789 cells), and a gold Simplify and update the numbers button. Behind it the dimmed Report panel lists one coordinate list place of 206,213 square kilometres and 96% coverage, outlined in pink over the Gulf of America."}
 
 The rest of the view travels the same URL-is-the-state way, in the query string: `ver`, `lens`,
 `lyr`/`sp` (with `in`, `rep` and `us` for a species' input, representation and US-waters filter),
@@ -325,7 +325,7 @@ The flower draws one equal-width annular petal per score component, scaled to it
 the hub shows the **plain mean** of the components present (not a weighted mean). Since 0.10.41 the
 values also list in a real table (swatch, component, score, and a Mean row) below the plot.
 
-![The Flower plot for a clicked cell in the Gulf of America: one petal per score component, and the values table with a Mean row below it. Captured on an earlier build (0.10.44), when the flower had its own rail tool titled "Flower plot"; it now opens under Details, headed by the clicked cell's subject line.](/images/atlas/desktop-flower.png){#fig-atlas-flower fig-alt="A narrow dark panel titled Flower plot, headed by a cell id and coordinates, with a flower of eight colored petals of different lengths around a hub reading 51, and below it a table of Bird 81.4, Coral 34.0, Fish 51.4, Invertebrate 56.5, Mammal 12.0, Other 73.4, Turtle 93.6, Primary producer 9.4 and a Mean row of 51."}
+![The Details tool for a clicked cell in the Gulf of America: one petal per score component, and the values table below it. The panel is headed by the cell's subject line, with Add to report and Open table buttons above the flower; the map shows the cell's popup (score 50). The click was at about 28.3° N, 83.6° W, which falls in cell 3369460. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-flower.png){#fig-atlas-flower fig-alt="A dark Details panel headed Cell 3369460 · 28.325° N, 83.675° W with Add to report and Open table buttons, a flower of eight colored petals of different lengths around a hub reading 50, and below it a Component and Score table listing Bird 81.2, Coral 28.8, Fish 48.6, Invertebrate 55.3, Mammal 12.0 and Other 71.5, cut off by the panel's lower edge. On the globe a popup for the same cell reads score 50 with a Details link, and the legend marks 50 on its histogram."}
 
 **Table** takes the whole stage beside the rail, with a one-row header: a **← Map** button that collapses the panel, what is shown ("Species for Cell …", "Species for 2 places"), the column glossary and the CSV download. In the Species lens the Table lists the species' **model inputs** instead (with its own CSV download). In the Scores lens it opens three underline tabs: a sortable **species table** (Category, Taxon, Scientific name, Common
 name, **ER code**, ER score, Model, MMPA, MBTA, Area (km²), Avg. suitability, % of category — ESA
@@ -338,7 +338,7 @@ table's **Download CSV** exports it; the zones table and the composition treemap
 yet. A drawn place's Components and Species tables in the Places results panel each have their own
 working **Export CSV**.
 
-![The Table tool's species tab. Captured on an earlier build (0.10.44); the current Table fills the whole stage beside the rail, with a single header row (← Map, the subject, Species · Zones · Composition tabs, glossary and CSV download).](/images/atlas/desktop-table.png){#fig-atlas-table fig-alt="A narrow dark panel titled Table headed Species for Cell ID 3372565 with an info and a download button, a Species, Zones and Composition switch, and a table whose Category, Taxon, Scientific name and Common name columns list birds such as Black Noddy and Sanderling, each column with a filter box."}
+![The Table tool's Species tab for the clicked cell in @fig-atlas-flower. The Table fills the whole stage beside the rail, with a single header row (← Map, the subject, Species · Zones · Composition tabs, a glossary button and a CSV download). Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-table.png){#fig-atlas-table fig-alt="A dark Table view filling the stage beside the rail, headed Cell 3369460 · 28.325° N, 83.675° W, with a Map button, the line Species in Cell 3369460, Species Zones and Composition tabs, and info and download buttons. The table has Category, Taxon, Scientific name, Common name, ER code, ER score, Model, MMPA, MBTA, Area, Avg. suitability and % of category columns, each with a filter box, and rows of birds from Black Noddy and Brown Noddy to Black Tern."}
 
 ## Report
 
@@ -366,9 +366,9 @@ opens in a new tab and renders progressively as its data arrives:
 - a **Provenance** section (release, status/access, app build SHA, DuckDB-WASM version, tables
   read, SQL run).
 
-![The report document's header band and introduction: the MMA seal, a permalink and QR code, Parameters, and the start of the interactive map. Captured on an earlier build (0.10.44) and not recaptured since.](/images/atlas/desktop-report.png){#fig-atlas-report fig-alt="The report document: the Marine Minerals Administration seal and lockup, title, release chip, generation time, a real permalink and QR code, an introduction, a Parameters disclosure, and the start of the interactive map."}
+![The report document for the Program Area GAA, opened from the Report tool's **Open report** button in a new tab: the export buttons, the MMA seal, a release chip, a permalink and QR code, the Introduction, a Parameters disclosure and the start of the interactive map. The title reads "BOEM Marine Sensitivity Report" because the link carries no `t=` title. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-report.png){#fig-atlas-report fig-alt="The report page on a light background: Print, Download HTML, Data package (ZIP) and Word document buttons, the line Done — 1 place, the lockup of the mark and the Marine Minerals Administration seal, the title BOEM Marine Sensitivity Report with a v7 · released · public chip, a generation time and a permalink ending #pl=z.pa.GAA, a QR code, an Introduction paragraph with links to open the release in the Atlas and to its documentation, a Parameters disclosure, and the Map heading with the start of a map of the Gulf coast."}
 
-![The report's Table of Scores and the start of the Summary of Species, for the same Program Area. Captured on an earlier build (0.10.44) and not recaptured since.](/images/atlas/desktop-report-scores.png){#fig-atlas-report-scores fig-alt="A flower plot legend, the Table of Scores with one row of component and overall scores, and the beginning of the Summary of Species section."}
+![The report's Table of Scores and the start of the Summary of Species, for the same Program Area (GOA Program Area A, GAA). The species-count table is wider than the page and is cut at its right edge. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-report-scores.png){#fig-atlas-report-scores fig-alt="The Table of Scores with one row for GOA Program Area A (GAA): 14,256 cells and Bird 59, Coral 12, Fish 31, Invertebrate 32, Mammal 40, Other 26, Turtle 55, Primary production 11 and Overall 33. Below it the Summary of Species section with a species-count table by category and extinction-risk code (5,861 species), cropped at the right edge, and the header of the top-20 species table."}
 
 Four exports, all built client-side: **Print** (the browser's dialog; roughly five Letter pages);
 **Download HTML** (one self-contained file — the flowers stay inline SVG, only the map is an
@@ -447,7 +447,7 @@ host" and offers "Continue on the preview host" (a link straight to that release
 underneath while the picker explains why. In the picker, every public release other than the
 current one offers **Switch**.
 
-![The release picker. Captured on an earlier build (0.10.44), before v7c was published, so v7c is missing from the list.](/images/atlas/desktop-version-picker.png){#fig-atlas-versions fig-alt="A dialog titled Data release listing v7b, v9 and v8 as restricted pre-releases each with a Continue on the preview host link, v7 marked current, and v6 down to v1 marked retired, each with a Switch link and a date."}
+![The release picker (the release chip's dialog), listing v7c, v7b, v9 and v8 as restricted pre-releases each with a Continue on the preview host link, v7 as current, and v6 down to v1 as retired, each with a Switch link and a date. Atlas 0.10.91, release v7, 2026-10-16.](/images/atlas/desktop-version-picker.png){#fig-atlas-versions fig-alt="A dialog titled Data release over the dimmed Atlas: a line saying the app renders one published release at a time, then a dated list of releases: v7c, v7b, v9 and v8, each tagged prerelease and restricted with a Continue on the preview host link; v7 tagged current in bold; and v6, v5, v4b, v4, v3, v2 and v1, each tagged retired with a Switch link."}
 
 ## Known limitations (as of 0.10.91)
 
@@ -471,19 +471,28 @@ current one offers **Switch**.
 
 ## Generating Screenshots
 
-The atlas repository's own `scripts/eyes-shots.mjs` captures the standard states most of this
-chapter's figures come from (about 20 numbered shots per viewport, phone 390×844 at 2x pixel density
-and desktop 1280×800, dark theme), run against a live or locally built app:
+Every figure in this chapter was recaptured on 2026-10-16 from the live Atlas (0.10.91, release v7,
+dark theme) with Playwright's Chromium: desktop at 1280×800 and 1x, phone at 390×844 and 2x with
+touch, at `https://marinesensitivity.org/atlas/`. The atlas repository's own `scripts/eyes-shots.mjs`
+covers the standard states (about 20 numbered shots per viewport) and was run against the live site:
 
 ```sh
-ATLAS_URL=https://marinesensitivity.org/atlas OUT=.tmp/eyes node scripts/eyes-shots.mjs
+ATLAS_URL=https://marinesensitivity.org/atlas OUT=.tmp/eyes ONLY=map,layers,more node scripts/eyes-shots.mjs
 ```
 
-A few figures here (the Share dialog and its simplification ladder, the Coordinate dialog's
-refusal state, the version picker, and one Report scroll position) are not among that script's own
-states; they were captured by hand from the same live build, driving the app to the specific state
-each caption describes. The guided-tour images of the [Atlas user guide](../apps-guide.qmd) come from
-a different script, `npm run tour:guide` (`scripts/tour-guide.mjs`, from atlas 0.10.90).
+It does not reach every state in this chapter, so the figures were taken by one driver script
+(`figs.mjs`, kept outside both repositories) that uses the same helpers (`go`, `explore`, `tool`, and
+`screenPointFor` to click a map coordinate by projecting it) and loads each state from a URL or
+UI steps: `?ver=v7&theme=dark` for the map, Layers, the version picker and the phone figures (the
+release chip opens the picker, **More** the phone menu); a click at 28.3° N, 83.6° W for the flower
+and the Table; `?ver=v7&lens=species` and a search for "leatherback" for the Species lens;
+`#pl=z.pa.GAA` plus **Open report** (a new tab, then scrolled to the **Table of Scores** heading) for
+the two report figures and the Share dialog; **Add a Program Area** (Aleutian Arc) plus **Enter
+coordinates** (`-93, 26, -90, 29`) for the places list; a single point (`-124.1, 40.2`) for the
+refusal; and a 3,600-vertex noisy outline pasted into **Enter coordinates**, then **Share**, for the
+simplification ladder. Each PNG was then reduced with `pngquant --quality=85-98`. The guided-tour
+images of the [Atlas user guide](../apps-guide.qmd) come from a different script,
+`npm run tour:guide` (`scripts/tour-guide.mjs`, from atlas 0.10.90).
 
 ## Source Code
 
