@@ -83,4 +83,4 @@ webshot2::webshot(
 
 ## Source Code
 
-[`scores/app.R`](https://github.com/MarineSensitivity/apps/tree/main/scores) on the `apps` repository's `main` branch. There is **one** checkout, not one per release: the version is data, resolved from the published manifest, so the per-version forks (`mapgl`, `mapgl_v1`…`v6`, `scores_v6`, `scores_v8`) were retired earlier and 301 to the equivalent `/v{n}/scores/` path; that path, and an older `?ver=` deep link, now 301 on to the Atlas.
+[`scores/app.R`](https://github.com/MarineSensitivity/apps/tree/main/scores) on the `apps` repository's `main` branch. There is **one** checkout, not one per release: the version is data, resolved from the published manifest, so the per-version forks (`mapgl`, `mapgl_v1`…`v6`, `scores_v6`, `scores_v8`) were retired earlier; since the Atlas cutover they, the `/v{n}/scores/` path and an older `?ver=` deep link all redirect (HTTP 302) straight to the Atlas in one hop, a restricted release's to its Atlas on the preview host.

@@ -248,7 +248,7 @@ The [Atlas](`r doc_atlas_url()`) presents the results, rendering **any published
 - **[Scores](`r doc_atlas_url(lens = "scores")`)** — composite and per-category sensitivity by zone, with flower plots and component tables (see @sec-app-atlas)
 - **[Species](`r doc_atlas_url(lens = "species")`)** — individual and merged distribution models with regulatory status (see @sec-app-atlas)
 
-Substitute the version in the `?ver=` query parameter (e.g. `?ver=v3`) to view that release. The separate Scores and Species Shiny apps that earlier editions of this book described are retired, and their links redirect to the Atlas. See @sec-apps.
+Substitute the version in the `?ver=` query parameter (e.g. `?ver=v3`) to view that release (a restricted pre-release is reached only on the review host, at `/{version}/atlas/`). The separate Scores and Species Shiny apps that earlier editions of this book described are retired, and their links redirect to the Atlas. See @sec-apps.
 
 ## Implementation
 

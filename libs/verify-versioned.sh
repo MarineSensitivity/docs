@@ -69,7 +69,7 @@ for u in https://marinesensitivity.org/atlas/ \
   c=$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 25 "$u")
   chk $([ "$c" = 200 ] && echo 1 || echo 0) "  $u" "HTTP $c"
 done
-# the retired Shiny URLs must 301 INTO the Atlas with their query carried -- links
+# the retired Shiny URLs must redirect INTO the Atlas with their query carried -- links
 # printed in earlier reports (the BOEM final report) depend on it. No -L: the
 # redirect itself is the thing under test.
 for u in "https://app.marinesensitivity.org/v3/scores/" \
@@ -77,7 +77,7 @@ for u in "https://app.marinesensitivity.org/v3/scores/" \
          "https://app.marinesensitivity.org/scores/?ver=v3"; do
   r=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' --max-time 25 "$u")
   case "$r" in
-    "301 https://marinesensitivity.org/atlas/"*) ok "  $u -> Atlas" ;;
+    "302 https://marinesensitivity.org/atlas/"*|"301 https://marinesensitivity.org/atlas/"*) ok "  $u -> Atlas" ;;
     *) no "  $u -> Atlas" "$r" ;;
   esac
 done

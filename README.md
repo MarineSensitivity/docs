@@ -20,7 +20,7 @@ from that release's own published tables.
   (`preview.marinesensitivity.org/docs/{ver}/`). The Atlas takes `?ver=` on the public
   host (`marinesensitivity.org/atlas/?ver=v7`) and the path on the preview host
   (`preview.marinesensitivity.org/v9/atlas/`); every old Shiny URL, `?ver=`, `mdl_key` and
-  `mdl_seq` form is 301'd into the Atlas with its query carried.
+  `mdl_seq` form is redirected (302 until B3, when the public ones become 301s) into the Atlas with its query carried.
 - **Rendering locally.** `quarto render <chapter>.qmd` in this project renders the **whole book**
   (34 files) — there is no chapter-only render — and `mermaid-format: png` routes every diagram
   through headless Chrome, which can hang indefinitely. For a quick check use `quarto check`,

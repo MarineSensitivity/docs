@@ -50,18 +50,45 @@ tour_file <- file.path(atlas_dir, "src", "shell", "tour.ts")
 stale     <- file.exists(manifest) && file.exists(tour_file) &&
   file.mtime(tour_file) > file.mtime(manifest)
 
-# a step's url is a generic Atlas address (no release); rebuild it for THIS book's
-# release so a restricted book links the preview host and a public one the public
-# host. falls back to the step's own url if it has no parseable query.
-step_url <- function(u) {
+# releases whose species ids (`sp=` is a v1-v7c `mdl_seq`) are the same numbers: v6, v7,
+# v7b and v7c carry the same humpback id; every other release is its own family
+# (v1-v5 have no such row, v8/v9 key species by `ms_merge|WORMS:...`)
+id_family <- function(ver) {
+  if (is.null(ver) || is.na(ver) || !nzchar(ver)) return(NA_character_)
+  if (ver %in% c("v6", "v7", "v7b", "v7c")) "v6-v7c" else ver
+}
+
+# a step's url is a generic Atlas address for the release it was captured on; rebuild
+# it for THIS book's release so a restricted book links the preview host and a public
+# one the public host. the species parameters (`sp`, `in`) are model ids that mean
+# something only in the capture release's id family, so they are dropped (the step
+# opens the lens without a species) unless this book is in that family. falls back
+# to the Atlas root if the url has no parseable query.
+step_url <- function(u, captured_release = NULL) {
   if (is.null(u) || !nzchar(u)) return(NULL)
-  q <- sub("#.*$", "", sub("^[^?]*\\??", "", u))
+  q  <- sub("#.*$", "", sub("^[^?]*\\??", "", u))
   kv <- if (nzchar(q)) strsplit(strsplit(q, "&", fixed = TRUE)[[1]], "=", fixed = TRUE) else list()
   kv <- Filter(function(p) length(p) == 2L && p[1] != "ver", kv)
+  same_family <- !is.na(id_family(captured_release)) &&
+    identical(id_family(captured_release), id_family(doc_ver()))
+  if (!same_family) kv <- Filter(function(p) !p[1] %in% c("sp", "in"), kv)
   args <- stats::setNames(
     lapply(kv, function(p) utils::URLdecode(p[2])),
     vapply(kv, `[`, "", 1L))
   doc_atlas_url(query = args)
+}
+
+# provenance line from the manifest's first step (atlas >= 0.10.91 records the build,
+# the release shown and the capture date); a plain fallback when they are absent
+provenance <- function(steps) {
+  s1 <- if (length(steps)) steps[[1]] else list()
+  v  <- s1$atlas_version; r <- s1$release; d <- s1$captured
+  if (is.null(v) || !nzchar(v)) return(paste(
+    "These screenshots were captured from the live Atlas;",
+    "the build and capture date are not recorded in this manifest."))
+  sprintf("Screenshots captured from the live Atlas %s%s%s.", v,
+          if (!is.null(r) && nzchar(r)) sprintf(" (release %s)", r) else "",
+          if (!is.null(d) && nzchar(d)) sprintf(" on %s", d) else "")
 }
 ```
 
@@ -82,6 +109,7 @@ if (length(steps) == 0) {
     "The tour in `src/shell/tour.ts` is newer than these screenshots — re-run ",
     "`node scripts/tour-guide.mjs` from the atlas repository to refresh this page.\n",
     ":::\n\n", sep = "")
+  cat(provenance(steps), "\n\n", sep = "")
 
   for (app in unique(vapply(steps, `[[`, "", "app"))) {
     cat(sprintf("\n## %s\n\n", app))
@@ -90,8 +118,11 @@ if (length(steps) == 0) {
       cat(s$text, "\n\n")
       cat(sprintf(
         "![%s](%s){#fig-%s-%02d fig-alt=\"%s\"}\n\n",
-        s$title, s$image, s$app_key, s$n, gsub("\\s+", " ", gsub('"', "'", s$text))))
-      u <- step_url(s$url)
+        s$title, s$image, s$app_key, s$n,
+        gsub('"', "'", sprintf(
+          "Step %d: %s — the Atlas with the control it describes highlighted and the tour popover open.",
+          s$n, s$title))))
+      u <- step_url(s$url, s$release)
       if (!is.null(u)) cat(sprintf("[Open this step in the Atlas](%s)\n\n", u))
     }
   }

@@ -27,13 +27,13 @@ The Atlas renders **any published release** rather than shipping a per-version f
 
 ## The Atlas {#sec-apps-atlas}
 
-The [Atlas](`r doc_atlas_url()`) is a static web app (Svelte and MapLibre) with **no application server of its own**: scores, clicks, flowers, tables and reports are computed in your browser by a DuckDB-WASM instance that queries the release's published Parquet directly over HTTPS. What a browser cannot compute itself comes from services that are not Atlas-specific: score and species map tiles from the project's titiler (which range-reads the release's Cloud-Optimized GeoTIFFs), zone outlines from static PMTiles archives, and the basemap from CARTO.
+The [Atlas](`r doc_atlas_url()`) is a static web app (Svelte and MapLibre) with **no application server of its own**: the Scores lens's cell and area clicks, flowers, tables and reports are computed in your browser by a DuckDB-WASM instance that queries the release's published Parquet directly over HTTPS. What a browser cannot compute itself comes from services that are not Atlas-specific: score and species map tiles from the project's titiler (which range-reads the release's Cloud-Optimized GeoTIFFs, and also answers a species click and the legend's histogram), zone outlines and species range inputs from static PMTiles archives, and the basemap from CARTO.
 
-It has two **lenses**, switched from the top bar, and two tools that work in both:
+It has two **lenses**, switched from the top bar, and four tools on its rail, the same in both lenses — Layers, Details, Table and Report:
 
-- **[Scores lens](`r doc_atlas_url(lens = "scores")`)** — composite and per-category sensitivity, mapped as the 0.05° cell grid or aggregated to BOEM Program Areas and other zone sets, with a flower plot, a component table, and a species table for the selected area.
-- **[Species lens](`r doc_atlas_url(lens = "species")`)** — individual and merged distribution models with their contributing input datasets, regulatory status (ESA, IUCN, MMPA, MBTA) and extinction-risk score. Search by common or scientific name.
-- **Places** — outline any area of interest (pick a Program Area, draw a shape, type coordinates, or upload a file) and get the same scores and species results, shareable entirely through the URL.
+- **[Scores lens](`r doc_atlas_url(lens = "scores")`)** — composite and per-category sensitivity, mapped as the 0.05° cell grid or aggregated to BOEM Program Areas (Planning Areas for v1), with a flower plot and a component table (in Details) and a species table for the selected cell or area.
+- **[Species lens](`r doc_atlas_url(lens = "species")`)** — individual and merged distribution models with their contributing input datasets, regulatory status (ESA listing, IUCN Red List category, MMPA and MBTA protection) in the Details tool. Search by common or scientific name.
+- **Places** (the first part of the Report tool) — outline any area of interest (pick a Program Area or a gazetteer place, draw a shape, type coordinates, or upload a file) and get the same scores and species results, shareable entirely through the URL.
 - **Report** — a printable, downloadable document (print, HTML, ZIP or Word) for any place.
 
 @sec-app-atlas is the full walkthrough, including how a drawn place is encoded in a shareable link, and the [Atlas user guide](apps-guide.qmd) steps through the app's own guided tour one control at a time.
@@ -57,7 +57,7 @@ Until October 2026 the MST's interactive tools were two R Shiny apps, each rende
 - **Scores** — composite and per-category sensitivity by Program Area or cell, with flower plots, treemaps and species tables (@sec-app-scores).
 - **Species** — individual and merged distribution models with regulatory status (@sec-app-species).
 
-The Atlas does what both did and adds Places. The Shiny apps are no longer reachable, and every URL they answered at (`app.marinesensitivity.org/{ver}/scores/`, `/{ver}/species/`, the older `?ver=`, `mdl_key` and `mdl_seq` query forms, the retired `/mapgl` and `/mapsp` aliases, and the same paths on the preview host) is redirected permanently to the equivalent Atlas view with its query carried. Links in earlier reports, including the URLs printed in the BOEM final report, therefore keep working. The apps' source remains in the [`apps`](https://github.com/MarineSensitivity/apps) repository, and their documentation is kept in the Legacy appendix: @sec-app-scores, @sec-app-species and their [step-by-step guide](apps/shiny-guide.qmd).
+The Atlas does what both did and adds Places. The Shiny apps are no longer reachable, and every URL they answered at (`app.marinesensitivity.org/{ver}/scores/`, `/{ver}/species/`, the older `?ver=`, `mdl_key` and `mdl_seq` query forms, the retired `/mapgl` and `/mapsp` aliases, and the same paths on the preview host) is redirected (HTTP 302 for now; the public redirects become permanent 301s once the Shiny services are removed) to the equivalent Atlas view with its query carried; a restricted release's URLs go to its Atlas on the preview host. Links in earlier reports, including the URLs printed in the BOEM final report, therefore keep working. The apps' source remains in the [`apps`](https://github.com/MarineSensitivity/apps) repository, and their documentation is kept in the Legacy appendix: @sec-app-scores, @sec-app-species and their [step-by-step guide](apps/shiny-guide.qmd).
 
 ## Legacy Applications
 

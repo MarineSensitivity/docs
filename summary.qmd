@@ -26,7 +26,7 @@ cat("- **", sum(cats$scored), " scored species categories** (",
 
 - **Ecoregional rescaling** normalizes each metric to 0–100 within a BOEM Ecoregion, so scores are comparable among Program Areas in one ecoregion without being dominated by naturally species-rich waters.
 
-- **The Atlas**, the interactive application (Scores and Species lenses, plus Places and Reports), renders **any published release** (e.g. `?ver=v3`), so a reader can look at the release a report cited rather than only the newest one. The earlier Scores and Species Shiny apps are retired and their links redirect to the Atlas.
+- **The Atlas**, the interactive application (Scores and Species lenses, plus Places and Reports), renders **any published release** (e.g. `?ver=v3`; a restricted pre-release only on the review host, at `/{version}/atlas/`), so a reader can look at the release a report cited rather than only the newest one. The earlier Scores and Species Shiny apps are retired and their links redirect to the Atlas.
 
 ## Delivered since the first release
 

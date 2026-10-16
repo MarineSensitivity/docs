@@ -8,7 +8,7 @@ subtitle: "Step-by-step walkthrough of the retired Scores and Species Shiny appl
 
 The Scores and Species Shiny apps this guide walks through were retired in October 2026 when the
 Atlas became the project's application; their URLs now redirect to the Atlas. The screenshots below
-were captured from the last Shiny build and are kept as a record. For the current app see the
+were captured on 2026-06-05; the apps changed after that until their retirement, so they may differ in detail from the last build. They are kept as a record. For the current app see the
 [Atlas user guide](../apps-guide.qmd).
 :::
 

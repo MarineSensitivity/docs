@@ -109,7 +109,7 @@ doc_preview_url <- function() {
 #' vector of extra Atlas URL parameters, e.g. `list(sp = "ms_merge|WORMS:137209")`)
 #' are appended to the query string, URL-encoded; NULL / empty values are
 #' dropped. The retired Scores and Species Shiny apps (`app.marinesensitivity.org/
-#' {ver}/scores|species/`) 301 to the Atlas with their query carried, so this is
+#' {ver}/scores|species/`) redirect to the Atlas with their query carried, so this is
 #' the only app URL the book prints.
 doc_atlas_url <- function(ver = doc_ver(), lens = NULL, query = list()) {
   q <- c(if (!is.null(lens)) list(lens = lens), as.list(query))
