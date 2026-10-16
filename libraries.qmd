@@ -13,17 +13,17 @@ By creating an R package, we document functions and make them easily available a
 - [`msens`](https://github.com/MarineSensitivity/msens)\
   R library of functions for mapping marine sensitivities, sponsored by BOEM
 
-Functions `read` data from @sec-db, `analyze` it, and `visualize` results. The Shiny apps in @sec-apps consume `msens::*` helpers exclusively — app code never talks to the tile factory or PMTiles URL templates directly.
+Functions `read` data from @sec-db, `analyze` it, and `visualize` results. The retired Shiny apps consumed `msens::*` helpers exclusively — their code never talked to the tile factory or PMTiles URL templates directly. The Atlas (@sec-apps) is a JavaScript app and reads the release manifest itself; its in-browser score and species queries are checked against msens by the Atlas's parity tests.
 
 ## Map-tile helpers (as of 0.3.4)
 
-The following helpers bridge the Shiny app to the msens TiTiler factory (@sec-apis):
+The following helpers bridged the retired Shiny apps to the msens TiTiler factory (@sec-apis):
 
 | Helper | Purpose |
 |---|---|
 | `cell_tile_url(sql, colormap, rescale, color, mtime, base)` | Compose an XYZ tile URL template for the factory, base64url-encoding `sql` and omitting `colormap`/`rescale` when `color=` is set (single-color mask). |
 | `cell_stats(sql, mtime, base)` | GET `/msens/statistics` — returns `list(n, min, max, mean, std, p2, p50, p98)` for a stable legend rescale. |
-| `add_cell_tiles(m, tile_url, ...)` | Wraps `mapgl::add_raster_source()` + `mapgl::add_raster_layer()` so the Shiny app adds a cell-values (or mask) layer to a map in one call. |
+| `add_cell_tiles(m, tile_url, ...)` | Wraps `mapgl::add_raster_source()` + `mapgl::add_raster_layer()` so the retired Shiny apps added a cell-values (or mask) layer to a map in one call. |
 | `add_cells(m, r, colors, ...)` (retained) | Legacy image-source path for static report figures that need terra `SpatRaster` rendering (e.g., Quarto-to-DOCX output that can't reach the tile server). |
 
 The SQL passed to `cell_tile_url()` and `cell_stats()` must return exactly two columns, `cell_id` (integer) and `value` (numeric) — see the examples in @sec-db.
