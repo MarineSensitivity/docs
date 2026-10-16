@@ -132,13 +132,15 @@ div.csl-indent {
   }, true);
 </script>
 <!--
-  Interactive apps + core links, on every page (docs#6).
+  Interactive app + core links, on every page (docs#6).
 
-  The app links DO exist — on the Preface, under "Interactive Apps", which is
-  where marinesensitivity.org/docs/ lands. But a Quarto book keeps them on that
+  The app link DOES exist — on the Preface, under "Interactive Apps", which is
+  where marinesensitivity.org/docs/ lands. But a Quarto book keeps it on that
   one page: follow a search hit, a bookmark or a chapter link and the sidebar
   shows only chapters, so the viewer is no longer reachable from anywhere on
-  screen. Tim White found it in §13 Server — a page that happens to list service
+  screen. (Since the Atlas cutover, October 2026, the box holds ONE app link:
+  the Atlas replaced the separate Scores and Species Shiny apps, whose own URLs
+  now redirect into it.) Tim White found it in §13 Server — a page that happens to list service
   URLs — which is the failure, not the destination:
 
     "after misplacing the link on my desktop, it took me quite some time to
@@ -158,11 +160,13 @@ div.csl-indent {
   injection.
 
   This DUPLICATES msens::product_urls() in JavaScript, which is a real cost worth
-  naming: the R side is the authority and is unit-tested, but a static book has
-  no R at read time. Kept deliberately identical in shape — ?ver= for a public
-  release, the preview host's PATH form for a restricted one — and the same
-  fail-closed access default the switcher and msens::atlas_versions() use
-  (prerelease -> restricted). If one changes, change both.
+  naming: the R side is the authority (libs/versioned.R doc_atlas_url() for the
+  book's own links; msens::product_urls() for the Shiny-era shape), but a static
+  book has no R at read time. Kept deliberately identical in shape —
+  marinesensitivity.org/atlas/?ver= for a public release, the preview host's
+  /{ver}/atlas/ PATH form for a restricted one — and the same fail-closed access
+  default the switcher and msens::atlas_versions() use (prerelease ->
+  restricted). If one changes, change both.
 
   If anything fails — offline, registry unreachable, an unversioned local preview
   — the box simply does not appear. A docs page must never fail to render over
@@ -171,7 +175,6 @@ div.csl-indent {
 <script>
 (function () {
   var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
-  var APP      = "https://app.marinesensitivity.org";
   var PREVIEW  = "https://preview.marinesensitivity.org";
   var HOME     = "https://marinesensitivity.org";
   var GITHUB   = "https://github.com/MarineSensitivity";
@@ -179,15 +182,13 @@ div.csl-indent {
 
   function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
 
-  // Same rule as msens::product_urls(): the version is a QUERY parameter on the
-  // public host and a PATH segment on the signed-in preview host, because
-  // Cloudflare Access scopes its per-version reviewer policies by path.
-  function appUrls(ver, acc) {
-    if (acc === "restricted")
-      return { scores: PREVIEW + "/" + ver + "/scores/",
-               species: PREVIEW + "/" + ver + "/species/" };
-    return { scores: APP + "/scores/?ver=" + ver,
-             species: APP + "/species/?ver=" + ver };
+  // Same rule as doc_atlas_url() in libs/versioned.R: the version is a QUERY
+  // parameter on the public host (GitHub Pages) and a PATH segment on the
+  // signed-in preview host, because Cloudflare Access scopes its per-version
+  // reviewer policies by path.
+  function atlasUrl(ver, acc) {
+    if (acc === "restricted") return PREVIEW + "/" + ver + "/atlas/";
+    return HOME + "/atlas/?ver=" + ver;
   }
 
   function parseVer() {
@@ -218,8 +219,8 @@ div.csl-indent {
     host.insertBefore(el, sw || host.firstChild);
   }
 
-  // label is HTML, not text: the app links bold the noun that distinguishes them
-  // ("Composite **scores**" / "Individual **species**"). Every label here is a
+  // label is HTML, not text: the app link bolds the noun that names it
+  // ("The **Atlas**"). Every label here is a
   // literal in this file, so there is nothing untrusted to interpolate.
   function link(href, label, title) {
     var a = document.createElement("a");
@@ -230,7 +231,7 @@ div.csl-indent {
   }
 
   function box(ver, acc) {
-    var u = appUrls(ver, acc);
+    var u = atlasUrl(ver, acc);
     var wrap = document.createElement("div");
     wrap.className = "docs-core-links";
     wrap.style.cssText =
@@ -238,17 +239,15 @@ div.csl-indent {
       "border:1px solid rgba(128,128,128,0.35);border-radius:0.35rem;";
 
     var h = document.createElement("div");
-    h.textContent = "Interactive apps";
+    h.textContent = "Interactive app";
     h.style.cssText = "font-weight:600;margin-bottom:0.35rem;";
     wrap.appendChild(h);
 
-    // The apps are what Tim could not find, so they lead — and they point at
+    // The app is what Tim could not find, so it leads — and it points at
     // THIS book's release, never the promoted one, so the reader is not moved
     // to a different version than the page they are reading.
-    wrap.appendChild(link(u.scores,  "▶ Composite <strong>scores</strong>",
-                          "sensitivity scores by zone (" + ver + ")"));
-    wrap.appendChild(link(u.species, "▶ Individual <strong>species</strong>",
-                          "individual species models (" + ver + ")"));
+    wrap.appendChild(link(u, "▶ The <strong>Atlas</strong> — scores, species &amp; places",
+                          "interactive map of scores, species and places (" + ver + ")"));
 
     var hr = document.createElement("div");
     hr.style.cssText = "border-top:1px solid rgba(128,128,128,0.25);margin:0.4rem 0;";
@@ -725,14 +724,20 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./apps/atlas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Atlas — the static, in-browser scores, species and places app</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./apps-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Apps User Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Atlas User Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./docs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
   </div>
 </li>
       </ul>
@@ -740,7 +745,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -767,7 +772,7 @@ window.Quarto = {
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
- <span class="menu-text">Applications (Current)</span></a>
+ <span class="menu-text">Applications (Legacy)</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -775,33 +780,22 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./apps/atlas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Atlas (beta) — the static, in-browser scores, species and places app</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/species.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
   </div>
 </li>
-      </ul>
-  </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
- <span class="menu-text">Applications (Legacy)</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/shiny-guide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Shiny Apps User Guide (retired)</span></span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/aoi.html" class="sidebar-item-text sidebar-link">
@@ -1197,12 +1191,12 @@ Figure&nbsp;10.4: Zoomed treemap showing individual species within a risk catego
 </section>
 <section id="interactive-maps" class="level3" data-number="10.7.4">
 <h3 data-number="10.7.4" class="anchored" data-anchor-id="interactive-maps"><span class="header-section-number">10.7.4</span> Interactive maps</h3>
-<p>Two Shiny applications present the results, each rendering <strong>any published release</strong> from the URL path rather than being frozen to one:</p>
+<p>The <a href="https://marinesensitivity.org/atlas/?ver=v7">Atlas</a> presents the results, rendering <strong>any published release</strong> rather than being frozen to one. It has two lenses:</p>
 <ul>
-<li><strong><a href="https://app.marinesensitivity.org/v7/scores/">Scores</a></strong> — composite and per-category sensitivity by zone, with flower plots and treemaps (see <a href="apps/scores.html" class="quarto-xref"><span>Appendix C</span></a>)</li>
-<li><strong><a href="https://app.marinesensitivity.org/v7/species/">Species</a></strong> — individual and merged distribution models with regulatory status (see <a href="apps/species.html" class="quarto-xref"><span>Appendix D</span></a>)</li>
+<li><strong><a href="https://marinesensitivity.org/atlas/?ver=v7&amp;lens=scores">Scores</a></strong> — composite and per-category sensitivity by zone, with flower plots and component tables (see <a href="apps/atlas.html" class="quarto-xref"><span>Chapter 21</span></a>)</li>
+<li><strong><a href="https://marinesensitivity.org/atlas/?ver=v7&amp;lens=species">Species</a></strong> — individual and merged distribution models with regulatory status (see <a href="apps/atlas.html" class="quarto-xref"><span>Chapter 21</span></a>)</li>
 </ul>
-<p>Substitute the version in the path (e.g.&nbsp;<code>/v3/scores/</code>) to view that release; an older <code>?ver=v3</code> deep link still resolves, 301’d to the equivalent path. See <a href="apps.html" class="quarto-xref"><span>Chapter 19</span></a>.</p>
+<p>Substitute the version in the <code>?ver=</code> query parameter (e.g.&nbsp;<code>?ver=v3</code>) to view that release (a restricted pre-release is reached only on the review host, at <code>/{version}/atlas/</code>). The separate Scores and Species Shiny apps that earlier editions of this book described are retired, and their links redirect to the Atlas. See <a href="apps.html" class="quarto-xref"><span>Chapter 19</span></a>.</p>
 </section>
 </section>
 <section id="implementation" class="level2" data-number="10.8">

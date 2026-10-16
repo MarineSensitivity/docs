@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>22&nbsp; Summary – Marine Sensitivity</title>
+<title>23&nbsp; Summary – Marine Sensitivity</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -110,13 +110,15 @@ ul.task-list li input[type="checkbox"] {
   }, true);
 </script>
 <!--
-  Interactive apps + core links, on every page (docs#6).
+  Interactive app + core links, on every page (docs#6).
 
-  The app links DO exist — on the Preface, under "Interactive Apps", which is
-  where marinesensitivity.org/docs/ lands. But a Quarto book keeps them on that
+  The app link DOES exist — on the Preface, under "Interactive Apps", which is
+  where marinesensitivity.org/docs/ lands. But a Quarto book keeps it on that
   one page: follow a search hit, a bookmark or a chapter link and the sidebar
   shows only chapters, so the viewer is no longer reachable from anywhere on
-  screen. Tim White found it in §13 Server — a page that happens to list service
+  screen. (Since the Atlas cutover, October 2026, the box holds ONE app link:
+  the Atlas replaced the separate Scores and Species Shiny apps, whose own URLs
+  now redirect into it.) Tim White found it in §13 Server — a page that happens to list service
   URLs — which is the failure, not the destination:
 
     "after misplacing the link on my desktop, it took me quite some time to
@@ -136,11 +138,13 @@ ul.task-list li input[type="checkbox"] {
   injection.
 
   This DUPLICATES msens::product_urls() in JavaScript, which is a real cost worth
-  naming: the R side is the authority and is unit-tested, but a static book has
-  no R at read time. Kept deliberately identical in shape — ?ver= for a public
-  release, the preview host's PATH form for a restricted one — and the same
-  fail-closed access default the switcher and msens::atlas_versions() use
-  (prerelease -> restricted). If one changes, change both.
+  naming: the R side is the authority (libs/versioned.R doc_atlas_url() for the
+  book's own links; msens::product_urls() for the Shiny-era shape), but a static
+  book has no R at read time. Kept deliberately identical in shape —
+  marinesensitivity.org/atlas/?ver= for a public release, the preview host's
+  /{ver}/atlas/ PATH form for a restricted one — and the same fail-closed access
+  default the switcher and msens::atlas_versions() use (prerelease ->
+  restricted). If one changes, change both.
 
   If anything fails — offline, registry unreachable, an unversioned local preview
   — the box simply does not appear. A docs page must never fail to render over
@@ -149,7 +153,6 @@ ul.task-list li input[type="checkbox"] {
 <script>
 (function () {
   var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
-  var APP      = "https://app.marinesensitivity.org";
   var PREVIEW  = "https://preview.marinesensitivity.org";
   var HOME     = "https://marinesensitivity.org";
   var GITHUB   = "https://github.com/MarineSensitivity";
@@ -157,15 +160,13 @@ ul.task-list li input[type="checkbox"] {
 
   function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
 
-  // Same rule as msens::product_urls(): the version is a QUERY parameter on the
-  // public host and a PATH segment on the signed-in preview host, because
-  // Cloudflare Access scopes its per-version reviewer policies by path.
-  function appUrls(ver, acc) {
-    if (acc === "restricted")
-      return { scores: PREVIEW + "/" + ver + "/scores/",
-               species: PREVIEW + "/" + ver + "/species/" };
-    return { scores: APP + "/scores/?ver=" + ver,
-             species: APP + "/species/?ver=" + ver };
+  // Same rule as doc_atlas_url() in libs/versioned.R: the version is a QUERY
+  // parameter on the public host (GitHub Pages) and a PATH segment on the
+  // signed-in preview host, because Cloudflare Access scopes its per-version
+  // reviewer policies by path.
+  function atlasUrl(ver, acc) {
+    if (acc === "restricted") return PREVIEW + "/" + ver + "/atlas/";
+    return HOME + "/atlas/?ver=" + ver;
   }
 
   function parseVer() {
@@ -196,8 +197,8 @@ ul.task-list li input[type="checkbox"] {
     host.insertBefore(el, sw || host.firstChild);
   }
 
-  // label is HTML, not text: the app links bold the noun that distinguishes them
-  // ("Composite **scores**" / "Individual **species**"). Every label here is a
+  // label is HTML, not text: the app link bolds the noun that names it
+  // ("The **Atlas**"). Every label here is a
   // literal in this file, so there is nothing untrusted to interpolate.
   function link(href, label, title) {
     var a = document.createElement("a");
@@ -208,7 +209,7 @@ ul.task-list li input[type="checkbox"] {
   }
 
   function box(ver, acc) {
-    var u = appUrls(ver, acc);
+    var u = atlasUrl(ver, acc);
     var wrap = document.createElement("div");
     wrap.className = "docs-core-links";
     wrap.style.cssText =
@@ -216,17 +217,15 @@ ul.task-list li input[type="checkbox"] {
       "border:1px solid rgba(128,128,128,0.35);border-radius:0.35rem;";
 
     var h = document.createElement("div");
-    h.textContent = "Interactive apps";
+    h.textContent = "Interactive app";
     h.style.cssText = "font-weight:600;margin-bottom:0.35rem;";
     wrap.appendChild(h);
 
-    // The apps are what Tim could not find, so they lead — and they point at
+    // The app is what Tim could not find, so it leads — and it points at
     // THIS book's release, never the promoted one, so the reader is not moved
     // to a different version than the page they are reading.
-    wrap.appendChild(link(u.scores,  "▶ Composite <strong>scores</strong>",
-                          "sensitivity scores by zone (" + ver + ")"));
-    wrap.appendChild(link(u.species, "▶ Individual <strong>species</strong>",
-                          "individual species models (" + ver + ")"));
+    wrap.appendChild(link(u, "▶ The <strong>Atlas</strong> — scores, species &amp; places",
+                          "interactive map of scores, species and places (" + ver + ")"));
 
     var hr = document.createElement("div");
     hr.style.cssText = "border-top:1px solid rgba(128,128,128,0.25);margin:0.4rem 0;";
@@ -432,7 +431,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./summary.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Summary</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./summary.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Summary</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -647,14 +646,20 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./apps/atlas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Atlas — the static, in-browser scores, species and places app</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./apps-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Apps User Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Atlas User Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./docs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
   </div>
 </li>
       </ul>
@@ -662,7 +667,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -689,7 +694,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
- <span class="menu-text">Applications (Current)</span></a>
+ <span class="menu-text">Applications (Legacy)</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -697,33 +702,22 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./apps/atlas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Atlas (beta) — the static, in-browser scores, species and places app</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/species.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
   </div>
 </li>
-      </ul>
-  </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
- <span class="menu-text">Applications (Legacy)</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/shiny-guide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Shiny Apps User Guide (retired)</span></span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/aoi.html" class="sidebar-item-text sidebar-link">
@@ -780,9 +774,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#what-this-release-delivers" id="toc-what-this-release-delivers" class="nav-link active" data-scroll-target="#what-this-release-delivers"><span class="header-section-number">22.1</span> What this release delivers</a></li>
-  <li><a href="#delivered-since-the-first-release" id="toc-delivered-since-the-first-release" class="nav-link" data-scroll-target="#delivered-since-the-first-release"><span class="header-section-number">22.2</span> Delivered since the first release</a></li>
-  <li><a href="#future-directions" id="toc-future-directions" class="nav-link" data-scroll-target="#future-directions"><span class="header-section-number">22.3</span> Future directions</a></li>
+  <li><a href="#what-this-release-delivers" id="toc-what-this-release-delivers" class="nav-link active" data-scroll-target="#what-this-release-delivers"><span class="header-section-number">23.1</span> What this release delivers</a></li>
+  <li><a href="#delivered-since-the-first-release" id="toc-delivered-since-the-first-release" class="nav-link" data-scroll-target="#delivered-since-the-first-release"><span class="header-section-number">23.2</span> Delivered since the first release</a></li>
+  <li><a href="#future-directions" id="toc-future-directions" class="nav-link" data-scroll-target="#future-directions"><span class="header-section-number">23.3</span> Future directions</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/summary.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -791,7 +785,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Summary</span></h1>
+<h1 class="title"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Summary</span></h1>
 </div>
 
 
@@ -809,19 +803,19 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>The Marine Sensitivity Toolkit (MST) provides a reproducible system for assessing the sensitivity of marine ecosystems to offshore energy development across US waters. This summary describes release <strong>v5</strong>; figures are read from that release.</p>
-<section id="what-this-release-delivers" class="level2" data-number="22.1">
-<h2 data-number="22.1" class="anchored" data-anchor-id="what-this-release-delivers"><span class="header-section-number">22.1</span> What this release delivers</h2>
+<section id="what-this-release-delivers" class="level2" data-number="23.1">
+<h2 data-number="23.1" class="anchored" data-anchor-id="what-this-release-delivers"><span class="header-section-number">23.1</span> What this release delivers</h2>
 <ul>
 <li><p><strong>9,795 valid marine species</strong> on a 0.05° grid (~4 km cells) across the US EEZ study area, of which <strong>9,597</strong> fall inside the <strong>20 BOEM Program Areas</strong>, integrating <strong>8 source datasets</strong> — continuous suitability models, regulatory habitat designations and expert range maps.</p></li>
 <li><p><strong>7 scored species categories</strong> (<code>invertebrate</code>, <code>fish</code>, <code>other</code>, <code>coral</code>, <code>bird</code>, <code>mammal</code>, <code>turtle</code>), assigned from taxonomy rather than from the dataset a model arrived in.</p></li>
 <li><p><strong>Extinction-risk scoring</strong> (1–100) folds in ESA listing, the MMPA floor (assigned by taxonomy, so no marine mammal is missed) and the MBTA floor (the FWS CFR 50 §10.13 species list, not all birds), falling back to the IUCN Red List where there is no US listing.</p></li>
 <li><p><strong>Model merging</strong> produces one surface per taxon, with the <strong>expert range constraining</strong> suitability predictions rather than merely competing with them, and the governing extinction risk applied at the range cells. Sea turtles merge multiplicatively, so risk varies spatially within a species.</p></li>
 <li><p><strong>Ecoregional rescaling</strong> normalizes each metric to 0–100 within a BOEM Ecoregion, so scores are comparable among Program Areas in one ecoregion without being dominated by naturally species-rich waters.</p></li>
-<li><p><strong>Interactive applications</strong> — Scores and Species — render <strong>any published release</strong> from the URL path (e.g.&nbsp;<code>/v3/scores/</code>; an older <code>?ver=v3</code> deep link still resolves, 301’d to the equivalent path), so a reader can look at the release a report cited rather than only the newest one.</p></li>
+<li><p><strong>The Atlas</strong>, the interactive application (Scores and Species lenses, plus Places and Reports), renders <strong>any published release</strong> (e.g.&nbsp;<code>?ver=v3</code>; a restricted pre-release only on the review host, at <code>/{version}/atlas/</code>), so a reader can look at the release a report cited rather than only the newest one. The earlier Scores and Species Shiny apps are retired and their links redirect to the Atlas.</p></li>
 </ul>
 </section>
-<section id="delivered-since-the-first-release" class="level2" data-number="22.2">
-<h2 data-number="22.2" class="anchored" data-anchor-id="delivered-since-the-first-release"><span class="header-section-number">22.2</span> Delivered since the first release</h2>
+<section id="delivered-since-the-first-release" class="level2" data-number="23.2">
+<h2 data-number="23.2" class="anchored" data-anchor-id="delivered-since-the-first-release"><span class="header-section-number">23.2</span> Delivered since the first release</h2>
 <p>Several capabilities listed as future work in earlier editions of this documentation have since shipped:</p>
 <ul>
 <li><strong>A DAG pipeline.</strong> The workflow is a <code>targets</code> graph generated from each notebook’s own metadata, so adding a dataset means adding a notebook, not editing a pipeline definition.</li>
@@ -832,8 +826,8 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p>The <strong>H3 hexagonal grid</strong> proposed earlier was evaluated and <strong>not adopted</strong>: v8 stays on a 0.05° raster grid, made global rather than regional. Interpolating suitability onto hexes added a resampling step without improving the analysis, and the raster grid aligns directly with the source environmental layers.</p>
 </section>
-<section id="future-directions" class="level2" data-number="22.3">
-<h2 data-number="22.3" class="anchored" data-anchor-id="future-directions"><span class="header-section-number">22.3</span> Future directions</h2>
+<section id="future-directions" class="level2" data-number="23.3">
+<h2 data-number="23.3" class="anchored" data-anchor-id="future-directions"><span class="header-section-number">23.3</span> Future directions</h2>
 <ul>
 <li><strong>OBIS/GBIF validation</strong> — refine distributions against occurrence records, with temporal filters.</li>
 <li><strong>Density models</strong> — NOAA SEFSC and NCCOS density surfaces are ingested and catalogued but excluded from scoring, pending an agreed mapping from individuals km<sup>-2</sup> onto the 0–100 suitability scale. They are flagged <code>is_scored = FALSE</code> so no count on these pages includes them.</li>
@@ -1250,7 +1244,7 @@ ul.task-list li input[type="checkbox"] {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./docs.html" class="pagination-link" aria-label="Docs">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Docs</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Docs</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

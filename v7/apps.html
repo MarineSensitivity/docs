@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="interactive applications: two Shiny apps plus the static, in-browser Atlas">
+<meta name="description" content="interactive application: the static, in-browser Atlas">
 
 <title>19&nbsp; Apps – Marine Sensitivity</title>
 <style>
@@ -37,7 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./apps-guide.html" rel="next">
+<link href="./apps/atlas.html" rel="next">
 <link href="./libraries.html" rel="prev">
 <link href="./images/favicon.ico" rel="icon">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
@@ -111,13 +111,15 @@ ul.task-list li input[type="checkbox"] {
   }, true);
 </script>
 <!--
-  Interactive apps + core links, on every page (docs#6).
+  Interactive app + core links, on every page (docs#6).
 
-  The app links DO exist — on the Preface, under "Interactive Apps", which is
-  where marinesensitivity.org/docs/ lands. But a Quarto book keeps them on that
+  The app link DOES exist — on the Preface, under "Interactive Apps", which is
+  where marinesensitivity.org/docs/ lands. But a Quarto book keeps it on that
   one page: follow a search hit, a bookmark or a chapter link and the sidebar
   shows only chapters, so the viewer is no longer reachable from anywhere on
-  screen. Tim White found it in §13 Server — a page that happens to list service
+  screen. (Since the Atlas cutover, October 2026, the box holds ONE app link:
+  the Atlas replaced the separate Scores and Species Shiny apps, whose own URLs
+  now redirect into it.) Tim White found it in §13 Server — a page that happens to list service
   URLs — which is the failure, not the destination:
 
     "after misplacing the link on my desktop, it took me quite some time to
@@ -137,11 +139,13 @@ ul.task-list li input[type="checkbox"] {
   injection.
 
   This DUPLICATES msens::product_urls() in JavaScript, which is a real cost worth
-  naming: the R side is the authority and is unit-tested, but a static book has
-  no R at read time. Kept deliberately identical in shape — ?ver= for a public
-  release, the preview host's PATH form for a restricted one — and the same
-  fail-closed access default the switcher and msens::atlas_versions() use
-  (prerelease -> restricted). If one changes, change both.
+  naming: the R side is the authority (libs/versioned.R doc_atlas_url() for the
+  book's own links; msens::product_urls() for the Shiny-era shape), but a static
+  book has no R at read time. Kept deliberately identical in shape —
+  marinesensitivity.org/atlas/?ver= for a public release, the preview host's
+  /{ver}/atlas/ PATH form for a restricted one — and the same fail-closed access
+  default the switcher and msens::atlas_versions() use (prerelease ->
+  restricted). If one changes, change both.
 
   If anything fails — offline, registry unreachable, an unversioned local preview
   — the box simply does not appear. A docs page must never fail to render over
@@ -150,7 +154,6 @@ ul.task-list li input[type="checkbox"] {
 <script>
 (function () {
   var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
-  var APP      = "https://app.marinesensitivity.org";
   var PREVIEW  = "https://preview.marinesensitivity.org";
   var HOME     = "https://marinesensitivity.org";
   var GITHUB   = "https://github.com/MarineSensitivity";
@@ -158,15 +161,13 @@ ul.task-list li input[type="checkbox"] {
 
   function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
 
-  // Same rule as msens::product_urls(): the version is a QUERY parameter on the
-  // public host and a PATH segment on the signed-in preview host, because
-  // Cloudflare Access scopes its per-version reviewer policies by path.
-  function appUrls(ver, acc) {
-    if (acc === "restricted")
-      return { scores: PREVIEW + "/" + ver + "/scores/",
-               species: PREVIEW + "/" + ver + "/species/" };
-    return { scores: APP + "/scores/?ver=" + ver,
-             species: APP + "/species/?ver=" + ver };
+  // Same rule as doc_atlas_url() in libs/versioned.R: the version is a QUERY
+  // parameter on the public host (GitHub Pages) and a PATH segment on the
+  // signed-in preview host, because Cloudflare Access scopes its per-version
+  // reviewer policies by path.
+  function atlasUrl(ver, acc) {
+    if (acc === "restricted") return PREVIEW + "/" + ver + "/atlas/";
+    return HOME + "/atlas/?ver=" + ver;
   }
 
   function parseVer() {
@@ -197,8 +198,8 @@ ul.task-list li input[type="checkbox"] {
     host.insertBefore(el, sw || host.firstChild);
   }
 
-  // label is HTML, not text: the app links bold the noun that distinguishes them
-  // ("Composite **scores**" / "Individual **species**"). Every label here is a
+  // label is HTML, not text: the app link bolds the noun that names it
+  // ("The **Atlas**"). Every label here is a
   // literal in this file, so there is nothing untrusted to interpolate.
   function link(href, label, title) {
     var a = document.createElement("a");
@@ -209,7 +210,7 @@ ul.task-list li input[type="checkbox"] {
   }
 
   function box(ver, acc) {
-    var u = appUrls(ver, acc);
+    var u = atlasUrl(ver, acc);
     var wrap = document.createElement("div");
     wrap.className = "docs-core-links";
     wrap.style.cssText =
@@ -217,17 +218,15 @@ ul.task-list li input[type="checkbox"] {
       "border:1px solid rgba(128,128,128,0.35);border-radius:0.35rem;";
 
     var h = document.createElement("div");
-    h.textContent = "Interactive apps";
+    h.textContent = "Interactive app";
     h.style.cssText = "font-weight:600;margin-bottom:0.35rem;";
     wrap.appendChild(h);
 
-    // The apps are what Tim could not find, so they lead — and they point at
+    // The app is what Tim could not find, so it leads — and it points at
     // THIS book's release, never the promoted one, so the reader is not moved
     // to a different version than the page they are reading.
-    wrap.appendChild(link(u.scores,  "▶ Composite <strong>scores</strong>",
-                          "sensitivity scores by zone (" + ver + ")"));
-    wrap.appendChild(link(u.species, "▶ Individual <strong>species</strong>",
-                          "individual species models (" + ver + ")"));
+    wrap.appendChild(link(u, "▶ The <strong>Atlas</strong> — scores, species &amp; places",
+                          "interactive map of scores, species and places (" + ver + ")"));
 
     var hr = document.createElement("div");
     hr.style.cssText = "border-top:1px solid rgba(128,128,128,0.25);margin:0.4rem 0;";
@@ -648,14 +647,20 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./apps/atlas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Atlas — the static, in-browser scores, species and places app</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./apps-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Apps User Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Atlas User Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./docs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
   </div>
 </li>
       </ul>
@@ -663,7 +668,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -690,7 +695,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
- <span class="menu-text">Applications (Current)</span></a>
+ <span class="menu-text">Applications (Legacy)</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -698,33 +703,22 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./apps/atlas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Atlas (beta) — the static, in-browser scores, species and places app</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/species.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
   </div>
 </li>
-      </ul>
-  </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
- <span class="menu-text">Applications (Legacy)</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./apps/shiny-guide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Shiny Apps User Guide (retired)</span></span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/aoi.html" class="sidebar-item-text sidebar-link">
@@ -781,13 +775,12 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#current-applications" id="toc-current-applications" class="nav-link active" data-scroll-target="#current-applications"><span class="header-section-number">19.1</span> Current Applications</a>
+  <li><a href="#sec-apps-atlas" id="toc-sec-apps-atlas" class="nav-link active" data-scroll-target="#sec-apps-atlas"><span class="header-section-number">19.1</span> The Atlas</a>
   <ul class="collapse">
-  <li><a href="#atlas-beta-static-in-browser-scores-species-and-places" id="toc-atlas-beta-static-in-browser-scores-species-and-places" class="nav-link" data-scroll-target="#atlas-beta-static-in-browser-scores-species-and-places"><span class="header-section-number">19.1.1</span> Atlas (beta) — static, in-browser scores, species and places</a></li>
-  <li><a href="#scores-mapper-of-aggregate-sensitivity-scores" id="toc-scores-mapper-of-aggregate-sensitivity-scores" class="nav-link" data-scroll-target="#scores-mapper-of-aggregate-sensitivity-scores"><span class="header-section-number">19.1.2</span> Scores — mapper of aggregate sensitivity scores</a></li>
-  <li><a href="#species-mapper-of-individual-species-distributions" id="toc-species-mapper-of-individual-species-distributions" class="nav-link" data-scroll-target="#species-mapper-of-individual-species-distributions"><span class="header-section-number">19.1.3</span> Species — mapper of individual species distributions</a></li>
+  <li><a href="#how-the-atlas-draws-a-release" id="toc-how-the-atlas-draws-a-release" class="nav-link" data-scroll-target="#how-the-atlas-draws-a-release"><span class="header-section-number">19.1.1</span> How the Atlas draws a release</a></li>
   </ul></li>
-  <li><a href="#legacy-applications" id="toc-legacy-applications" class="nav-link" data-scroll-target="#legacy-applications"><span class="header-section-number">19.2</span> Legacy Applications</a></li>
+  <li><a href="#sec-apps-retired" id="toc-sec-apps-retired" class="nav-link" data-scroll-target="#sec-apps-retired"><span class="header-section-number">19.2</span> Retired: the Scores and Species Shiny apps</a></li>
+  <li><a href="#legacy-applications" id="toc-legacy-applications" class="nav-link" data-scroll-target="#legacy-applications"><span class="header-section-number">19.3</span> Legacy Applications</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/apps.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -813,7 +806,8 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>The MST provides three interactive web applications — two Shiny apps (Scores, Species) plus a newer, static, in-browser Atlas — along with several legacy applications from earlier development phases.</p>
+<p>The MST has one interactive application, the <strong>Atlas</strong> (<a href="https://marinesensitivity.org/atlas/?ver=v7">marinesensitivity.org/atlas/?ver=v7</a>). It replaces the two Shiny apps (Scores and Species) that came before it; those are retired and described, for the record, under <a href="#sec-apps-retired" class="quarto-xref"><span>Section 19.2</span></a> below and in the Legacy appendix.</p>
+<p>These tools allow stakeholders, scientists, and decision-makers to understand the underlying components contributing to an area’s sensitivity to offshore energy development, supporting better planning and impact assessment.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -824,55 +818,44 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Every one of the three current apps renders <strong>any published release</strong> rather than shipping a per-version fork. Scores and Species do this from the URL (<code>/v3/scores/</code>; older <code>?ver=v3</code> links redirect there) — the version is data, settled by the release’s published manifest, so a fix reaches every version at once, and the 18 former per-version Shiny instances are retired with their URLs redirecting permanently to the equivalent path. The Atlas follows the same rule with a different mechanism (<a href="apps/atlas.html" class="quarto-xref"><span>Appendix B</span></a>): one static build reads the same published <code>versions.json</code>, resolving the release from <code>?ver=</code> on its public host, and — its preview route shipping with 0.10.59 — from the URL path on its signed-in preview host.</p>
+<p>The Atlas renders <strong>any published release</strong> rather than shipping a per-version fork. The version is data, settled by the release’s published manifest, so a fix reaches every version at once. On the public host the release is a query parameter (<code>?ver=v3</code>); a restricted pre-release is reached only through the signed-in preview host, where the version is the URL path (<code>/v9/atlas/</code>). The release picker in the app’s top bar moves between them. See <a href="apps/atlas.html" class="quarto-xref"><span>Chapter 21</span></a>.</p>
 </div>
 </div>
-<p>These tools allow stakeholders, scientists, and decision-makers to understand the underlying components contributing to an area’s sensitivity to offshore energy development, supporting better planning and impact assessment.</p>
-<section id="current-applications" class="level2" data-number="19.1">
-<h2 data-number="19.1" class="anchored" data-anchor-id="current-applications"><span class="header-section-number">19.1</span> Current Applications</h2>
-<section id="atlas-beta-static-in-browser-scores-species-and-places" class="level3" data-number="19.1.1">
-<h3 data-number="19.1.1" class="anchored" data-anchor-id="atlas-beta-static-in-browser-scores-species-and-places"><span class="header-section-number">19.1.1</span> Atlas (beta) — static, in-browser scores, species and places</h3>
-<p>The <a href="https://marinesensitivity.org/atlas/?ver=v7">Atlas</a> is a newer, third way to explore the MST, currently labelled <strong>beta</strong>: one static Svelte/MapLibre app with <strong>no application server of its own</strong> — scores, clicks, flowers and reports are computed in your browser by a DuckDB-WASM instance, though score tiles, zone outlines and the basemap still come from the project’s titiler, PMTiles and CARTO. It combines what Scores and Species do separately — mapping composite scores and mapping individual species — with a capability neither Shiny app has, <strong>Places</strong>: drawing, typing or uploading any area of interest (not only the built-in Program Areas) and getting the same scores, species tables and an exportable report for it, shareable entirely through the URL.</p>
-<p>See <a href="apps/atlas.html" class="quarto-xref"><span>Appendix B</span></a> for the full walkthrough, including how a drawn place is encoded into a shareable link.</p>
-</section>
-<section id="scores-mapper-of-aggregate-sensitivity-scores" class="level3" data-number="19.1.2">
-<h3 data-number="19.1.2" class="anchored" data-anchor-id="scores-mapper-of-aggregate-sensitivity-scores"><span class="header-section-number">19.1.2</span> Scores — mapper of aggregate sensitivity scores</h3>
-<p>The <a href="https://app.marinesensitivity.org/v7/scores/">Scores</a> application is the primary tool for exploring composite sensitivity scores across BOEM Program Areas. Key features include:</p>
+<section id="sec-apps-atlas" class="level2" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="sec-apps-atlas"><span class="header-section-number">19.1</span> The Atlas</h2>
+<p>The <a href="https://marinesensitivity.org/atlas/?ver=v7">Atlas</a> is a static web app (Svelte and MapLibre) with <strong>no application server of its own</strong>: the Scores lens’s cell and area clicks, flowers, tables and reports are computed in your browser by a DuckDB-WASM instance that queries the release’s published Parquet directly over HTTPS. What a browser cannot compute itself comes from services that are not Atlas-specific: score and species map tiles from the project’s titiler (which range-reads the release’s Cloud-Optimized GeoTIFFs, and also answers a species click and the legend’s histogram), zone outlines and species range inputs from static PMTiles archives, and the basemap from CARTO.</p>
+<p>It has two <strong>lenses</strong>, switched from the top bar, and four tools on its rail, the same in both lenses — Layers, Details, Table and Report:</p>
 <ul>
-<li><strong>Multi-resolution viewing</strong>: toggle between cell-level (0.05° grid) and Program Area aggregations</li>
-<li><strong>Study area selection</strong>: focus on specific Program Areas or subregions</li>
-<li><strong>Layer selection</strong>: view individual species category scores or composite metrics</li>
-<li><strong>Flower plot</strong>: interactive summary showing scores by species category with weighted center value</li>
-<li><strong>Species table</strong>: sortable table of species present in selected area with extinction risk details</li>
-<li><strong>Treemap</strong>: hierarchical view of species contributions to sensitivity</li>
-<li><strong>CSV export</strong>: download data for selected area or species</li>
+<li><strong><a href="https://marinesensitivity.org/atlas/?ver=v7&amp;lens=scores">Scores lens</a></strong> — composite and per-category sensitivity, mapped as the 0.05° cell grid or aggregated to BOEM Program Areas (Planning Areas for v1), with a flower plot and a component table (in Details) and a species table for the selected cell or area.</li>
+<li><strong><a href="https://marinesensitivity.org/atlas/?ver=v7&amp;lens=species">Species lens</a></strong> — individual and merged distribution models with their contributing input datasets, regulatory status (ESA listing, IUCN Red List category, MMPA and MBTA protection) in the Details tool. Search by common or scientific name.</li>
+<li><strong>Places</strong> (the first part of the Report tool) — outline any area of interest (pick a Program Area or a gazetteer place, draw a shape, type coordinates, or upload a file) and get the same scores and species results, shareable entirely through the URL.</li>
+<li><strong>Report</strong> — a printable, downloadable document (print, HTML, ZIP or Word) for any place.</li>
 </ul>
-<p>Under the hood the Scores app composes three kinds of map layer (<a href="software.html#fig-architecture" class="quarto-xref">Figure&nbsp;<span>13.1</span></a>):</p>
+<p><a href="apps/atlas.html" class="quarto-xref"><span>Chapter 21</span></a> is the full walkthrough, including how a drawn place is encoded in a shareable link, and the <a href="./apps-guide.html">Atlas user guide</a> steps through the app’s own guided tour one control at a time.</p>
+<p>Deep links carry their state in the URL. <code>lens=species</code> opens the Species lens, <code>sp=</code> selects a species, and the Atlas rewrites the older <code>mdl_key</code> and <code>mdl_seq</code> parameters to <code>sp</code> when it loads, so a link made for either Shiny app, or printed in an earlier report, opens the same species.</p>
+<section id="how-the-atlas-draws-a-release" class="level3" data-number="19.1.1">
+<h3 data-number="19.1.1" class="anchored" data-anchor-id="how-the-atlas-draws-a-release"><span class="header-section-number">19.1.1</span> How the Atlas draws a release</h3>
+<p>Three kinds of map layer, each resolved from the release’s manifest rather than hardcoded, make the Scores lens:</p>
 <ul>
-<li><strong>Score raster</strong> — a pre-rendered COG per metric × subregion, whose URL and rescale range come straight from the release manifest. The browser fetches only the tiles intersecting its viewport; no full-raster transfer on load (see <a href="software.html#fig-raster" class="quarto-xref">Figure&nbsp;<span>13.2</span></a>).</li>
+<li><strong>Score raster</strong> — a pre-rendered COG per metric × subregion, whose URL and rescale range come straight from the release manifest and which titiler turns into small tiles on request. The browser fetches only the tiles intersecting its viewport; no full raster is transferred on load.</li>
 <li><strong>“Cells outside Program Areas” mask</strong> — a single-color overlay published the same way.</li>
-<li><strong>Zone choropleth</strong> — polygon geometry from a static PMTiles archive published per geometry <strong>vintage</strong>, with per-zone fill colors pushed live into the paint spec from the release’s <code>zone_metric</code> (see <a href="software.html#fig-choropleth" class="quarto-xref">Figure&nbsp;<span>13.4</span></a>).</li>
+<li><strong>Zone choropleth</strong> — polygon geometry from a static PMTiles archive published per geometry <strong>vintage</strong>, with each zone’s fill color computed in the browser from the release’s per-zone scores.</li>
 </ul>
-<p>Because every one of those is resolved from the manifest rather than hardcoded, switching the URL’s version segment (e.g.&nbsp;<code>/v3/</code> → <code>/v4/</code>) switches all three together — including drawing the boundary vintage that release actually used.</p>
-<p>See <a href="apps/scores.html" class="quarto-xref"><span>Appendix C</span></a> for details.</p>
+<p>Because every one of those is resolved from the manifest, switching the release switches all three together, including drawing the boundary vintage that release actually used. <a href="software.html" class="quarto-xref"><span>Chapter 13</span></a> shows the serving architecture these layers sit on, and how COGs and PMTiles are produced and published; its diagrams were drawn when the Shiny apps were the clients, so where they show a Shiny server, the Atlas now does that work in the browser.</p>
 </section>
-<section id="species-mapper-of-individual-species-distributions" class="level3" data-number="19.1.3">
-<h3 data-number="19.1.3" class="anchored" data-anchor-id="species-mapper-of-individual-species-distributions"><span class="header-section-number">19.1.3</span> Species — mapper of individual species distributions</h3>
-<p>The <a href="https://app.marinesensitivity.org/v7/species/">Species</a> application enables exploration of individual species distribution models. Key features include:</p>
+</section>
+<section id="sec-apps-retired" class="level2" data-number="19.2">
+<h2 data-number="19.2" class="anchored" data-anchor-id="sec-apps-retired"><span class="header-section-number">19.2</span> Retired: the Scores and Species Shiny apps</h2>
+<p>Until October 2026 the MST’s interactive tools were two R Shiny apps, each rendering any published release from the URL path:</p>
 <ul>
-<li><strong>Species selection</strong>: search by common or scientific name, filter by species category</li>
-<li><strong>Model display</strong>: view merged models or individual source dataset layers</li>
-<li><strong>Representation toggle</strong>: compare the native-resolution original with the interpolated surface used in scoring</li>
-<li><strong>Masking toggle</strong>: compare the expert-range-constrained merged model with the unconstrained suitability</li>
-<li><strong>Species info panel</strong>: ESA listing, IUCN Red List category, MMPA/MBTA protection flags, extinction risk score</li>
-<li><strong>Deep-linking</strong>: URL parameters support direct links to specific species</li>
+<li><strong>Scores</strong> — composite and per-category sensitivity by Program Area or cell, with flower plots, treemaps and species tables (<a href="apps/scores.html" class="quarto-xref"><span>Appendix B</span></a>).</li>
+<li><strong>Species</strong> — individual and merged distribution models with regulatory status (<a href="apps/species.html" class="quarto-xref"><span>Appendix C</span></a>).</li>
 </ul>
-<p>See <a href="apps/species.html" class="quarto-xref"><span>Appendix D</span></a> for details.</p>
+<p>The Atlas does what both did and adds Places. The Shiny apps are no longer reachable, and every URL they answered at (<code>app.marinesensitivity.org/{ver}/scores/</code>, <code>/{ver}/species/</code>, the older <code>?ver=</code>, <code>mdl_key</code> and <code>mdl_seq</code> query forms, the retired <code>/mapgl</code> and <code>/mapsp</code> aliases, and the same paths on the preview host) is redirected (HTTP 302 for now; the public redirects become permanent 301s once the Shiny services are removed) to the equivalent Atlas view with its query carried; a restricted release’s URLs go to its Atlas on the preview host. Links in earlier reports, including the URLs printed in the BOEM final report, therefore keep working. The apps’ source remains in the <a href="https://github.com/MarineSensitivity/apps"><code>apps</code></a> repository, and their documentation is kept in the Legacy appendix: <a href="apps/scores.html" class="quarto-xref"><span>Appendix B</span></a>, <a href="apps/species.html" class="quarto-xref"><span>Appendix C</span></a> and their <a href="./apps/shiny-guide.html">step-by-step guide</a>.</p>
 </section>
-</section>
-<section id="legacy-applications" class="level2" data-number="19.2">
-<h2 data-number="19.2" class="anchored" data-anchor-id="legacy-applications"><span class="header-section-number">19.2</span> Legacy Applications</h2>
-<p>Earlier prototype applications from the research phase are kept in the Appendix under Applications (Legacy) for reference. They are not part of the current serving path.</p>
+<section id="legacy-applications" class="level2" data-number="19.3">
+<h2 data-number="19.3" class="anchored" data-anchor-id="legacy-applications"><span class="header-section-number">19.3</span> Legacy Applications</h2>
+<p>Earlier prototype applications from the research phase are kept in the Appendix under Applications (Legacy) for reference, alongside the retired Shiny apps. They are not part of the current serving path.</p>
 
 
 </section>
@@ -1285,8 +1268,8 @@ ul.task-list li input[type="checkbox"] {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./apps-guide.html" class="pagination-link" aria-label="Apps User Guide">
-        <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Apps User Guide</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./apps/atlas.html" class="pagination-link" aria-label="Atlas — the static, in-browser scores, species and places app">
+        <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Atlas — the static, in-browser scores, species and places app</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

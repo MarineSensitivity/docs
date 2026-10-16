@@ -8,7 +8,7 @@
 
 <meta name="description" content="individual species distribution mapping application">
 
-<title>Appendix C — Species — mapper of individual species distributions – Marine Sensitivity</title>
+<title>Appendix B — Species — mapper of individual species distributions – Marine Sensitivity</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -37,7 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../apps/aoi.html" rel="next">
+<link href="../apps/shiny-guide.html" rel="next">
 <link href="../apps/scores.html" rel="prev">
 <link href="../images/favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
@@ -114,13 +114,15 @@ ul.task-list li input[type="checkbox"] {
   }, true);
 </script>
 <!--
-  Interactive apps + core links, on every page (docs#6).
+  Interactive app + core links, on every page (docs#6).
 
-  The app links DO exist — on the Preface, under "Interactive Apps", which is
-  where marinesensitivity.org/docs/ lands. But a Quarto book keeps them on that
+  The app link DOES exist — on the Preface, under "Interactive Apps", which is
+  where marinesensitivity.org/docs/ lands. But a Quarto book keeps it on that
   one page: follow a search hit, a bookmark or a chapter link and the sidebar
   shows only chapters, so the viewer is no longer reachable from anywhere on
-  screen. Tim White found it in §13 Server — a page that happens to list service
+  screen. (Since the Atlas cutover, October 2026, the box holds ONE app link:
+  the Atlas replaced the separate Scores and Species Shiny apps, whose own URLs
+  now redirect into it.) Tim White found it in §13 Server — a page that happens to list service
   URLs — which is the failure, not the destination:
 
     "after misplacing the link on my desktop, it took me quite some time to
@@ -140,11 +142,13 @@ ul.task-list li input[type="checkbox"] {
   injection.
 
   This DUPLICATES msens::product_urls() in JavaScript, which is a real cost worth
-  naming: the R side is the authority and is unit-tested, but a static book has
-  no R at read time. Kept deliberately identical in shape — ?ver= for a public
-  release, the preview host's PATH form for a restricted one — and the same
-  fail-closed access default the switcher and msens::atlas_versions() use
-  (prerelease -> restricted). If one changes, change both.
+  naming: the R side is the authority (libs/versioned.R doc_atlas_url() for the
+  book's own links; msens::product_urls() for the Shiny-era shape), but a static
+  book has no R at read time. Kept deliberately identical in shape —
+  marinesensitivity.org/atlas/?ver= for a public release, the preview host's
+  /{ver}/atlas/ PATH form for a restricted one — and the same fail-closed access
+  default the switcher and msens::atlas_versions() use (prerelease ->
+  restricted). If one changes, change both.
 
   If anything fails — offline, registry unreachable, an unversioned local preview
   — the box simply does not appear. A docs page must never fail to render over
@@ -153,7 +157,6 @@ ul.task-list li input[type="checkbox"] {
 <script>
 (function () {
   var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
-  var APP      = "https://app.marinesensitivity.org";
   var PREVIEW  = "https://preview.marinesensitivity.org";
   var HOME     = "https://marinesensitivity.org";
   var GITHUB   = "https://github.com/MarineSensitivity";
@@ -161,15 +164,13 @@ ul.task-list li input[type="checkbox"] {
 
   function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
 
-  // Same rule as msens::product_urls(): the version is a QUERY parameter on the
-  // public host and a PATH segment on the signed-in preview host, because
-  // Cloudflare Access scopes its per-version reviewer policies by path.
-  function appUrls(ver, acc) {
-    if (acc === "restricted")
-      return { scores: PREVIEW + "/" + ver + "/scores/",
-               species: PREVIEW + "/" + ver + "/species/" };
-    return { scores: APP + "/scores/?ver=" + ver,
-             species: APP + "/species/?ver=" + ver };
+  // Same rule as doc_atlas_url() in libs/versioned.R: the version is a QUERY
+  // parameter on the public host (GitHub Pages) and a PATH segment on the
+  // signed-in preview host, because Cloudflare Access scopes its per-version
+  // reviewer policies by path.
+  function atlasUrl(ver, acc) {
+    if (acc === "restricted") return PREVIEW + "/" + ver + "/atlas/";
+    return HOME + "/atlas/?ver=" + ver;
   }
 
   function parseVer() {
@@ -200,8 +201,8 @@ ul.task-list li input[type="checkbox"] {
     host.insertBefore(el, sw || host.firstChild);
   }
 
-  // label is HTML, not text: the app links bold the noun that distinguishes them
-  // ("Composite **scores**" / "Individual **species**"). Every label here is a
+  // label is HTML, not text: the app link bolds the noun that names it
+  // ("The **Atlas**"). Every label here is a
   // literal in this file, so there is nothing untrusted to interpolate.
   function link(href, label, title) {
     var a = document.createElement("a");
@@ -212,7 +213,7 @@ ul.task-list li input[type="checkbox"] {
   }
 
   function box(ver, acc) {
-    var u = appUrls(ver, acc);
+    var u = atlasUrl(ver, acc);
     var wrap = document.createElement("div");
     wrap.className = "docs-core-links";
     wrap.style.cssText =
@@ -220,17 +221,15 @@ ul.task-list li input[type="checkbox"] {
       "border:1px solid rgba(128,128,128,0.35);border-radius:0.35rem;";
 
     var h = document.createElement("div");
-    h.textContent = "Interactive apps";
+    h.textContent = "Interactive app";
     h.style.cssText = "font-weight:600;margin-bottom:0.35rem;";
     wrap.appendChild(h);
 
-    // The apps are what Tim could not find, so they lead — and they point at
+    // The app is what Tim could not find, so it leads — and it points at
     // THIS book's release, never the promoted one, so the reader is not moved
     // to a different version than the page they are reading.
-    wrap.appendChild(link(u.scores,  "▶ Composite <strong>scores</strong>",
-                          "sensitivity scores by zone (" + ver + ")"));
-    wrap.appendChild(link(u.species, "▶ Individual <strong>species</strong>",
-                          "individual species models (" + ver + ")"));
+    wrap.appendChild(link(u, "▶ The <strong>Atlas</strong> — scores, species &amp; places",
+                          "interactive map of scores, species and places (" + ver + ")"));
 
     var hr = document.createElement("div");
     hr.style.cssText = "border-top:1px solid rgba(128,128,128,0.25);margin:0.4rem 0;";
@@ -436,7 +435,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="../apps/atlas.html">Applications (Current)</a></li><li class="breadcrumb-item"><a href="../apps/species.html"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="../apps/scores.html">Applications (Legacy)</a></li><li class="breadcrumb-item"><a href="../apps/species.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -651,14 +650,20 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../apps/atlas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Atlas — the static, in-browser scores, species and places app</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../apps-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Apps User Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Atlas User Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../docs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
   </div>
 </li>
       </ul>
@@ -666,7 +671,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -693,7 +698,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications (Current)</span></a>
+ <span class="menu-text">Applications (Legacy)</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -701,33 +706,22 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../apps/atlas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Atlas (beta) — the static, in-browser scores, species and places app</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../apps/scores.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../apps/species.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
   </div>
 </li>
-      </ul>
-  </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
- <span class="menu-text">Applications (Legacy)</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/shiny-guide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Shiny Apps User Guide (retired)</span></span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../apps/aoi.html" class="sidebar-item-text sidebar-link">
@@ -784,18 +778,18 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-app-species" id="toc-sec-app-species" class="nav-link active" data-scroll-target="#sec-app-species"><span class="header-section-number">D</span> Species</a>
+  <li><a href="#sec-app-species" id="toc-sec-app-species" class="nav-link active" data-scroll-target="#sec-app-species"><span class="header-section-number">C</span> Species</a>
   <ul class="collapse">
-  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview"><span class="header-section-number">D.1</span> Overview</a></li>
-  <li><a href="#features" id="toc-features" class="nav-link" data-scroll-target="#features"><span class="header-section-number">D.2</span> Features</a>
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview"><span class="header-section-number">C.1</span> Overview</a></li>
+  <li><a href="#features" id="toc-features" class="nav-link" data-scroll-target="#features"><span class="header-section-number">C.2</span> Features</a>
   <ul class="collapse">
-  <li><a href="#species-selection" id="toc-species-selection" class="nav-link" data-scroll-target="#species-selection"><span class="header-section-number">D.2.1</span> Species Selection</a></li>
-  <li><a href="#model-display" id="toc-model-display" class="nav-link" data-scroll-target="#model-display"><span class="header-section-number">D.2.2</span> Model Display</a></li>
-  <li><a href="#species-info-panel" id="toc-species-info-panel" class="nav-link" data-scroll-target="#species-info-panel"><span class="header-section-number">D.2.3</span> Species Info Panel</a></li>
-  <li><a href="#deep-linking" id="toc-deep-linking" class="nav-link" data-scroll-target="#deep-linking"><span class="header-section-number">D.2.4</span> Deep-Linking</a></li>
+  <li><a href="#species-selection" id="toc-species-selection" class="nav-link" data-scroll-target="#species-selection"><span class="header-section-number">C.2.1</span> Species Selection</a></li>
+  <li><a href="#model-display" id="toc-model-display" class="nav-link" data-scroll-target="#model-display"><span class="header-section-number">C.2.2</span> Model Display</a></li>
+  <li><a href="#species-info-panel" id="toc-species-info-panel" class="nav-link" data-scroll-target="#species-info-panel"><span class="header-section-number">C.2.3</span> Species Info Panel</a></li>
+  <li><a href="#deep-linking" id="toc-deep-linking" class="nav-link" data-scroll-target="#deep-linking"><span class="header-section-number">C.2.4</span> Deep-Linking</a></li>
   </ul></li>
-  <li><a href="#generating-screenshots" id="toc-generating-screenshots" class="nav-link" data-scroll-target="#generating-screenshots"><span class="header-section-number">D.3</span> Generating Screenshots</a></li>
-  <li><a href="#source-code" id="toc-source-code" class="nav-link" data-scroll-target="#source-code"><span class="header-section-number">D.4</span> Source Code</a></li>
+  <li><a href="#generating-screenshots" id="toc-generating-screenshots" class="nav-link" data-scroll-target="#generating-screenshots"><span class="header-section-number">C.3</span> Generating Screenshots</a></li>
+  <li><a href="#source-code" id="toc-source-code" class="nav-link" data-scroll-target="#source-code"><span class="header-section-number">C.4</span> Source Code</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/apps/species.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
@@ -803,11 +797,11 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="../apps/atlas.html">Applications (Current)</a></li><li class="breadcrumb-item"><a href="../apps/species.html"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="../apps/scores.html">Applications (Legacy)</a></li><li class="breadcrumb-item"><a href="../apps/species.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Appendix C — Species — mapper of individual species distributions</h1>
+<h1 class="title">Appendix B — Species — mapper of individual species distributions</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">current</div>
+    <div class="quarto-category">legacy</div>
   </div>
   </div>
 
@@ -825,43 +819,56 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="sec-app-species" class="level1" data-number="D">
-<h1 data-number="D"><span class="header-section-number">D</span> Species</h1>
-<section id="overview" class="level2" data-number="D.1">
-<h2 data-number="D.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">D.1</span> Overview</h2>
-<p>The <strong>Species</strong> application (<a href="https://app.marinesensitivity.org/v7/species/">app.marinesensitivity.org/v7/species/</a>) enables exploration of individual species distribution models. Like the Scores app it renders <strong>any published release</strong> from the URL path — <code>/v3/species/</code> shows v3; an older <code>?ver=v3</code> deep link still resolves, 301’d to the equivalent path. Users can view merged and source-level models, compare masked vs.&nbsp;unmasked distributions, and access detailed species regulatory status information.</p>
-<p><a href="#fig-species-blue-whale" class="quarto-xref">Figure&nbsp;<span>D.1</span></a> shows the merged distribution model for the blue whale (<em>Balaenoptera musculus</em>). The map displays cell values from 1 (low suitability, blue) to 100 (high suitability, red) across all US program areas where the species occurs.</p>
+<section id="sec-app-species" class="level1" data-number="C">
+<h1 data-number="C"><span class="header-section-number">C</span> Species</h1>
+<section id="overview" class="level2" data-number="C.1">
+<h2 data-number="C.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">C.1</span> Overview</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Retired
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Species Shiny app was retired in October 2026 when the Atlas (<a href="atlas.html" class="quarto-xref"><span>Chapter 21</span></a>) became the project’s application; this page documents it as it was. Its URLs (<code>app.marinesensitivity.org/{ver}/species/</code>, the older <code>?ver=</code>, <code>mdl_key</code> and <code>mdl_seq</code> forms) now redirect to the Atlas’s Species lens with the query carried, and its source stays in the <a href="https://github.com/MarineSensitivity/apps"><code>apps</code></a> repository.</p>
+</div>
+</div>
+<p>The <strong>Species</strong> application (<code>app.marinesensitivity.org/{ver}/species/</code>) enabled exploration of individual species distribution models. Like the Scores app it rendered <strong>any published release</strong> from the URL path — <code>/v3/species/</code> showed v3. Users could view merged and source-level models, compare masked vs.&nbsp;unmasked distributions, and access detailed species regulatory status information.</p>
+<p><a href="#fig-species-blue-whale" class="quarto-xref">Figure&nbsp;<span>C.1</span></a> shows the merged distribution model for the blue whale (<em>Balaenoptera musculus</em>). The map displays cell values from 1 (low suitability, blue) to 100 (high suitability, red) across all US program areas where the species occurs.</p>
 <div id="fig-species-blue-whale" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-species-blue-whale-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="../figures/apps/species-blue-whale.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;D.1: The Species application showing the merged distribution model for blue whale (Balaenoptera musculus). Cell values range from 1 (low suitability) to 100 (high suitability). The species selector dropdown allows searching by common or scientific name with category prefix."><img src="../figures/apps/species-blue-whale.png" class="img-fluid figure-img"></a>
+<a href="../figures/apps/species-blue-whale.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;C.1: The Species application showing the merged distribution model for blue whale (Balaenoptera musculus). Cell values range from 1 (low suitability) to 100 (high suitability). The species selector dropdown allows searching by common or scientific name with category prefix."><img src="../figures/apps/species-blue-whale.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-species-blue-whale-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;D.1: The Species application showing the merged distribution model for blue whale (<em>Balaenoptera musculus</em>). Cell values range from 1 (low suitability) to 100 (high suitability). The species selector dropdown allows searching by common or scientific name with category prefix.
+Figure&nbsp;C.1: The Species application showing the merged distribution model for blue whale (<em>Balaenoptera musculus</em>). Cell values range from 1 (low suitability) to 100 (high suitability). The species selector dropdown allows searching by common or scientific name with category prefix.
 </figcaption>
 </figure>
 </div>
 </section>
-<section id="features" class="level2" data-number="D.2">
-<h2 data-number="D.2" class="anchored" data-anchor-id="features"><span class="header-section-number">D.2</span> Features</h2>
-<section id="species-selection" class="level3" data-number="D.2.1">
-<h3 data-number="D.2.1" class="anchored" data-anchor-id="species-selection"><span class="header-section-number">D.2.1</span> Species Selection</h3>
+<section id="features" class="level2" data-number="C.2">
+<h2 data-number="C.2" class="anchored" data-anchor-id="features"><span class="header-section-number">C.2</span> Features</h2>
+<section id="species-selection" class="level3" data-number="C.2.1">
+<h3 data-number="C.2.1" class="anchored" data-anchor-id="species-selection"><span class="header-section-number">C.2.1</span> Species Selection</h3>
 <ul>
 <li><strong>Search</strong>: find species by common name or scientific name</li>
 <li><strong>Category filter</strong>: narrow results by species category, as defined in the release being viewed</li>
 <li><strong>Alphabetical browsing</strong>: scroll through species lists within each category</li>
 </ul>
 </section>
-<section id="model-display" class="level3" data-number="D.2.2">
-<h3 data-number="D.2.2" class="anchored" data-anchor-id="model-display"><span class="header-section-number">D.2.2</span> Model Display</h3>
+<section id="model-display" class="level3" data-number="C.2.2">
+<h3 data-number="C.2.2" class="anchored" data-anchor-id="model-display"><span class="header-section-number">C.2.2</span> Model Display</h3>
 <ul>
 <li><strong>Merged model</strong>: the final merged distribution showing MAX values across all source datasets, with masking and spatial floors applied</li>
 <li><strong>Source datasets</strong>: toggle individual source layers (AquaMaps, NMFS CH, FWS CH, FWS Range, BirdLife, IUCN Range) to see each dataset’s contribution</li>
 <li><strong>IUCN masking toggle</strong>: compare the unmasked AquaMaps SDM with the masked merged model to visualize the effect of range constraints</li>
 </ul>
 </section>
-<section id="species-info-panel" class="level3" data-number="D.2.3">
-<h3 data-number="D.2.3" class="anchored" data-anchor-id="species-info-panel"><span class="header-section-number">D.2.3</span> Species Info Panel</h3>
+<section id="species-info-panel" class="level3" data-number="C.2.3">
+<h3 data-number="C.2.3" class="anchored" data-anchor-id="species-info-panel"><span class="header-section-number">C.2.3</span> Species Info Panel</h3>
 <p>Detailed information for the selected species:</p>
 <ul>
 <li>Scientific name and common name</li>
@@ -874,17 +881,17 @@ Figure&nbsp;D.1: The Species application showing the merged distribution model f
 <li>Number of source datasets contributing to the merged model</li>
 </ul>
 </section>
-<section id="deep-linking" class="level3" data-number="D.2.4">
-<h3 data-number="D.2.4" class="anchored" data-anchor-id="deep-linking"><span class="header-section-number">D.2.4</span> Deep-Linking</h3>
+<section id="deep-linking" class="level3" data-number="C.2.4">
+<h3 data-number="C.2.4" class="anchored" data-anchor-id="deep-linking"><span class="header-section-number">C.2.4</span> Deep-Linking</h3>
 <p>The application supports URL parameters for direct linking to specific species, enabling bookmarking and sharing of specific views:</p>
 <pre><code>https://shiny.marinesensitivity.org/species/?species=Balaenoptera+musculus</code></pre>
 </section>
 </section>
-<section id="generating-screenshots" class="level2" data-number="D.3">
-<h2 data-number="D.3" class="anchored" data-anchor-id="generating-screenshots"><span class="header-section-number">D.3</span> Generating Screenshots</h2>
+<section id="generating-screenshots" class="level2" data-number="C.3">
+<h2 data-number="C.3" class="anchored" data-anchor-id="generating-screenshots"><span class="header-section-number">C.3</span> Generating Screenshots</h2>
 </section>
-<section id="source-code" class="level2" data-number="D.4">
-<h2 data-number="D.4" class="anchored" data-anchor-id="source-code"><span class="header-section-number">D.4</span> Source Code</h2>
+<section id="source-code" class="level2" data-number="C.4">
+<h2 data-number="C.4" class="anchored" data-anchor-id="source-code"><span class="header-section-number">C.4</span> Source Code</h2>
 <p><a href="https://github.com/MarineSensitivity/apps/tree/main/species"><code>species/app.R</code></a> on the <code>apps</code> repository’s <code>main</code> branch — one checkout serving every release, not one per version.</p>
 
 
@@ -1295,12 +1302,12 @@ Figure&nbsp;D.1: The Species application showing the merged distribution model f
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../apps/scores.html" class="pagination-link" aria-label="Scores — mapper of aggregate sensitivity scores">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../apps/aoi.html" class="pagination-link" aria-label="Areas of Interest">
-        <span class="nav-page-text">Areas of Interest</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../apps/shiny-guide.html" class="pagination-link" aria-label="Shiny Apps User Guide (retired)">
+        <span class="nav-page-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Shiny Apps User Guide (retired)</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

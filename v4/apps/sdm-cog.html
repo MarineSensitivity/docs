@@ -116,13 +116,15 @@ ul.task-list li input[type="checkbox"] {
   }, true);
 </script>
 <!--
-  Interactive apps + core links, on every page (docs#6).
+  Interactive app + core links, on every page (docs#6).
 
-  The app links DO exist — on the Preface, under "Interactive Apps", which is
-  where marinesensitivity.org/docs/ lands. But a Quarto book keeps them on that
+  The app link DOES exist — on the Preface, under "Interactive Apps", which is
+  where marinesensitivity.org/docs/ lands. But a Quarto book keeps it on that
   one page: follow a search hit, a bookmark or a chapter link and the sidebar
   shows only chapters, so the viewer is no longer reachable from anywhere on
-  screen. Tim White found it in §13 Server — a page that happens to list service
+  screen. (Since the Atlas cutover, October 2026, the box holds ONE app link:
+  the Atlas replaced the separate Scores and Species Shiny apps, whose own URLs
+  now redirect into it.) Tim White found it in §13 Server — a page that happens to list service
   URLs — which is the failure, not the destination:
 
     "after misplacing the link on my desktop, it took me quite some time to
@@ -142,11 +144,13 @@ ul.task-list li input[type="checkbox"] {
   injection.
 
   This DUPLICATES msens::product_urls() in JavaScript, which is a real cost worth
-  naming: the R side is the authority and is unit-tested, but a static book has
-  no R at read time. Kept deliberately identical in shape — ?ver= for a public
-  release, the preview host's PATH form for a restricted one — and the same
-  fail-closed access default the switcher and msens::atlas_versions() use
-  (prerelease -> restricted). If one changes, change both.
+  naming: the R side is the authority (libs/versioned.R doc_atlas_url() for the
+  book's own links; msens::product_urls() for the Shiny-era shape), but a static
+  book has no R at read time. Kept deliberately identical in shape —
+  marinesensitivity.org/atlas/?ver= for a public release, the preview host's
+  /{ver}/atlas/ PATH form for a restricted one — and the same fail-closed access
+  default the switcher and msens::atlas_versions() use (prerelease ->
+  restricted). If one changes, change both.
 
   If anything fails — offline, registry unreachable, an unversioned local preview
   — the box simply does not appear. A docs page must never fail to render over
@@ -155,7 +159,6 @@ ul.task-list li input[type="checkbox"] {
 <script>
 (function () {
   var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
-  var APP      = "https://app.marinesensitivity.org";
   var PREVIEW  = "https://preview.marinesensitivity.org";
   var HOME     = "https://marinesensitivity.org";
   var GITHUB   = "https://github.com/MarineSensitivity";
@@ -163,15 +166,13 @@ ul.task-list li input[type="checkbox"] {
 
   function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
 
-  // Same rule as msens::product_urls(): the version is a QUERY parameter on the
-  // public host and a PATH segment on the signed-in preview host, because
-  // Cloudflare Access scopes its per-version reviewer policies by path.
-  function appUrls(ver, acc) {
-    if (acc === "restricted")
-      return { scores: PREVIEW + "/" + ver + "/scores/",
-               species: PREVIEW + "/" + ver + "/species/" };
-    return { scores: APP + "/scores/?ver=" + ver,
-             species: APP + "/species/?ver=" + ver };
+  // Same rule as doc_atlas_url() in libs/versioned.R: the version is a QUERY
+  // parameter on the public host (GitHub Pages) and a PATH segment on the
+  // signed-in preview host, because Cloudflare Access scopes its per-version
+  // reviewer policies by path.
+  function atlasUrl(ver, acc) {
+    if (acc === "restricted") return PREVIEW + "/" + ver + "/atlas/";
+    return HOME + "/atlas/?ver=" + ver;
   }
 
   function parseVer() {
@@ -202,8 +203,8 @@ ul.task-list li input[type="checkbox"] {
     host.insertBefore(el, sw || host.firstChild);
   }
 
-  // label is HTML, not text: the app links bold the noun that distinguishes them
-  // ("Composite **scores**" / "Individual **species**"). Every label here is a
+  // label is HTML, not text: the app link bolds the noun that names it
+  // ("The **Atlas**"). Every label here is a
   // literal in this file, so there is nothing untrusted to interpolate.
   function link(href, label, title) {
     var a = document.createElement("a");
@@ -214,7 +215,7 @@ ul.task-list li input[type="checkbox"] {
   }
 
   function box(ver, acc) {
-    var u = appUrls(ver, acc);
+    var u = atlasUrl(ver, acc);
     var wrap = document.createElement("div");
     wrap.className = "docs-core-links";
     wrap.style.cssText =
@@ -222,17 +223,15 @@ ul.task-list li input[type="checkbox"] {
       "border:1px solid rgba(128,128,128,0.35);border-radius:0.35rem;";
 
     var h = document.createElement("div");
-    h.textContent = "Interactive apps";
+    h.textContent = "Interactive app";
     h.style.cssText = "font-weight:600;margin-bottom:0.35rem;";
     wrap.appendChild(h);
 
-    // The apps are what Tim could not find, so they lead — and they point at
+    // The app is what Tim could not find, so it leads — and it points at
     // THIS book's release, never the promoted one, so the reader is not moved
     // to a different version than the page they are reading.
-    wrap.appendChild(link(u.scores,  "▶ Composite <strong>scores</strong>",
-                          "sensitivity scores by zone (" + ver + ")"));
-    wrap.appendChild(link(u.species, "▶ Individual <strong>species</strong>",
-                          "individual species models (" + ver + ")"));
+    wrap.appendChild(link(u, "▶ The <strong>Atlas</strong> — scores, species &amp; places",
+                          "interactive map of scores, species and places (" + ver + ")"));
 
     var hr = document.createElement("div");
     hr.style.cssText = "border-top:1px solid rgba(128,128,128,0.25);margin:0.4rem 0;";
@@ -438,7 +437,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="../apps/aoi.html">Applications (Legacy)</a></li><li class="breadcrumb-item"><a href="../apps/sdm-cog.html">Distributions, Raster</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="../apps/scores.html">Applications (Legacy)</a></li><li class="breadcrumb-item"><a href="../apps/sdm-cog.html">Distributions, Raster</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -653,14 +652,20 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../apps/atlas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Atlas — the static, in-browser scores, species and places app</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../apps-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Apps User Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Atlas User Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../docs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
   </div>
 </li>
       </ul>
@@ -668,7 +673,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -694,42 +699,31 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
- <span class="menu-text">Applications (Current)</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications (Legacy)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../apps/atlas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Atlas (beta) — the static, in-browser scores, species and places app</span></span></a>
-  </div>
-</li>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../apps/scores.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../apps/species.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
   </div>
 </li>
-      </ul>
-  </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications (Legacy)</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/shiny-guide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Shiny Apps User Guide (retired)</span></span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../apps/aoi.html" class="sidebar-item-text sidebar-link">
@@ -787,7 +781,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="../apps/aoi.html">Applications (Legacy)</a></li><li class="breadcrumb-item"><a href="../apps/sdm-cog.html">Distributions, Raster</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="../apps/scores.html">Applications (Legacy)</a></li><li class="breadcrumb-item"><a href="../apps/sdm-cog.html">Distributions, Raster</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Distributions, Raster</h1>
   <div class="quarto-categories">
