@@ -1,0 +1,42 @@
+---
+description: "v10: the distribution share, each species' share of its whole range, scored per km² against the national average"
+---
+
+# v10 — scoring across the nation {#sec-release-v10}
+
+```{r}
+#| include: false
+# The full chapter lives in releases/_v10-body.qmd (the leading underscore keeps
+# Quarto from rendering it on its own). It renders in the v10 book, and in every
+# book once the registry lists v10 as public. Until then a restricted release
+# must never reach GitHub Pages (CLAUDE.md), so the public books of the other
+# releases carry only the short note below, with no link to the review host.
+# doc_access() fails closed for a version the published registry does not list.
+v10_row    <- doc_version_row("v10")
+v10_public <- nrow(v10_row) == 1 && !is.na(v10_row$ver[1]) &&
+  identical(doc_access("v10"), "public")
+v10_full   <- identical(doc_ver(), "v10") || v10_public
+```
+
+```{r}
+#| label: v10-body
+#| output: asis
+if (v10_full) {
+  cat(knitr::knit_child(
+    here::here("releases/_v10-body.qmd"), quiet = TRUE, envir = environment()))
+} else {
+  cat(
+"::: {.callout-note}
+## A release under review
+
+v10 is a pre-release under review. It adds a second score beside the within-ecoregion one: each
+species' share of its whole modelled range, weighted by extinction risk and expressed per square
+kilometre against the national average, so that Program Areas in different ecoregions can be compared.
+It is built on v8's data with no ingest or merge re-run, and v8's own metrics are kept unchanged as
+the control. Its chapter (the method, the three denominators, the flags and what moved in the
+Program-Area scores) is published with the v10 documentation on the signed-in review host, and
+appears in every version of this book once v10 is released.
+:::
+")
+}
+```

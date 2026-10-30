@@ -1,0 +1,390 @@
+```{r}
+#| include: false
+# body of releases/v10.qmd, knitted as a child (see the gate there).
+#
+# Every figure in this chapter is read from the published tables of the v10 release
+# through the explicit-version readers in libs/versioned.R (doc_zone_metric(),
+# doc_taxon_denom_summary(), doc_method(), doc_score_delta(), ...), never through
+# doc_ver(): this chapter renders in every book once v10 is public, and it must print
+# v10's numbers whichever release the book documents. A table the release has not
+# published yet renders a visible placeholder, never a number borrowed from elsewhere.
+# The only typed values are metric KEYS, flag names and code defaults, which name things
+# rather than measure them.
+library(dplyr)
+v10 <- "v10"
+safe <- function(expr) tryCatch(expr, error = function(e) NULL)
+v10_kbl <- function(d, caption, align = NULL)
+  knitr::kable(d, caption = caption, align = align, row.names = FALSE)
+
+# the Program-Area metrics of v10 (one read), and the within-ecoregion composite it keeps
+zm   <- safe(doc_zone_metric(v10, like = "%"))
+pub  <- !is.null(zm) && nrow(zm) > 0 && any(grepl("^score_v10_equalweights", zm$metric_key))
+vec  <- function(key) {
+  if (!pub) return(setNames(numeric(), character()))
+  d <- zm[zm$metric_key == key, ]
+  setNames(d$val, d$zone_key)
+}
+K_WITHIN <- "score_extriskspcat_primprod_ecoregionrescaled_equalweights"
+placeholder <- function(what) cat(sprintf(
+  "::: {.callout-warning}\n## Not published yet\n\n%s is read from v10's published tables, and this book cannot reach them (v10 is not in the published registry, or its `zone_metric` does not carry the share family yet). The table fills when it does.\n:::\n\n", what))
+
+kappa_pct <- suppressWarnings(as.numeric(safe(doc_method("share_kappa_pct", v10))))
+kappa_txt <- if (length(kappa_pct) == 1 && is.finite(kappa_pct)) {
+  paste0(format(kappa_pct), " %")
+} else "[κ not published for this version]"
+den_hl    <- safe(doc_method("share_denom", v10))
+den_txt   <- if (is.null(den_hl)) "[headline denominator not published for this version]" else den_hl
+
+# names: Program Areas and regions from the book's own zone geometry (one geometry covers v2 on)
+pra <- safe(sf::st_drop_geometry(sf::st_read(
+  here::here("data/ply_programareas_2026_v4.gpkg"), quiet = TRUE))[, c("programarea_key", "programarea_name", "region_name")])
+if (is.null(pra)) pra <- data.frame(programarea_key = character(), programarea_name = character(), region_name = character())
+pra$programarea_name <- sub("^GOA Program Area", "Gulf of America Program Area", pra$programarea_name)
+pra_name <- setNames(pra$programarea_name, pra$programarea_key)
+pa_label <- function(k) ifelse(k %in% names(pra_name), sprintf("%s (%s)", pra_name[k], k), k)
+
+f1 <- function(x) ifelse(is.na(x), "n/r", formatC(x, format = "f", digits = 1))
+f2 <- function(x) ifelse(is.na(x), "n/r", formatC(x, format = "f", digits = 2))
+rank_of <- function(x) rank(-x, na.last = "keep", ties.method = "min")
+rho_txt <- function(r) if (is.na(r)) "[not computable]" else formatC(r, format = "f", digits = 3)
+
+dsum <- safe(doc_taxon_denom_summary(v10))
+dn   <- function(x) if (is.null(dsum)) "[taxon_denom not published yet]" else n_fmt(dsum[[x]])
+```
+
+v10 is the first release to score **across the nation**. Every earlier release rescales each metric to 0–100 inside its ecoregion, so a score answers "where, within this region, is marine life most concentrated?" and cannot be compared between regions. v10 adds a second score beside it, the **distribution share**: each species' value in a cell is divided by that species' total over its whole modelled range, weighted by extinction risk, summed per category and zone, and expressed per square kilometre against the national average, which is 100. A zone at 100 holds exactly its fair share of a category's importance for the area it covers; a zone at 300 holds three times that; a zone at 20, a fifth.
+
+v10 changes the scoring and nothing upstream of it. It is built on the **v8** build: the same datasets as public v7, ingested whole-range on the global 0.05° grid, with AquaX left out because its models are clipped to US waters (the whole-range denominator needs each species' distribution outside the United States). No ingest and no merge is re-run. v8's within-ecoregion metrics are kept unchanged in the same tables and serve as the **control**: the build digests them before and after it writes the share family, and stops if one differs.
+
+```{r}
+#| results: asis
+if (identical(doc_access(v10), "restricted")) cat(sprintf(
+"::: {.callout-important}
+## Served on the review host only
+
+v10 is a restricted pre-release. It is served only through the signed-in review host: the [Atlas](%s) ([Scores lens](%s), [Species lens](%s)) and [this documentation](%s). It is never what a reader gets by default, and promoting it is a separate decision.
+:::
+", doc_atlas_url(v10), doc_atlas_url(v10, "scores"), doc_atlas_url(v10, "species"), doc_docs_url(v10)))
+```
+
+## Where v10 comes from
+
+```{r}
+#| results: asis
+rel <- safe(doc_releases())
+rows <- if (is.null(rel)) NULL else rel[rel$ver %in% c("v7", "v8", "v10"), ]
+if (!is.null(rows) && nrow(rows)) {
+  rows <- rows[order(match(rows$ver, c("v7", "v8", "v10"))), ]
+  v10_kbl(data.frame(
+    Version  = rows$ver, Released = rows$released, Status = rows$status, Title = rows$title,
+    Grid     = paste0("`", rows$grid, "`"),
+    Datasets = n_fmt(rows$n_datasets), `Valid species` = n_fmt(rows$valid_species),
+    check.names = FALSE),
+    caption = "The lineage of v10, read from each release's own manifest and tables. Species counts are not comparable across releases (see the Releases page).",
+    align = c("l", "l", "l", "l", "l", "r", "r"))
+} else placeholder("The lineage table")
+```
+
+The lineage has three steps, and they are different kinds of change:
+
+1. **v7** is the public release. It scores the United States study area only, on a grid that has no cells beyond it.
+2. **v8** is a **data rebuild**: the same datasets ingested whole-range on the global grid, with the merge and the scoring re-run. It was gated against v7 by the Program-Area equivalence check (`msens::pra_score_delta`) rather than assumed equivalent.
+3. **v10** is a **scoring change** on v8's data. It adds the share family and touches no ingest, no merge and none of v8's rows.
+
+```{r}
+#| results: asis
+d8  <- safe(doc_score_delta("v8"))
+r8  <- if (is.null(d8)) NULL else d8$by_metric[d8$by_metric$metric_key == K_WITHIN, ]
+if (!is.null(r8) && nrow(r8)) cat(sprintf(
+  "On the %s Program Areas that v7 and v8 both score, v8's within-ecoregion composite differs from v7's by a mean of %s points (largest %s), with a correlation of %s.\n\n",
+  n_fmt(r8$n_zones), formatC(r8$mean_abs_delta, format = "f", digits = 1),
+  formatC(r8$max_abs_delta, format = "f", digits = 1), formatC(r8$cor, format = "f", digits = 3)))
+d10 <- safe(doc_score_delta("v10"))
+if (!is.null(d10) && is.data.frame(d10$by_metric) && nrow(d10$by_metric)) {
+  bm <- d10$by_metric
+  bm <- bm[!grepl("v10", bm$metric_key), ]
+  if (nrow(bm)) cat(sprintf(
+    "Read from the published tables: across the %s metrics that v8 and v10 both publish for Program Areas, the largest absolute difference between them is %s. The build's own gate requires the rows to be identical.\n\n",
+    n_fmt(nrow(bm)), formatC(max(bm$max_abs_delta, na.rm = TRUE), format = "g", digits = 3)))
+} else cat("*The published comparison of v10's within-ecoregion rows with v8's is read from both releases' `zone_metric`; v10 has not published it yet.*\n\n")
+```
+
+Numbering is not chronology. v9 (AquaX supersedes AquaMaps in US waters) was built before v10, but v10 does not descend from it: AquaX's models are masked to US waters, so a species' range outside the United States, which the share's denominator needs, is not in them. v10's parent is v8.
+
+## The method
+
+The method has one idea and a few definitions. The full treatment, with the reasoning behind each choice, is in the Scoring chapter`r if (doc_has_share()) " (@sec-share)"`; the definitions are repeated here so that this page can be read on its own.
+
+**The species share.** For species $s$, cell $c$, merged value $v_{s,c}$ (0–100, @sec-model-merging) and cell area $A_c$:
+
+$$
+\text{share}_{s,c} = \frac{v_{s,c}\, A_c}{\sum_{c' \in \text{range}(s)} v_{s,c'}\, A_{c'}}
+$$ {#eq-v10-share-species}
+
+The denominator runs over the species' **whole modelled range, including land**: the merged global surface carries a bird's entire range, and the ocean grid holds only its marine cells, so a range cell that is not in the ocean grid takes the area of its latitude row. A species' shares sum to 1 over its whole range.
+
+**The category share.** Cells sum their species within a category $g$, weighted by extinction risk:
+
+$$
+\text{share}_{c,g} = \frac{1}{100} \sum_{s \in g} w_{s,c}\, \text{share}_{s,c}
+$$ {#eq-v10-share-cell}
+
+where $w_{s,c}$ is the species' governing `er_score` (@sec-extinction-risk). For the sea turtles, whose merged value already is extinction risk times suitability, $w$ = 100 passes the value through. Because each species is divided by its own total, a turtle's risk *level* cancels (its weight is 1 whatever its status) and only the spatial pattern of risk times suitability survives. Every turtle in v8 has the maximum score, so nothing moves.
+
+**The zone roll-up.** A zone adds its cells, each weighted by the part of the cell inside the zone, $p_{zc}$ (`zone_cell.pct_covered` ÷ 100). The area of cell $c$ inside the zone is $A_c\,p_{zc}$, so the roll-up is weighted by **coverage times cell area**:
+
+$$
+\text{share}_{z,g} = \sum_c \text{share}_{c,g}\, p_{zc}
+\,, \qquad
+\text{pct}^{\text{world}}_{z,g} = \frac{100\,\text{share}_{z,g}}{\sum_{s \in g} w_s / 100}
+\,, \qquad
+\text{pct}^{\text{nation}}_{z,g} = \frac{100\,\text{share}_{z,g}}{\text{share}_{\text{USA},g}}
+$$ {#eq-v10-share-zone}
+
+The two percentages are the **companions** of the score: the share of the world's, and of the nation's, risk-weighted importance for the category that lies inside the zone. They are totals, so they grow with the zone's area.
+
+**The score.** It removes the area. With $A_z = \sum_c A_c\,p_{zc}$:
+
+$$
+\text{v10}_{z,g} = 100 \; \frac{\text{share}_{z,g} \,/\, \text{share}_{\text{USA},g}}{A_z \,/\, A_{\text{USA}}}
+$$ {#eq-v10-score}
+
+It is the zone's fraction of the nation's importance for the category divided by its fraction of the nation's surface, a location quotient [@isserman1977]. **The national reference is the study area**: every cell flagged `in_usa`, each in full, summed directly. It is not v8's `USA` pseudo-zone, which is the union of the subregion polygons and omits coastal and estuarine study-area cells that hold scored species, so a species' national share would not be its US total.
+
+**Reportability.** A component is reported for a zone only if the cells that carry a value for it cover at least $\kappa$ of the zone's area (area-weighted):
+
+$$
+\text{cov}_{z,g} = \frac{\sum_{c \in z:\ \text{share}_{c,g}\ \text{exists}} p_{zc} A_c}{\sum_{c \in z} p_{zc} A_c} \ge \kappa
+$$ {#eq-v10-floor}
+
+with $\kappa$ = `r kappa_txt` in v10. Below the floor the component is **not reportable**: it has no row, it is left out of the composite, and it is never published as a zero. A zero would lower the composite for a reason that has nothing to do with sensitivity. The floor is geometric (which cells carry a value, not the value itself) and applies to the across-the-nation family only; v8's within-ecoregion rows are the control and carry none.
+
+**Primary productivity** has no species. Its quotient is the zone's mean productivity over the national mean, on the same scale, with the mean taken over all of a zone's cells (a cell without a value counts as 0):
+
+$$
+\text{v10}_{z,\text{primprod}} = 100\;\frac{\bar{n}_z}{\bar{n}_{\text{USA}}}
+$$ {#eq-v10-primprod}
+
+**The composite** is the equal-weight mean of the components reportable in the zone, the species categories and productivity alike, so it also reads 100 for a zone that is nationally average across the board:
+
+$$
+\text{composite}_z = \frac{1}{\lvert R_z \rvert} \sum_{k \in R_z} \text{v10}_{z,k}
+$$ {#eq-v10-composite}
+
+where $R_z$ is the set of reportable components. Equal weights are a stated policy choice, the convention of the Ocean Health Index [@halpern2012; @samhouri2012]; no richness-damping exponent is applied, and the number of species present and their mean share are published beside the score so a reader can tell an area that scores by richness from one that scores by dependence.
+
+## Three denominators, one flag
+
+The headline divides each species by its **whole range**. Two other denominators are computed beside it, as columns of the same table, so that the dependence of the answer on this choice can be read rather than argued:
+
+| Flag value | Divides the species by | Reading |
+|:--|:--|:--|
+| `global` | its value-area over its whole modelled range | the share of the species' world that the cell holds |
+| `usa` | its value-area over its US cells | the same score with species weight $w$ instead of $w\,f_{\text{US}}$, $f_{\text{US}}$ being the species' US fraction of its range; every species sums to 1 inside the nation |
+| `pooled` | 1 | no per-species normalization: value times area summed over species, the national reference divides it out |
+
+: The three denominators, selected by `SHARE_DENOM`. The headline is `r den_txt`; the other two are always written beside it. {#tbl-v10-denominators}
+
+A **sensitivity column** treats the floored cells of the sea turtles. A turtle's merged value is floored at 1 where its suitability rounds to 0, which fills its range rather than describing habitat. The headline keeps those cells, so the surface stays continuous; the `_strip` column removes them from both sides of the share.
+
+**Where a species' denominator comes from.** The whole-range total needs a source for every scored species, taken in this order:
+
+1. a **curated fallback fraction** of the species' range that lies in US waters (`data/us_share_fallback.csv` in the workflows repository), for species whose only models are national, such as range maps from FWS and NMFS: their "global" surface is their US range;
+2. the **merged global surface**, for every range-constrained species;
+3. for species modelled only by AquaMaps, the **AquaMaps footprint outside the United States plus the merged surface inside**.
+
+A species with only national models and no curated fraction is left **unresolved**, and the build stops rather than score it at a share of 1.
+
+```{r}
+#| results: asis
+if (is.null(dsum)) {
+  cat("*The count of species per denominator source is read from v10's `taxon_denom` table (one row per scored species, with the source recorded), which has not been published yet.*\n\n")
+} else cat(sprintf(
+  "In v10, of %s scored species, %s take the merged global surface, %s the AquaMaps footprint outside the United States plus the merged surface inside, and %s a curated fallback fraction; %s are unresolved or take another source.\n\n",
+  n_fmt(dsum$n), n_fmt(dsum$merged_global), n_fmt(dsum$aquamaps), n_fmt(dsum$fallback),
+  n_fmt(dsum$unresolved + dsum$other)))
+```
+
+## Flags and controls
+
+Each rule is a flag in the scoring notebook (`score_share_metrics.qmd`), and each flag's control value is *off*. With `SHARE_METRICS=0` the notebook writes nothing and only proves that v8's rows still hash to their checkpoints.
+
+| Flag | Default | Effect |
+|:--|:--|:--|
+| `SHARE_METRICS` | off | compute the share family (off = the control run) |
+| `SHARE_DENOM` | `global` | the headline denominator: `global`, `usa` or `pooled`; the other two are written beside it |
+| `SHARE_KAPPA` | 0.05 | the reporting floor, as a fraction of the zone's area |
+| `SHARE_FLOOR_STRIP` | off | on = the headline strips the floored turtle cells; the other treatment is always written as the `_strip` / `_keep` column |
+| `SHARE_CELL_DENOMS` | the headline | which denominators also get per-cell rasters |
+
+: The flags of `score_share_metrics.qmd`. The values a release actually used are recorded in its `release_method` table (next).
+
+```{r}
+#| results: asis
+mth <- safe(doc_methods_of(v10))
+if (!is.null(mth) && nrow(mth)) {
+  v10_kbl(data.frame(Rule = paste0("`", mth$method_key, "`"), Value = mth$value,
+                     Meaning = if ("description" %in% names(mth)) mth$description else ""),
+          caption = "The rules v10 states as data (`release_method`). The documentation reads them from here, so a figure on this page cannot disagree with the release.",
+          align = c("l", "l", "l"))
+} else cat("*The `release_method` rows of v10 (the flags the release was built with) are not in a published table or manifest yet.*\n\n")
+```
+
+**The reference-digest gate.** `data/manifests/score_share_metrics.json` in the workflows repository holds reference digests of the share rows (zone surfaces digested at `FLOAT` precision, because a parallel `SUM()` reassociates and raw `DOUBLE` digests differ between two correct builds; the per-cell shares at four significant digits for the same reason) and of v8's own rows. A build with the same flags on any machine must reproduce them; `BUILD_REFERENCE=1` is the only way to move them. A render with other flags is a sensitivity run and is not compared.
+
+## What moved: the Program Areas
+
+The within-ecoregion composite is v8's, unchanged. The across-the-nation composite is the share family's, under each of the three denominators. All scores are for the Program Areas the 2026 program defines; a ranking is among the Program Areas that have a value.
+
+```{r}
+#| results: asis
+if (!pub) placeholder("The Program-Area composite table") else {
+  within <- vec(K_WITHIN)
+  g_glob <- vec("score_v10_equalweights_global"); g_usa <- vec("score_v10_equalweights_usa")
+  g_pool <- vec("score_v10_equalweights_pooled"); g_strip <- vec("score_v10_equalweights_global_strip")
+  nco    <- vec("score_v10_n_components_global")
+  k <- names(sort(g_glob, decreasing = TRUE)); k <- c(k, setdiff(names(within), k))
+  gv <- function(v) v[k]
+  r_in <- rank_of(within)[k]; r_gl <- rank_of(g_glob)[k]
+  mv <- ifelse(is.na(r_in) | is.na(r_gl), "", ifelse(r_in == r_gl, "0", sprintf("%+d", r_in - r_gl)))
+  rho_in  <- doc_spearman(within, g_glob)
+  rho_usa <- doc_spearman(g_glob, g_usa); rho_pool <- doc_spearman(g_glob, g_pool)
+  v10_kbl(data.frame(
+    `Program Area` = pa_label(k),
+    `Within ecoregion` = f1(gv(within)),
+    `Across the nation: global` = f1(gv(g_glob)),
+    usa = f1(gv(g_usa)), pooled = f1(gv(g_pool)),
+    `global, floor stripped` = f1(gv(g_strip)),
+    `rank within` = ifelse(is.na(r_in), "n/r", r_in), `rank across` = ifelse(is.na(r_gl), "n/r", r_gl),
+    `rank change` = mv, components = ifelse(is.na(gv(nco)), "", gv(nco)),
+    check.names = FALSE),
+    caption = sprintf("Composite score per Program Area, sorted by the across-the-nation composite under the headline denominator (`%s`, `score_v10_equalweights_{global,usa,pooled}`). Rank change is the within-ecoregion rank minus the across-the-nation rank, so a positive number is a Program Area that rises when the comparison is made across the nation. n/r = not reportable. Spearman rank correlation between the two composite rankings: ρ = %s; between the global and the usa denominator: ρ = %s; between global and pooled: ρ = %s.",
+                      den_txt, rho_txt(rho_in), rho_txt(rho_usa), rho_txt(rho_pool)),
+    align = c("l", rep("r", 9)))
+}
+```
+
+```{r}
+#| results: asis
+if (pub) {
+  up <- which.max(r_in - r_gl); dn_ <- which.min(r_in - r_gl)
+  cat(sprintf(
+    "Under the headline denominator the highest across-the-nation composite is %s (%s) and the lowest is %s (%s). The largest rise in rank against the within-ecoregion ranking is %s (%s places), and the largest fall is %s (%s places). The rank correlation between the two composites is %s: the scores answer different questions, and agree only as far as that number says.\n\n",
+    pa_label(names(which.max(g_glob))), f1(max(g_glob, na.rm = TRUE)),
+    pa_label(names(which.min(g_glob))), f1(min(g_glob, na.rm = TRUE)),
+    pa_label(k[up]), (r_in - r_gl)[up], pa_label(k[dn_]), abs((r_in - r_gl)[dn_]), rho_txt(rho_in)))
+}
+```
+
+### By category
+
+```{r}
+#| results: asis
+if (!pub) placeholder("The per-category table") else {
+  cats10 <- sub("^extrisk_(.*)_v10_global$", "\\1",
+                unique(zm$metric_key[grepl("^extrisk_.*_v10_global$", zm$metric_key)]))
+  cats10 <- sort(cats10)
+  tab <- data.frame(`Program Area` = pa_label(k), check.names = FALSE)
+  for (cg in cats10) tab[[gsub("_", " ", cg)]] <- f1(vec(sprintf("extrisk_%s_v10_global", cg))[k])
+  tab[["productivity"]] <- f1(vec("primprod_v10")[k])
+  tab[["composite"]]    <- f1(vec("score_v10_equalweights_global")[k])
+  v10_kbl(tab,
+    caption = "Across-the-nation score per Program Area and component (`extrisk_{category}_v10_global`, `primprod_v10`), with the composite. 100 is the national average concentration for the component. n/r = not reportable: the component is absent in that Program Area, or its scored cells cover less than κ of the area.",
+    align = c("l", rep("r", length(cats10) + 2)))
+}
+```
+
+### The amount at stake
+
+The score says how concentrated a category is; the companions say how much of it is there. A small area can be intensely concentrated and hold a negligible fraction of the world's importance, which is exactly why the two are published together.
+
+```{r}
+#| results: asis
+if (!pub) placeholder("The percent-of-the-world table") else {
+  tab <- data.frame(`Program Area` = pa_label(k), check.names = FALSE)
+  for (cg in cats10) tab[[gsub("_", " ", cg)]] <- f2(vec(sprintf("extrisk_%s_pct_world", cg))[k])
+  v10_kbl(tab,
+    caption = "Percent of the world's risk-weighted importance for each category that lies inside the Program Area (`extrisk_{category}_pct_world`). n/r = the component is not reportable there.",
+    align = c("l", rep("r", length(cats10))))
+}
+```
+
+### Where the floor bites
+
+```{r}
+#| results: asis
+if (!pub || !is.finite(kappa_pct)) placeholder("The list of pairs below the reporting floor") else {
+  cv <- zm[grepl("(_coverage)$", zm$metric_key) & zm$val < kappa_pct / 100, ]
+  if (!nrow(cv)) cat("No Program Area × component pair falls below the floor in v10.\n\n") else {
+    cv$component <- ifelse(cv$metric_key == "primprod_coverage", "primary productivity",
+                           gsub("_", " ", sub("^extrisk_(.*)_coverage$", "\\1", cv$metric_key)))
+    cv <- cv[order(cv$val), ]
+    v10_kbl(data.frame(`Program Area` = pa_label(cv$zone_key), Component = cv$component,
+                       `Coverage (% of area)` = formatC(100 * cv$val, format = "f", digits = 2),
+                       check.names = FALSE),
+      caption = sprintf("Program Area × component pairs whose scored cells cover less than κ (%s) of the area (`*_coverage`). They have no across-the-nation score and are left out of the composite.", kappa_txt),
+      align = c("l", "l", "r"))
+  }
+}
+```
+
+## Sea turtles
+
+Sea turtles are where the choice of reference matters most. Their ranges are concentrated in a few places, and a rescale within each ecoregion gives even a small Alaskan turtle population a 100 inside its own region; the share compares it with the nation instead.
+
+```{r}
+#| results: asis
+if (!pub) placeholder("The sea-turtle table") else {
+  tg <- vec("extrisk_turtle_v10_global")
+  cov_t <- vec("extrisk_turtle_coverage")
+  kt <- c(names(sort(tg, decreasing = TRUE)), setdiff(names(cov_t), names(tg)))
+  v10_kbl(data.frame(
+    `Program Area` = pa_label(kt),
+    global = f1(tg[kt]), usa = f1(vec("extrisk_turtle_v10_usa")[kt]),
+    pooled = f1(vec("extrisk_turtle_v10_pooled")[kt]),
+    `global, floor stripped` = f1(vec("extrisk_turtle_v10_global_strip")[kt]),
+    `% of world` = f2(vec("extrisk_turtle_pct_world")[kt]),
+    `% of nation` = f2(vec("extrisk_turtle_pct_nation_global")[kt]),
+    `coverage (%)` = formatC(100 * vec("extrisk_turtle_coverage")[kt], format = "f", digits = 1),
+    species = ifelse(is.na(vec("extrisk_turtle_n_species")[kt]), "", vec("extrisk_turtle_n_species")[kt]),
+    check.names = FALSE),
+    caption = "Sea turtles by Program Area, sorted by the headline score (`extrisk_turtle_v10_{global,usa,pooled,global_strip}`, `_pct_world`, `_pct_nation_global`, `_coverage`, `_n_species`). 100 is the national average concentration. n/r = not reportable: turtle cells cover less than κ of the area. Coverage is the share of the Program Area that carries any turtle cell.",
+    align = c("l", rep("r", 8)))
+}
+```
+
+```{r}
+#| results: asis
+if (pub && !is.null(pra) && nrow(pra)) {
+  pn <- vec("extrisk_turtle_pct_nation_global")
+  by <- tapply(pn, pra$region_name[match(names(pn), pra$programarea_key)], sum, na.rm = TRUE)
+  cat("By region, the share of the nation's risk-weighted sea-turtle importance that lies in the Program Areas is ",
+      paste(sprintf("%s %.1f %%", names(by), by), collapse = ", "),
+      " under the global denominator. The percentages are shares of the study area's total, so they add to 100 % only over every cell of the study area, not over the Program Areas alone.\n\n", sep = "")
+}
+```
+
+The build refuses to publish the family unless a set of plausibility targets hold on the data. The Gulf of America Program Areas must stand far above the national average for turtles and the Aleutian Arc well below it; St. George Basin's turtles must be not reportable; Kemp's ridley must be the largest contributor to the turtle component of Gulf of America Program Area A; the Arctic Program Areas must keep a marine-mammal component (if they lose it, the denominator or its fallback is wrong and the build stops); and the Alaska Program Areas together must hold a small fraction of the nation's turtle importance. A failed target stops the render rather than being listed in a table afterwards.
+
+## What v10 does not contain
+
+v10 is one scoring change on a fixed set of inputs. Each of these belongs to the release after it, and none is in v10:
+
+- **AquaX.** Its models are clipped to US waters, so they cannot supply a whole-range denominator.
+- **OBIS species-distribution models, and the density surfaces** of the NOAA and NCCOS survey models.
+- **Record-based exclusions.** The turtle and right-whale records that v7c applied are not applied here.
+- **The year-integrated productivity.** v10 rescales nothing; its productivity quotient uses the productivity metric v8 already holds.
+- **Changes to the sea turtles.** Their merge is v8's; moving them to the distinct-population path is a later change.
+
+## Caveats
+
+- **The denominator is a modelling choice.** A species' share is only as good as the range it is divided by. The merged global surface is the best-supported source; the AquaMaps footprint outside the United States is an environmental-envelope prediction; the curated fraction is a literature value. The source is recorded for every species, and the `usa` and `pooled` columns exist so that the choice can be tested.
+- **The score is relative to the study area, not to the world.** 100 is the national average concentration of the area the program scores. A zone can score 300 and still hold a small fraction of the world's importance; read the percent of the world beside it.
+- **Rankings change; levels change more.** Two composites on different scales agree on order only as far as ρ says. Never put a within-ecoregion score and an across-the-nation score in one column.
+- **A not-reportable component is absent, not low.** Its row does not exist, and the composite averages the components that do.
+
+## Reproducing v10
+
+The method is code before it is prose. The rules are `msens::share_sql()` (the scoring SQL), `msens::denom_sql()` (each species' whole-range denominator) and `msens::share_run()` (the composition and its invariants), each guarded by unit tests with one synthetic fixture per rule (`test-share.R`): an endemic species scores the whole of its share in its zone, shares sum to 1 over a species' range, two zones of different area with the same intensity score the same but differ in the percent of the world, a zone at the national average scores 100, a component just under the floor has no score and one just over has, the composite skips an absent component, and a national-only species with a curated fraction is divided by its US total over that fraction.
+
+The workflow is two notebooks of the workflows repository, `build_taxon_global_total.qmd` (the denominators, written to `taxon_denom`) and `score_share_metrics.qmd` (the share family, the release methods and the gates), run after `bootstrap_version` has cloned v8 and verified the clone against v8's checkpoints. The reference digests are in `data/manifests/score_share_metrics.json`.

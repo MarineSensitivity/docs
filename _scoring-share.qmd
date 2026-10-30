@@ -1,0 +1,234 @@
+```{r}
+#| include: false
+# body of the "Across the nation" section of scoring.qmd, knitted as a child (see the
+# gate there: doc_has_share()). Every number below is read from THIS book's release
+# (doc_ver()) through libs/versioned.R; a figure the release has not published renders
+# as a visible placeholder, never as another release's value.
+sh_ver   <- doc_ver()
+sh_kappa <- suppressWarnings(as.numeric(doc_method("share_kappa_pct", sh_ver)))
+sh_kappa_txt <- if (length(sh_kappa) == 1 && is.finite(sh_kappa))
+  paste0(format(sh_kappa), " %") else "[κ not published for this version]"
+sh_den   <- doc_method("share_denom", sh_ver)
+sh_den_txt <- if (is.null(sh_den)) "[headline denominator not published for this version]" else sh_den
+sh_cats  <- if (exists("cats")) cats$sp_cat[cats$scored] else character(0)
+sh_cats_md <- if (length(sh_cats)) paste0("`", sh_cats, "`", collapse = ", ") else "[categories not published for this version]"
+sh_dsum  <- doc_taxon_denom_summary(sh_ver)
+sh_n     <- function(x) if (is.null(sh_dsum)) "[taxon_denom not published for this version]" else n_fmt(sh_dsum[[x]])
+```
+
+## Across the nation: the distribution share {#sec-share}
+
+::: {.callout-important}
+## Two scores, two questions
+
+The **ecoregionally rescaled score** (@eq-ecoregion-rescale) is relative within an ecoregion: a 100
+marks the most sensitive cell for that metric *within that ecoregion*, so it is comparable among the
+Program Areas of one ecoregion and answers "where, within this region, is marine life most
+concentrated?".
+
+The **distribution share**, published from v10, is comparable across the whole study area. It is the
+fraction of each species' range that a cell or a zone holds, weighted by extinction risk and summed, so it
+answers "how much of the nation's importance for this category is here, per square kilometre,
+compared with the national average?". National tables use the share; within-region maps and rankings use
+the rescaled score. Never mix the two in one column or one composite.
+:::
+
+The rescaled scores above cannot be compared across ecoregions, because every ecoregion contains a 100 by
+construction. For reporting across regions, a release that carries the share family computes a second
+score from the same merged models, in which every species is first normalized to itself. The
+within-ecoregion metrics are kept unchanged beside it, as the control.
+
+### The species share and the category share
+
+A species' share of a cell is the part of its whole modelled range that the cell holds, where the range is
+measured as suitability times area:
+
+$$
+\text{share}_{s,c} = \frac{v_{s,c}\, A_c}{\sum_{c' \in \text{range}(s)} v_{s,c'}\, A_{c'}}
+$$ {#eq-share-species}
+
+where $v_{s,c}$ is the merged value of species $s$ in cell $c$ (@sec-model-merging) and $A_c$ is the area of
+the cell. The shares of one species sum to 1 over its whole range (inside the nation they sum to the species' US fraction), and the build asserts it. The denominator runs
+over the species' **whole modelled range**, land included, because the merged global surfaces keep a bird's
+entire range; a cell that is not in the ocean grid takes the area of its latitude row. Where a species has no
+merged global surface, the denominator comes from a second source (see [Three denominators](#sec-share-denominators)
+below).
+
+Cells then sum their species within a category, weighted by extinction risk as in @eq-cell-score:
+
+$$
+\text{share}_{c,g} = \frac{1}{100} \sum_{s \in g} w_{s,c}\, \text{share}_{s,c}
+$$ {#eq-share-cell}
+
+where $w_{s,c}$ is the governing extinction-risk score (`er_score`, @sec-extinction-risk) for most species, and
+100 for sea turtles, whose merged value already carries their risk (@eq-cell-score-turtle). Because the share
+divides each species by its own total, the risk *level* of such a turtle cancels: its weight is 1 whatever its
+status, and only the spatial pattern of risk times suitability survives. The scored categories are
+`r sh_cats_md`, and primary productivity enters the composite separately, as
+its own quotient (below).
+
+### From cells to zones
+
+A zone adds up its cells, each weighted by the part of the cell that lies inside the zone:
+
+$$
+\text{share}_{z,g} = \sum_{c} \text{share}_{c,g}\, p_{zc}
+\,, \qquad
+\text{pct}_{z,g} = \frac{100\; \text{share}_{z,g}}{\sum_{s \in g} w_s / 100}
+\,, \qquad
+\text{pct}^{\text{nation}}_{z,g} = \frac{100\; \text{share}_{z,g}}{\text{share}_{\text{USA},g}}
+$$ {#eq-share-zone}
+
+where $p_{zc}$ is the coverage of cell $c$ by zone $z$ (`zone_cell.pct_covered` ÷ 100). Cell area enters
+twice: in the numerator of the species share (@eq-share-species), and through $p_{zc}$ as the area of the cell
+that is inside the zone, $A_c\,p_{zc}$. This is the v10 rule, and it differs from how the ecoregionally
+rescaled scores are aggregated, which weights by coverage alone (@sec-scoring-zone-aggregation).
+$\text{pct}_{z,g}$ is the **percent of the world's** risk-weighted importance for the category that lies inside
+the zone, the *amount at stake*; $\text{pct}^{\text{nation}}_{z,g}$ is the **percent of the nation's**. Both are totals and
+grow with the zone's area.
+
+The score removes the area:
+
+$$
+\text{v10}_{z,g} = 100 \; \frac{\text{share}_{z,g} \,/\, \text{share}_{\text{USA},g}}{A_z \,/\, A_{\text{USA}}}
+$$ {#eq-v10}
+
+with $A_z = \sum_c A_c\, p_{zc}$, and $\text{share}_{\text{USA},g}$ and $A_{\text{USA}}$ the same sums over the
+national reference. The reference is the **study area**: every cell flagged `in_usa`, each in full. It is not
+the `USA` pseudo-zone, which is the union of the subregion polygons and omits coastal and estuarine
+study-area cells that carry scored species.
+
+The score is the zone's fraction of the nation's importance for the category divided by its fraction of the
+nation's surface. It is a location quotient [@isserman1977]: 100 means the zone holds exactly its fair
+share of the component per square kilometre, 300 three times the national concentration, 20 a fifth of it.
+The reference point is therefore fixed and identical for every zone and every component, it does not depend on
+any other zone's score, and it is stable across releases. In the reference-point typology of the Ocean Health
+Index it is a distance to a reference rather than a comparison with the best performer
+[@halpern2012; @samhouri2012; @oecd2008].
+
+Because the zone total sums over species, it equals the number of species present times their mean
+risk-weighted fraction: richness still counts, once per species rather than once per cell, and both factors
+are published beside the score (`_n_species`, `_mean_share_*`) so that a reader can tell an area that scores by
+richness from one that scores by dependence. No richness-damping exponent is applied.
+
+In the language of conservation planning the zone total is rarity-weighted richness [@williams1996;
+@albuquerque2015] and weighted endemism [@crisp2001] computed on a suitability surface with a risk weight, and
+it is the per-feature normalization Zonation applies to every input layer [@moilanen2005]. It rewards
+irreplaceability [@kukkala2013]: a zone holding an entire endemic population scores at the top, a zone holding
+a few vagrants near zero, and no species-rich region can dominate merely by count. It is blind to the dense
+habitat of wide-ranging species, which is what the ecoregional score continues to show. Its denominator is a
+modelling choice whose reference area is stated, as the national-responsibility literature requires
+[@schmeller2008; @schmeller2014], and it follows the global-population thresholds of site designation
+[@iucn2016kba; @ramsar2005].
+
+### Primary productivity and the composite
+
+Primary productivity has no species. Its quotient is the zone's mean productivity over the national mean, on
+the same scale:
+
+$$
+\text{v10}_{z,\text{primprod}} = 100 \; \frac{\bar{n}_z}{\bar{n}_{\text{USA}}}
+$$ {#eq-share-primprod}
+
+where $\bar{n}_z$ is the area-weighted mean of net primary productivity over all of the zone's cells (a cell
+without a value counts as 0, as the published `pct_area` down-weighting does for the rescaled score) and
+$\bar{n}_{\text{USA}}$ is the same estimator over the national reference.
+
+The composite is the equal-weight mean of the components that are reportable in the zone, each on the same
+scale, so it too reads 100 for a zone that is nationally average across the board. A component that is not
+reportable (next subsection) is left out of the mean, exactly as a category with no cells in the zone is.
+Equal weights are a stated policy choice, the convention of the Ocean Health Index [@halpern2012]. The
+re-issued Program-Area table in the release chapter reports, per category, the score, the percent of the
+world's importance at stake and the rank change against the ecoregional ranking, with the Spearman rank
+correlation between the two composite rankings in its caption [@oecd2008].
+
+### The reporting floor {#sec-share-floor}
+
+A component is reported for a zone only if its scored cells cover at least $\kappa$ of the zone's area,
+where coverage is the area-weighted fraction of the zone's cells that carry a value for the category:
+
+$$
+\text{cov}_{z,g} = \frac{\sum_{c \in z:\ \text{share}_{c,g}\ \text{exists}} p_{zc} A_c}{\sum_{c \in z} p_{zc} A_c}
+\;\ge\; \kappa
+$$ {#eq-share-floor}
+
+with $\kappa$ = `r sh_kappa_txt` in `r sh_ver`. Below the floor the component is not reportable: it is shown
+as no data on maps, footnoted in tables, and left out of the composite. It is never set to zero, which would
+lower the composite for a reason unrelated to sensitivity. The floor is defined on the footprint, not on the
+value. It applies to the across-the-nation family only: the within-ecoregion rows of the same release are the
+control and carry no floor.
+
+```{r}
+#| label: share-floor-count
+#| results: asis
+cv <- doc_zone_metric(sh_ver, like = "%!_coverage")
+if (!is.null(cv) && nrow(cv) && is.finite(sh_kappa)) {
+  below <- cv[cv$val < sh_kappa / 100, ]
+  cat(sprintf(
+    "In %s the floor removes **%s** Program Area × component pair%s of the %s that have scored cells.\n\n",
+    sh_ver, n_fmt(nrow(below)), if (nrow(below) == 1) "" else "s", n_fmt(nrow(cv))))
+} else cat("*The number of Program Area × component pairs the floor removes is read from the release's `_coverage` metrics, which this release has not published.*\n\n")
+```
+
+### Three denominators, one flag {#sec-share-denominators}
+
+The headline divides each species by its whole modelled range (`global`). Two other denominators are
+computed beside it, as columns of the same table, so that a reader can see how much the choice matters:
+
+| Denominator | Divides the species by | In words |
+|:--|:--|:--|
+| `global` (headline) | its value-area over its whole modelled range | the species' fraction of the world that a cell holds |
+| `usa` | its value-area over its US cells | the same score with the species weight $w$ in place of $w\,f_{\text{US}}$, where $f_{\text{US}}$ is the species' US fraction of its range; every species sums to 1 inside the nation |
+| `pooled` | 1 (no per-species normalization) | value times area summed over species; the national reference divides it out |
+
+: The three denominators. The headline is a release setting (`share_denom` in the release's `release_method` rows: `r sh_den_txt`); the other two are always written beside it. {#tbl-share-denominators}
+
+Where a species has no merged global surface, its denominator is built from the best source available, in
+this order: a curated fallback fraction of the world's range that lies in US waters (for species whose
+only models are national, such as FWS and NMFS range maps); the merged global surface; and, for species
+modelled only by AquaMaps, the AquaMaps footprint outside the US plus the merged surface inside. The source
+of every species is recorded in the `taxon_denom` table.
+
+```{r}
+#| label: share-denom-counts
+#| results: asis
+if (is.null(sh_dsum)) {
+  cat("*The count of species per denominator source is read from the release's `taxon_denom` table, which this release has not published.*\n\n")
+} else cat(sprintf(
+  "In %s, of %s scored species, %s take the merged global surface, %s the AquaMaps footprint outside the US plus the merged surface inside, and %s a curated fallback fraction; %s are unresolved.\n\n",
+  sh_ver, n_fmt(sh_dsum$n), n_fmt(sh_dsum$merged_global), n_fmt(sh_dsum$aquamaps),
+  n_fmt(sh_dsum$fallback), n_fmt(sh_dsum$unresolved + sh_dsum$other)))
+```
+
+A separate **sensitivity column** treats the floored cells of the sea turtles. A turtle's merged value is
+floored at 1 where its suitability rounds to 0, which fills the range rather than describing habitat. The
+headline keeps those cells, so the surface stays continuous; the `_strip` column removes them from both sides of the share.
+
+### What is published
+
+| Key | Level | Meaning |
+|:--|:--|:--|
+| `extrisk_{g}_share_{d}` | cell, zone | risk-weighted share summed over category $g$ (@eq-share-cell); the zone key is the zone total (@eq-share-zone) |
+| `extrisk_{g}_v10_{d}` | cell, zone | the score (@eq-v10); absent in a zone where the component is not reportable |
+| `extrisk_{g}_pct_world`, `extrisk_{g}_pct_nation_{d}` | zone | percent of the world's, and of the nation's, importance in the zone |
+| `extrisk_{g}_coverage`, `_n_species`, `_mean_share_{d}` | zone | the floor's coverage, the number of species present, and the zone total divided by it |
+| `primprod_v10`, `primprod_coverage` | zone | the productivity quotient (@eq-share-primprod) and its coverage |
+| `score_v10_equalweights_{d}`, `score_v10_n_components_{d}` | cell, zone | the composite and the number of components it averages (per cell: every component present, no floor) |
+
+: Metric keys of the share family. $d$ is `global`, `usa` or `pooled`; `global_strip` is the sensitivity column. Cell rasters are written for the headline denominator unless the release says otherwise. The per-species shares that explain a zone's score are in `zone_taxon` (`share_global`, `share_usa`, `share_v10_contrib`). {#tbl-share-keys}
+
+```{r}
+#| label: share-verified
+#| results: asis
+# computed, not typed: where the nation's sea-turtle importance lies, by region
+tt <- doc_zone_metric(sh_ver, keys = "extrisk_turtle_pct_nation_global")
+pr <- tryCatch(sf::st_drop_geometry(sf::st_read(
+  here::here("data/ply_programareas_2026_v4.gpkg"), quiet = TRUE))[, c("programarea_key", "region_name")],
+  error = function(e) NULL)
+if (!is.null(tt) && nrow(tt) && !is.null(pr)) {
+  tt$region <- pr$region_name[match(tt$zone_key, pr$programarea_key)]
+  by <- tapply(tt$val, tt$region, sum, na.rm = TRUE)
+  cat("**Check on ", sh_ver, ".** Under the global denominator, the share of the nation's risk-weighted sea-turtle importance that lies in each region's Program Areas is ",
+      paste(sprintf("%s %.1f %%", names(by), by), collapse = ", "), ".\n\n", sep = "")
+}
+```

@@ -751,3 +751,140 @@ doc_zones <- function() {
   z <- doc_manifest()$zones
   if (is.data.frame(z)) z else data.frame()
 }
+
+# ---- a release other than the one this book documents --------------------------
+#
+# The helpers above read `doc_ver()`, which is right for a page that documents its
+# own book's release. A RELEASE CHAPTER (releases/v10.qmd) renders in every book
+# once its release is public, and its numbers must be that release's, not the
+# book's: reading them through `doc_tbl()` would print v7's table under v10's
+# heading. These readers therefore take the version explicitly, and every one of
+# them returns NULL (never another version's data) when the release, the table or
+# the rows are not published, so the chapter can print a visible placeholder.
+
+#' The manifest of a named release, or NULL when it is not published.
+doc_manifest_of <- local({
+  cached <- list()
+  function(ver) {
+    # a failed lookup is remembered too (FALSE), so one unpublished release costs one request
+    if (!is.null(cached[[ver]])) return(if (isFALSE(cached[[ver]])) NULL else cached[[ver]])
+    m <- tryCatch(msens::atlas_manifest(ver), error = function(e) NULL)
+    cached[[ver]] <<- if (is.null(m)) FALSE else m
+    m
+  }
+})
+
+#' A published table of a named release (NULL if absent); `sql` may name the table.
+doc_tbl_of <- function(ver, tbl, sql = NULL) {
+  m <- doc_manifest_of(ver)
+  if (is.null(m) || !tbl %in% names(m$tables)) return(NULL)
+  src <- sprintf("read_parquet('%s')", m$tables[[tbl]])
+  q   <- if (is.null(sql)) sprintf("SELECT * FROM %s", src)
+         else gsub(sprintf("\\b%s\\b", tbl), src, sql)
+  tryCatch(DBI::dbGetQuery(.doc_con(), q), error = function(e) NULL)
+}
+
+#' The `release_method` rows of a release (`method_key`, `value`, `description`), or NULL.
+#'
+#' A release states its own rules as data (`release_method`, optional by presence). They
+#' reach the book two ways: `manifest$methods` (carried by `backfill_versions` for the
+#' legacy releases) or, for a release that stages the table beside its others, the
+#' published `release_method` table itself. The manifest wins when both exist.
+doc_methods_of <- function(ver = doc_ver()) {
+  m <- doc_manifest_of(ver)$methods
+  if (is.data.frame(m) && nrow(m) && "method_key" %in% names(m)) return(m)
+  d <- doc_tbl_of(ver, "release_method")
+  if (is.data.frame(d) && nrow(d) && "method_key" %in% names(d)) d else NULL
+}
+
+#' The value of one `release_method` row of a release (NULL if it states none).
+#'
+#' E.g. `doc_method("share_kappa_pct", "v10")` -> `"5"` (the string as stored).
+doc_method <- function(key, ver = doc_ver()) {
+  m <- doc_methods_of(ver)
+  if (is.null(m) || !key %in% m$method_key) return(NULL)
+  as.character(m$value[m$method_key == key][1])
+}
+
+#' Does a release carry the v10 distribution-share ("across the nation") score family?
+#'
+#' Presence, never a version string: true when the release states `share_metrics = on`
+#' in its `release_method` rows, or - because that table reaches the manifest only for
+#' releases backfilled through `backfill_versions` - when its cell-level metrics include
+#' the share composite (`score_v10_equalweights_*`). FALSE for anything else, including a
+#' release that is not published.
+doc_has_share <- function(ver = doc_ver()) {
+  on <- doc_method("share_metrics", ver)
+  if (!is.null(on)) return(identical(on, "on"))
+  mt <- doc_manifest_of(ver)$metrics
+  is.data.frame(mt) && "metric_key" %in% names(mt) &&
+    any(grepl("^score_v10_equalweights", mt$metric_key))
+}
+
+#' Zone metrics of a named release as a long data frame (`zone_key`, `metric_key`, `val`).
+#'
+#' `keys` are exact metric keys; `like` is a SQL LIKE pattern (use `!_` for a literal
+#' underscore). `fld` selects the zone set (`programarea_key`, `ecoregion_key`, ...).
+#' NULL when the release does not publish `zone`, `zone_metric` and `metric`.
+doc_zone_metric <- function(ver, keys = NULL, like = NULL, fld = "programarea_key") {
+  m <- doc_manifest_of(ver)
+  if (is.null(m) || !all(c("zone", "zone_metric", "metric") %in% names(m$tables))) return(NULL)
+  col_of <- function(tbl) {
+    cn <- DBI::dbGetQuery(.doc_con(), sprintf(
+      "DESCRIBE SELECT * FROM read_parquet('%s')", m$tables[[tbl]]))$column_name
+    if ("value" %in% cn) "value" else "val"
+  }
+  zc <- tryCatch(col_of("zone"), error = function(e) NULL)
+  mc <- tryCatch(col_of("zone_metric"), error = function(e) NULL)
+  if (is.null(zc) || is.null(mc)) return(NULL)
+  where <- c(sprintf("z.fld = '%s'", fld),
+             if (!is.null(keys)) sprintf("mt.metric_key IN (%s)",
+               paste0("'", gsub("'", "''", keys), "'", collapse = ", ")),
+             if (!is.null(like)) sprintf("mt.metric_key LIKE '%s' ESCAPE '!'", like))
+  tryCatch(DBI::dbGetQuery(.doc_con(), sprintf(
+    "SELECT z.%s AS zone_key, mt.metric_key, zm.%s AS val
+       FROM read_parquet('%s') z
+       JOIN read_parquet('%s') zm USING (zone_seq)
+       JOIN read_parquet('%s') mt USING (metric_seq)
+      WHERE %s",
+    zc, mc, m$tables[["zone"]], m$tables[["zone_metric"]], m$tables[["metric"]],
+    paste(where, collapse = " AND "))),
+    error = function(e) NULL)
+}
+
+#' Where each scored species' global denominator came from, for a release's `taxon_denom`.
+#'
+#' `taxon_denom` (one row per scored species; `source` says which branch of
+#' `msens::denom_sql()` supplied the denominator) is written by `build_taxon_global_total`.
+#' Returns a data frame (`source`, `n`, `kind` in merged_global | aquamaps | fallback |
+#' unresolved | other) or NULL when the release does not publish the table - which is
+#' the case until `taxon_denom` is added to the release's staged tables.
+doc_taxon_denom_counts <- function(ver = "v10") {
+  d <- doc_tbl_of(ver, "taxon_denom",
+                  "SELECT source, count(*) AS n FROM taxon_denom GROUP BY 1 ORDER BY 2 DESC")
+  if (is.null(d) || !nrow(d)) return(NULL)
+  d$kind <- ifelse(d$source == "merged_global", "merged_global",
+            ifelse(d$source == "aquamaps", "aquamaps",
+            ifelse(startsWith(d$source, "fallback:"), "fallback",
+            ifelse(d$source == "national_only_unresolved", "unresolved", "other"))))
+  d
+}
+
+#' Counts of how a release's scored species obtained their global denominator.
+#'
+#' A named list (`n`, `merged_global`, `aquamaps`, `fallback`, `unresolved`, `other`) from
+#' [doc_taxon_denom_counts()], or NULL when `taxon_denom` is not published.
+doc_taxon_denom_summary <- function(ver = "v10") {
+  d <- doc_taxon_denom_counts(ver)
+  if (is.null(d)) return(NULL)
+  k <- function(x) sum(d$n[d$kind == x])
+  list(n = sum(d$n), merged_global = k("merged_global"), aquamaps = k("aquamaps"),
+       fallback = k("fallback"), unresolved = k("unresolved"), other = k("other"))
+}
+
+#' Spearman rank correlation of two named numeric vectors over the names they share.
+doc_spearman <- function(a, b) {
+  k <- intersect(names(a)[!is.na(a)], names(b)[!is.na(b)])
+  if (length(k) < 3) return(NA_real_)
+  suppressWarnings(stats::cor(a[k], b[k], method = "spearman"))
+}

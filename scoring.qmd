@@ -92,6 +92,18 @@ Scores are therefore directly comparable **among Program Areas within one ecoreg
 
 **Why rescale at all?** Without it, naturally species-rich areas would almost always score highest simply for holding more species. More species may well indicate greater ecological importance — but it can equally be argued that the fewer species an ecosystem has, the more each one matters to its function and resilience. Rescaling within ecoregions keeps scores from being dominated by richness. Comparing *across* ecoregions would require settling that argument with a mathematical relationship between the two views, which remains a live academic debate.
 
+```{r}
+#| label: share-section
+#| output: asis
+# From v10: the across-the-nation score family. Gated on the release carrying it
+# (doc_has_share(): its release_method rows, else its cell-level share composite),
+# never on a version string, so every other book omits the section rather than
+# describing metrics its release does not have.
+if (doc_has_share()) {
+  cat(knitr::knit_child(here::here("_scoring-share.qmd"), quiet = TRUE, envir = environment()))
+}
+```
+
 ## Spatial units
 
 ```{r}
@@ -142,7 +154,7 @@ if (doc_can("programareas")) cat(
   "are outside the scored footprint.\n\n", sep = "")
 ```
 
-The Gulf of America Program Areas (GAA and GAB) each span two ecoregions — Western and Central Gulf of America, and Eastern Gulf of America. Because rescaling happens *before* aggregation, cells are rescaled against their own ecoregion's range, and the Program Area score is then the area-weighted mean across all its cells regardless of ecoregion. Local ecological context is preserved even where a Program Area crosses a boundary.
+The Gulf of America Program Areas (GAA and GAB) each span two ecoregions — Western and Central Gulf of America, and Eastern Gulf of America. Because rescaling happens *before* aggregation, cells are rescaled against their own ecoregion's range, and the Program Area score is then the coverage-weighted mean across all its cells regardless of ecoregion (@sec-scoring-zone-aggregation). Local ecological context is preserved even where a Program Area crosses a boundary.
 
 ```{r}
 #| label: fig-map-ecoregions-scoring
@@ -154,15 +166,23 @@ map_ecoregions()
 
 Net primary productivity from the VGPM satellite model enters as its own metric (`primprod`), without extinction-risk weighting. The raw values (metric tons C km^-2^ yr^-1^) are rescaled within each ecoregion on the same 0–100 basis as everything else.
 
-## Zone aggregation
+## Zone aggregation {#sec-scoring-zone-aggregation}
 
-Rescaled cell scores are aggregated to each spatial unit by area-weighted mean:
+Rescaled cell scores are aggregated to each spatial unit by a mean weighted by the share of each cell that lies inside the unit:
 
 $$
-\text{score}_{zone} = \frac{\sum_{c \in zone} \text{score}'_c \times A_c}{\sum_{c \in zone} A_c}
+\text{score}_{zone} = \frac{\sum_{c \in zone} \text{score}'_c \, p_{c,zone}}{\sum_{c \in zone} p_{c,zone}}
 $$ {#eq-zone-agg}
 
-where $A_c$ is the area of cell $c$ — which is latitude-dependent on a 0.05° grid, so the weighting is not cosmetic.
+where $p_{c,zone}$ is the coverage of cell $c$ by the zone (`zone_cell.pct_covered`, 100 for a cell wholly inside it and a fraction along its boundary). **Cell area is not a weight in this rule.** A cell on a 0.05° grid is smaller at high latitude, and the weights here do not correct for it: each cell counts by the part of it inside the zone, not by its area. This is the rule the scoring notebooks of v7 and later compute. The component's zone score is then multiplied by the fraction of the zone's covered cells that carry a value for that component (`pct_area`), so a component present on only a sliver of a zone cannot weigh as much as one that covers it.
+
+```{r}
+#| output: asis
+if (doc_has_share()) cat(
+  "**From ", doc_ver(), ",** the across-the-nation family (@sec-share) does weight by area: a cell enters a zone ",
+  "with its own area times the part of it inside the zone, $A_c\\,p_{c,zone}$, and the national reference sums the same ",
+  "areas. The within-ecoregion rows of the same release keep the coverage weighting above, unchanged.\n\n", sep = "")
+```
 
 ```{r}
 #| output: asis

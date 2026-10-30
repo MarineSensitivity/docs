@@ -251,3 +251,36 @@ v7c:
     and the North Atlantic right whale no longer occurs in the Gulf of America, so the Aleutian Arc and
     St. George Basin Program Areas lose their turtle component and the Gulf of America Program Areas' mammal
     component is rescaled without the right whale. Every other Program Area scores as in v7.
+
+v10:
+  datasets: >
+    **No dataset is added, removed or re-ingested.** v10 is built on v8: the same inputs as public
+    v7, ingested whole-range on the global 0.05° grid. **AquaX is not used**, because its models are
+    clipped to US waters and a species' range outside them is exactly what the new denominator
+    needs. Each species' distribution outside the United States is read from the merged global
+    surface, from the AquaMaps footprint outside the United States, or, for species with only
+    national models, from a curated fraction of the range that lies in US waters.
+  methods: >
+    A second score, **across the nation**, is computed beside the within-ecoregion one. Each
+    species' value in a cell is divided by its total over its **whole modelled range** (its share),
+    weighted by extinction risk, summed per category and zone, and expressed per square kilometre
+    against the national average, which is 100 (a location quotient). The percent of the world's
+    and of the nation's importance in the zone is published beside it. A component is reported
+    only where its scored cells cover at least the floor κ of the zone's area, otherwise it is
+    absent, never zero, and the composite is the equal-weight mean of the reportable components,
+    primary productivity included. The headline denominator is one flag (`global`, `usa` or
+    `pooled`) and the other two are written beside it. **v8's within-ecoregion metrics are kept
+    unchanged** as the control, and the build stops if one of their rows differs.
+  scope: >
+    The study area, the definition of a valid species and the scored taxa are v8's. What is new is
+    the reference: scores can be compared across ecoregions, which the rescaled score could not.
+    Record-based exclusions, AquaX, OBIS distribution models, density surfaces, the integrated
+    productivity and any change to the sea turtles are not in this release.
+  technology: >
+    Zone roll-ups of the new family are weighted by coverage times cell area, where the
+    within-ecoregion rows weight by coverage alone. The release states its rules as data
+    (`release_method`), records where each species' denominator came from (`taxon_denom`), and
+    publishes the per-species shares that explain a zone's score in `zone_taxon`.
+  zones: >
+    Scores are reported on the **Program Areas**, as in v8, now on two scales: within ecoregion
+    and across the nation. The two are never mixed in one column or one composite.
