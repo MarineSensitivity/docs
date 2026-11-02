@@ -18,6 +18,83 @@ The [Scoring Walkthrough](scoring-walkthrough.qmd) animates this — maximum mer
 
 The merge rules are **`msens::merge_sql()`**, **`msens::turtle_sql()`** and **`msens::dps_sql()`** — SQL held in the package rather than inside a notebook. The merge notebook executes them and the unit tests assert them against synthetic fixtures, one per taxon category, so the pipeline and its tests cannot drift apart. Changing a rule in a way that breaks a documented case fails the tests.
 
+## The sequence, end to end {#sec-merge-sequence}
+
+Each merged model is the result of a fixed sequence of processes, each with a named output. The
+diagram shows every process a taxon can pass through and the artifact each one writes; the table
+after it says which rule a taxon takes and what its cell value, its risk layer and its score are
+under that rule. Steps marked *v11 option* are method flags under review for v11 and are **off** in
+every released version, where the pipeline reproduces the earlier rule exactly.
+
+```{mermaid}
+%%| label: fig-merge-sequence
+%%| fig-cap: "Processes (boxes), their outputs (cylinders) and the order they run in, from the ingested models to the share score. Dashed boxes are v11 options, off in every release so far."
+%%| fig-width: 7
+flowchart TD
+  I["1 Ingest<br>one notebook per source dataset<br>onto the 0.05 degree grid"] --> D[("dist/dataset={ds}<br>model, cell, val<br>+ model_{ds}.csv")]
+  D --> X["2 Crosswalk and governing risk<br>models to WoRMS / BirdLife taxa;<br>er_score = most protective listing,<br>MMPA / MBTA floors (merge_models_prep)"]
+  X --> TM[("taxon, taxon_model, listing<br>(merge.duckdb)")]
+  TM --> S["3 Supersession on the merge input<br>a newer suitability model replaces an older one<br>inside its own mask: AquaX over AquaMaps (v9);<br>og over AquaMaps for turtles, survey density<br>inside its domain (v11 options)"]
+  S --> P[("mc_parts<br>partitioned merge input")]
+  P --> R{"4 Which rule?"}
+  R -->|"sea turtle"| RT["turtle_sql: value = round(er x suit / 100),<br>critical habitat by max (v4b)"]
+  R -->|"NMFS DPS-listed species"| RD["dps_sql: value = suitability masked to<br>the risk footprint, per-cell risk beside it (v9)"]
+  R -->|"density taxon (v11 option)"| RE["dps_sql with the governing er_score<br>as the floor under the per-cell risk"]
+  R -->|"every other taxon"| RM["merge_sql: range footprint valued<br>max(er_score, suitability at those cells);<br>AquaMaps-only taxa keep their raw footprint"]
+  RT --> G
+  RD --> G
+  RE --> G
+  RM --> G
+  G["5 Zone edits (v11 options)<br>occurrence gate: no records in an<br>ecoregion, no cells there;<br>regional weight on listings"]
+  G --> O1[("dist_merged_global<br>whole-range surface<br>(what the Atlas draws)")]
+  G --> O2[("dist_merged<br>US-trimmed scoring surface")]
+  G --> O3[("dist_merged_er<br>per-cell risk beside the value<br>(cell-mode taxa)")]
+  O2 --> SC["6 Cell scoring (score_cell_metrics)<br>score = sum over species of risk x value / 100;<br>risk = er_score (taxon mode) | per-cell (cell mode)<br>| already inside the value (turtles)"]
+  O3 --> SC
+  SC --> O4[("cell_metric<br>extrisk_{category}")]
+  O4 --> Z["7 Zone scores<br>v8: rescaled within the ecoregion;<br>v10: share of each species' global<br>distribution, kappa = 5 % floor,<br>equal-weight composite"]
+  O1 --> TD[("taxon_denom<br>each species' global total")]
+  TD --> Z
+  Z --> O5[("zone_metric, zone_taxon")]
+  style S stroke-dasharray: 4 3
+  style RE stroke-dasharray: 4 3
+  style G stroke-dasharray: 4 3
+```
+
+Order matters in three places. Supersession (3) runs **before** any rule, so a rule never sees a
+superseded cell. The range mask is part of each rule (4), not a later pass: AquaMaps beyond the
+expert range never enters either surface. And the zone edits (5) act on the written surfaces, after
+the rules, so they can remove or weight cells without changing what a rule computed.
+
+### Which rule a taxon takes
+
+| taxon | inputs | merged value in a cell | risk layer | `er_mode` | cell score (@eq-cell-score and its two exceptions) |
+|---|---|---|---|---|---|
+| AquaMaps only, no expert range anywhere (most scored taxa) | AquaMaps (AquaX where it superseded, v9) | the suitability, raw footprint | the scalar `er_score` | `taxon` | `er_score x suit / 100` |
+| expert range and AquaMaps | range map(s) + AquaMaps | `max(er_score, suit)` on range cells; AquaMaps beyond the range masked away | the scalar `er_score` | `taxon` | `er_score x max(er_score, suit) / 100` |
+| expert range only (most of them birds) | IUCN / BirdLife / FWS range | `er_score` on every range cell | the scalar `er_score` | `taxon` | `er_score x er_score / 100` |
+| sea turtle | SWOT + DPS risk surface, AquaMaps (or `og`, v11 option), critical habitat | `max(1, round(risk_c x suit / 100))`, critical habitat by max | inside the value | `premultiplied` | the value itself (`er_score` set to 100) |
+| NMFS DPS-listed species (v9) | `dps_nmfs` per-cell risk, AquaX / AquaMaps | suitability where a model covers the cell, the cell's risk where none does | per-cell `er_c` beside the value | `cell` | `er_c x value / 100` |
+| density taxon (v11 option) | survey density inside its domain, AquaMaps outside, range maps | as the DPS rule, with the governing `er_score` as a floor under the per-cell risk | per-cell `er_c` (at least `er_score`) | `cell` | `er_c x value / 100` |
+| sea turtle under `TURTLE_RULE=dps` (v11 option) | as above | as the DPS rule, critical habitat joining the risk footprint | per-cell `er_c` | `cell` | `er_c x value / 100` |
+
+### Where the risk enters, and how many times
+
+The table makes one property of the released rule explicit. For a taxon with an expert range the
+governing `er_score` is used **twice**: once at merge time, as the floor under every range cell
+(@eq-merge-range), and again at scoring, as the multiplier (@eq-cell-score). A range cell no
+AquaMaps model covers therefore scores `er_score^2 / 100` (25 for a score of 50), and wherever the
+suitability is below the governing score the risk, not the model, shapes the distribution. Only
+where suitability exceeds the score does the cell carry the risk-weighted suitability a reader
+might expect. AquaMaps-only taxa are single-counted (the first row), as are the turtles and the
+DPS-listed species, whose rules were written so that the risk enters once. This has been the rule
+since the v4 all-species merge; it is stated here so that the two counts are not mistaken for one.
+
+A v11 option, `SHARE_BASIS = cell`, single-counts every taxon: the merged value on a range cell is
+the suitability alone, with a cell no model covers valued either at the governing score or as
+presence (`RANGE_FILL`), and the risk enters only as the weight. It is under review and off in every
+release so far.
+
 ## Pipeline
 
 ```{mermaid}
@@ -78,8 +155,9 @@ if (mdl_key_style) {
 "Since v8 the merge emits **two** surfaces from the same rules, because they answer different
 questions:
 
-- a **global** surface (expert range ∪ the taxon's whole AquaMaps footprint) — the honest
-  whole-range merged model, which is what the species maps draw;
+- a **global** surface — the taxon's whole range footprint under the same rule and the same range
+  mask (AquaMaps beyond the expert range is masked away here too), which is what the species maps
+  draw; AquaMaps-only taxa are drawn from their AquaMaps model directly;
 - a **US scoring** surface — the range-constrained, US-clipped result described above, which is
   what the scores are computed from.
 
