@@ -82,7 +82,7 @@ without changing what the rule computed, and they never touch the per-cell risk 
 | taxon | inputs | merged value in a cell | risk layer | `er_mode` | cell score (@eq-cell-score and its two exceptions) |
 |---|---|---|---|---|---|
 | AquaMaps only, no expert range anywhere (most scored taxa) | AquaMaps (AquaX where it superseded, v9) | each model's suitability, raw footprint, on the US surface only (a taxon with several AquaMaps models keeps every model's cell) | the scalar `er_score` | `taxon` | `er_score x suit / 100` |
-| expert range and AquaMaps | range map(s) + AquaMaps / AquaX | `max(er_score, suit)` on range cells; suitability beyond the range masked away | the scalar `er_score` | `taxon` | `er_score x max(er_score, suit) / 100` |
+| expert range and AquaMaps | range map(s) + AquaMaps / AquaX | `max(er_score, suit)` on range cells; suitability beyond the range masked away (v11 option, cell basis: `suit` where a model covers the cell, the `RANGE_FILL` value where none does) | the scalar `er_score` | `taxon` | `er_score x max(er_score, suit) / 100` (cell basis: `er_score x suit / 100`) |
 | expert range only (most of them birds) | IUCN / BirdLife / FWS range | `er_score` on every range cell | the scalar `er_score` | `taxon` | `er_score x er_score / 100` |
 | sea turtle | SWOT + DPS risk surface, AquaMaps / AquaX (or `og`, v11 option), critical habitat | `max(1, round(risk_c x suit / 100))`, suit = 1 where no model covers the cell, critical habitat by max | inside the value | `premultiplied` | the value itself (weight 100 by `er_mode`) |
 | NMFS DPS-listed species (v9) | `dps_nmfs` per-cell risk, AquaX / AquaMaps | suitability where a model covers the cell, the cell's risk where none does | per-cell `er_c` beside the value | `cell` | `er_c x value / 100`, so `er_c x er_c / 100` where no model covers the cell |
@@ -113,9 +113,12 @@ cancel.
 
 A v11 option, `SHARE_BASIS = cell`, values a range cell by its suitability alone wherever a model
 covers it, for every taxon, and `RANGE_FILL` decides a cell no model covers: the governing score
-(`er`, which still counts the risk twice there) or presence, 100 (`presence`, which counts it once).
-The same fill applies to the DPS rule and the taxa that share it. Both are under review and off in
-every release so far.
+(`er`, which still counts the risk twice there), presence, 100 (`presence`, which counts it once),
+or the mean of the species' own modelled footprint cells (`mean`: for a surveyed species the
+survey's mean value over its domain, and presence for a species with no model at all). The same
+fill applies to the DPS rule and the taxa that share it. The v11 method set uses the cell basis
+with the mean fill; both flags are off in every release so far, where the pipeline reproduces the
+earlier rule exactly.
 
 ## Pipeline
 
