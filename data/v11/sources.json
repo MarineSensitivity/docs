@@ -1,0 +1,25 @@
+{
+  "workflows_commit": "86eb220f",
+  "workflows_branch": "v11-q0-bootstrap",
+  "uncommitted": "data/v11/density_cal_factors_suit.csv",
+  "files": {
+    "data/v11/attribution/control.parquet": "dad3f7fb6540b64744ade2c9ec27bedd",
+    "data/v11/attribution/full2023_basis_er.parquet": "80fe0146071a289176b8361382649a4c",
+    "data/v11/attribution/full2023_basis_mean.parquet": "676e3cf472da802208376a8562a4414c",
+    "data/v11/attribution/full2023_basis.parquet": "780f23c96d2b0c7fb0cc320d984cae4a",
+    "data/v11/attribution/full2023_cal_suit.parquet": "459bb5c8c5b86f15acba536ccbdcf278",
+    "data/v11/attribution/full2023_cal.parquet": "edcbe13c59af1b031c2766c9ef59c1a8",
+    "data/v11/attribution/full2023.parquet": "ac614447b89a7ebccfb0d5558b18ca9c",
+    "data/v11/attribution/nc_atl_2018.parquet": "c289f0141ef35d12964a9816815dae6d",
+    "data/v11/attribution/no_components.parquet": "be94d4b8813e51f742da662d22ae335e",
+    "data/v11/attribution/no_fold_density.parquet": "2a0a917a63a16b443d07b11448f89d25",
+    "data/v11/attribution/no_occ_rule.parquet": "12181f6bac4bfc493b09c14018d0ee23",
+    "data/v11/attribution/no_region_weight.parquet": "77b8fc492307d8829a1cd6121c8ed318",
+    "data/v11/attribution/no_turtle_rule.parquet": "8e97619ed2c8a714186e9a9c1fa5ba7a",
+    "data/v11/attribution/no_turtle_suit.parquet": "8bc7c7e73c80804375f87c36d1b48f6c",
+    "data/v11/attribution/no_vgpm.parquet": "5589406d6aa3ddb0b05d151df68e5911",
+    "data/v11/attribution/v11.parquet": "e0c0d8e76d45bd4a82640167221315cb",
+    "data/v11/zone_weights_occ.csv": "ff2d89e6e444fdb49ea5dfc808ef83f5",
+    "data/v11/density_cal_factors_suit.csv": "e6faafd70109cb8e33e25360fa5c960b"
+  }
+}

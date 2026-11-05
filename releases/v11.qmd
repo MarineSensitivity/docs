@@ -1,0 +1,43 @@
+---
+description: "v11: the national release made robust, with year-integrated productivity, our own sea-turtle models on the DPS rule, an occurrence rule, survey densities and single counting"
+---
+
+# v11 — a robust national release {#sec-release-v11}
+
+```{r}
+#| include: false
+# The full chapter lives in releases/_v11-body.qmd (the leading underscore keeps
+# Quarto from rendering it on its own). It renders in the v11 book, and in every
+# book once the registry lists v11 as public. Until then a restricted release
+# must never reach GitHub Pages (CLAUDE.md), so the public books of the other
+# releases carry only the short note below, with no link to the review host.
+# doc_access() fails closed for a version the published registry does not list.
+v11_row    <- doc_version_row("v11")
+v11_public <- nrow(v11_row) == 1 && !is.na(v11_row$ver[1]) &&
+  identical(doc_access("v11"), "public")
+v11_full   <- identical(doc_ver(), "v11") || v11_public
+```
+
+```{r}
+#| label: v11-body
+#| output: asis
+if (v11_full) {
+  cat(knitr::knit_child(
+    here::here("releases/_v11-body.qmd"), quiet = TRUE, envir = environment()))
+} else {
+  cat(
+"::: {.callout-note}
+## A release under review
+
+v11 is a pre-release under review. It keeps v10's two scores, within each ecoregion and across
+the nation, and changes what goes into them: primary productivity integrated over the whole year,
+our own distribution models for the sea turtles merged by the same rule as the species listed by
+Distinct Population Segment, an occurrence rule that removes or down-weights a species where the
+record does not place it, survey density models folded into the merge, and a merged value that
+counts extinction risk once. Its chapter (each rule, the flags, which rule moved which score and
+what moved in the Program-Area scores) is published with the v11 documentation on the signed-in
+review host, and appears in every version of this book once v11 is released.
+:::
+")
+}
+```

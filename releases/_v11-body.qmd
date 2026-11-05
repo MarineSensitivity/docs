@@ -1,0 +1,562 @@
+```{r}
+#| include: false
+# body of releases/v11.qmd, knitted as a child (see the gate there).
+#
+# Two kinds of source, never mixed in one figure:
+#  * v11's (and v10's) PUBLISHED tables, through the explicit-version readers of
+#    libs/versioned.R (doc_zone_metric(), doc_tbl_of(), doc_methods_of(), ...), never
+#    through doc_ver(): this chapter renders in every book once v11 is public and must
+#    print v11's numbers whichever release the book documents. A table the release has
+#    not published yet renders a visible placeholder, never a number borrowed from elsewhere.
+#  * the build's own evidence, committed in data/v11/ by libs/v11-copy-data.R from the
+#    workflows checkout that built v11 (sources.json records the commit and digests):
+#      attribution_programarea.parquet  <- data/v11/attribution/*.parquet (snapshot_scores.qmd)
+#      occ_pairs.parquet                <- data/v11/zone_weights_occ.csv (explore_occurrence_rule.qmd)
+#      density_cal_factors_suit.csv     <- merge_models.qmd under FOLD_DENSITY_CAL=suit
+#    The attribution runs are not a published table: each is the same pipeline with one
+#    flag changed, and only the v11 run is the release.
+# The only typed values are metric KEYS, flag names, variant names and code defaults,
+# which name things rather than measure them.
+library(dplyr)
+v11 <- "v11"; v10 <- "v10"
+safe <- function(expr) tryCatch(expr, error = function(e) NULL)
+# writes the table (a kable left inside an if block, before a cat(), is never printed)
+v11_kbl <- function(d, caption, align = NULL)
+  cat(knitr::kable(d, caption = caption, align = align, row.names = FALSE), "", sep = "\n")
+placeholder <- function(what) cat(sprintf(
+  "::: {.callout-warning}\n## Not published yet\n\n%s is read from v11's published tables, and this book cannot reach them (v11 is not in the published registry, or the table is not published yet). The table fills when it is.\n:::\n\n", what))
+nf <- function(x) if (is.null(x) || !length(x) || is.na(x[1])) "[not published yet]" else n_fmt(x)
+f1 <- function(x) ifelse(is.na(x), "n/r", formatC(x, format = "f", digits = 1))
+f2 <- function(x) ifelse(is.na(x), "", formatC(x, format = "f", digits = 2))
+f3 <- function(x) ifelse(is.na(x), "", formatC(x, format = "f", digits = 3))
+rank_of <- function(x) rank(-x, na.last = "keep", ties.method = "min")
+
+K_WITHIN <- "score_extriskspcat_primprod_ecoregionrescaled_equalweights"
+K_NAT    <- "score_v10_equalweights_global"
+
+# the Program-Area metrics of both releases (one read each)
+zm10  <- safe(doc_zone_metric(v10, like = "%"))
+zm11  <- safe(doc_zone_metric(v11, like = "%"))
+has_k <- function(zm, k) !is.null(zm) && nrow(zm) > 0 && any(zm$metric_key == k)
+pub10 <- has_k(zm10, K_NAT) && has_k(zm10, K_WITHIN)
+pub11 <- has_k(zm11, K_NAT) && has_k(zm11, K_WITHIN)
+vec <- function(zm, key) {
+  if (is.null(zm)) return(setNames(numeric(), character()))
+  d <- zm[zm$metric_key == key, ]
+  setNames(d$val, d$zone_key)
+}
+# two named vectors over the zones both carry: n, mean |delta|, max |delta| (at), RMSE, r, rho
+dstat <- function(x, y) {
+  k <- intersect(names(x)[!is.na(x)], names(y)[!is.na(y)])
+  if (length(k) < 3) return(NULL)
+  d <- y[k] - x[k]
+  list(n = length(k), mean = mean(abs(d)), max = max(abs(d)), at = k[which.max(abs(d))],
+       rmse = sqrt(mean(d^2)), r = stats::cor(x[k], y[k]),
+       rho = suppressWarnings(stats::cor(x[k], y[k], method = "spearman")))
+}
+
+# names: Program Areas from the book's own zone geometry (one geometry covers v2 on)
+pra <- safe(sf::st_drop_geometry(sf::st_read(
+  here::here("data/ply_programareas_2026_v4.gpkg"), quiet = TRUE))[, c("programarea_key", "programarea_name", "region_name")])
+if (is.null(pra)) pra <- data.frame(programarea_key = character(), programarea_name = character(), region_name = character())
+pra$programarea_name <- sub("^GOA Program Area", "Gulf of America Program Area", pra$programarea_name)
+pra_name <- setNames(pra$programarea_name, pra$programarea_key)
+pa_label <- function(k) ifelse(k %in% names(pra_name), sprintf("%s (%s)", pra_name[k], k), k)
+
+# component labels (msens::components_registry(): v10 and v11 names by key)
+comp <- safe(msens::components_registry())
+comp_lab <- function(key, v11_names = TRUE) {
+  if (is.null(comp)) return(key)
+  lab <- if (v11_names) comp$label else comp$label_v10
+  out <- lab[match(key, comp$key)]
+  ifelse(is.na(out), key, out)
+}
+
+# counts from v11's own tables (NA until published)
+q11 <- function(tbl, sql) {
+  d <- safe(doc_tbl_of(v11, tbl, sql))
+  if (is.null(d) || !nrow(d)) NULL else d
+}
+n_of <- function(tbl, sql) { d <- q11(tbl, sql); if (is.null(d)) NA_real_ else as.numeric(d$n[1]) }
+annual <- "len(string_split(mdl_key, '|')) = 2"   # an interval density model has a third key part
+n_og    <- n_of("taxon_model", "SELECT count(DISTINCT ms_merge_key) AS n FROM taxon_model WHERE ds_key = 'og'")
+n_dps   <- n_of("taxon_model", "SELECT count(DISTINCT ms_merge_key) AS n FROM taxon_model WHERE ds_key = 'dps_nmfs'")
+dens_by <- q11("taxon_model", sprintf(
+  "SELECT ds_key, count(DISTINCT ms_merge_key) AS n FROM taxon_model WHERE ds_key IN ('gm', 'nc', 'cce') AND %s GROUP BY 1 ORDER BY 1", annual))
+n_dens  <- n_of("taxon_model", sprintf(
+  "SELECT count(DISTINCT ms_merge_key) AS n FROM taxon_model WHERE ds_key IN ('gm', 'nc', 'cce') AND %s", annual))
+# density taxa that are sea turtles or DPS-listed species keep their own rule (their density rows are dropped)
+n_dens_own <- n_of("taxon_model", sprintf(
+  "SELECT count(DISTINCT ms_merge_key) AS n FROM taxon_model WHERE ds_key IN ('gm', 'nc', 'cce') AND %s
+     AND ms_merge_key IN (SELECT ms_merge_key FROM taxon_model WHERE ds_key IN ('dps_nmfs', 'og', 'rng_turtle_swot_dps'))", annual))
+den11 <- safe(doc_taxon_denom_summary(v11))
+er_mode <- q11("taxon", "SELECT er_mode, sp_cat, count(*) AS n FROM taxon WHERE is_valid_usa AND is_marine GROUP BY ALL ORDER BY 1, 2")
+n_cell  <- if (is.null(er_mode)) NA_real_ else sum(er_mode$n[er_mode$er_mode == "cell"])
+n_taxon <- if (is.null(er_mode)) NA_real_ else sum(er_mode$n[er_mode$er_mode == "taxon"])
+n_turtle_cell <- if (is.null(er_mode)) NA_real_ else sum(er_mode$n[er_mode$er_mode == "cell" & er_mode$sp_cat == "turtle"])
+ds10 <- safe(doc_tbl_of(v10, "dataset")); ds11 <- safe(doc_tbl_of(v11, "dataset"))
+mth11 <- safe(doc_methods_of(v11))
+
+# the build's evidence (data/v11/)
+dq  <- function(sql) safe(DBI::dbGetQuery(.doc_con(), sql))
+att <- dq(sprintf("SELECT * FROM read_parquet('%s')", here::here("data/v11/attribution_programarea.parquet")))
+occ <- dq(sprintf("SELECT * FROM read_parquet('%s')", here::here("data/v11/occ_pairs.parquet")))
+cal <- safe(read.csv(here::here("data/v11/density_cal_factors_suit.csv")))
+src <- safe(jsonlite::read_json(here::here("data/v11/sources.json")))
+has_att <- !is.null(att) && all(c("control", "full2023", "v11") %in% att$variant)
+
+# the flags, by the snapshot column that records each (snapshot_scores.qmd)
+FLAGS <- c(vgpm_integrated = "VGPM_INTEGRATED", turtle_suit = "TURTLE_SUIT", turtle_rule = "TURTLE_RULE",
+           occ_rule = "OCC_RULE", region_weight = "REGION_WEIGHT", fold_density = "FOLD_DENSITY",
+           fold_density_cal = "FOLD_DENSITY_CAL", nc_atl_source = "NC_ATL_SOURCE",
+           share_basis = "SHARE_BASIS", range_fill = "RANGE_FILL", components_v11 = "COMPONENTS_V11",
+           worms_source = "WORMS_SOURCE")
+flags_of <- function(v) {
+  if (!has_att) return(NULL)
+  d <- att[att$variant == v, intersect(names(FLAGS), names(att)), drop = FALSE]
+  if (!nrow(d)) return(NULL)
+  vapply(d[1, , drop = FALSE], as.character, "")
+}
+fv <- function(x) ifelse(x == "TRUE", "1 (on)", ifelse(x == "FALSE", "0 (off)", paste0("`", x, "`")))
+fl_v11 <- flags_of("v11"); fl_ctl <- flags_of("control"); fl_cand <- flags_of("full2023")
+avec <- function(v, key) {
+  d <- att[att$variant == v & att$metric_key == key, ]
+  setNames(d$val, d$zone_value)
+}
+```
+
+v11 is the release that makes the across-the-nation score of v10 (@sec-release-v10) **robust**. It keeps both of v10's scores, the within-ecoregion one and the distribution share, with the same keys, the same reporting floor and the same composite, and changes what goes into them. Every change is a flag whose control value is off, and with every flag off the pipeline reproduces v10:
+
+- **primary productivity integrated over the whole year**, so a polar month without light counts as zero rather than being left out;
+- **our own distribution models for the sea turtles**, merged by the rule of the species listed by Distinct Population Segment, with their extinction risk beside the value rather than inside it;
+- **an occurrence rule**: a species is removed from an ecoregion where it has no record under adequate search effort, and down-weighted where it is recorded at a rate below its rate elsewhere;
+- **survey density models** for seabirds and cetaceans folded into the merge inside each survey's own domain, calibrated to the surface they replace, with the 2023 Atlantic seabird models;
+- **single counting**: a merged value is the suitability alone, so extinction risk enters a cell's score once, as the weight;
+- the component labels **Flora** and **Productivity**.
+
+Unlike v10, which changed only the scoring, v11 adds ingests and re-runs the merge and both scores, so the within-ecoregion scores move too.
+
+```{r}
+#| results: asis
+row11  <- doc_version_row(v11)
+listed <- nrow(row11) == 1 && !is.na(row11$ver[1])
+if (identical(doc_access(v11), "restricted")) cat(if (listed) sprintf(
+"::: {.callout-important}
+## Served on the review host only
+
+v11 is a restricted pre-release. It is served only through the signed-in review host: the [Atlas](%s) ([Scores lens](%s), [Species lens](%s)) and [this documentation](%s). It is never what a reader gets by default, and promoting it is a separate decision.
+:::
+", doc_atlas_url(v11), doc_atlas_url(v11, "scores"), doc_atlas_url(v11, "species"), doc_docs_url(v11)) else
+"::: {.callout-important}
+## Registered, not yet published
+
+v11 is registered as a restricted pre-release and its tables are not in the published registry yet. From publication it is served only through the signed-in review host (the Atlas and this documentation), never by default, and promoting it is a separate decision. The tables on this page that read v11's published tables fill when it is published.
+:::
+")
+```
+
+## Where v11 comes from
+
+```{r}
+#| results: asis
+rel  <- safe(doc_releases())
+rows <- if (is.null(rel)) NULL else rel[rel$ver %in% c("v8", "v10", "v11"), ]
+if (!is.null(rows) && nrow(rows)) {
+  rows <- rows[order(match(rows$ver, c("v8", "v10", "v11"))), ]
+  v11_kbl(data.frame(
+    Version  = rows$ver, Released = rows$released, Status = rows$status, Title = rows$title,
+    Parent   = ifelse(is.na(rows$prev) | !nzchar(rows$prev), "", rows$prev),
+    Grid     = paste0("`", rows$grid, "`"),
+    Datasets = n_fmt(rows$n_datasets), `Valid species` = n_fmt(rows$valid_species),
+    check.names = FALSE),
+    caption = sprintf("The lineage of v11, read from each release's own manifest and tables%s. Species counts are not comparable across releases (see the Releases page).",
+                      if (!"v11" %in% rows$ver) "; v11's row appears when it is published" else ""),
+    align = c("l", "l", "l", "l", "l", "l", "r", "r"))
+} else placeholder("The lineage table")
+```
+
+The lineage has three steps:
+
+1. **v8** is the data rebuild: the inputs of public v7 ingested whole-range on the global grid.
+2. **v10** is a scoring change on v8's data: the across-the-nation share family beside v8's within-ecoregion scores, with no ingest and no merge re-run.
+3. **v11** is a method change on v10: new inputs, a new merge, and both of v10's score families recomputed from it. Its control run (every flag off) must reproduce v10, and each method is a flag that can be turned off on its own.
+
+```{r}
+#| results: asis
+if (!is.null(ds10) && !is.null(ds11)) {
+  sc <- function(d) if ("is_scored" %in% names(d)) d$is_scored else rep(NA, nrow(d))
+  new <- ds11[!ds11$ds_key %in% ds10$ds_key & ds11$ds_key != "ms_merge", ]
+  if (nrow(new)) v11_kbl(data.frame(
+    Dataset = paste0("`", new$ds_key, "`"), Name = new$name_short,
+    Response = if ("response_type" %in% names(new)) new$response_type else "",
+    Scored = ifelse(is.na(sc(new)), "", ifelse(sc(new), "yes", "no")), check.names = FALSE),
+    caption = "Datasets v11 registers that v10 does not (`dataset`, both releases). A dataset that is not scored is registered for review or as evidence and enters no score.",
+    align = c("l", "l", "l", "l"))
+} else cat("*The datasets v11 adds are read from the `dataset` tables of v10 and v11; v11's has not been published yet.*\n\n")
+```
+
+## The method set
+
+Each rule is a flag read in one place (`libs/vars.R` of the workflows repository) and consumed by the stage it enters. The v11 values below are those of the run that is the release; the control values are those of the run that reproduces v10.
+
+```{r}
+#| results: asis
+what <- c(
+  VGPM_INTEGRATED  = "primary productivity integrated over the whole year, a month without a retrieval counting zero",
+  TURTLE_SUIT      = "the sea turtles' suitability: AquaMaps (`am`) or our own OBIS-method models (`ogm`)",
+  TURTLE_RULE      = "the sea turtles' merge rule: the multiplicative turtle rule (`turtle`) or the DPS rule (`dps`)",
+  OCC_RULE         = "the occurrence gate: a species leaves an ecoregion with no record under adequate effort",
+  REGION_WEIGHT    = "the encounter weight: a species' value in an ecoregion scaled by its record rate there",
+  FOLD_DENSITY     = "survey density models replace suitability inside each species' survey domain",
+  FOLD_DENSITY_CAL = "the calibration of a folded-in survey to the surface it replaces (`none`, `mass`, `suit`)",
+  NC_ATL_SOURCE    = "the Atlantic seabird density models: the 2018 set or the 2023 set",
+  SHARE_BASIS      = "the merged value of a range cell: `max(er_score, suitability)` (`taxon`) or the suitability alone (`cell`)",
+  RANGE_FILL       = "under the cell basis, the value of a range cell no model covers: `er`, `presence` or `mean`",
+  COMPONENTS_V11   = "the component labels: v10's or v11's (Flora, Productivity)",
+  WORMS_SOURCE     = "where the WoRMS taxonomy is read from")
+if (!is.null(fl_v11) && !is.null(fl_ctl)) {
+  k <- names(fl_v11)
+  v11_kbl(data.frame(
+    Flag = paste0("`", FLAGS[k], "`"), `v11` = fv(fl_v11[k]),
+    `Control (= v10)` = fv(fl_ctl[k]), Effect = unname(what[FLAGS[k]]), check.names = FALSE),
+    caption = "The flags of v11, as recorded by the v11 run and the control run (`snapshot_scores.qmd`, `data/v11/attribution/`). A flag at its control value in v11 is listed so that its absence is stated, not implied.",
+    align = c("l", "l", "l", "l"))
+} else cat("*The flag values are read from the committed run snapshots in `data/v11/`, which this build could not read.*\n\n")
+```
+
+```{r}
+#| results: asis
+if (!is.null(mth11) && nrow(mth11)) {
+  v11_kbl(data.frame(Rule = paste0("`", mth11$method_key, "`"), Value = mth11$value,
+                     Meaning = if ("description" %in% names(mth11)) mth11$description else ""),
+          caption = "The rules v11 states as data (`release_method`).",
+          align = c("l", "l", "l"))
+} else cat("*The `release_method` rows of v11 are not in a published table or manifest yet.*\n\n")
+```
+
+## The rules
+
+The merge and the scoring that the rules below change are described in @sec-model-merging`r if (identical(safe(doc_manifest()$id_field), "mdl_key")) " (the order the stages run in: @sec-merge-sequence)"` and the Scoring chapter`r if (isTRUE(safe(doc_has_share()))) " (@sec-share)"`. The definitions are repeated here so that this page can be read on its own.
+
+### Productivity over the whole year {#sec-v11-productivity}
+
+Every release before v11 averages the satellite net primary productivity (@sec-primary-productivity) over the months that have a retrieval. In the Bering Sea and the Arctic a winter month has none (polar night, ice), so a "year" there was the mean of the bloom months alone, and the Arctic Program Areas carried productivity well above what is measured in situ. Under a within-ecoregion rescale the error barely mattered; against the national average it does. v11 integrates the year: for cell $c$, year $y$, month $m$ with mean daily rate $r_{c,m,y}$ and $d_m$ days,
+
+$$
+\bar r_{c,y} = \frac{1}{D_y} \sum_{m=1}^{12} d_m \, r_{c,m,y}, \qquad r_{c,m,y} = 0 \text{ for a month without a retrieval}
+$$ {#eq-v11-vgpm}
+
+where $D_y$ is the number of days in the year (366 in a leap year). A cell never observed stays empty. The annual rates are then averaged over the years of the record as before. The rule is `msens::vgpm_annual_integrate()`.
+
+### Sea turtles: our own models, on the DPS rule {#sec-v11-turtles}
+
+Two flags change the sea turtles, and they are measured separately.
+
+**Suitability (`TURTLE_SUIT=ogm`).** The suitability of the `r if (is.na(n_og)) "" else paste0(n_fmt(n_og), " ")`sea turtles comes from our own distribution models (dataset `og`), fitted with the OBIS / MPA Europe pipeline to occurrence records on the global 0.05° grid: an ensemble of three algorithms, the median kept continuous as probability × 100, its thresholds recorded and not applied. Inside the footprint of these models it replaces AquaMaps, the way AquaX replaced AquaMaps in v9.
+
+**Rule (`TURTLE_RULE=dps`).** Every release since v4b merged the turtles by multiplying extinction risk into the value, $\max(1, \mathrm{round}(\text{er}_c \cdot \text{suit}_c / 100))$, so their drawn surface was a weight rather than a distribution. v11 merges them like the species listed by Distinct Population Segment (`msens::dps_sql()`, the rule v9 introduced for the NMFS DPS species, which v10 did not carry and v11 carries again`r if (is.na(n_dps)) "" else paste0(" for ", n_fmt(n_dps), " species")`): the value is the suitability inside the extinction-risk footprint, the per-cell risk (the SWOT and NMFS DPS surface, with critical habitat joining the footprint at its own status) is kept beside it, and the score multiplies the two. Where a model covers the cell a turtle still scores risk times suitability, now without the rounding and the floor of 1; a footprint cell no model covers takes the fill of @sec-v11-single-counting instead of a suitability of 1; and the Atlas can draw the habitat and the risk as two layers.
+
+```{r}
+#| results: asis
+if (!is.null(er_mode)) cat(sprintf(
+  "In v11, %s scored species carry a per-cell extinction risk (`taxon.er_mode = 'cell'`), %s of them sea turtles, and %s carry one risk score for the whole species (`taxon`); %s.\n\n",
+  n_fmt(n_cell), n_fmt(n_turtle_cell), n_fmt(n_taxon),
+  if (any(er_mode$er_mode == "premultiplied")) sprintf("%s are still premultiplied", n_fmt(sum(er_mode$n[er_mode$er_mode == "premultiplied"]))) else "none is premultiplied any more"))
+```
+
+### Single counting {#sec-v11-single-counting}
+
+From v4 through v10 a range cell of a species with an expert range is valued $\max(\text{er}_s, \text{suit}_{s,c})$: the governing extinction-risk score is the floor of the merged value, and the score multiplies by the same risk again, so a range cell no model covers scores $\text{er}_s^2/100$ and the risk shapes the distribution as well as weighting it. v11 counts the risk once (`SHARE_BASIS=cell`). For species $s$ and range cell $c$:
+
+$$
+v_{s,c} =
+\begin{cases}
+\text{suit}_{s,c} & \text{if a suitability model covers } c \\
+\bar{v}_s = \operatorname{mean}_{c' \in M_s} \text{suit}_{s,c'} & \text{if not, and the species has modelled range cells } M_s \neq \varnothing \\
+100 & \text{if the species has no modelled range cell}
+\end{cases}
+$$ {#eq-v11-value}
+
+and the cell score is $w_{s,c}\, v_{s,c} / 100$ with $w$ the governing `er_score`, or the per-cell risk for a species that carries one. The fill of an unmodelled range cell (`RANGE_FILL=mean`) is the species' own mean, so it depends neither on the risk score nor on a ceiling; for a surveyed species it is the calibrated survey mean over its domain. The rule is `msens::merge_sql(basis = "cell", fill = "mean")`, and `msens::dps_sql(fill = "mean")` for the species with a per-cell risk. AquaMaps-only species were single-counted already and are unchanged.
+
+### Where the record places a species {#sec-v11-occurrence}
+
+v7c, a patch of v7, removed sea turtles from the East Bering Sea and the North Atlantic right whale from the Gulf of America by a hand-built evidence table (@sec-release-v7c). v10 carries no such exclusion. v11 applies one rule to every scored species instead, judged per species and ecoregion on 0.5° blocks of OBIS records (`msens::occurrence_rule()`): a block is searched if it holds a record of the species' effort group or of the species itself, and the species' rate in the ecoregion (blocks with its record over blocks searched) is tested against its rate in its other ecoregions.
+
+- **The gate (`OCC_RULE`).** An ecoregion where none of the searched blocks holds a record, and the absence is significant against the rate elsewhere, loses the species: its cells there are dropped from the merged surface, not set to zero. Critical habitat and core areas are never dropped, a narrow-range species is never dropped, and an ecoregion that was not searched is kept ("unsampled is unknown, not absent").
+- **The weight (`REGION_WEIGHT`).** An ecoregion where the species is recorded, but at a rate below its rate elsewhere, keeps it at a reduced value:
+
+$$
+w_{s,e} = \min\!\left(1,\; \frac{\text{rate}_{s,e}}{\text{rate}_{s,\neg e}}\right), \qquad v'_{s,c} = w_{s,e(c)}\, v_{s,c}
+$$ {#eq-v11-weight}
+
+where $e(c)$ is the ecoregion covering most of cell $c$ (`msens::encounter_weight()`, `msens::zone_adjust_sql()`). Critical habitat is exempt, and the weight scales the value only; the risk layer is never adjusted. Under the within-ecoregion rescale a weight common to a whole ecoregion would cancel, which is why v7c dropped rather than weighted; the share has no rescale, so the weight reaches the score.
+
+```{r}
+#| results: asis
+if (is.null(occ)) {
+  cat("*The gated and weighted pairs are read from `data/v11/occ_pairs.parquet`, which this build could not read.*\n\n")
+} else {
+  occ$gated <- occ$w_reason == "dropped"
+  by <- occ |> group_by(sp_cat) |>
+    summarise(g_pairs = sum(gated), g_spp = n_distinct(mdl_key[gated]),
+              w_pairs = sum(!gated), w_spp = n_distinct(mdl_key[!gated]),
+              w_med = if (any(!gated)) median(w[!gated]) else NA_real_, .groups = "drop")
+  v11_kbl(data.frame(
+    Component = comp_lab(by$sp_cat), `Gated pairs` = n_fmt(by$g_pairs), `Gated species` = n_fmt(by$g_spp),
+    `Weighted pairs` = n_fmt(by$w_pairs), `Weighted species` = n_fmt(by$w_spp),
+    `Median weight` = f2(by$w_med), check.names = FALSE),
+    caption = sprintf("Species × ecoregion pairs the occurrence rule gates (weight 0) or weights (0 < w < 1), by component (`occ_pairs.parquet`, from `zone_weights_occ.csv`). In all, %s pairs of %s species are gated and %s pairs of %s species weighted.",
+      n_fmt(sum(occ$gated)), n_fmt(n_distinct(occ$mdl_key[occ$gated])),
+      n_fmt(sum(!occ$gated)), n_fmt(n_distinct(occ$mdl_key[!occ$gated]))),
+    align = c("l", rep("r", 5)))
+  # v7c's hand-built pairs against the rule, over the ecoregions v7c ruled on and the Gulf of Alaska
+  # (where v7c kept every recorded turtle)
+  x7 <- safe(read.csv(here::here("data/v7c/zone_exclusions.csv")))
+  if (!is.null(x7)) {
+    occ$taxon_id <- sub("^ms_merge\\|WORMS:", "", occ$mdl_key)
+    o7 <- occ[paste(occ$taxon_id, occ$zone_key) %in% paste(x7$taxon_id, x7$zone_key) |
+              (occ$sp_cat == "turtle" & occ$zone_key == "GOA"), ]
+    pr <- unique(rbind(data.frame(taxon_id = as.character(x7$taxon_id), zone_key = x7$zone_key, common_name = x7$common_name),
+                       data.frame(taxon_id = o7$taxon_id, zone_key = o7$zone_key, common_name = o7$common_name)))
+    pr <- pr[!duplicated(pr[, c("taxon_id", "zone_key")]), ]
+    pr <- pr[order(pr$zone_key, pr$common_name), ]
+    m  <- match(paste(pr$taxon_id, pr$zone_key), paste(o7$taxon_id, o7$zone_key))
+    in7 <- paste(pr$taxon_id, pr$zone_key) %in% paste(x7$taxon_id, x7$zone_key)
+    v11_kbl(data.frame(
+      Species = pr$common_name, Ecoregion = pr$zone_key,
+      v7c = ifelse(in7, "dropped", "kept"),
+      v11 = ifelse(is.na(m), "kept (weight 1)", ifelse(o7$gated[m], "gated", sprintf("weight %s", f3(o7$w[m])))),
+      check.names = FALSE),
+      caption = "v7c's hand-built decisions against v11's rule: every pair v7c dropped, and the sea turtles of the Gulf of Alaska (`data/v7c/zone_exclusions.csv`, `occ_pairs.parquet`). v7c dropped a pair or kept it at its v7 value; v11 gates it, weights it, or keeps it at weight 1.",
+      align = c("l", "l", "l", "l"))
+  }
+  tt <- occ[occ$sp_cat == "turtle" | grepl("Right Whale$", occ$common_name), ]
+  if (nrow(tt)) {
+    tt <- tt[order(tt$common_name, tt$zone_key), ]
+    v11_kbl(data.frame(
+      Species = tt$common_name, Ecoregion = tt$zone_key,
+      `Blocks searched` = n_fmt(tt$n_searched), `Blocks with a record` = n_fmt(tt$n_occupied),
+      Records = n_fmt(tt$n_records),
+      v11 = ifelse(tt$gated, "**gated**", sprintf("weight %s", f3(tt$w))), check.names = FALSE),
+      caption = "Every sea-turtle and right-whale pair the rule gates or weights, across the study area (a pair not listed keeps weight 1), with the search counts behind it. Ecoregion keys are those of the ecoregion zone set. A gated pair can still have a record on file (the rule labels it a documented occurrence only); what it lacks is a record in the blocks searched for the species.",
+      align = c("l", "l", "r", "r", "r", "l"))
+  }
+}
+```
+
+### Survey densities {#sec-v11-densities}
+
+Three sets of survey density models enter the merge (`FOLD_DENSITY`): NOAA SEFSC cetacean and sea-turtle models for the Gulf of America (`gm`), NOAA NCCOS seabird models for the Pacific and the Atlantic (`nc`), and NOAA SWFSC cetacean models for the California Current (`cce`). Each enters as its annual surface, mapped onto 1–100 by the population percentile; interval (monthly or seasonal) surfaces enter no score. The Atlantic seabird models are the 2023 set (`NC_ATL_SOURCE=2023`), the MDAT Avian Relative Density v3 package of @winship2023, monthly on 10 km cells, which replaces the 2018 set.
+
+```{r}
+#| results: asis
+if (!is.null(dens_by)) cat(sprintf(
+  "In v11, %s species have an annual density surface (%s); %s of them are sea turtles or DPS-listed species, which keep their own rule and leave their density rows out, so %s merge by the density rule.\n\n",
+  n_fmt(n_dens), paste(sprintf("`%s` %s", dens_by$ds_key, n_fmt(dens_by$n)), collapse = ", "),
+  n_fmt(n_dens_own), n_fmt(n_dens - n_dens_own)))
+```
+
+Inside its own survey domain a species' density surface replaces its suitability; the domain joins its range footprint, and the species merges by the DPS rule with its governing `er_score` as the floor under the per-cell risk, so an Endangered whale's survey pattern shows beside its risk instead of being painted a flat 100. A survey knows the pattern inside its domain and nothing about how much of the species the domain holds, so its values are **calibrated** to the surface they replace (`FOLD_DENSITY_CAL=suit`, `msens::density_cal_factors_sql()`):
+
+$$
+f_s = \frac{\operatorname{mean}_{c \in P_s} \text{prior}_{s,c}}{\operatorname{mean}_{c \in P_s} \text{dens}_{s,c}}, \qquad
+\text{dens}'_{s,c} = \min(100,\; f_s\, \text{dens}_{s,c})
+$$ {#eq-v11-calibration}
+
+where $P_s$ is the set of domain cells that had a prior value, and the prior is the suitability where a suitability model covers the cell and the governing `er_score` where only a range does. A species with no prior anywhere keeps $f_s = 1$ and is flagged.
+
+```{r}
+#| results: asis
+if (!is.null(cal) && nrow(cal)) cat(sprintf(
+  "The factors are computed for every species with an annual density surface (%s): %s are calibrated, the median factor is %s (range %s to %s), and %s are scaled down (`density_cal_factors_suit.csv`).\n\n",
+  n_fmt(nrow(cal)), n_fmt(sum(cal$calibrated)), formatC(stats::median(cal$f), format = "g", digits = 3),
+  formatC(min(cal$f), format = "g", digits = 3), formatC(max(cal$f), format = "g", digits = 3),
+  n_fmt(sum(cal$f < 1))))
+```
+
+### Component labels {#sec-v11-components}
+
+```{r}
+#| results: asis
+lab_on <- !is.null(mth11) && "components_labels" %in% mth11$method_key &&
+  identical(as.character(mth11$value[mth11$method_key == "components_labels"][1]), "v11")
+if (!is.null(comp)) {
+  ch <- comp[comp$label != comp$label_v10, ]
+  cat(sprintf("The scored components and their keys are unchanged. %s labels change (`COMPONENTS_V11`, `msens::components_registry()`): %s. The taxa called primary producers are seaweeds, seagrasses, mangroves and other algae; the new names keep them apart from the satellite productivity layer.%s\n\n",
+    c("No", "One", "Two", "Three")[min(nrow(ch), 3) + 1], paste(sprintf("%s becomes **%s** (`%s`)", ch$label_v10, ch$label, ch$key), collapse = "; "),
+    if (lab_on) " v11's `release_method` states the v11 labels." else ""))
+}
+```
+
+## What moved: the Program Areas
+
+v11 changes both score families, so both are compared with v10. The within-ecoregion composite is a 0–100 index inside each ecoregion; the across-the-nation composite is 100 at the national average. Their differences are on different scales and are never put in one column.
+
+```{r}
+#| results: asis
+if (!pub10 || !pub11) placeholder("The comparison of v11 with v10") else {
+  hs <- list(`Within ecoregion` = dstat(vec(zm10, K_WITHIN), vec(zm11, K_WITHIN)),
+             `Across the nation` = dstat(vec(zm10, K_NAT), vec(zm11, K_NAT)))
+  hs <- Filter(Negate(is.null), hs)
+  v11_kbl(data.frame(
+    Composite = names(hs), `Program Areas` = vapply(hs, \(s) n_fmt(s$n), ""),
+    `mean |Δ|` = vapply(hs, \(s) f1(s$mean), ""), `max |Δ|` = vapply(hs, \(s) f1(s$max), ""),
+    at = vapply(hs, \(s) pa_label(s$at), ""), RMSE = vapply(hs, \(s) f1(s$rmse), ""),
+    r = vapply(hs, \(s) f3(s$r), ""), `Spearman ρ` = vapply(hs, \(s) f3(s$rho), ""), check.names = FALSE),
+    caption = sprintf("v10 → v11 on the Program Areas both score, read from both releases' `zone_metric` (`%s`, `%s`).", K_WITHIN, K_NAT),
+    align = c("l", rep("r", 7)))
+}
+```
+
+```{r}
+#| results: asis
+if (pub10 && pub11) {
+  w10 <- vec(zm10, K_WITHIN); w11 <- vec(zm11, K_WITHIN)
+  n10 <- vec(zm10, K_NAT);    n11 <- vec(zm11, K_NAT)
+  c10 <- vec(zm10, "score_v10_n_components_global"); c11 <- vec(zm11, "score_v10_n_components_global")
+  k <- names(sort(n11, decreasing = TRUE)); k <- c(k, setdiff(union(names(w11), names(n10)), k))
+  dd <- function(a, b) ifelse(is.na(a) | is.na(b), "", sprintf("%+.1f", b - a))
+  v11_kbl(data.frame(
+    `Program Area` = pa_label(k),
+    `within v10` = f1(w10[k]), `within v11` = f1(w11[k]), `Δ within` = dd(w10[k], w11[k]),
+    `nation v10` = f1(n10[k]), `nation v11` = f1(n11[k]), `Δ nation` = dd(n10[k], n11[k]),
+    `rank v10` = rank_of(n10)[k], `rank v11` = rank_of(n11)[k],
+    components = ifelse(is.na(c10[k]) | is.na(c11[k]), "", ifelse(c10[k] == c11[k], as.character(c11[k]), sprintf("%s → %s", c10[k], c11[k]))),
+    check.names = FALSE),
+    caption = "Composite score per Program Area in v10 and v11, sorted by v11's across-the-nation composite. Ranks are of the across-the-nation composite, highest first. Components = the number of components the across-the-nation composite averages (`score_v10_n_components_global`). n/r = not reportable.",
+    align = c("l", rep("r", 9)))
+}
+```
+
+### By component
+
+```{r}
+#| results: asis
+if (pub10 && pub11) {
+  keys <- sort(unique(zm11$metric_key[grepl("^extrisk_.*_v10_global$", zm11$metric_key)]))
+  keys <- c(keys, "primprod_v10")
+  stem <- ifelse(keys == "primprod_v10", "primprod", sub("^extrisk_(.*)_v10_global$", "\\1", keys))
+  ct <- lapply(seq_along(keys), \(i) {
+    a <- vec(zm10, keys[i]); b <- vec(zm11, keys[i]); s <- dstat(a, b)
+    data.frame(Component = comp_lab(stem[i]), `reported v10` = sum(!is.na(a)), `reported v11` = sum(!is.na(b)),
+               `mean |Δ|` = if (is.null(s)) "" else f1(s$mean), `max |Δ|` = if (is.null(s)) "" else f1(s$max),
+               at = if (is.null(s)) "" else pa_label(s$at),
+               `added in` = paste(sort(setdiff(names(b), names(a))), collapse = " "),
+               `removed in` = paste(sort(setdiff(names(a), names(b))), collapse = " "), check.names = FALSE)
+  })
+  v11_kbl(do.call(rbind, ct),
+    caption = "Across-the-nation component scores (`extrisk_{category}_v10_global`, `primprod_v10`), v10 → v11 over the Program Areas that report the component in both. A component is added or removed in a Program Area when its scored cells cross the reporting floor; below it there is no score, never a zero.",
+    align = c("l", "r", "r", "r", "r", "l", "l", "l"))
+}
+```
+
+## Which rule moved which score
+
+A release cannot say which of its rules moved a score, so the build answers it by runs. The **control** run has every flag at its v10 value. The **candidate** has the `r if (has_att) sum(fl_cand != fl_ctl) else "first"` method flags on, before the `r if (has_att) sum(fl_v11 != fl_cand) else "last"` decided last (`r if (has_att) paste0("\x60", FLAGS[names(fl_v11)[fl_v11 != fl_cand]], "\x60", collapse = ", ") else "SHARE_BASIS, RANGE_FILL, FOLD_DENSITY_CAL"`). Each one-flag run is the candidate with one flag back at its control value, so the candidate minus that run is what the flag owns. The runs are made by `scripts/attribution_runs.sh` and recorded by `snapshot_scores.qmd`; only the v11 run is the release.
+
+```{r}
+#| results: asis
+if (!has_att) cat("*The attribution is read from the committed run snapshots in `data/v11/`, which this build could not read.*\n\n") else {
+  ctl_v <- fl_ctl; cand_v <- fl_cand
+  vars  <- setdiff(unique(att$variant), c("control", "full2023"))
+  one <- do.call(rbind, lapply(vars, \(v) {
+    f <- flags_of(v); d <- names(f)[f != cand_v[names(f)]]
+    # a one-flag run: exactly one flag differs, and it is the candidate's flag set back to its control value
+    if (length(d) == 1 && cand_v[d] != ctl_v[d] && f[d] == ctl_v[d]) data.frame(variant = v, flag = FLAGS[d]) else NULL
+  }))
+  lad <- do.call(rbind, lapply(seq_len(nrow(one)), \(i) {
+    sn <- dstat(avec(one$variant[i], K_NAT), avec("full2023", K_NAT))
+    sw <- dstat(avec(one$variant[i], K_WITHIN), avec("full2023", K_WITHIN))
+    data.frame(flag = one$flag[i], variant = one$variant[i], n = sn$n,
+               n_mean = sn$mean, n_max = sn$max, n_at = ifelse(sn$max > 0, sn$at, NA),
+               w_mean = sw$mean, w_max = sw$max, w_at = ifelse(sw$max > 0, sw$at, NA))
+  }))
+  lad <- lad[order(-lad$n_mean), ]
+  v11_kbl(data.frame(
+    Flag = paste0("`", lad$flag, "`"), Run = paste0("`", lad$variant, "`"),
+    `nation mean |Δ|` = f2(lad$n_mean), `nation max |Δ|` = f1(lad$n_max), `at` = ifelse(is.na(lad$n_at), "", pa_label(lad$n_at)),
+    `within mean |Δ|` = f2(lad$w_mean), `within max |Δ|` = f1(lad$w_max), `at ` = ifelse(is.na(lad$w_at), "", pa_label(lad$w_at)),
+    check.names = FALSE),
+    caption = sprintf("What each flag owns: the candidate (`full2023`) minus the run with that flag at its control value, over the %s Program Areas, for the across-the-nation composite (`score_v10_equalweights_global`) and the within-ecoregion composite. Sorted by the across-the-nation mean.", n_fmt(max(lad$n))),
+    align = c("l", "l", "r", "r", "l", "r", "r", "l"))
+
+  # the flags compound: the whole change against the sum of the one-flag deltas
+  cn <- avec("full2023", K_NAT); k0 <- avec("control", K_NAT); kk <- intersect(names(cn), names(k0))
+  sum_d <- Reduce(`+`, lapply(one$variant, \(v) (cn - avec(v, K_NAT)[names(cn)])[kk]))
+  inter <- (cn[kk] - k0[kk]) - sum_d
+  im <- which.max(abs(inter))
+  cat(sprintf("\nThe flags compound. On the across-the-nation composite the whole change from the control to the candidate is a mean of %s points (largest %s, %s), and the one-flag deltas do not add up to it: in %s they sum to %s against a whole change of %s.\n\n",
+    f1(mean(abs(cn[kk] - k0[kk]))), f1(max(abs(cn[kk] - k0[kk]))), pa_label(kk[which.max(abs(cn[kk] - k0[kk]))]),
+    pa_label(kk[im]), sprintf("%+.1f", sum_d[im]), sprintf("%+.1f", (cn[kk] - k0[kk])[im])))
+}
+```
+
+```{r}
+#| results: asis
+if (has_att) {
+  chain <- c("control", "full2023", "full2023_basis_mean", "v11")
+  chain <- chain[chain %in% att$variant]
+  steps <- do.call(rbind, lapply(seq_len(length(chain) - 1), \(i) {
+    a <- chain[i]; b <- chain[i + 1]; fa <- flags_of(a); fb <- flags_of(b)
+    d <- names(fb)[fb != fa[names(fb)]]
+    sn <- dstat(avec(a, K_NAT), avec(b, K_NAT)); sw <- dstat(avec(a, K_WITHIN), avec(b, K_WITHIN))
+    data.frame(Step = sprintf("`%s` → `%s`", a, b),
+               Sets = paste(sprintf("`%s=%s`", FLAGS[d], ifelse(fb[d] == "TRUE", "1", ifelse(fb[d] == "FALSE", "0", fb[d]))), collapse = ", "),
+               nm = f2(sn$mean), nx = f1(sn$max), wm = f2(sw$mean), wx = f1(sw$max))
+  }))
+  sn <- dstat(avec("control", K_NAT), avec("v11", K_NAT)); sw <- dstat(avec("control", K_WITHIN), avec("v11", K_WITHIN))
+  steps <- rbind(steps, data.frame(Step = "`control` → `v11`", Sets = "all of the above",
+                                   nm = f2(sn$mean), nx = f1(sn$max), wm = f2(sw$mean), wx = f1(sw$max)))
+  names(steps) <- c("Step", "Sets", "nation mean |Δ|", "nation max |Δ|", "within mean |Δ|", "within max |Δ|")
+  v11_kbl(steps,
+    caption = "From the control to the release, in the order the methods were decided: the candidate's flags, then single counting with the mean fill, then the calibration prior. The last row is the whole change, v10 → v11.",
+    align = c("l", "l", "r", "r", "r", "r"))
+}
+```
+
+```{r}
+#| results: asis
+# the attribution's endpoints are the releases: the control run is v10, the v11 run is v11
+if (has_att) {
+  chk <- function(v, zm, ver) {
+    if (is.null(zm) || !nrow(zm)) return(NULL)
+    keys <- intersect(unique(att$metric_key[att$variant == v]), unique(zm$metric_key))
+    if (!length(keys)) return(NULL)
+    max(vapply(keys, \(kk) { s <- dstat(avec(v, kk), vec(zm, kk)); if (is.null(s)) 0 else s$max }, 0))
+  }
+  m10 <- if (pub10) chk("control", zm10, v10) else NULL
+  m11 <- if (pub11) chk("v11", zm11, v11) else NULL
+  cat(sprintf("Against the published tables, the control run differs from v10's Program-Area metrics by at most %s and the v11 run from v11's by at most %s.\n\n",
+    if (is.null(m10)) "[v10 not readable]" else format(signif(m10, 2)),
+    if (is.null(m11)) "[v11 not published yet]" else format(signif(m11, 2))))
+}
+```
+
+## What v11 does not contain
+
+- **A range constraint for species modelled only by AquaMaps.** `r if (is.null(den11)) "Most scored species are" else sprintf("%s of the %s scored species are", n_fmt(den11$aquamaps), n_fmt(den11$n))` modelled by AquaMaps alone, and their footprint is not constrained by an expert range. A rule for it (keep the connected parts of the footprint that hold a good AquaMaps cell or a record) was explored for v11 and is not applied.
+- **AquaX.** Its models are clipped to US waters and cannot supply the whole-range denominator of the share; no AquaX cell is in v11's merge.
+- **Distribution models for the species that have none,** and our own models for any species but the sea turtles.
+- **Survey density models not yet ingested**, among them the Atlantic cetacean models of @roberts2016; and every interval density surface, which stays in the Atlas.
+- **WoRMS read from the OBIS snapshot.** The taxonomy is downloaded as in v10 (`WORMS_SOURCE`).
+
+## Caveats
+
+- **The occurrence rule is only as good as the record.** A gated pair is a species that the record does not place in an ecoregion that was searched for it; a weighted pair is one recorded less often there than elsewhere. Seasonal and coastal stocks, and species whose records sit in a few places, are the hard cases; the rule's overrides (critical habitat, core areas, narrow-range species, unsearched ecoregions) exist for them, and the full table of pairs is in the workflows repository.
+- **The survey calibration fixes the level, not the pattern.** A calibrated survey keeps its pattern inside its domain and takes the mass of the surface it replaces, so how much of a species a survey domain holds still comes from the suitability model or the range.
+- **The mean fill is a modelling choice.** An unmodelled range cell is worth the species' average modelled cell; it is not evidence that the species is there at that level.
+- **The attribution describes runs, not the release.** Each one-flag delta is measured on the candidate, before single counting and the calibration were decided, and the flags compound, so the deltas are a guide to which rule moved a score, not a decomposition of the v10 → v11 change.
+
+## Reproducing v11
+
+The rules are msens functions, each guarded by unit tests with one synthetic fixture per rule: `vgpm_annual_integrate()` (`test-productivity.R`: twelve months equal the day-weighted mean, six observed months give 100 × days/365), `merge_sql(basis, fill)` and `dps_sql(fill, er_floor)` (`test-merge.R`: both bases, every fill, the defaults reproduce the earlier SQL byte for byte, a density taxon keeps its national floor), `occurrence_rule()` and `occurrence_exclusions()` (`test-occurrence.R`: the East Bering Sea case falls out of the rule, each override), `encounter_weight()` and `zone_adjust_sql()` (`test-encounter_weight.R`, `test-exclude.R`), `density_cal_factors_sql()` and `density_prior_sql()` (`test-density_cal.R`) and `components_registry()` (`test-components.R`).
+
+The pipeline is the workflows repository at `ver = v11`: `scripts/run_version.sh` renders every stage in order (`--control`, every flag off, reproduces v10), `scripts/attribution_runs.sh v11` makes the release run with the decided flags and the one-flag runs by name, and `snapshot_scores.qmd` records each run's Program-Area scores in `data/v11/attribution/`. The evidence on this page was copied from that checkout by `libs/v11-copy-data.R`.
+
+```{r}
+#| results: asis
+if (!is.null(src)) cat(sprintf("*Evidence copied from workflows `%s` (branch `%s`)%s.*\n\n",
+  src$workflows_commit, src$workflows_branch,
+  if (length(src$uncommitted)) paste0("; not yet committed there: ", paste0("`", unlist(src$uncommitted), "`", collapse = ", ")) else ""))
+```

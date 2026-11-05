@@ -288,3 +288,39 @@ v10:
   zones: >
     The across-the-nation family is written for the 20 **Program Areas**, the 12 ecoregions and
     the 5 subregions, beside the within-ecoregion scores v8 already reports. The two are never mixed in one column or one composite.
+
+v11:
+  datasets: >
+    **Our own distribution models for the sea turtles** (`og`, fitted with the OBIS / MPA Europe
+    pipeline on the global grid) replace AquaMaps as their suitability inside each model's footprint. **Survey density models** enter
+    the merge for the first time: NOAA SEFSC cetaceans in the Gulf of America (`gm`), NOAA NCCOS seabirds
+    in the Pacific and the Atlantic (`nc`, the Atlantic now from the 2023 MDAT v3 models of BOEM OCS
+    Study 2023-060) and NOAA SWFSC cetaceans in the California Current (`cce`), each as its annual
+    surface inside its own survey domain. v9's **per-cell extinction risk for the NMFS DPS-listed
+    species** (`dps_nmfs`) returns. An OBIS record buffer (`rng_occ`) is registered as the evidence for
+    the occurrence rule and is not scored; AquaX is not used.
+  methods: >
+    **Primary productivity is integrated over the whole year**, a month without a retrieval (polar
+    night, ice) counting zero, which removes the Arctic's over-productivity. The **sea turtles merge by
+    the DPS rule**: the value is the suitability, the per-cell extinction risk rides beside it, and the
+    score multiplies the two. **One occurrence rule for every species** replaces v7c's hand-built
+    exclusions: a species leaves an ecoregion where it has no OBIS record under adequate search effort
+    (critical habitat, core areas, narrow-range species and unsearched ecoregions excepted) and is
+    down-weighted, by its record rate there over its rate elsewhere, where it is recorded but rarely. A
+    **folded-in survey** replaces suitability inside its domain and is calibrated to the surface it
+    replaces. **Extinction risk is counted once**: a range cell is valued by its suitability, not by the
+    larger of risk and suitability, and a range cell no model covers takes the mean of the species'
+    modelled cells. Both of v10's score families are kept and recomputed; every rule is a flag, and with
+    every flag off the pipeline reproduces v10.
+  scope: >
+    The study area, the definition of a valid species and the scored components are v10's. Which taxa
+    count where changes: the occurrence rule removes species from ecoregions the record does not place
+    them in, and lowers them where it places them rarely. No range constraint is applied to species
+    modelled by AquaMaps alone.
+  technology: >
+    The components primary producers and primary productivity are labelled **Flora** and
+    **Productivity**. Every species with a per-cell extinction risk, the sea turtles included, carries
+    it beside its value (`er_mode = 'cell'`), so habitat and risk can be drawn as two layers.
+  zones: >
+    As in v10: the within-ecoregion and across-the-nation families for the **Program Areas**, the
+    ecoregions and the subregions, never mixed in one column or one composite.
