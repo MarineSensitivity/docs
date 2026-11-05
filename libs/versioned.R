@@ -854,14 +854,25 @@ doc_zone_metric <- function(ver, keys = NULL, like = NULL, fld = "programarea_ke
 
 #' Where each scored species' global denominator came from, for a release's `taxon_denom`.
 #'
-#' `taxon_denom` (one row per scored species; `source` says which branch of
-#' `msens::denom_sql()` supplied the denominator) is written by `build_taxon_global_total`.
-#' Returns a data frame (`source`, `n`, `kind` in merged_global | aquamaps | fallback |
-#' unresolved | other) or NULL when the release does not publish the table - which is
-#' the case until `taxon_denom` is added to the release's staged tables.
-doc_taxon_denom_counts <- function(ver = "v10") {
-  d <- doc_tbl_of(ver, "taxon_denom",
-                  "SELECT source, count(*) AS n FROM taxon_denom GROUP BY 1 ORDER BY 2 DESC")
+#' `taxon_denom` (`source` says which branch of `msens::denom_sql()` supplied the
+#' denominator) is written by `build_taxon_global_total` for every merged taxon with US
+#' cells, not only the scored ones, so the counts are joined to `taxon` and restricted to
+#' the species the share family scores: `msens::share_sql()`'s defaults, `is_valid_usa AND
+#' is_marine` in one of the seven scored categories (no reptile or amphibian). Returns a
+#' data frame (`source`, `n`, `kind` in merged_global | aquamaps | fallback | unresolved |
+#' other) or NULL when the release does not publish `taxon_denom` and `taxon`.
+doc_taxon_denom_counts <- function(ver = "v10",
+    cats = c("bird", "coral", "fish", "invertebrate", "mammal", "primary_producer", "turtle")) {
+  m <- doc_manifest_of(ver)
+  if (is.null(m) || !all(c("taxon_denom", "taxon") %in% names(m$tables))) return(NULL)
+  d <- tryCatch(DBI::dbGetQuery(.doc_con(), sprintf(
+    "SELECT d.source, count(*) AS n
+       FROM read_parquet('%s') d
+       JOIN read_parquet('%s') t USING (ms_merge_key)
+      WHERE t.is_valid_usa AND t.is_marine AND t.sp_cat IN (%s)
+      GROUP BY 1 ORDER BY 2 DESC",
+    m$tables[["taxon_denom"]], m$tables[["taxon"]],
+    paste0("'", cats, "'", collapse = ", "))), error = function(e) NULL)
   if (is.null(d) || !nrow(d)) return(NULL)
   d$kind <- ifelse(d$source == "merged_global", "merged_global",
             ifelse(d$source == "aquamaps", "aquamaps",
@@ -872,14 +883,19 @@ doc_taxon_denom_counts <- function(ver = "v10") {
 
 #' Counts of how a release's scored species obtained their global denominator.
 #'
-#' A named list (`n`, `merged_global`, `aquamaps`, `fallback`, `unresolved`, `other`) from
+#' A named list (`n`, `merged_global`, `aquamaps`, `fallback`, `unresolved`, `other`, and
+#' `fallback_by`, the fallback count per curated method as text) from
 #' [doc_taxon_denom_counts()], or NULL when `taxon_denom` is not published.
 doc_taxon_denom_summary <- function(ver = "v10") {
   d <- doc_taxon_denom_counts(ver)
   if (is.null(d)) return(NULL)
   k <- function(x) sum(d$n[d$kind == x])
+  fb <- d[d$kind == "fallback", ]
   list(n = sum(d$n), merged_global = k("merged_global"), aquamaps = k("aquamaps"),
-       fallback = k("fallback"), unresolved = k("unresolved"), other = k("other"))
+       fallback = k("fallback"), unresolved = k("unresolved"), other = k("other"),
+       # e.g. "9 `endemic`, 3 `literature`": the curated fallback by its stated method
+       fallback_by = if (nrow(fb)) paste(sprintf("%s `%s`", format(fb$n, big.mark = ","),
+         sub("^fallback:", "", fb$source)), collapse = ", ") else "none")
 }
 
 #' Spearman rank correlation of two named numeric vectors over the names they share.

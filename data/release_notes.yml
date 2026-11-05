@@ -270,17 +270,21 @@ v10:
     absent, never zero, and the composite is the equal-weight mean of the reportable components,
     primary productivity included. The headline denominator is one flag (`global`, `usa` or
     `pooled`) and the other two are written beside it. **v8's within-ecoregion metrics are kept
-    unchanged** as the control, and the build stops if one of their rows differs.
+    unchanged** as the control, and the build stops if one of their rows differs. The one v8
+    table v10 extends is `zone_taxon`, whose subregion rows were stale in v8: it is rebuilt in
+    full (115,700 to 138,728 rows), the rows v8 had hash identically, and no metric moves.
   scope: >
     The study area, the definition of a valid species and the scored taxa are v8's. What is new is
     the reference: scores can be compared across ecoregions, which the rescaled score could not.
     Record-based exclusions, AquaX, OBIS distribution models, density surfaces, the integrated
-    productivity and any change to the sea turtles are not in this release.
+    productivity and any change to the sea turtles are not in this release, nor is v9's spatial
+    extinction risk for the 19 NMFS DPS-listed species: v10 inherits v8's species-wide extinction
+    risk for them.
   technology: >
     Zone roll-ups of the new family are weighted by coverage times cell area, where the
     within-ecoregion rows weight by coverage alone. The release states its rules as data
     (`release_method`), records where each species' denominator came from (`taxon_denom`), and
     publishes the per-species shares that explain a zone's score in `zone_taxon`.
   zones: >
-    Scores are reported on the **Program Areas**, as in v8, now on two scales: within ecoregion
-    and across the nation. The two are never mixed in one column or one composite.
+    The across-the-nation family is written for the 20 **Program Areas**, the 12 ecoregions and
+    the 5 subregions, beside the within-ecoregion scores v8 already reports. The two are never mixed in one column or one composite.

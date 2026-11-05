@@ -101,8 +101,9 @@ study-area cells that carry scored species.
 The score is the zone's fraction of the nation's importance for the category divided by its fraction of the
 nation's surface. It is a location quotient [@isserman1977]: 100 means the zone holds exactly its fair
 share of the component per square kilometre, 300 three times the national concentration, 20 a fifth of it.
-The reference point is therefore fixed and identical for every zone and every component, it does not depend on
-any other zone's score, and it is stable across releases. In the reference-point typology of the Ocean Health
+The reference point is therefore identical for every zone and every component and does not depend on any
+other zone's score; the national reference is recomputed from each release's own data, so 100 means the
+national average of that release. In the reference-point typology of the Ocean Health
 Index it is a distance to a reference rather than a comparison with the best performer
 [@halpern2012; @samhouri2012; @oecd2008].
 
@@ -138,9 +139,9 @@ The composite is the equal-weight mean of the components that are reportable in 
 scale, so it too reads 100 for a zone that is nationally average across the board. A component that is not
 reportable (next subsection) is left out of the mean, exactly as a category with no cells in the zone is.
 Equal weights are a stated policy choice, the convention of the Ocean Health Index [@halpern2012]. The
-re-issued Program-Area table in the release chapter reports, per category, the score, the percent of the
-world's importance at stake and the rank change against the ecoregional ranking, with the Spearman rank
-correlation between the two composite rankings in its caption [@oecd2008].
+release chapter reports, per category, the score and the percent of the world's importance at stake, and,
+for the composite only, the rank change against the ecoregional ranking, with the Spearman rank correlation
+between the two composite rankings in that table's caption [@oecd2008].
 
 ### The reporting floor {#sec-share-floor}
 
@@ -152,8 +153,8 @@ $$
 \;\ge\; \kappa
 $$ {#eq-share-floor}
 
-with $\kappa$ = `r sh_kappa_txt` in `r sh_ver`. Below the floor the component is not reportable: it is shown
-as no data on maps, footnoted in tables, and left out of the composite. It is never set to zero, which would
+with $\kappa$ = `r sh_kappa_txt` in `r sh_ver`. Below the floor the component is not reportable, and
+it has no score row: the tables print n/r and the composite leaves it out. It is never set to zero, which would
 lower the composite for a reason unrelated to sensitivity. The floor is defined on the footprint, not on the
 value. It applies to the across-the-nation family only: the within-ecoregion rows of the same release are the
 control and carry no floor.
@@ -183,10 +184,10 @@ computed beside it, as columns of the same table, so that a reader can see how m
 
 : The three denominators. The headline is a release setting (`share_denom` in the release's `release_method` rows: `r sh_den_txt`); the other two are always written beside it. {#tbl-share-denominators}
 
-Where a species has no merged global surface, its denominator is built from the best source available, in
-this order: a curated fallback fraction of the world's range that lies in US waters (for species whose
-only models are national, such as FWS and NMFS range maps); the merged global surface; and, for species
-modelled only by AquaMaps, the AquaMaps footprint outside the US plus the merged surface inside. The source
+Each species' denominator comes from the first source that applies: a curated fallback fraction of the
+world's range that lies in US waters (for species whose only models are national, such as FWS and NMFS range
+maps); the merged global surface; and, for a species with neither, the AquaMaps footprint outside the US plus
+the merged surface inside. The source
 of every species is recorded in the `taxon_denom` table.
 
 ```{r}
@@ -195,13 +196,14 @@ of every species is recorded in the `taxon_denom` table.
 if (is.null(sh_dsum)) {
   cat("*The count of species per denominator source is read from the release's `taxon_denom` table, which this release has not published.*\n\n")
 } else cat(sprintf(
-  "In %s, of %s scored species, %s take the merged global surface, %s the AquaMaps footprint outside the US plus the merged surface inside, and %s a curated fallback fraction; %s are unresolved.\n\n",
+  "In %s, of %s scored species, %s take the merged global surface, %s the AquaMaps footprint outside the US plus the merged surface inside, and %s a curated fallback fraction (%s); %s are unresolved.\n\n",
   sh_ver, n_fmt(sh_dsum$n), n_fmt(sh_dsum$merged_global), n_fmt(sh_dsum$aquamaps),
-  n_fmt(sh_dsum$fallback), n_fmt(sh_dsum$unresolved + sh_dsum$other)))
+  n_fmt(sh_dsum$fallback), sh_dsum$fallback_by, n_fmt(sh_dsum$unresolved + sh_dsum$other)))
 ```
 
 A separate **sensitivity column** treats the floored cells of the sea turtles. A turtle's merged value is
-floored at 1 where its suitability rounds to 0, which fills the range rather than describing habitat. The
+floored at 1 where risk × suitability rounds below 1, including every range cell with no suitability (the
+floor-of-1 range fill), which fills the range rather than describing habitat. The
 headline keeps those cells, so the surface stays continuous; the `_strip` column removes them from both sides of the share.
 
 ### What is published
@@ -213,7 +215,8 @@ headline keeps those cells, so the surface stays continuous; the `_strip` column
 | `extrisk_{g}_pct_world`, `extrisk_{g}_pct_nation_{d}` | zone | percent of the world's, and of the nation's, importance in the zone |
 | `extrisk_{g}_coverage`, `_n_species`, `_mean_share_{d}` | zone | the floor's coverage, the number of species present, and the zone total divided by it |
 | `primprod_v10`, `primprod_coverage` | zone | the productivity quotient (@eq-share-primprod) and its coverage |
-| `score_v10_equalweights_{d}`, `score_v10_n_components_{d}` | cell, zone | the composite and the number of components it averages (per cell: every component present, no floor) |
+| `score_v10_equalweights_{d}` | cell, zone | the composite (per cell: the mean of every component present, no floor) |
+| `score_v10_n_components_{d}` | zone | the number of components the zone composite averages |
 
 : Metric keys of the share family. $d$ is `global`, `usa` or `pooled`; `global_strip` is the sensitivity column. Cell rasters are written for the headline denominator unless the release says otherwise. The per-species shares that explain a zone's score are in `zone_taxon` (`share_global`, `share_usa`, `share_v10_contrib`). {#tbl-share-keys}
 

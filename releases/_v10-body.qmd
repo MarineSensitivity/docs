@@ -50,6 +50,20 @@ rho_txt <- function(r) if (is.na(r)) "[not computable]" else formatC(r, format =
 
 dsum <- safe(doc_taxon_denom_summary(v10))
 dn   <- function(x) if (is.null(dsum)) "[taxon_denom not published yet]" else n_fmt(dsum[[x]])
+
+# one count from a named release's table (NA when it is not published)
+cnt <- function(v, tbl, sql) {
+  d <- safe(doc_tbl_of(v, tbl, sql))
+  if (is.null(d) || !nrow(d)) NA_real_ else as.numeric(d$n[1])
+}
+# zone_taxon: v10 completes v8's stale subregion rows
+zt_n8  <- cnt("v8", "zone_taxon", "SELECT count(*) AS n FROM zone_taxon")
+zt_n10 <- cnt(v10,  "zone_taxon", "SELECT count(*) AS n FROM zone_taxon")
+zt_txt <- if (all(is.finite(c(zt_n8, zt_n10)))) sprintf("from %s to %s rows", n_fmt(zt_n8), n_fmt(zt_n10)) else
+  "[row counts not published yet]"
+# the species v9 gave a spatial extinction risk (dps_nmfs), which v10 does not carry
+dps_n   <- cnt("v9", "taxon_model", "SELECT count(DISTINCT ms_merge_key) AS n FROM taxon_model WHERE ds_key = 'dps_nmfs'")
+dps_txt <- if (is.finite(dps_n)) paste0(n_fmt(dps_n), " ") else ""
 ```
 
 v10 is the first release to score **across the nation**. Every earlier release rescales each metric to 0–100 inside its ecoregion, so a score answers "where, within this region, is marine life most concentrated?" and cannot be compared between regions. v10 adds a second score beside it, the **distribution share**: each species' value in a cell is divided by that species' total over its whole modelled range, weighted by extinction risk, summed per category and zone, and expressed per square kilometre against the national average, which is 100. A zone at 100 holds exactly its fair share of a category's importance for the area it covers; a zone at 300 holds three times that; a zone at 20, a fifth.
@@ -89,7 +103,7 @@ The lineage has three steps, and they are different kinds of change:
 
 1. **v7** is the public release. It scores the United States study area only, on a grid that has no cells beyond it.
 2. **v8** is a **data rebuild**: the same datasets ingested whole-range on the global grid, with the merge and the scoring re-run. It was gated against v7 by the Program-Area equivalence check (`msens::pra_score_delta`) rather than assumed equivalent.
-3. **v10** is a **scoring change** on v8's data. It adds the share family and touches no ingest, no merge and none of v8's rows.
+3. **v10** is a **scoring change** on v8's data. It adds the share family and touches no ingest, no merge and no value in v8's rows. One table gains rows: v8's `zone_taxon` was stale for the subregion zone set (no Atlantic rows, and only part of the Pacific and USA rows), so v10 rebuilds it in full, `r zt_txt`; the rows v8 had hash identically, and no metric moves.
 
 ```{r}
 #| results: asis
@@ -185,7 +199,7 @@ The headline divides each species by its **whole range**. Two other denominators
 
 : The three denominators, selected by `SHARE_DENOM`. The headline is `r den_txt`; the other two are always written beside it. {#tbl-v10-denominators}
 
-A **sensitivity column** treats the floored cells of the sea turtles. A turtle's merged value is floored at 1 where its suitability rounds to 0, which fills its range rather than describing habitat. The headline keeps those cells, so the surface stays continuous; the `_strip` column removes them from both sides of the share.
+A **sensitivity column** treats the floored cells of the sea turtles. A turtle's merged value is floored at 1 where risk × suitability rounds below 1, including every range cell with no suitability (the floor-of-1 range fill), which fills its range rather than describing habitat. The headline keeps those cells, so the surface stays continuous; the `_strip` column removes them from both sides of the share.
 
 **Where a species' denominator comes from.** The whole-range total needs a source for every scored species, taken in this order:
 
@@ -200,9 +214,9 @@ A species with only national models and no curated fraction is left **unresolved
 if (is.null(dsum)) {
   cat("*The count of species per denominator source is read from v10's `taxon_denom` table (one row per scored species, with the source recorded), which has not been published yet.*\n\n")
 } else cat(sprintf(
-  "In v10, of %s scored species, %s take the merged global surface, %s the AquaMaps footprint outside the United States plus the merged surface inside, and %s a curated fallback fraction; %s are unresolved or take another source.\n\n",
+  "In v10, of %s scored species, %s take the merged global surface, %s the AquaMaps footprint outside the United States plus the merged surface inside, and %s a curated fallback fraction (%s); %s are unresolved or take another source.\n\n",
   n_fmt(dsum$n), n_fmt(dsum$merged_global), n_fmt(dsum$aquamaps), n_fmt(dsum$fallback),
-  n_fmt(dsum$unresolved + dsum$other)))
+  dsum$fallback_by, n_fmt(dsum$unresolved + dsum$other)))
 ```
 
 ## Flags and controls
@@ -304,7 +318,7 @@ if (!pub) placeholder("The percent-of-the-world table") else {
   tab <- data.frame(`Program Area` = pa_label(k), check.names = FALSE)
   for (cg in cats10) tab[[gsub("_", " ", cg)]] <- f2(vec(sprintf("extrisk_%s_pct_world", cg))[k])
   v10_kbl(tab,
-    caption = "Percent of the world's risk-weighted importance for each category that lies inside the Program Area (`extrisk_{category}_pct_world`). n/r = the component is not reportable there.",
+    caption = "Percent of the world's risk-weighted importance for each category that lies inside the Program Area (`extrisk_{category}_pct_world`). n/r = no scored cells of the category; the percent at stake is published even below κ.",
     align = c("l", rep("r", length(cats10))))
 }
 ```
@@ -364,7 +378,7 @@ if (pub && !is.null(pra) && nrow(pra)) {
 }
 ```
 
-The build refuses to publish the family unless a set of plausibility targets hold on the data. The Gulf of America Program Areas must stand far above the national average for turtles and the Aleutian Arc well below it; St. George Basin's turtles must be not reportable; Kemp's ridley must be the largest contributor to the turtle component of Gulf of America Program Area A; the Arctic Program Areas must keep a marine-mammal component (if they lose it, the denominator or its fallback is wrong and the build stops); and the Alaska Program Areas together must hold a small fraction of the nation's turtle importance. A failed target stops the render rather than being listed in a table afterwards.
+The build refuses to publish the family unless a set of plausibility targets hold on the data. The Gulf of America Program Areas must stand far above the national average for turtles and the Aleutian Arc well below it; St. George Basin's turtles must be not reportable; Kemp's ridley must be the largest contributor to the turtle component of Gulf of America Program Area A; at least two of the four Arctic Program Areas (Beaufort Sea, Chukchi Sea, Hope Basin, Norton Basin) must keep a marine-mammal component (if they lose it, the denominator or its fallback is wrong and the build stops); and the Alaska Program Areas together must hold a small fraction of the nation's turtle importance. A failed target stops the render rather than being listed in a table afterwards.
 
 ## What v10 does not contain
 
@@ -375,6 +389,7 @@ v10 is one scoring change on a fixed set of inputs. Each of these belongs to the
 - **Record-based exclusions.** The turtle and right-whale records that v7c applied are not applied here.
 - **The year-integrated productivity.** v10 rescales nothing; its productivity quotient uses the productivity metric v8 already holds.
 - **Changes to the sea turtles.** Their merge is v8's; moving them to the distinct-population path is a later change.
+- **v9's spatial extinction risk for the `r dps_txt`NMFS DPS-listed species** (the humpback, the Southern Resident killer whale, the salmonid ESUs and the others whose listed populations lie below species level). v10 inherits v8's species-wide extinction risk for them.
 
 ## Caveats
 
