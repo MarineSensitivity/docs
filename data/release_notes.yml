@@ -297,8 +297,9 @@ v11:
     in the Pacific and the Atlantic (`nc`, the Atlantic now from the 2023 MDAT v3 models of BOEM OCS
     Study 2023-060) and NOAA SWFSC cetaceans in the California Current (`cce`), each as its annual
     surface inside its own survey domain. v9's **per-cell extinction risk for the NMFS DPS-listed
-    species** (`dps_nmfs`) returns. An OBIS record buffer (`rng_occ`) is registered as the evidence for
-    the occurrence rule and is not scored; AquaX is not used.
+    species** (`dps_nmfs`) returns. An OBIS record buffer (`rng_occ`, the six sea turtles and the North Atlantic
+    right whale) is registered for review and is not scored; the occurrence rule counts the OBIS records
+    themselves. AquaX is registered and not used.
   methods: >
     **Primary productivity is integrated over the whole year**, a month without a retrieval (polar
     night, ice) counting zero, which removes the Arctic's over-productivity. The **sea turtles merge by
@@ -320,7 +321,7 @@ v11:
   technology: >
     The components primary producers and primary productivity are labelled **Flora** and
     **Productivity**. Every species with a per-cell extinction risk, the sea turtles included, carries
-    it beside its value (`er_mode = 'cell'`), so habitat and risk can be drawn as two layers.
+    it beside its value (`er_mode = 'cell'`), so habitat and risk are kept as two surfaces.
   zones: >
     As in v10: the within-ecoregion and across-the-nation families for the **Program Areas**, the
     ecoregions and the subregions, never mixed in one column or one composite.

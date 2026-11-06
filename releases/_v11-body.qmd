@@ -90,7 +90,9 @@ n_dens_own <- n_of("taxon_model", sprintf(
   "SELECT count(DISTINCT ms_merge_key) AS n FROM taxon_model WHERE ds_key IN ('gm', 'nc', 'cce') AND %s
      AND ms_merge_key IN (SELECT ms_merge_key FROM taxon_model WHERE ds_key IN ('dps_nmfs', 'og', 'rng_turtle_swot_dps'))", annual))
 den11 <- safe(doc_taxon_denom_summary(v11))
-er_mode <- q11("taxon", "SELECT er_mode, sp_cat, count(*) AS n FROM taxon WHERE is_valid_usa AND is_marine GROUP BY ALL ORDER BY 1, 2")
+# the scored species: msens::share_sql()'s defaults (no reptile or amphibian), as doc_taxon_denom_counts()
+er_mode <- q11("taxon", "SELECT er_mode, sp_cat, count(*) AS n FROM taxon WHERE is_valid_usa AND is_marine
+  AND sp_cat IN ('bird', 'coral', 'fish', 'invertebrate', 'mammal', 'primary_producer', 'turtle') GROUP BY ALL ORDER BY 1, 2")
 n_cell  <- if (is.null(er_mode)) NA_real_ else sum(er_mode$n[er_mode$er_mode == "cell"])
 n_taxon <- if (is.null(er_mode)) NA_real_ else sum(er_mode$n[er_mode$er_mode == "taxon"])
 n_turtle_cell <- if (is.null(er_mode)) NA_real_ else sum(er_mode$n[er_mode$er_mode == "cell" & er_mode$sp_cat == "turtle"])
@@ -254,7 +256,7 @@ Two flags change the sea turtles, and they are measured separately.
 
 **Suitability (`TURTLE_SUIT=ogm`).** The suitability of the `r if (is.na(n_og)) "" else paste0(n_fmt(n_og), " ")`sea turtles comes from our own distribution models (dataset `og`), fitted with the OBIS / MPA Europe pipeline to occurrence records on the global 0.05° grid: an ensemble of three algorithms, the median kept continuous as probability × 100, its thresholds recorded and not applied. Inside the footprint of these models it replaces AquaMaps, the way AquaX replaced AquaMaps in v9.
 
-**Rule (`TURTLE_RULE=dps`).** Every release since v4b merged the turtles by multiplying extinction risk into the value, $\max(1, \mathrm{round}(\text{er}_c \cdot \text{suit}_c / 100))$, so their drawn surface was a weight rather than a distribution. v11 merges them like the species listed by Distinct Population Segment (`msens::dps_sql()`, the rule v9 introduced for the NMFS DPS species, which v10 did not carry and v11 carries again`r if (is.na(n_dps)) "" else paste0(" for ", n_fmt(n_dps), " species")`): the value is the suitability inside the extinction-risk footprint, the per-cell risk (the SWOT and NMFS DPS surface, with critical habitat joining the footprint at its own status) is kept beside it, and the score multiplies the two. Where a model covers the cell a turtle still scores risk times suitability, now without the rounding and the floor of 1; a footprint cell no model covers takes the fill of @sec-v11-single-counting instead of a suitability of 1; and the Atlas can draw the habitat and the risk as two layers.
+**Rule (`TURTLE_RULE=dps`).** Every release since v4b merged the turtles by multiplying extinction risk into the value, $\max(1, \mathrm{round}(\text{er}_c \cdot \text{suit}_c / 100))$, so their drawn surface was a weight rather than a distribution. v11 merges them like the species listed by Distinct Population Segment (`msens::dps_sql()`, the rule v9 introduced for the NMFS DPS species, which v10 did not carry and v11 carries again`r if (is.na(n_dps)) "" else paste0(" for ", n_fmt(n_dps), " species")`): the value is the suitability inside the extinction-risk footprint, the per-cell risk (the SWOT and NMFS DPS surface, with critical habitat joining the footprint at its own status) is kept beside it, and the score multiplies the two. Where a model covers the cell a turtle still scores risk times suitability, now without the rounding and the floor of 1; a footprint cell no model covers takes the fill of @sec-v11-single-counting instead of the value 1; and the habitat and the risk are kept as two surfaces.
 
 ```{r}
 #| results: asis
@@ -277,7 +279,7 @@ v_{s,c} =
 \end{cases}
 $$ {#eq-v11-value}
 
-and the cell score is $w_{s,c}\, v_{s,c} / 100$ with $w$ the governing `er_score`, or the per-cell risk for a species that carries one. The fill of an unmodelled range cell (`RANGE_FILL=mean`) is the species' own mean, so it depends neither on the risk score nor on a ceiling; for a surveyed species it is the calibrated survey mean over its domain. The rule is `msens::merge_sql(basis = "cell", fill = "mean")`, and `msens::dps_sql(fill = "mean")` for the species with a per-cell risk. AquaMaps-only species were single-counted already and are unchanged.
+and the cell score is $w_{s,c}\, v_{s,c} / 100$ with $w$ the governing `er_score`, or the per-cell risk for a species that carries one. The fill of an unmodelled range cell (`RANGE_FILL=mean`) is the species' own mean, so it depends neither on the risk score nor on a ceiling; for a surveyed species the mean includes its calibrated survey cells. The rule is `msens::merge_sql(basis = "cell", fill = "mean")`, and `msens::dps_sql(fill = "mean")` for the species with a per-cell risk. AquaMaps-only species were single-counted already and are unchanged.
 
 ### Where the record places a species {#sec-v11-occurrence}
 
@@ -290,7 +292,7 @@ $$
 w_{s,e} = \min\!\left(1,\; \frac{\text{rate}_{s,e}}{\text{rate}_{s,\neg e}}\right), \qquad v'_{s,c} = w_{s,e(c)}\, v_{s,c}
 $$ {#eq-v11-weight}
 
-where $e(c)$ is the ecoregion covering most of cell $c$ (`msens::encounter_weight()`, `msens::zone_adjust_sql()`). Critical habitat is exempt, and the weight scales the value only; the risk layer is never adjusted. Under the within-ecoregion rescale a weight common to a whole ecoregion would cancel, which is why v7c dropped rather than weighted; the share has no rescale, so the weight reaches the score.
+where $e(c)$ is the ecoregion covering most of cell $c$ (`msens::encounter_weight()`, `msens::zone_adjust_sql()`). Critical habitat is exempt, and the weight scales the value only; the risk layer is never adjusted. Under the within-ecoregion rescale a weight common to every species of a component across a whole ecoregion would cancel, which is why v7c dropped rather than weighted; the share has no rescale, so the weight reaches the score.
 
 ```{r}
 #| results: asis
@@ -538,7 +540,7 @@ if (has_att) {
 - **A range constraint for species modelled only by AquaMaps.** `r if (is.null(den11)) "Most scored species are" else sprintf("%s of the %s scored species are", n_fmt(den11$aquamaps), n_fmt(den11$n))` modelled by AquaMaps alone, and their footprint is not constrained by an expert range. A rule for it (keep the connected parts of the footprint that hold a good AquaMaps cell or a record) was explored for v11 and is not applied.
 - **AquaX.** Its models are clipped to US waters and cannot supply the whole-range denominator of the share; no AquaX cell is in v11's merge.
 - **Distribution models for the species that have none,** and our own models for any species but the sea turtles.
-- **Survey density models not yet ingested**, among them the Atlantic cetacean models of @roberts2016; and every interval density surface, which stays in the Atlas.
+- **Survey density models not yet ingested**, among them the Atlantic cetacean models of @roberts2016; and every interval (monthly or seasonal) density surface, which no score reads.
 - **WoRMS read from the OBIS snapshot.** The taxonomy is downloaded as in v10 (`WORMS_SOURCE`).
 
 ## Caveats
