@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.19">
+<meta name="generator" content="quarto-1.11.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>9&nbsp; Model Merging – Marine Sensitivity</title>
+<title>11&nbsp; Model Merging – Marine Sensitivity</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -41,14 +41,15 @@ ul.task-list li input[type="checkbox"] {
 <link href="./images/favicon.ico" rel="icon">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-01a495efc5497ac6e3f5457e7ed18e65.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -454,17 +455,17 @@ window.Quarto = {
 
 </head>
 
-<body class="nav-sidebar floating quarto-light">
+<body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
+  <nav class="quarto-secondary-nav" aria-label="Toolbar">
     <div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./science.html">Science</a></li><li class="breadcrumb-item"><a href="./model-merging.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Model Merging</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./science.html">Science</a></li><li class="breadcrumb-item"><a href="./model-merging.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Model Merging</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
@@ -475,7 +476,7 @@ window.Quarto = {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Site">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Marine Sensitivity</a> 
@@ -539,13 +540,10 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Releases</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Releases</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./releases.html" class="sidebar-item-text sidebar-link">
@@ -564,134 +562,140 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">v7c — sea turtles and the North Atlantic right whale where the record places them</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./releases/v10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">v10 — scoring across the nation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./releases/v11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">v11 — a robust national release</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Science</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">Science</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./science.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Science</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Science</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data-sources.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Sources</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Sources</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./taxonomy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Taxonomy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Taxonomy</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./extinction-risk.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extinction Risk</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Extinction Risk</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./model-merging.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Model Merging</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Model Merging</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./scoring.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Scoring</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Scoring</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./scoring-walkthrough.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Scoring Walkthrough</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Scoring Walkthrough</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./stressors.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Stressors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stressors</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Software</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">Software</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./software.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Software</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Software</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./server.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Server</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Server</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./db.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Database</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Database</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./workflows.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Workflows</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Workflows</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">APIs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">APIs</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./libraries.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Libraries</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Libraries</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Apps</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Apps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/atlas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Atlas — the static, in-browser scores, species and places app</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Atlas — the static, in-browser scores, species and places app</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Atlas User Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Atlas User Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./docs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
   </div>
 </li>
       </ul>
@@ -699,7 +703,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -710,13 +714,10 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">Appendices</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">Appendices</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link">
@@ -725,13 +726,10 @@ window.Quarto = {
 </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
- <span class="menu-text">Applications (Legacy)</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-controls="quarto-sidebar-section-5" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-5-label">Applications (Legacy)</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-5" aria-labelledby="quarto-sidebar-section-5-label" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./apps/scores.html" class="sidebar-item-text sidebar-link">
@@ -802,33 +800,38 @@ window.Quarto = {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#the-rule-in-one-place" id="toc-the-rule-in-one-place" class="nav-link active" data-scroll-target="#the-rule-in-one-place"><span class="header-section-number">9.1</span> The rule, in one place</a></li>
-  <li><a href="#pipeline" id="toc-pipeline" class="nav-link" data-scroll-target="#pipeline"><span class="header-section-number">9.2</span> Pipeline</a>
+  <li><a href="#the-rule-in-one-place" id="toc-the-rule-in-one-place" class="nav-link active" data-scroll-target="#the-rule-in-one-place"><span class="header-section-number">11.1</span> The rule, in one place</a></li>
+  <li><a href="#sec-merge-sequence" id="toc-sec-merge-sequence" class="nav-link" data-scroll-target="#sec-merge-sequence"><span class="header-section-number">11.2</span> The sequence, end to end</a>
   <ul class="collapse">
-  <li><a href="#step-1-gather-the-taxons-models" id="toc-step-1-gather-the-taxons-models" class="nav-link" data-scroll-target="#step-1-gather-the-taxons-models"><span class="header-section-number">9.2.1</span> Step 1 — gather the taxon’s models</a></li>
-  <li><a href="#step-2-the-expert-range-constrains-aquamaps" id="toc-step-2-the-expert-range-constrains-aquamaps" class="nav-link" data-scroll-target="#step-2-the-expert-range-constrains-aquamaps"><span class="header-section-number">9.2.2</span> Step 2 — the expert range constrains AquaMaps</a></li>
-  <li><a href="#step-3-two-surfaces-not-one" id="toc-step-3-two-surfaces-not-one" class="nav-link" data-scroll-target="#step-3-two-surfaces-not-one"><span class="header-section-number">9.2.3</span> Step 3 — two surfaces, not one</a></li>
-  <li><a href="#step-4-sea-turtles-multiply-instead-of-taking-a-maximum" id="toc-step-4-sea-turtles-multiply-instead-of-taking-a-maximum" class="nav-link" data-scroll-target="#step-4-sea-turtles-multiply-instead-of-taking-a-maximum"><span class="header-section-number">9.2.4</span> Step 4 — sea turtles multiply instead of taking a maximum</a></li>
-  <li><a href="#step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell" id="toc-step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell" class="nav-link" data-scroll-target="#step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell"><span class="header-section-number">9.2.5</span> Step 5 — NMFS DPS-listed species: the model stays the distribution, risk varies by cell</a></li>
+  <li><a href="#which-rule-a-taxon-takes" id="toc-which-rule-a-taxon-takes" class="nav-link" data-scroll-target="#which-rule-a-taxon-takes"><span class="header-section-number">11.2.1</span> Which rule a taxon takes</a></li>
+  <li><a href="#where-the-risk-enters-and-how-many-times" id="toc-where-the-risk-enters-and-how-many-times" class="nav-link" data-scroll-target="#where-the-risk-enters-and-how-many-times"><span class="header-section-number">11.2.2</span> Where the risk enters, and how many times</a></li>
   </ul></li>
-  <li><a href="#where-extinction-risk-enters" id="toc-where-extinction-risk-enters" class="nav-link" data-scroll-target="#where-extinction-risk-enters"><span class="header-section-number">9.3</span> Where extinction risk enters</a></li>
-  <li><a href="#the-statutory-floors" id="toc-the-statutory-floors" class="nav-link" data-scroll-target="#the-statutory-floors"><span class="header-section-number">9.4</span> The statutory floors</a></li>
-  <li><a href="#persisted-output" id="toc-persisted-output" class="nav-link" data-scroll-target="#persisted-output"><span class="header-section-number">9.5</span> Persisted output</a></li>
-  <li><a href="#validity-after-merging" id="toc-validity-after-merging" class="nav-link" data-scroll-target="#validity-after-merging"><span class="header-section-number">9.6</span> Validity after merging</a></li>
-  <li><a href="#guarding-the-rules" id="toc-guarding-the-rules" class="nav-link" data-scroll-target="#guarding-the-rules"><span class="header-section-number">9.7</span> Guarding the rules</a></li>
+  <li><a href="#pipeline" id="toc-pipeline" class="nav-link" data-scroll-target="#pipeline"><span class="header-section-number">11.3</span> Pipeline</a>
+  <ul class="collapse">
+  <li><a href="#step-1-gather-the-taxons-models" id="toc-step-1-gather-the-taxons-models" class="nav-link" data-scroll-target="#step-1-gather-the-taxons-models"><span class="header-section-number">11.3.1</span> Step 1 — gather the taxon’s models</a></li>
+  <li><a href="#step-2-the-expert-range-constrains-aquamaps" id="toc-step-2-the-expert-range-constrains-aquamaps" class="nav-link" data-scroll-target="#step-2-the-expert-range-constrains-aquamaps"><span class="header-section-number">11.3.2</span> Step 2 — the expert range constrains AquaMaps</a></li>
+  <li><a href="#step-3-two-surfaces-not-one" id="toc-step-3-two-surfaces-not-one" class="nav-link" data-scroll-target="#step-3-two-surfaces-not-one"><span class="header-section-number">11.3.3</span> Step 3 — two surfaces, not one</a></li>
+  <li><a href="#step-4-sea-turtles-multiply-instead-of-taking-a-maximum" id="toc-step-4-sea-turtles-multiply-instead-of-taking-a-maximum" class="nav-link" data-scroll-target="#step-4-sea-turtles-multiply-instead-of-taking-a-maximum"><span class="header-section-number">11.3.4</span> Step 4 — sea turtles multiply instead of taking a maximum</a></li>
+  <li><a href="#step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell" id="toc-step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell" class="nav-link" data-scroll-target="#step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell"><span class="header-section-number">11.3.5</span> Step 5 — NMFS DPS-listed species: the model stays the distribution, risk varies by cell</a></li>
+  </ul></li>
+  <li><a href="#where-extinction-risk-enters" id="toc-where-extinction-risk-enters" class="nav-link" data-scroll-target="#where-extinction-risk-enters"><span class="header-section-number">11.4</span> Where extinction risk enters</a></li>
+  <li><a href="#the-statutory-floors" id="toc-the-statutory-floors" class="nav-link" data-scroll-target="#the-statutory-floors"><span class="header-section-number">11.5</span> The statutory floors</a></li>
+  <li><a href="#persisted-output" id="toc-persisted-output" class="nav-link" data-scroll-target="#persisted-output"><span class="header-section-number">11.6</span> Persisted output</a></li>
+  <li><a href="#validity-after-merging" id="toc-validity-after-merging" class="nav-link" data-scroll-target="#validity-after-merging"><span class="header-section-number">11.7</span> Validity after merging</a></li>
+  <li><a href="#guarding-the-rules" id="toc-guarding-the-rules" class="nav-link" data-scroll-target="#guarding-the-rules"><span class="header-section-number">11.8</span> Guarding the rules</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/model-merging.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content" tabindex="-1">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./science.html">Science</a></li><li class="breadcrumb-item"><a href="./model-merging.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Model Merging</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./science.html">Science</a></li><li class="breadcrumb-item"><a href="./model-merging.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Model Merging</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span id="sec-model-merging" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Model Merging</span></span></h1>
+<h1 class="title"><span id="sec-model-merging" class="quarto-section-identifier"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Model Merging</span></span></h1>
 </div>
 
 
@@ -859,39 +862,146 @@ window.Quarto = {
 <p>The <a href="./scoring-walkthrough.html">Scoring Walkthrough</a> animates this — maximum merge, range masking and the regulatory floors, step by step from input rasters.</p>
 </div>
 </div>
-<section id="the-rule-in-one-place" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="the-rule-in-one-place"><span class="header-section-number">9.1</span> The rule, in one place</h2>
+<section id="the-rule-in-one-place" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="the-rule-in-one-place"><span class="header-section-number">11.1</span> The rule, in one place</h2>
 <p>The merge rules are <strong><code>msens::merge_sql()</code></strong>, <strong><code>msens::turtle_sql()</code></strong> and <strong><code>msens::dps_sql()</code></strong> — SQL held in the package rather than inside a notebook. The merge notebook executes them and the unit tests assert them against synthetic fixtures, one per taxon category, so the pipeline and its tests cannot drift apart. Changing a rule in a way that breaks a documented case fails the tests.</p>
 </section>
-<section id="pipeline" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="pipeline"><span class="header-section-number">9.2</span> Pipeline</h2>
+<section id="sec-merge-sequence" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="sec-merge-sequence"><span class="header-section-number">11.2</span> The sequence, end to end</h2>
+<p>Each merged model is the result of a fixed sequence of processes, each with a named output. The diagram shows every process a taxon can pass through and the artifact each one writes; the table after it says which rule a taxon takes and what its cell value, its risk layer and its score are under that rule. Steps marked <em>v11 option</em> are method flags under review for v11 and are <strong>off</strong> in every release through v10, where the pipeline reproduces the earlier rule exactly.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-merge-sequence" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-merge-sequence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<p><a href="model-merging_files/figure-html/mermaid-figure-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;11.1: Processes (boxes), their outputs (cylinders) and the order they run in, from the ingested models to the zone scores. Dashed boxes are v11 options, off in every release through v10."><img src="model-merging_files/figure-html/mermaid-figure-1.png" style="width:7in;height:17.85in" class="figure-img"></a></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-merge-sequence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11.1: Processes (boxes), their outputs (cylinders) and the order they run in, from the ingested models to the zone scores. Dashed boxes are v11 options, off in every release through v10.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Order matters in three places. Supersession (3) runs <strong>before</strong> any rule, so a rule never sees a superseded cell. The range mask is part of each rule (4), not a later pass: a suitability model’s cells beyond the expert range never enter either surface. And the zone edits (5) wrap each rule’s output as it is written, after the rule has valued the cells, so they can remove or weight cells without changing what the rule computed, and they never touch the per-cell risk layer.</p>
+<section id="which-rule-a-taxon-takes" class="level3" data-number="11.2.1">
+<h3 data-number="11.2.1" class="anchored" data-anchor-id="which-rule-a-taxon-takes"><span class="header-section-number">11.2.1</span> Which rule a taxon takes</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>taxon</th>
+<th>inputs</th>
+<th>merged value in a cell</th>
+<th>risk layer</th>
+<th><code>er_mode</code></th>
+<th>cell score (<a href="scoring.html#eq-cell-score" class="quarto-xref">Equation&nbsp;<span>12.1</span></a> and its two exceptions)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AquaMaps only, no expert range anywhere (most scored taxa)</td>
+<td>AquaMaps (AquaX where it superseded, v9)</td>
+<td>each model’s suitability, raw footprint, on the US surface only (a taxon with several AquaMaps models keeps every model’s cell)</td>
+<td>the scalar <code>er_score</code></td>
+<td><code>taxon</code></td>
+<td><code>er_score x suit / 100</code></td>
+</tr>
+<tr class="even">
+<td>expert range and AquaMaps</td>
+<td>range map(s) + AquaMaps / AquaX</td>
+<td><code>max(er_score, suit)</code> on range cells; suitability beyond the range masked away (v11 option, cell basis: <code>suit</code> where a model covers the cell, the <code>RANGE_FILL</code> value where none does)</td>
+<td>the scalar <code>er_score</code></td>
+<td><code>taxon</code></td>
+<td><code>er_score x max(er_score, suit) / 100</code> (cell basis: <code>er_score x suit / 100</code>)</td>
+</tr>
+<tr class="odd">
+<td>expert range only (most of them birds)</td>
+<td>IUCN / BirdLife / FWS range</td>
+<td><code>er_score</code> on every range cell</td>
+<td>the scalar <code>er_score</code></td>
+<td><code>taxon</code></td>
+<td><code>er_score x er_score / 100</code></td>
+</tr>
+<tr class="even">
+<td>sea turtle</td>
+<td>SWOT + DPS risk surface, AquaMaps / AquaX (or <code>og</code>, v11 option), critical habitat</td>
+<td><code>max(1, round(risk_c x suit / 100))</code>, suit = 1 where no model covers the cell, critical habitat by max</td>
+<td>inside the value</td>
+<td><code>premultiplied</code></td>
+<td>the value itself (weight 100 by <code>er_mode</code>)</td>
+</tr>
+<tr class="odd">
+<td>NMFS DPS-listed species (v9)</td>
+<td><code>dps_nmfs</code> per-cell risk, AquaX / AquaMaps</td>
+<td>suitability where a model covers the cell, the cell’s risk where none does</td>
+<td>per-cell <code>er_c</code> beside the value</td>
+<td><code>cell</code></td>
+<td><code>er_c x value / 100</code>, so <code>er_c x er_c / 100</code> where no model covers the cell</td>
+</tr>
+<tr class="even">
+<td>density taxon (v11 option)</td>
+<td>survey density inside its domain, AquaMaps outside, range maps</td>
+<td>as the DPS rule, with the governing <code>er_score</code> as a floor under the per-cell risk</td>
+<td>per-cell <code>er_c</code> (at least <code>er_score</code>)</td>
+<td><code>cell</code></td>
+<td>as the DPS rule</td>
+</tr>
+<tr class="odd">
+<td>sea turtle under <code>TURTLE_RULE=dps</code> (v11 option)</td>
+<td>as above</td>
+<td>as the DPS rule, critical habitat joining the risk footprint</td>
+<td>per-cell <code>er_c</code></td>
+<td><code>cell</code></td>
+<td>as the DPS rule</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="where-the-risk-enters-and-how-many-times" class="level3" data-number="11.2.2">
+<h3 data-number="11.2.2" class="anchored" data-anchor-id="where-the-risk-enters-and-how-many-times"><span class="header-section-number">11.2.2</span> Where the risk enters, and how many times</h3>
+<p>The table makes one property of the released rule explicit. For a taxon with an expert range the governing <code>er_score</code> is used <strong>twice</strong>: once at merge time, as the floor under every range cell (<a href="#eq-merge-range" class="quarto-xref">Equation&nbsp;<span>11.1</span></a>), and again at scoring, as the multiplier (<a href="scoring.html#eq-cell-score" class="quarto-xref">Equation&nbsp;<span>12.1</span></a>). A range cell no suitability model covers therefore scores <code>er_score^2 / 100</code> (25 for a score of 50), and wherever the suitability is below the governing score the risk, not the model, shapes the distribution. Only where suitability exceeds the score does the cell carry the risk-weighted suitability a reader might expect. AquaMaps-only taxa are single-counted (the first row), and so are the sea turtles under their own rule (a cell no model covers takes suitability 1, and the weight is 100). The DPS-listed species, and the v11 taxa that share their rule, are single-counted wherever a suitability model covers the cell; a footprint cell no model covers is valued at its risk and so scores <code>er_c^2 / 100</code>, like a range cell. This has been the rule since v4; it is stated here so that the two counts are not mistaken for one.</p>
+<p>A v11 option, <code>SHARE_BASIS = cell</code>, values a range cell by its suitability alone wherever a model covers it, for every taxon, and <code>RANGE_FILL</code> decides a cell no model covers: the governing score (<code>er</code>, which still counts the risk twice there), presence at 100 (<code>presence</code>, which counts it once), or the mean of the species’ own modelled range cells (<code>mean</code>: for a surveyed species the calibrated survey mean over its domain, and presence at 100 for a species with no modelled range cell at all). The same fill applies to the DPS rule and the taxa that share it. The v11 method set uses the cell basis with the mean fill; both flags are off in every release through v10, where the pipeline reproduces the earlier rule exactly.</p>
+</section>
+</section>
+<section id="pipeline" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="pipeline"><span class="header-section-number">11.3</span> Pipeline</h2>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div id="fig-merge-pipeline" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-merge-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
-<p><a href="model-merging_files/figure-html/mermaid-figure-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;9.1: Merging one taxon’s source models into a single surface."><img src="model-merging_files/figure-html/mermaid-figure-1.png" style="width:6in;height:6.02in" class="figure-img"></a></p>
+<p><a href="model-merging_files/figure-html/mermaid-figure-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;11.2: Merging one taxon’s source models into a single surface."><img src="model-merging_files/figure-html/mermaid-figure-2.png" style="width:6in;height:6.02in" class="figure-img"></a></p>
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-merge-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;9.1: Merging one taxon’s source models into a single surface.
+Figure&nbsp;11.2: Merging one taxon’s source models into a single surface.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<section id="step-1-gather-the-taxons-models" class="level3" data-number="9.2.1">
-<h3 data-number="9.2.1" class="anchored" data-anchor-id="step-1-gather-the-taxons-models"><span class="header-section-number">9.2.1</span> Step 1 — gather the taxon’s models</h3>
+<section id="step-1-gather-the-taxons-models" class="level3" data-number="11.3.1">
+<h3 data-number="11.3.1" class="anchored" data-anchor-id="step-1-gather-the-taxons-models"><span class="header-section-number">11.3.1</span> Step 1 — gather the taxon’s models</h3>
 <p>Every model resolving to the same taxon is collected: an AquaMaps suitability surface, any regulatory habitat or range designation (NMFS, FWS), a BirdLife or IUCN range map, and for sea turtles a SWOT+DPS range.</p>
 </section>
-<section id="step-2-the-expert-range-constrains-aquamaps" class="level3" data-number="9.2.2">
-<h3 data-number="9.2.2" class="anchored" data-anchor-id="step-2-the-expert-range-constrains-aquamaps"><span class="header-section-number">9.2.2</span> Step 2 — the expert range constrains AquaMaps</h3>
+<section id="step-2-the-expert-range-constrains-aquamaps" class="level3" data-number="11.3.2">
+<h3 data-number="11.3.2" class="anchored" data-anchor-id="step-2-the-expert-range-constrains-aquamaps"><span class="header-section-number">11.3.2</span> Step 2 — the expert range constrains AquaMaps</h3>
 <p>This is the heart of the merge, and it is not a plain maximum.</p>
 <p>Where a taxon <strong>has an expert range</strong>, the merged surface is the <strong>range footprint</strong>, valued at the maximum of the taxon’s governing <code>er_score</code> and the AquaMaps value <em>at those cells</em>:</p>
 <p><span id="eq-merge-range"><span class="math display">\[
 v_{c} = \max\!\big(\text{er\_score},\; v_{am,c}\big) \qquad c \in \text{range}
-\tag{9.1}\]</span></span></p>
+\tag{11.1}\]</span></span></p>
 <p>AquaMaps values <strong>beyond</strong> the range are masked away. An environmental-envelope model will happily predict suitable habitat far outside where a species is known to occur; the expert range is what stops that prediction becoming an assertion of presence.</p>
 <p>Where a taxon has <strong>no expert range anywhere</strong>, there is nothing to constrain it against, so its raw AquaMaps footprint is kept as-is.</p>
 <div class="callout callout-style-default callout-important callout-titled">
@@ -910,34 +1020,34 @@ v_{c} = \max\!\big(\text{er\_score},\; v_{am,c}\big) \qquad c \in \text{range}
 </div>
 </div>
 </section>
-<section id="step-3-two-surfaces-not-one" class="level3" data-number="9.2.3">
-<h3 data-number="9.2.3" class="anchored" data-anchor-id="step-3-two-surfaces-not-one"><span class="header-section-number">9.2.3</span> Step 3 — two surfaces, not one</h3>
+<section id="step-3-two-surfaces-not-one" class="level3" data-number="11.3.3">
+<h3 data-number="11.3.3" class="anchored" data-anchor-id="step-3-two-surfaces-not-one"><span class="header-section-number">11.3.3</span> Step 3 — two surfaces, not one</h3>
 <p>Since v8 the merge emits <strong>two</strong> surfaces from the same rules, because they answer different questions:</p>
 <ul>
-<li>a <strong>global</strong> surface (expert range ∪ the taxon’s whole AquaMaps footprint) — the honest whole-range merged model, which is what the species maps draw;</li>
+<li>a <strong>global</strong> surface — the taxon’s whole range footprint under the same rule and the same range mask (AquaMaps beyond the expert range is masked away here too), which is what the species maps draw; AquaMaps-only taxa are drawn from their AquaMaps model directly;</li>
 <li>a <strong>US scoring</strong> surface — the range-constrained, US-clipped result described above, which is what the scores are computed from.</li>
 </ul>
 <p>Earlier releases produced only the second, so a species map showed the analysis extent rather than the species. Keeping both means the picture is not silently trimmed to the study area.</p>
 </section>
-<section id="step-4-sea-turtles-multiply-instead-of-taking-a-maximum" class="level3" data-number="9.2.4">
-<h3 data-number="9.2.4" class="anchored" data-anchor-id="step-4-sea-turtles-multiply-instead-of-taking-a-maximum"><span class="header-section-number">9.2.4</span> Step 4 — sea turtles multiply instead of taking a maximum</h3>
+<section id="step-4-sea-turtles-multiply-instead-of-taking-a-maximum" class="level3" data-number="11.3.4">
+<h3 data-number="11.3.4" class="anchored" data-anchor-id="step-4-sea-turtles-multiply-instead-of-taking-a-maximum"><span class="header-section-number">11.3.4</span> Step 4 — sea turtles multiply instead of taking a maximum</h3>
 <p>For the six sea turtle species, extinction risk <strong>varies across the range</strong>: NOAA Fisheries lists Distinct Population Segments separately, so the same species can be Endangered in one region and Threatened in another. A single scalar weight cannot express that.</p>
 <p>So the turtle merge multiplies the DPS extinction-risk surface by the suitability surface:</p>
 <p><span id="eq-merge-turtle"><span class="math display">\[
 v_{c} = \max\!\Big(1,\; \mathrm{round}\Big(\frac{v_{er,c} \times v_{suit,c}}{100}\Big)\Big)
-\tag{9.2}\]</span></span></p>
+\tag{11.2}\]</span></span></p>
 <p>Critical-habitat designations then override with a maximum, so a designated cell is never scored below its designation.</p>
 <p>Because risk is already inside the merged values, turtles receive <code>er_score = 100</code> at scoring time as a pass-through multiplier (flagged <code>is_er_spatial</code>), which cancels in the division by 100 rather than double-counting.</p>
 </section>
-<section id="step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell" class="level3" data-number="9.2.5">
-<h3 data-number="9.2.5" class="anchored" data-anchor-id="step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell"><span class="header-section-number">9.2.5</span> Step 5 — NMFS DPS-listed species: the model stays the distribution, risk varies by cell</h3>
-<p>A second group of species carries extinction risk that varies across the range without being sea turtles: those whose ESA <em>listed entity</em> is a Distinct Population Segment, an ESU or a subspecies rather than the whole species — the humpback whale, the Southern Resident killer whale, Cook Inlet beluga, the salmon and steelhead ESUs, both sturgeons, and the others listed under <em>NMFS Distinct Population Segments</em> in <a href="data-sources.html" class="quarto-xref"><span>Chapter 6</span></a>. For them the pipeline builds a per-cell extinction-risk surface (<code>dps_nmfs</code>): each listed entity’s designated critical habitat at that entity’s status, and the species’ baseline everywhere else in its IUCN range (the MMPA floor of 20 for a marine mammal; the IUCN category otherwise).</p>
+<section id="step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell" class="level3" data-number="11.3.5">
+<h3 data-number="11.3.5" class="anchored" data-anchor-id="step-5-nmfs-dps-listed-species-the-model-stays-the-distribution-risk-varies-by-cell"><span class="header-section-number">11.3.5</span> Step 5 — NMFS DPS-listed species: the model stays the distribution, risk varies by cell</h3>
+<p>A second group of species carries extinction risk that varies across the range without being sea turtles: those whose ESA <em>listed entity</em> is a Distinct Population Segment, an ESU or a subspecies rather than the whole species — the humpback whale, the Southern Resident killer whale, Cook Inlet beluga, the salmon and steelhead ESUs, both sturgeons, and the others listed under <em>NMFS Distinct Population Segments</em> in <a href="data-sources.html" class="quarto-xref"><span>Chapter 8</span></a>. For them the pipeline builds a per-cell extinction-risk surface (<code>dps_nmfs</code>): each listed entity’s designated critical habitat at that entity’s status, and the species’ baseline everywhere else in its IUCN range (the MMPA floor of 20 for a marine mammal; the IUCN category otherwise).</p>
 <p>These species do <strong>not</strong> use the turtle multiplication. Their merged value is the <strong>distribution</strong> — the suitability surface (AquaX, or AquaMaps where AquaX did not model the species) masked to the extinction-risk footprint, exactly the range mask every other taxon receives, with a cell that no suitability model covers valued at its risk, as in the plain rule — and the per-cell risk is carried <strong>beside</strong> the value rather than inside it:</p>
 <p><span id="eq-merge-dps"><span class="math display">\[
 v_{c} = \begin{cases} v_{suit,c} &amp; \text{where a suitability model covers } c \\ v_{er,c} &amp; \text{otherwise} \end{cases}
 \qquad\qquad er_{c} = v_{er,c}
-\tag{9.3}\]</span></span></p>
-<p>Scoring then multiplies the two (<a href="scoring.html" class="quarto-xref"><span>Chapter 10</span></a>), so the score is the same extinction-risk-weighted suitability the turtle rule produces — computed one step later. What changes is what the merged model <em>shows</em>: under the turtle rule the humpback, whose risk is the MMPA baseline across 99.8 % of its range, collapsed to a near-flat minimum everywhere outside critical habitat — the map drew the <em>weight</em>, not the whale. Now the merged model is the whale’s habitat suitability, and its risk is a separate layer (<em>NMFS DPS extinction risk</em> in the species app).</p>
+\tag{11.3}\]</span></span></p>
+<p>Scoring then multiplies the two (<a href="scoring.html" class="quarto-xref"><span>Chapter 12</span></a>), so the score is the same extinction-risk-weighted suitability the turtle rule produces — computed one step later. What changes is what the merged model <em>shows</em>: under the turtle rule the humpback, whose risk is the MMPA baseline across 99.8 % of its range, collapsed to a near-flat minimum everywhere outside critical habitat — the map drew the <em>weight</em>, not the whale. Now the merged model is the whale’s habitat suitability, and its risk is a separate layer (<em>NMFS DPS extinction risk</em> in the species app).</p>
 <p>Critical-habitat datasets are not an input for these species: <code>dps_nmfs</code> already carries every designation at its own entity’s status, whereas the generic critical-habitat layers carry the species-level status (Endangered for the humpback) and would override the Threatened Mexico DPS habitat back to Endangered.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -958,16 +1068,16 @@ v_{c} = \begin{cases} v_{suit,c} &amp; \text{where a suitability model covers } 
 </div>
 </section>
 </section>
-<section id="where-extinction-risk-enters" class="level2" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="where-extinction-risk-enters"><span class="header-section-number">9.3</span> Where extinction risk enters</h2>
-<p>The governing <code>er_score</code> (<a href="extinction-risk.html" class="quarto-xref"><span>Chapter 8</span></a>) is applied <strong>at merge time</strong>, valuing the range cells — the point at which a species’ presence in a cell should carry its governing risk rather than whatever code the contributing dataset happened to record. Applying it later, at scoring, would lose that: the merged surface would carry source-specific codes that may be stale or out of jurisdiction. The NMFS DPS-listed species are the deliberate exception: their risk is a per-cell surface built from the listings themselves, so it is carried beside the merged value and applied at scoring, where the per-cell weight replaces the scalar one.</p>
+<section id="where-extinction-risk-enters" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="where-extinction-risk-enters"><span class="header-section-number">11.4</span> Where extinction risk enters</h2>
+<p>The governing <code>er_score</code> (<a href="extinction-risk.html" class="quarto-xref"><span>Chapter 10</span></a>) is applied <strong>at merge time</strong>, valuing the range cells — the point at which a species’ presence in a cell should carry its governing risk rather than whatever code the contributing dataset happened to record. Applying it later, at scoring, would lose that: the merged surface would carry source-specific codes that may be stale or out of jurisdiction. The NMFS DPS-listed species are the deliberate exception: their risk is a per-cell surface built from the listings themselves, so it is carried beside the merged value and applied at scoring, where the per-cell weight replaces the scalar one.</p>
 </section>
-<section id="the-statutory-floors" class="level2" data-number="9.4">
-<h2 data-number="9.4" class="anchored" data-anchor-id="the-statutory-floors"><span class="header-section-number">9.4</span> The statutory floors</h2>
-<p>The MMPA (20) and MBTA (10) floors are part of the governing <code>er_score</code>, not a separate pass over the cells. A marine mammal’s range cells therefore carry at least 20 wherever it is present, and a CFR 50 §10.13 migratory bird at least 10 — see <a href="extinction-risk.html" class="quarto-xref"><span>Chapter 8</span></a> for how each flag is assigned, and why the MBTA one is a species list rather than “all birds”.</p>
+<section id="the-statutory-floors" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="the-statutory-floors"><span class="header-section-number">11.5</span> The statutory floors</h2>
+<p>The MMPA (20) and MBTA (10) floors are part of the governing <code>er_score</code>, not a separate pass over the cells. A marine mammal’s range cells therefore carry at least 20 wherever it is present, and a CFR 50 §10.13 migratory bird at least 10 — see <a href="extinction-risk.html" class="quarto-xref"><span>Chapter 10</span></a> for how each flag is assigned, and why the MBTA one is a species list rather than “all birds”.</p>
 </section>
-<section id="persisted-output" class="level2" data-number="9.5">
-<h2 data-number="9.5" class="anchored" data-anchor-id="persisted-output"><span class="header-section-number">9.5</span> Persisted output</h2>
+<section id="persisted-output" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="persisted-output"><span class="header-section-number">11.6</span> Persisted output</h2>
 <p>The merged result is stored as:</p>
 <ul>
 <li><strong><code>model</code></strong> — one row per merged model, keyed by <code>mdl_key</code>.</li>
@@ -975,13 +1085,13 @@ v_{c} = \begin{cases} v_{suit,c} &amp; \text{where a suitability model covers } 
 </ul>
 <p><code>mdl_key</code> is a <strong>stable</strong> identifier of the form <code>{dataset}|{species}</code> — <code>am|Fis-29291</code>, <code>ms_merge|WORMS:137209</code>. It replaced an auto-increment id that renumbered on every rebuild, which broke every saved link to a model.</p>
 </section>
-<section id="validity-after-merging" class="level2" data-number="9.6">
-<h2 data-number="9.6" class="anchored" data-anchor-id="validity-after-merging"><span class="header-section-number">9.6</span> Validity after merging</h2>
-<p>A taxon is flagged valid once merging has run, on the criteria in <a href="taxonomy.html" class="quarto-xref"><span>Chapter 7</span></a> — chiefly that it resolved to a taxon, is marine and not extinct, and has at least one merged cell in the study area. Program-Area overlap is <strong>not</strong> among them from v7 onward; it is a spatial question answered later.</p>
+<section id="validity-after-merging" class="level2" data-number="11.7">
+<h2 data-number="11.7" class="anchored" data-anchor-id="validity-after-merging"><span class="header-section-number">11.7</span> Validity after merging</h2>
+<p>A taxon is flagged valid once merging has run, on the criteria in <a href="taxonomy.html" class="quarto-xref"><span>Chapter 9</span></a> — chiefly that it resolved to a taxon, is marine and not extinct, and has at least one merged cell in the study area. Program-Area overlap is <strong>not</strong> among them from v7 onward; it is a spatial question answered later.</p>
 <p>In v9 this yields <strong>17,130 valid species</strong> across the study area, of which <strong>9,576</strong> contribute to scores within the 20 BOEM Program Areas of the current program cycle.</p>
 </section>
-<section id="guarding-the-rules" class="level2" data-number="9.7">
-<h2 data-number="9.7" class="anchored" data-anchor-id="guarding-the-rules"><span class="header-section-number">9.7</span> Guarding the rules</h2>
+<section id="guarding-the-rules" class="level2" data-number="11.8">
+<h2 data-number="11.8" class="anchored" data-anchor-id="guarding-the-rules"><span class="header-section-number">11.8</span> Guarding the rules</h2>
 <p>Every merge category has a synthetic fixture in the <code>msens</code> test suite asserting its exact expected output: range-only, both-masked, range-outside-the-US excluded, AquaMaps-only single-model, AquaMaps-only multi-model (which must <strong>not</strong> deduplicate), and the multiplicative turtle case.</p>
 <p>This is deliberate. Whole-pipeline checks — the version-equivalence gate on Program-Area scores, and the content-hash checkpoints — catch <em>aggregate</em> drift, but they hide rule-level breakage: the ~750 wrongly-included species above moved aggregate scores almost not at all while being scientifically wrong. A category with no fixture is a category that can break silently.</p>
 
@@ -1067,7 +1177,8 @@ v_{c} = \begin{cases} v_{suit,c} &amp; \text{where a suitability model covers } 
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -1076,8 +1187,69 @@ v_{c} = \begin{cases} v_{suit,c} &amp; \text{where a suitability model covers } 
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -1091,6 +1263,7 @@ v_{c} = \begin{cases} v_{suit,c} &amp; \text{where a suitability model covers } 
         interactiveBorder: 10,
         theme: 'quarto',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;
@@ -1253,44 +1426,54 @@ v_{c} = \begin{cases} v_{suit,c} &amp; \text{where a suitability model covers } 
           const lineIds = lines.map((line) => {
             return targetCell + "-" + line;
           })
-          let top = null;
-          let height = null;
-          let parent = null;
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
           if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
             }
+            placeBand(gutterDiv, el, lastEl);
             selectedAnnoteEl = annoteEl;
           }
         };
@@ -1389,15 +1572,18 @@ v_{c} = \begin{cases} v_{suit,c} &amp; \text{where a suitability model covers } 
     }
   });
   </script>
-<nav class="page-navigation">
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+<nav class="page-navigation" aria-label="Page">
   <div class="nav-page nav-page-previous">
       <a href="./extinction-risk.html" class="pagination-link" aria-label="Extinction Risk">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extinction Risk</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Extinction Risk</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./scoring.html" class="pagination-link" aria-label="Scoring">
-        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Scoring</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Scoring</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

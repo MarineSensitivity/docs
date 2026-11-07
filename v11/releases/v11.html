@@ -1,0 +1,2841 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="v11: the national release made robust, with year-integrated productivity, our own sea-turtle models on the DPS rule, an occurrence rule, survey densities and single counting">
+
+<title>6&nbsp; v11 — a robust national release – Marine Sensitivity</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../science.html" rel="next">
+<link href="../releases/v10.html" rel="prev">
+<link href="../images/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-01a495efc5497ac6e3f5457e7ed18e65.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google tag (gtag.js) — GA4 property 413466008 -->
+<!--
+  ONE measurement ID across every MarineSensitivity product (see the homepage
+  repo's _analytics.html for why). Products are separated in reporting by
+  `content_group`; this book reports as 'docs'.
+
+  This replaces the `google-analytics:` key, which cannot set content_group and
+  would double-count page views if both were enabled.
+-->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-9HW6L751XG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-9HW6L751XG', { content_group: 'docs' });
+
+  // Quarto's `downloads: [pdf, docx]` buttons are plain anchors — the gtag
+  // config above counts the page view but not the download, so track them
+  // explicitly. Delegated so it survives Quarto's client-side navigation.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    var m = href.match(/\.(pdf|docx|epub|csv|zip|gpkg|tif|parquet)(\?|$)/i);
+    if (!m) return;
+    gtag('event', 'file_download', {
+      content_group: 'docs',
+      file_extension: m[1].toLowerCase(),
+      file_name: href.split('/').pop().slice(0, 100),
+      link_text: (a.textContent || '').trim().slice(0, 100)
+    });
+  }, true);
+</script>
+<!--
+  Interactive app + core links, on every page (docs#6).
+
+  The app link DOES exist — on the Preface, under "Interactive Apps", which is
+  where marinesensitivity.org/docs/ lands. But a Quarto book keeps it on that
+  one page: follow a search hit, a bookmark or a chapter link and the sidebar
+  shows only chapters, so the viewer is no longer reachable from anywhere on
+  screen. (Since the Atlas cutover, October 2026, the box holds ONE app link:
+  the Atlas replaced the separate Scores and Species Shiny apps, whose own URLs
+  now redirect into it.) Tim White found it in §13 Server — a page that happens to list service
+  URLs — which is the failure, not the destination:
+
+    "after misplacing the link on my desktop, it took me quite some time to
+     locate it in the documentation ... could we create a box on the
+     Introduction page, or possibly across all pages"
+
+  There was no GitHub link on any page either: `repo-url` is set, but
+  `repo-actions: [edit]` renders only a small "Edit this page" action in the
+  right-hand TOC, which is not what someone looking for the source is scanning
+  for.
+
+  WHY CLIENT-SIDE, and why here. This mirrors _version-switcher.html deliberately
+  — same include-in-header mechanism, same sidebar host, so the two read as one
+  control strip and neither needs a Quarto feature that books do not have. It
+  also means the version comes from the page's own URL (/{ver}/...), which cannot
+  drift from where the file actually sits, rather than from a build-time
+  injection.
+
+  This DUPLICATES msens::product_urls() in JavaScript, which is a real cost worth
+  naming: the R side is the authority (libs/versioned.R doc_atlas_url() for the
+  book's own links; msens::product_urls() for the Shiny-era shape), but a static
+  book has no R at read time. Kept deliberately identical in shape —
+  marinesensitivity.org/atlas/?ver= for a public release, the preview host's
+  /{ver}/atlas/ PATH form for a restricted one — and the same fail-closed access
+  default the switcher and msens::atlas_versions() use (prerelease ->
+  restricted). If one changes, change both.
+
+  If anything fails — offline, registry unreachable, an unversioned local preview
+  — the box simply does not appear. A docs page must never fail to render over
+  its own chrome.
+-->
+<script>
+(function () {
+  var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
+  var PREVIEW  = "https://preview.marinesensitivity.org";
+  var HOME     = "https://marinesensitivity.org";
+  var GITHUB   = "https://github.com/MarineSensitivity";
+  var REPO     = "https://github.com/MarineSensitivity/docs";
+
+  function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
+
+  // Same rule as doc_atlas_url() in libs/versioned.R: the version is a QUERY
+  // parameter on the public host (GitHub Pages) and a PATH segment on the
+  // signed-in preview host, because Cloudflare Access scopes its per-version
+  // reviewer policies by path.
+  function atlasUrl(ver, acc) {
+    if (acc === "restricted") return PREVIEW + "/" + ver + "/atlas/";
+    return HOME + "/atlas/?ver=" + ver;
+  }
+
+  function parseVer() {
+    var m = location.pathname.match(/^(.*?\/)(v\d+[a-z]?)(\/.*)?$/);
+    return m ? m[2] : null;
+  }
+
+  // The script is injected into <head>, so on a fast/cached load it can run
+  // before the body exists — mounting into a null host silently does nothing.
+  function whenReady(fn) {
+    if (document.readyState === "loading")
+      document.addEventListener("DOMContentLoaded", fn, { once: true });
+    else fn();
+  }
+
+  // Both this and the version switcher mount at host.firstChild once their own
+  // fetch resolves, so whichever lands LAST ends up on top and the pair's order
+  // flips between page loads (observed live: core-links first locally, switcher
+  // first on marinesensitivity.org). Each now anchors on the other instead, so
+  // the strip reads the same way whichever wins the race: links, then switcher.
+  function mount(el) {
+    var host = document.querySelector("#quarto-margin-sidebar")
+            || document.querySelector("#quarto-sidebar")
+            || document.querySelector(".nav-footer")
+            || document.body;
+    // if the switcher already mounted, go directly above it; else take the top
+    var sw = host.querySelector(".docs-version-switcher");
+    host.insertBefore(el, sw || host.firstChild);
+  }
+
+  // label is HTML, not text: the app link bolds the noun that names it
+  // ("The **Atlas**"). Every label here is a
+  // literal in this file, so there is nothing untrusted to interpolate.
+  function link(href, label, title) {
+    var a = document.createElement("a");
+    a.href = href; a.innerHTML = label;
+    if (title) a.title = title;
+    a.style.cssText = "display:block;padding:0.1rem 0;";
+    return a;
+  }
+
+  function box(ver, acc) {
+    var u = atlasUrl(ver, acc);
+    var wrap = document.createElement("div");
+    wrap.className = "docs-core-links";
+    wrap.style.cssText =
+      "margin:0.75rem 0;padding:0.6rem 0.75rem;font-size:0.85rem;" +
+      "border:1px solid rgba(128,128,128,0.35);border-radius:0.35rem;";
+
+    var h = document.createElement("div");
+    h.textContent = "Interactive app";
+    h.style.cssText = "font-weight:600;margin-bottom:0.35rem;";
+    wrap.appendChild(h);
+
+    // The app is what Tim could not find, so it leads — and it points at
+    // THIS book's release, never the promoted one, so the reader is not moved
+    // to a different version than the page they are reading.
+    wrap.appendChild(link(u, "▶ The <strong>Atlas</strong> — scores, species &amp; places",
+                          "interactive map of scores, species and places (" + ver + ")"));
+
+    var hr = document.createElement("div");
+    hr.style.cssText = "border-top:1px solid rgba(128,128,128,0.25);margin:0.4rem 0;";
+    wrap.appendChild(hr);
+
+    wrap.appendChild(link(HOME,   "⌂ Project home", "marinesensitivity.org"));
+    wrap.appendChild(link(GITHUB, "◇ GitHub — all repositories", GITHUB));
+    wrap.appendChild(link(REPO,   "◇ GitHub — these docs", REPO));
+    return wrap;
+  }
+
+  var ver = parseVer();
+  if (!ver) return;   // unversioned local preview: nothing reliable to link to
+
+  fetch(REGISTRY, { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (j) {
+      var versions = (j && j.versions) || j;
+      if (!versions || !versions.length) return;
+      var me = versions.filter(function (v) { return v.ver === ver; })[0];
+      // A book can be published for a release the registry has not caught up
+      // with; fail CLOSED so a restricted pre-release is never linked at the
+      // public host, where it would 404 or leak that it exists.
+      var acc = me ? access(me) : "restricted";
+      whenReady(function () { mount(box(ver, acc)); });
+    })
+    .catch(function () { /* registry unreachable: show nothing */ });
+})();
+</script>
+<!--
+  Documentation version switcher.
+
+  One book documented eight model releases, so a reader could not tell which
+  version a page described, and a citation to the v4 methods had nowhere to
+  point. Docs are now published per release under /{ver}/, and this widget moves
+  between them.
+
+  It reads the SAME versions.json that drives the pipeline and the apps, so the
+  three cannot disagree about what exists. The bucket serves it with
+  `Access-Control-Allow-Origin: *`, so the fetch works from the browser.
+
+  `access` (public | restricted) decides WHERE a version's book lives: public
+  books are on GitHub Pages under marinesensitivity.org/docs/{ver}/, restricted
+  ones (a pre-release under review) only on the signed-in preview host. So the
+  switcher links by ABSOLUTE URL per access -- a reviewer on the preview host can
+  step to a public version and a public reader sees a locked entry that leads to
+  the sign-in, never a dead relative link. A registry that predates the field is
+  read the way msens::atlas_versions() reads it: prerelease -> restricted.
+
+  The page's own version comes from its URL, not from a build-time injection:
+  the published layout is /{ver}/..., so the path is the source of truth and
+  cannot drift from where the file actually sits. If anything fails — offline,
+  registry unreachable, an unversioned preview render — the widget simply does
+  not appear, because a docs page must never fail to render over its own chrome.
+-->
+<script>
+(function () {
+  var REGISTRY = "https://s3.us-east-1.amazonaws.com/oceanmetrics.io-public/marine-atlas/versions.json";
+  var PUBLIC_DOCS  = "https://marinesensitivity.org/docs/";          // GitHub Pages
+  var PREVIEW_DOCS = "https://preview.marinesensitivity.org/docs/";  // signed-in reviewers
+
+  function access(v) { return v.access || (v.status === "prerelease" ? "restricted" : "public"); }
+  function base(v)   { return access(v) === "restricted" ? PREVIEW_DOCS : PUBLIC_DOCS; }
+
+  function parsePath() {
+    var m = location.pathname.match(/^(.*?\/)(v\d+[a-z]?)(\/.*)?$/);
+    if (!m) return null;
+    return { prefix: m[1], ver: m[2], rest: m[3] || "/" };
+  }
+
+  function label(v) {
+    var s = v.ver;
+    if (v.status === "prerelease") s += " (pre-release)";
+    else if (v.status === "retired") s += " (retired)";
+    if (access(v) === "restricted") s += " \uD83D\uDD12 restricted";   // sign-in required
+    return v.title ? s + " — " + v.title : s;
+  }
+
+  // The script is injected into <head>, so on a fast/cached load the fetch can
+  // resolve BEFORE the body exists -- and mounting into a null host silently
+  // does nothing. Observed exactly that: the switcher appeared on the index but
+  // not on an inner page whose registry response came from cache.
+  function whenReady(fn) {
+    if (document.readyState === "loading")
+      document.addEventListener("DOMContentLoaded", fn, { once: true });
+    else fn();
+  }
+
+  function mount(el) {
+    // the book sidebar is the natural home; fall back to the footer, then body
+    var host = document.querySelector("#quarto-margin-sidebar")
+            || document.querySelector("#quarto-sidebar")
+            || document.querySelector(".nav-footer")
+            || document.body;
+    // Sit BELOW the core-links box (_nav-links.html) when it has already
+    // mounted. Both widgets used to insert at firstChild once their own fetch
+    // resolved, so whichever landed last ended up on top and the pair's order
+    // flipped between page loads. Anchoring on each other makes the strip read
+    // the same way whichever wins the race: links, then switcher.
+    var links = host.querySelector(".docs-core-links");
+    if (links && links.nextSibling) host.insertBefore(el, links.nextSibling);
+    else if (links)                 host.appendChild(el);
+    else                            host.insertBefore(el, host.firstChild);
+  }
+
+  var here = parsePath();
+  if (!here) return;   // unversioned (local preview) — nothing to switch between
+
+  fetch(REGISTRY, { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (j) {
+      var versions = (j && j.versions) || j;
+      if (!versions || !versions.length) return;
+
+      versions = versions.slice().sort(function (a, b) {
+        return String(b.released || b.ver).localeCompare(String(a.released || a.ver));
+      });
+
+      var wrap = document.createElement("div");
+      wrap.className = "docs-version-switcher";
+      wrap.style.cssText = "margin:0.75rem 0;font-size:0.85rem;";
+
+      var lab = document.createElement("label");
+      lab.textContent = "Docs version";
+      lab.style.cssText = "display:block;font-weight:600;margin-bottom:0.25rem;";
+      lab.setAttribute("for", "docs-version-select");
+
+      var sel = document.createElement("select");
+      sel.id = "docs-version-select";
+      sel.className = "form-select form-select-sm";
+
+      versions.forEach(function (v) {
+        var o = document.createElement("option");
+        o.value = v.ver;
+        o.textContent = label(v);
+        if (v.ver === here.ver) o.selected = true;
+        sel.appendChild(o);
+      });
+
+      // A release exists in the registry long before its DOCS are built -- today
+      // only v8 is published, so offering v1-v7 as live options would hand the
+      // reader a 404. Probe each one and mark the unbuilt ones, rather than
+      // maintaining a second list that would drift from what is actually there.
+      // Only SAME-ORIGIN targets can be probed: a cross-origin HEAD (GitHub
+      // Pages sends no CORS headers; the preview host answers with a sign-in
+      // redirect) always fails and would mislabel a published book.
+      versions.forEach(function (v) {
+        if (v.ver === here.ver) return;
+        var target = base(v) + v.ver + "/";
+        if (target.indexOf(location.origin + "/") !== 0) return;
+        fetch(target, { method: "HEAD" })
+          .then(function (r) {
+            if (r.ok) return;
+            var o = sel.querySelector("option[value='" + v.ver + "']");
+            if (o) { o.disabled = true; o.textContent = label(v) + " — docs not published"; }
+          })
+          .catch(function () {
+            var o = sel.querySelector("option[value='" + v.ver + "']");
+            if (o) { o.disabled = true; o.textContent = label(v) + " — docs not published"; }
+          });
+      });
+
+      sel.addEventListener("change", function () {
+        // keep the reader on the SAME page in the other version; if that page
+        // did not exist then, the server 404s and they can climb to its index —
+        // better than always dumping them at the top of an unfamiliar book.
+        // Absolute per access: a restricted version lives only on the preview
+        // host (sign-in), a public one only on GitHub Pages.
+        var v = versions.filter(function (x) { return x.ver === sel.value; })[0];
+        location.href = (v ? base(v) : here.prefix) + sel.value + here.rest;
+      });
+
+      wrap.appendChild(lab);
+      wrap.appendChild(sel);
+      whenReady(function () { mount(wrap); });
+    })
+    .catch(function () { /* registry unreachable: show nothing */ });
+})();
+</script>
+<!-- The cover banner on the Preface: full column width, square corners softened,
+     and no figure caption chrome. Kept in its own include so the book's other
+     images are untouched. -->
+<style>
+  .mst-hero {
+    display:       block;
+    width:         100%;
+    height:        auto;
+    margin:        0 0 1.75rem 0;
+    border-radius: 10px;
+  }
+  figure:has(> p > .mst-hero), figure:has(> .mst-hero) { margin: 0; }
+</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" aria-label="Toolbar">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../releases.html">Releases</a></li><li class="breadcrumb-item"><a href="../releases/v11.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">v11 — a robust national release</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Site">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Marine Sensitivity</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/MarineSensitivity/docs/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="../Marine-Sensitivity.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="../Marine-Sensitivity.docx">
+              <i class="bi bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Releases</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../releases.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Releases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../releases/v1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">v1 — Planning Areas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../releases/v7c.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">v7c — sea turtles and the North Atlantic right whale where the record places them</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../releases/v10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">v10 — scoring across the nation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../releases/v11.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">v11 — a robust national release</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">Science</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../science.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Science</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data-sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Sources</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../taxonomy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Taxonomy</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../extinction-risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Extinction Risk</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../model-merging.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Model Merging</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../scoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Scoring</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../scoring-walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Scoring Walkthrough</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stressors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stressors</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">Software</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../server.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Server</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../db.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Database</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../workflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Workflows</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">APIs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../libraries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Libraries</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Apps</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/atlas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Atlas — the static, in-browser scores, species and places app</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps-guide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Atlas User Guide</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../docs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Docs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">Appendices</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-controls="quarto-sidebar-section-5" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-5-label">Applications (Legacy)</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-5" aria-labelledby="quarto-sidebar-section-5-label" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/scores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Scores — mapper of aggregate sensitivity scores</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/species.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Species — mapper of individual species distributions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/shiny-guide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Shiny Apps User Guide (retired)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/aoi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Areas of Interest</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/bird_hotspots.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bird Hotspots</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Regional Map</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/scores_0.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scores Explorer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/sdm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, Vector</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/sdm-cog.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, Raster</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../apps/vmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vulnerability Mapper</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#where-v11-comes-from" id="toc-where-v11-comes-from" class="nav-link active" data-scroll-target="#where-v11-comes-from"><span class="header-section-number">6.1</span> Where v11 comes from</a></li>
+  <li><a href="#the-method-set" id="toc-the-method-set" class="nav-link" data-scroll-target="#the-method-set"><span class="header-section-number">6.2</span> The method set</a></li>
+  <li><a href="#the-rules" id="toc-the-rules" class="nav-link" data-scroll-target="#the-rules"><span class="header-section-number">6.3</span> The rules</a>
+  <ul class="collapse">
+  <li><a href="#sec-v11-productivity" id="toc-sec-v11-productivity" class="nav-link" data-scroll-target="#sec-v11-productivity"><span class="header-section-number">6.3.1</span> Productivity over the whole year</a></li>
+  <li><a href="#sec-v11-turtles" id="toc-sec-v11-turtles" class="nav-link" data-scroll-target="#sec-v11-turtles"><span class="header-section-number">6.3.2</span> Sea turtles: our own models, on the DPS rule</a></li>
+  <li><a href="#sec-v11-single-counting" id="toc-sec-v11-single-counting" class="nav-link" data-scroll-target="#sec-v11-single-counting"><span class="header-section-number">6.3.3</span> Single counting</a></li>
+  <li><a href="#sec-v11-occurrence" id="toc-sec-v11-occurrence" class="nav-link" data-scroll-target="#sec-v11-occurrence"><span class="header-section-number">6.3.4</span> Where the record places a species</a></li>
+  <li><a href="#sec-v11-densities" id="toc-sec-v11-densities" class="nav-link" data-scroll-target="#sec-v11-densities"><span class="header-section-number">6.3.5</span> Survey densities</a></li>
+  <li><a href="#sec-v11-components" id="toc-sec-v11-components" class="nav-link" data-scroll-target="#sec-v11-components"><span class="header-section-number">6.3.6</span> Component labels</a></li>
+  </ul></li>
+  <li><a href="#what-moved-the-program-areas" id="toc-what-moved-the-program-areas" class="nav-link" data-scroll-target="#what-moved-the-program-areas"><span class="header-section-number">6.4</span> What moved: the Program Areas</a>
+  <ul class="collapse">
+  <li><a href="#by-component" id="toc-by-component" class="nav-link" data-scroll-target="#by-component"><span class="header-section-number">6.4.1</span> By component</a></li>
+  </ul></li>
+  <li><a href="#which-rule-moved-which-score" id="toc-which-rule-moved-which-score" class="nav-link" data-scroll-target="#which-rule-moved-which-score"><span class="header-section-number">6.5</span> Which rule moved which score</a></li>
+  <li><a href="#what-v11-does-not-contain" id="toc-what-v11-does-not-contain" class="nav-link" data-scroll-target="#what-v11-does-not-contain"><span class="header-section-number">6.6</span> What v11 does not contain</a></li>
+  <li><a href="#caveats" id="toc-caveats" class="nav-link" data-scroll-target="#caveats"><span class="header-section-number">6.7</span> Caveats</a></li>
+  <li><a href="#reproducing-v11" id="toc-reproducing-v11" class="nav-link" data-scroll-target="#reproducing-v11"><span class="header-section-number">6.8</span> Reproducing v11</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/releases/v11.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../releases.html">Releases</a></li><li class="breadcrumb-item"><a href="../releases/v11.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">v11 — a robust national release</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-release-v11" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">v11 — a robust national release</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>v11 is the release that makes the across-the-nation score of v10 (<a href="v10.html" class="quarto-xref"><span>Chapter 5</span></a>) <strong>robust</strong>. It keeps both of v10’s scores, the within-ecoregion one and the distribution share, with the same keys, the same reporting floor and the same composite, and changes what goes into them. Every change is a flag whose control value is off, and with every flag off the pipeline reproduces v10:</p>
+<ul>
+<li><strong>primary productivity integrated over the whole year</strong>, so a polar month without light counts as zero rather than being left out;</li>
+<li><strong>our own distribution models for the sea turtles</strong>, merged by the rule of the species listed by Distinct Population Segment, with their extinction risk beside the value rather than inside it;</li>
+<li><strong>an occurrence rule</strong>: a species is removed from an ecoregion where it has no record under adequate search effort, and down-weighted where it is recorded at a rate below its rate elsewhere;</li>
+<li><strong>survey density models</strong> for seabirds and cetaceans folded into the merge inside each survey’s own domain, calibrated to the surface they replace, with the 2023 Atlantic seabird models;</li>
+<li><strong>single counting</strong>: a merged value is the suitability alone, so extinction risk enters a cell’s score once, as the weight;</li>
+<li>the component labels <strong>Flora</strong> and <strong>Productivity</strong>.</li>
+</ul>
+<p>Unlike v10, which changed only the scoring, v11 adds ingests and re-runs the merge and both scores, so the within-ecoregion scores move too.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Served on the review host only
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>v11 is a restricted pre-release. It is served only through the signed-in review host: the <a href="https://preview.marinesensitivity.org/v11/atlas/">Atlas</a> (<a href="https://preview.marinesensitivity.org/v11/atlas/?lens=scores">Scores lens</a>, <a href="https://preview.marinesensitivity.org/v11/atlas/?lens=species">Species lens</a>) and <a href="https://preview.marinesensitivity.org/docs/v11/">this documentation</a>. It is never what a reader gets by default, and promoting it is a separate decision.</p>
+</div>
+</div>
+<section id="where-v11-comes-from" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="where-v11-comes-from"><span class="header-section-number">6.1</span> Where v11 comes from</h2>
+<table class="caption-top table">
+<caption>The lineage of v11, read from each release’s own manifest and tables. Species counts are not comparable across releases (see the Releases page).</caption>
+<colgroup>
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 62%">
+<col style="width: 3%">
+<col style="width: 5%">
+<col style="width: 4%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Released</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Title</th>
+<th style="text-align: left;">Parent</th>
+<th style="text-align: left;">Grid</th>
+<th style="text-align: right;">Datasets</th>
+<th style="text-align: right;">Valid species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">v8</td>
+<td style="text-align: left;">2026-07-28</td>
+<td style="text-align: left;">prerelease</td>
+<td style="text-align: left;">Marine Atlas</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>global05</code></td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">17,112</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">v10</td>
+<td style="text-align: left;">2026-10-29</td>
+<td style="text-align: left;">prerelease</td>
+<td style="text-align: left;">Distribution share: percent of global range</td>
+<td style="text-align: left;">v8</td>
+<td style="text-align: left;"><code>global05</code></td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">17,112</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">v11</td>
+<td style="text-align: left;">2026-12-15</td>
+<td style="text-align: left;">prerelease</td>
+<td style="text-align: left;">Robust national release: productivity integration; own turtle models + DPS rule; occurrence rule; components; densities</td>
+<td style="text-align: left;">v10</td>
+<td style="text-align: left;"><code>global05</code></td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">17,119</td>
+</tr>
+</tbody>
+</table>
+<p>The lineage has three steps:</p>
+<ol type="1">
+<li><strong>v8</strong> is the data rebuild: the inputs of public v7 ingested whole-range on the global grid.</li>
+<li><strong>v10</strong> is a scoring change on v8’s data: the across-the-nation share family beside v8’s within-ecoregion scores, with no ingest and no merge re-run.</li>
+<li><strong>v11</strong> is a method change on v10: new inputs, a new merge, and both of v10’s score families recomputed from it. Its control run (every flag off) must reproduce v10, and each method is a flag that can be turned off on its own.</li>
+</ol>
+<table class="caption-top table">
+<caption>Datasets v11 registers that v10 does not (<code>dataset</code>, both releases). A dataset that is not scored is registered for review or as evidence and enters no score.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Dataset</th>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Response</th>
+<th style="text-align: left;">Scored</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>ax</code></td>
+<td style="text-align: left;">AquaX (suitability)</td>
+<td style="text-align: left;">suitability</td>
+<td style="text-align: left;">no</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>og</code></td>
+<td style="text-align: left;">Own SDMs (OBIS method)</td>
+<td style="text-align: left;">suitability</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>rng_occ</code></td>
+<td style="text-align: left;">OBIS record buffer (range)</td>
+<td style="text-align: left;">range</td>
+<td style="text-align: left;">no</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cce</code></td>
+<td style="text-align: left;">SWFSC CCE cetacean densities</td>
+<td style="text-align: left;">density</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>dps_nmfs</code></td>
+<td style="text-align: left;">NMFS listed entities (DPS)</td>
+<td style="text-align: left;">range</td>
+<td style="text-align: left;">yes</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="the-method-set" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="the-method-set"><span class="header-section-number">6.2</span> The method set</h2>
+<p>Each rule is a flag read in one place (<code>libs/vars.R</code> of the workflows repository) and consumed by the stage it enters. The v11 values below are those of the run that is the release; the control values are those of the run that reproduces v10.</p>
+<table class="caption-top table">
+<caption>The flags of v11, as recorded by the v11 run and the control run (<code>snapshot_scores.qmd</code>, <code>data/v11/attribution/</code>). A flag at its control value in v11 is listed so that its absence is stated, not implied.</caption>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 69%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Flag</th>
+<th style="text-align: left;">v11</th>
+<th style="text-align: left;">Control (= v10)</th>
+<th style="text-align: left;">Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>VGPM_INTEGRATED</code></td>
+<td style="text-align: left;">1 (on)</td>
+<td style="text-align: left;">0 (off)</td>
+<td style="text-align: left;">primary productivity integrated over the whole year, a month without a retrieval counting zero</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>TURTLE_SUIT</code></td>
+<td style="text-align: left;"><code>ogm</code></td>
+<td style="text-align: left;"><code>am</code></td>
+<td style="text-align: left;">the sea turtles’ suitability: AquaMaps (<code>am</code>) or our own OBIS-method models (<code>ogm</code>)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>TURTLE_RULE</code></td>
+<td style="text-align: left;"><code>dps</code></td>
+<td style="text-align: left;"><code>turtle</code></td>
+<td style="text-align: left;">the sea turtles’ merge rule: the multiplicative turtle rule (<code>turtle</code>) or the DPS rule (<code>dps</code>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>OCC_RULE</code></td>
+<td style="text-align: left;">1 (on)</td>
+<td style="text-align: left;">0 (off)</td>
+<td style="text-align: left;">the occurrence gate: a species leaves an ecoregion with no record under adequate effort</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>REGION_WEIGHT</code></td>
+<td style="text-align: left;">1 (on)</td>
+<td style="text-align: left;">0 (off)</td>
+<td style="text-align: left;">the encounter weight: a species’ value in an ecoregion scaled by its record rate there</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>FOLD_DENSITY</code></td>
+<td style="text-align: left;">1 (on)</td>
+<td style="text-align: left;">0 (off)</td>
+<td style="text-align: left;">survey density models replace suitability inside each species’ survey domain</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>FOLD_DENSITY_CAL</code></td>
+<td style="text-align: left;"><code>suit</code></td>
+<td style="text-align: left;"><code>none</code></td>
+<td style="text-align: left;">the calibration of a folded-in survey to the surface it replaces (<code>none</code>, <code>mass</code>, <code>suit</code>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>NC_ATL_SOURCE</code></td>
+<td style="text-align: left;"><code>2023</code></td>
+<td style="text-align: left;"><code>2018</code></td>
+<td style="text-align: left;">the Atlantic seabird density models: the 2018 set or the 2023 set</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>SHARE_BASIS</code></td>
+<td style="text-align: left;"><code>cell</code></td>
+<td style="text-align: left;"><code>taxon</code></td>
+<td style="text-align: left;">the merged value of a range cell: <code>max(er_score, suitability)</code> (<code>taxon</code>) or the suitability alone (<code>cell</code>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>RANGE_FILL</code></td>
+<td style="text-align: left;"><code>mean</code></td>
+<td style="text-align: left;"><code>er</code></td>
+<td style="text-align: left;">under the cell basis, the value of a range cell no model covers: <code>er</code>, <code>presence</code> or <code>mean</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>COMPONENTS_V11</code></td>
+<td style="text-align: left;">1 (on)</td>
+<td style="text-align: left;">0 (off)</td>
+<td style="text-align: left;">the component labels: v10’s or v11’s (Flora, Productivity)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>WORMS_SOURCE</code></td>
+<td style="text-align: left;"><code>download</code></td>
+<td style="text-align: left;"><code>download</code></td>
+<td style="text-align: left;">where the WoRMS taxonomy is read from</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<caption>The rules v11 states as data (<code>release_method</code>).</caption>
+<colgroup>
+<col style="width: 7%">
+<col style="width: 21%">
+<col style="width: 71%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Rule</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>share_metrics</code></td>
+<td style="text-align: left;">on</td>
+<td style="text-align: left;">The across-the-nation score family (each species’ risk-weighted share of its range per km2 against the national average = 100) computed beside the within-ecoregion metrics (v8: off)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>share_denom</code></td>
+<td style="text-align: left;">global</td>
+<td style="text-align: left;">The headline denominator of each species’ share: global (its whole modelled range), usa (its US distribution), pooled (no per-species normalization); the other two are written beside it</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>share_kappa_pct</code></td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">A zone component is reportable only if its scored cells cover at least this percent of the zone’s area (area-weighted); below it there is no score, never a zero</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>share_floor_strip</code></td>
+<td style="text-align: left;">off</td>
+<td style="text-align: left;">Whether the floored (val = 1) cells of premultiplied taxa (the v4b-v10 sea-turtle rule; none under TURTLE_RULE=dps) are zeroed on both sides of the share (off = kept, the surface stays continuous)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>share_components</code></td>
+<td style="text-align: left;">bird,coral,fish,invertebrate,mammal,primary_producer,turtle</td>
+<td style="text-align: left;">The scored components; v8’s taxonomy-based categories (no ‘other’); primary productivity joins as primprod_v10</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>components_labels</code></td>
+<td style="text-align: left;">v11</td>
+<td style="text-align: left;">Which component names the manifest shows: v10 (Primary Producers, Primary productivity) or v11 (Flora, Productivity; data/components.csv, msens::component_label())</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>prev</code></td>
+<td style="text-align: left;">v10</td>
+<td style="text-align: left;">The release this version is compared against; the merge was re-run under the method flags recorded in the rows that follow</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>vgpm_integrated</code></td>
+<td style="text-align: left;">on</td>
+<td style="text-align: left;">Primary productivity as the year-integrated VGPM (polar night = 0) instead of the mean of available months (off: v8/v10)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>turtle_suit</code></td>
+<td style="text-align: left;">ogm</td>
+<td style="text-align: left;">Sea-turtle suitability source: am = AquaMaps, ogm = the project’s own occurrence-based models</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>turtle_rule</code></td>
+<td style="text-align: left;">dps</td>
+<td style="text-align: left;">Sea-turtle merge rule: turtle = multiplicative er x suit (v4b-v10), dps = suitability with the per-cell ER beside (dps_sql)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>occ_rule</code></td>
+<td style="text-align: left;">on</td>
+<td style="text-align: left;">Zero-record occurrence gate: a species is excluded from an ecoregion with no OBIS record (0.5-degree blocks; protected, narrow-range and unsearched overrides; msens::occurrence_rule)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>region_weight</code></td>
+<td style="text-align: left;">on</td>
+<td style="text-align: left;">Encounter weights per species x ecoregion (msens::encounter_weight)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>fold_density</code></td>
+<td style="text-align: left;">on</td>
+<td style="text-align: left;">Survey density datasets (gm, nc, cce) replace suitability inside their domain</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>fold_density_cal</code></td>
+<td style="text-align: left;">suit</td>
+<td style="text-align: left;">Calibration of the folded-in survey: none, mass (the control’s value basis) or suit (the suitability prior where modelled)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>worms_source</code></td>
+<td style="text-align: left;">download</td>
+<td style="text-align: left;">WoRMS taxonomy source: download or obisindicators</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>components_v11</code></td>
+<td style="text-align: left;">on</td>
+<td style="text-align: left;">Component labels Flora / Productivity (data/components.csv)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>nc_atl_source</code></td>
+<td style="text-align: left;">2023</td>
+<td style="text-align: left;">NCCOS Atlantic seabird set: 2018 (Winship et al.) or 2023 (MDAT v3 / BOEM 2023-060)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>share_basis</code></td>
+<td style="text-align: left;">cell</td>
+<td style="text-align: left;">Merged value basis: taxon = max(er, suit) with the governing ER multiplied in again at scoring; cell = suitability alone, ER beside (single counting)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>range_fill</code></td>
+<td style="text-align: left;">mean</td>
+<td style="text-align: left;">Value of a range cell no suitability model covers under the cell basis: er (the governing score), presence (100) or mean (the taxon’s modelled-cell mean)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="the-rules" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="the-rules"><span class="header-section-number">6.3</span> The rules</h2>
+<p>The merge and the scoring that the rules below change are described in <a href="../model-merging.html" class="quarto-xref"><span>Chapter 11</span></a> (the order the stages run in: <a href="../model-merging.html#sec-merge-sequence" class="quarto-xref"><span>Section 11.2</span></a>) and the Scoring chapter (<a href="../scoring.html#sec-share" class="quarto-xref"><span>Section 12.4</span></a>). The definitions are repeated here so that this page can be read on its own.</p>
+<section id="sec-v11-productivity" class="level3" data-number="6.3.1">
+<h3 data-number="6.3.1" class="anchored" data-anchor-id="sec-v11-productivity"><span class="header-section-number">6.3.1</span> Productivity over the whole year</h3>
+<p>Every release before v11 averages the satellite net primary productivity (<a href="../data-sources.html#sec-primary-productivity" class="quarto-xref"><span>Section 8.5</span></a>) over the months that have a retrieval. In the Bering Sea and the Arctic a winter month has none (polar night, ice), so a “year” there was the mean of the bloom months alone, and the Arctic Program Areas carried productivity well above what is measured in situ. Under a within-ecoregion rescale the error barely mattered; against the national average it does. v11 integrates the year: for cell <span class="math inline">\(c\)</span>, year <span class="math inline">\(y\)</span>, month <span class="math inline">\(m\)</span> with mean daily rate <span class="math inline">\(r_{c,m,y}\)</span> and <span class="math inline">\(d_m\)</span> days,</p>
+<p><span id="eq-v11-vgpm"><span class="math display">\[
+\bar r_{c,y} = \frac{1}{D_y} \sum_{m=1}^{12} d_m \, r_{c,m,y}, \qquad r_{c,m,y} = 0 \text{ for a month without a retrieval}
+\tag{6.1}\]</span></span></p>
+<p>where <span class="math inline">\(D_y\)</span> is the number of days in the year (366 in a leap year). A cell never observed stays empty. The annual rates are then averaged over the years of the record as before. The rule is <code>msens::vgpm_annual_integrate()</code>.</p>
+</section>
+<section id="sec-v11-turtles" class="level3" data-number="6.3.2">
+<h3 data-number="6.3.2" class="anchored" data-anchor-id="sec-v11-turtles"><span class="header-section-number">6.3.2</span> Sea turtles: our own models, on the DPS rule</h3>
+<p>Two flags change the sea turtles, and they are measured separately.</p>
+<p><strong>Suitability (<code>TURTLE_SUIT=ogm</code>).</strong> The suitability of the 6 sea turtles comes from our own distribution models (dataset <code>og</code>), fitted with the OBIS / MPA Europe pipeline to occurrence records on the global 0.05° grid: an ensemble of three algorithms, the median kept continuous as probability × 100, its thresholds recorded and not applied. Inside the footprint of these models it replaces AquaMaps, the way AquaX replaced AquaMaps in v9.</p>
+<p><strong>Rule (<code>TURTLE_RULE=dps</code>).</strong> Every release since v4b merged the turtles by multiplying extinction risk into the value, <span class="math inline">\(\max(1, \mathrm{round}(\text{er}_c \cdot \text{suit}_c / 100))\)</span>, so their drawn surface was a weight rather than a distribution. v11 merges them like the species listed by Distinct Population Segment (<code>msens::dps_sql()</code>, the rule v9 introduced for the NMFS DPS species, which v10 did not carry and v11 carries again for 19 species): the value is the suitability inside the extinction-risk footprint, the per-cell risk (the SWOT and NMFS DPS surface, with critical habitat joining the footprint at its own status) is kept beside it, and the score multiplies the two. Where a model covers the cell a turtle still scores risk times suitability, now without the rounding and the floor of 1; a footprint cell no model covers takes the fill of <a href="#sec-v11-single-counting" class="quarto-xref"><span>Section 6.3.3</span></a> instead of the value 1; and the habitat and the risk are kept as two surfaces.</p>
+<p>In v11, 112 scored species carry a per-cell extinction risk (<code>taxon.er_mode = 'cell'</code>), 6 of them sea turtles, and 17,003 carry one risk score for the whole species (<code>taxon</code>); none is premultiplied any more.</p>
+</section>
+<section id="sec-v11-single-counting" class="level3" data-number="6.3.3">
+<h3 data-number="6.3.3" class="anchored" data-anchor-id="sec-v11-single-counting"><span class="header-section-number">6.3.3</span> Single counting</h3>
+<p>From v4 through v10 a range cell of a species with an expert range is valued <span class="math inline">\(\max(\text{er}_s, \text{suit}_{s,c})\)</span>: the governing extinction-risk score is the floor of the merged value, and the score multiplies by the same risk again, so a range cell no model covers scores <span class="math inline">\(\text{er}_s^2/100\)</span> and the risk shapes the distribution as well as weighting it. v11 counts the risk once (<code>SHARE_BASIS=cell</code>). For species <span class="math inline">\(s\)</span> and range cell <span class="math inline">\(c\)</span>:</p>
+<p><span id="eq-v11-value"><span class="math display">\[
+v_{s,c} =
+\begin{cases}
+\text{suit}_{s,c} &amp; \text{if a suitability model covers } c \\
+\bar{v}_s = \operatorname{mean}_{c' \in M_s} \text{suit}_{s,c'} &amp; \text{if not, and the species has modelled range cells } M_s \neq \varnothing \\
+100 &amp; \text{if the species has no modelled range cell}
+\end{cases}
+\tag{6.2}\]</span></span></p>
+<p>and the cell score is <span class="math inline">\(w_{s,c}\, v_{s,c} / 100\)</span> with <span class="math inline">\(w\)</span> the governing <code>er_score</code>, or the per-cell risk for a species that carries one. The fill of an unmodelled range cell (<code>RANGE_FILL=mean</code>) is the species’ own mean, so it depends neither on the risk score nor on a ceiling; for a surveyed species the mean includes its calibrated survey cells. The rule is <code>msens::merge_sql(basis = "cell", fill = "mean")</code>, and <code>msens::dps_sql(fill = "mean")</code> for the species with a per-cell risk. AquaMaps-only species were single-counted already and are unchanged.</p>
+</section>
+<section id="sec-v11-occurrence" class="level3" data-number="6.3.4">
+<h3 data-number="6.3.4" class="anchored" data-anchor-id="sec-v11-occurrence"><span class="header-section-number">6.3.4</span> Where the record places a species</h3>
+<p>v7c, a patch of v7, removed sea turtles from the East Bering Sea and the North Atlantic right whale from the Gulf of America by a hand-built evidence table (<a href="v7c.html" class="quarto-xref"><span>Chapter 4</span></a>). v10 carries no such exclusion. v11 applies one rule to every scored species instead, judged per species and ecoregion on 0.5° blocks of OBIS records (<code>msens::occurrence_rule()</code>): a block is searched if it holds a record of the species’ effort group or of the species itself, and the species’ rate in the ecoregion (blocks with its record over blocks searched) is tested against its rate in its other ecoregions.</p>
+<ul>
+<li><strong>The gate (<code>OCC_RULE</code>).</strong> An ecoregion where none of the searched blocks holds a record, and the absence is significant against the rate elsewhere, loses the species: its cells there are dropped from the merged surface, not set to zero. Critical habitat and core areas are never dropped, a narrow-range species is never dropped, and an ecoregion that was not searched is kept (“unsampled is unknown, not absent”).</li>
+<li><strong>The weight (<code>REGION_WEIGHT</code>).</strong> An ecoregion where the species is recorded, but at a rate below its rate elsewhere, keeps it at a reduced value:</li>
+</ul>
+<p><span id="eq-v11-weight"><span class="math display">\[
+w_{s,e} = \min\!\left(1,\; \frac{\text{rate}_{s,e}}{\text{rate}_{s,\neg e}}\right), \qquad v'_{s,c} = w_{s,e(c)}\, v_{s,c}
+\tag{6.3}\]</span></span></p>
+<p>where <span class="math inline">\(e(c)\)</span> is the ecoregion covering most of cell <span class="math inline">\(c\)</span> (<code>msens::encounter_weight()</code>, <code>msens::zone_adjust_sql()</code>). Critical habitat is exempt, and the weight scales the value only; the risk layer is never adjusted. Under the within-ecoregion rescale a weight common to every species of a component across a whole ecoregion would cancel, which is why v7c dropped rather than weighted; the share has no rescale, so the weight reaches the score.</p>
+<table class="caption-top table">
+<caption>Species × ecoregion pairs the occurrence rule gates (weight 0) or weights (0 &lt; w &lt; 1), by component (<code>occ_pairs.parquet</code>, from <code>zone_weights_occ.csv</code>). In all, 3,817 pairs of 2,841 species are gated and 8,335 pairs of 4,954 species weighted.</caption>
+<colgroup>
+<col style="width: 17%">
+<col style="width: 13%">
+<col style="width: 16%">
+<col style="width: 17%">
+<col style="width: 19%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Component</th>
+<th style="text-align: right;">Gated pairs</th>
+<th style="text-align: right;">Gated species</th>
+<th style="text-align: right;">Weighted pairs</th>
+<th style="text-align: right;">Weighted species</th>
+<th style="text-align: right;">Median weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Seabirds</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">249</td>
+<td style="text-align: right;">123</td>
+<td style="text-align: right;">0.35</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Corals</td>
+<td style="text-align: right;">199</td>
+<td style="text-align: right;">139</td>
+<td style="text-align: right;">277</td>
+<td style="text-align: right;">178</td>
+<td style="text-align: right;">0.46</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fish</td>
+<td style="text-align: right;">842</td>
+<td style="text-align: right;">678</td>
+<td style="text-align: right;">2,987</td>
+<td style="text-align: right;">1,668</td>
+<td style="text-align: right;">0.50</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Invertebrates</td>
+<td style="text-align: right;">2,639</td>
+<td style="text-align: right;">1,913</td>
+<td style="text-align: right;">4,488</td>
+<td style="text-align: right;">2,811</td>
+<td style="text-align: right;">0.48</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Marine Mammals</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">131</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">0.31</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Flora</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">185</td>
+<td style="text-align: right;">118</td>
+<td style="text-align: right;">0.40</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sea Turtles</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.43</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<caption>v7c’s hand-built decisions against v11’s rule: every pair v7c dropped, and the sea turtles of the Gulf of Alaska (<code>data/v7c/zone_exclusions.csv</code>, <code>occ_pairs.parquet</code>). v7c dropped a pair or kept it at its v7 value; v11 gates it, weights it, or keeps it at weight 1.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Species</th>
+<th style="text-align: left;">Ecoregion</th>
+<th style="text-align: left;">v7c</th>
+<th style="text-align: left;">v11</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Green Turtle</td>
+<td style="text-align: left;">EBS</td>
+<td style="text-align: left;">dropped</td>
+<td style="text-align: left;">gated</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Leatherback Turtle</td>
+<td style="text-align: left;">EBS</td>
+<td style="text-align: left;">dropped</td>
+<td style="text-align: left;">gated</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Loggerhead Turtle</td>
+<td style="text-align: left;">EBS</td>
+<td style="text-align: left;">dropped</td>
+<td style="text-align: left;">gated</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Olive Ridley Turtle</td>
+<td style="text-align: left;">EBS</td>
+<td style="text-align: left;">dropped</td>
+<td style="text-align: left;">gated</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">North Atlantic Right Whale</td>
+<td style="text-align: left;">EGOA</td>
+<td style="text-align: left;">dropped</td>
+<td style="text-align: left;">weight 0.146</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Green Turtle</td>
+<td style="text-align: left;">GOA</td>
+<td style="text-align: left;">kept</td>
+<td style="text-align: left;">gated</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Leatherback Turtle</td>
+<td style="text-align: left;">GOA</td>
+<td style="text-align: left;">kept</td>
+<td style="text-align: left;">weight 0.019</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Loggerhead Turtle</td>
+<td style="text-align: left;">GOA</td>
+<td style="text-align: left;">kept</td>
+<td style="text-align: left;">gated</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Olive Ridley Turtle</td>
+<td style="text-align: left;">GOA</td>
+<td style="text-align: left;">kept</td>
+<td style="text-align: left;">gated</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">North Atlantic Right Whale</td>
+<td style="text-align: left;">WCGOA</td>
+<td style="text-align: left;">dropped</td>
+<td style="text-align: left;">weight 0.144</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<caption>Every sea-turtle and right-whale pair the rule gates or weights, across the study area (a pair not listed keeps weight 1), with the search counts behind it. Ecoregion keys are those of the ecoregion zone set. A gated pair can still have a record on file (the rule labels it a documented occurrence only); what it lacks is a record in the blocks searched for the species.</caption>
+<colgroup>
+<col style="width: 28%">
+<col style="width: 10%">
+<col style="width: 16%">
+<col style="width: 22%">
+<col style="width: 8%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Species</th>
+<th style="text-align: left;">Ecoregion</th>
+<th style="text-align: right;">Blocks searched</th>
+<th style="text-align: right;">Blocks with a record</th>
+<th style="text-align: right;">Records</th>
+<th style="text-align: left;">v11</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Green Turtle</td>
+<td style="text-align: left;">CAC</td>
+<td style="text-align: right;">283</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: left;">weight 0.415</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Green Turtle</td>
+<td style="text-align: left;">EBS</td>
+<td style="text-align: right;">254</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>gated</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Green Turtle</td>
+<td style="text-align: left;">GOA</td>
+<td style="text-align: right;">538</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;"><strong>gated</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Green Turtle</td>
+<td style="text-align: left;">PIS</td>
+<td style="text-align: right;">1,121</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: left;">weight 0.380</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Green Turtle</td>
+<td style="text-align: left;">WAOR</td>
+<td style="text-align: right;">137</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">weight 0.058</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hawksbill Turtle</td>
+<td style="text-align: left;">NECS</td>
+<td style="text-align: right;">242</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: left;">weight 0.680</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hawksbill Turtle</td>
+<td style="text-align: left;">PIS</td>
+<td style="text-align: right;">946</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: left;">weight 0.222</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hawksbill Turtle</td>
+<td style="text-align: left;">WCGOA</td>
+<td style="text-align: right;">157</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: left;">weight 0.906</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kemp’s Ridley Turtle</td>
+<td style="text-align: left;">EGOA</td>
+<td style="text-align: right;">136</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: left;">weight 0.827</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kemp’s Ridley Turtle</td>
+<td style="text-align: left;">SECS</td>
+<td style="text-align: right;">215</td>
+<td style="text-align: right;">67</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: left;">weight 0.768</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Leatherback Turtle</td>
+<td style="text-align: left;">CAC</td>
+<td style="text-align: right;">283</td>
+<td style="text-align: right;">67</td>
+<td style="text-align: right;">91</td>
+<td style="text-align: left;">weight 0.970</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Leatherback Turtle</td>
+<td style="text-align: left;">EBS</td>
+<td style="text-align: right;">268</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>gated</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Leatherback Turtle</td>
+<td style="text-align: left;">GOA</td>
+<td style="text-align: right;">538</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">weight 0.019</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Leatherback Turtle</td>
+<td style="text-align: left;">PIS</td>
+<td style="text-align: right;">1,121</td>
+<td style="text-align: right;">191</td>
+<td style="text-align: right;">270</td>
+<td style="text-align: left;">weight 0.604</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Leatherback Turtle</td>
+<td style="text-align: left;">WAOR</td>
+<td style="text-align: right;">137</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: left;">weight 0.927</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Loggerhead Turtle</td>
+<td style="text-align: left;">CAC</td>
+<td style="text-align: right;">283</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: left;">weight 0.384</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Loggerhead Turtle</td>
+<td style="text-align: left;">EBS</td>
+<td style="text-align: right;">238</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>gated</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Loggerhead Turtle</td>
+<td style="text-align: left;">GOA</td>
+<td style="text-align: right;">537</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>gated</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Loggerhead Turtle</td>
+<td style="text-align: left;">PIS</td>
+<td style="text-align: right;">1,121</td>
+<td style="text-align: right;">131</td>
+<td style="text-align: right;">216</td>
+<td style="text-align: left;">weight 0.391</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Loggerhead Turtle</td>
+<td style="text-align: left;">WAOR</td>
+<td style="text-align: right;">137</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">weight 0.030</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">North Atlantic Right Whale</td>
+<td style="text-align: left;">EGOA</td>
+<td style="text-align: right;">79</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">weight 0.146</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">North Atlantic Right Whale</td>
+<td style="text-align: left;">SECS</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: left;">weight 0.646</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">North Atlantic Right Whale</td>
+<td style="text-align: left;">WCGOA</td>
+<td style="text-align: right;">103</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">weight 0.144</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">North Pacific Right Whale</td>
+<td style="text-align: left;">EBS</td>
+<td style="text-align: right;">904</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">weight 0.308</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Olive Ridley Turtle</td>
+<td style="text-align: left;">CAC</td>
+<td style="text-align: right;">283</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">weight 0.467</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Olive Ridley Turtle</td>
+<td style="text-align: left;">EBS</td>
+<td style="text-align: right;">167</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>gated</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Olive Ridley Turtle</td>
+<td style="text-align: left;">EGOA</td>
+<td style="text-align: right;">136</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">weight 0.109</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Olive Ridley Turtle</td>
+<td style="text-align: left;">GOA</td>
+<td style="text-align: right;">538</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;"><strong>gated</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Olive Ridley Turtle</td>
+<td style="text-align: left;">PUR</td>
+<td style="text-align: right;">83</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>gated</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Olive Ridley Turtle</td>
+<td style="text-align: left;">SECS</td>
+<td style="text-align: right;">215</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>gated</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Olive Ridley Turtle</td>
+<td style="text-align: left;">WAOR</td>
+<td style="text-align: right;">137</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: left;">weight 0.441</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Olive Ridley Turtle</td>
+<td style="text-align: left;">WCGOA</td>
+<td style="text-align: right;">157</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;"><strong>gated</strong></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sec-v11-densities" class="level3" data-number="6.3.5">
+<h3 data-number="6.3.5" class="anchored" data-anchor-id="sec-v11-densities"><span class="header-section-number">6.3.5</span> Survey densities</h3>
+<p>Three sets of survey density models enter the merge (<code>FOLD_DENSITY</code>): NOAA SEFSC cetacean and sea-turtle models for the Gulf of America (<code>gm</code>), NOAA NCCOS seabird models for the Pacific and the Atlantic (<code>nc</code>), and NOAA SWFSC cetacean models for the California Current (<code>cce</code>). Each enters as its annual surface, mapped onto 1–100 by the population percentile; interval (monthly or seasonal) surfaces enter no score. The Atlantic seabird models are the 2023 set (<code>NC_ATL_SOURCE=2023</code>), the MDAT Avian Relative Density v3 package of <span class="citation" data-cites="winship2023">Winship et al. (<a href="../references.html#ref-winship2023" role="doc-biblioref">2023</a>)</span>, monthly on 10 km cells, which replaces the 2018 set.</p>
+<p>In v11, 94 species have an annual density surface (<code>cce</code> 13, <code>gm</code> 13, <code>nc</code> 71); 5 of them are sea turtles or DPS-listed species, which keep their own rule and leave their density rows out, so 89 merge by the density rule.</p>
+<p>Inside its own survey domain a species’ density surface replaces its suitability; the domain joins its range footprint, and the species merges by the DPS rule with its governing <code>er_score</code> as the floor under the per-cell risk, so an Endangered whale’s survey pattern shows beside its risk instead of being painted a flat 100. A survey knows the pattern inside its domain and nothing about how much of the species the domain holds, so its values are <strong>calibrated</strong> to the surface they replace (<code>FOLD_DENSITY_CAL=suit</code>, <code>msens::density_cal_factors_sql()</code>):</p>
+<p><span id="eq-v11-calibration"><span class="math display">\[
+f_s = \frac{\operatorname{mean}_{c \in P_s} \text{prior}_{s,c}}{\operatorname{mean}_{c \in P_s} \text{dens}_{s,c}}, \qquad
+\text{dens}'_{s,c} = \min(100,\; f_s\, \text{dens}_{s,c})
+\tag{6.4}\]</span></span></p>
+<p>where <span class="math inline">\(P_s\)</span> is the set of domain cells that had a prior value, and the prior is the suitability where a suitability model covers the cell and the governing <code>er_score</code> where only a range does. A species with no prior anywhere keeps <span class="math inline">\(f_s = 1\)</span> and is flagged.</p>
+<p>The factors are computed for every species with an annual density surface (94): 88 are calibrated, the median factor is 0.453 (range 0.0194 to 5.74), and 64 are scaled down (<code>density_cal_factors_suit.csv</code>).</p>
+</section>
+<section id="sec-v11-components" class="level3" data-number="6.3.6">
+<h3 data-number="6.3.6" class="anchored" data-anchor-id="sec-v11-components"><span class="header-section-number">6.3.6</span> Component labels</h3>
+<p>The scored components and their keys are unchanged. Two labels change (<code>COMPONENTS_V11</code>, <code>msens::components_registry()</code>): Primary Producers becomes <strong>Flora</strong> (<code>primary_producer</code>); Primary productivity becomes <strong>Productivity</strong> (<code>primprod</code>). The taxa called primary producers are seaweeds, seagrasses, mangroves and other algae; the new names keep them apart from the satellite productivity layer. v11’s <code>release_method</code> states the v11 labels.</p>
+</section>
+</section>
+<section id="what-moved-the-program-areas" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="what-moved-the-program-areas"><span class="header-section-number">6.4</span> What moved: the Program Areas</h2>
+<p>v11 changes both score families, so both are compared with v10. The within-ecoregion composite is a 0–100 index inside each ecoregion; the across-the-nation composite is 100 at the national average. Their differences are on different scales and are never put in one column.</p>
+<table class="caption-top table">
+<caption>v10 → v11 on the Program Areas both score, read from both releases’ <code>zone_metric</code> (<code>score_extriskspcat_primprod_ecoregionrescaled_equalweights</code>, <code>score_v10_equalweights_global</code>).</caption>
+<colgroup>
+<col style="width: 16%">
+<col style="width: 12%">
+<col style="width: 17%">
+<col style="width: 16%">
+<col style="width: 17%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Composite</th>
+<th style="text-align: right;">Program Areas</th>
+<th style="text-align: right;">mean |Δ|</th>
+<th style="text-align: right;">max |Δ|</th>
+<th style="text-align: right;">at</th>
+<th style="text-align: right;">RMSE</th>
+<th style="text-align: right;">r</th>
+<th style="text-align: right;">Spearman ρ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Within ecoregion</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">9.7</td>
+<td style="text-align: right;">Shumagin (SHU)</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">0.889</td>
+<td style="text-align: right;">0.765</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Across the nation</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">19.7</td>
+<td style="text-align: right;">45.1</td>
+<td style="text-align: right;">Norton Basin (NOR)</td>
+<td style="text-align: right;">23.0</td>
+<td style="text-align: right;">0.934</td>
+<td style="text-align: right;">0.952</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<caption>Composite score per Program Area in v10 and v11, sorted by v11’s across-the-nation composite. Ranks are of the across-the-nation composite, highest first. Components = the number of components the across-the-nation composite averages (<code>score_v10_n_components_global</code>). n/r = not reportable.</caption>
+<colgroup>
+<col style="width: 28%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Program Area</th>
+<th style="text-align: right;">within v10</th>
+<th style="text-align: right;">within v11</th>
+<th style="text-align: right;">Δ within</th>
+<th style="text-align: right;">nation v10</th>
+<th style="text-align: right;">nation v11</th>
+<th style="text-align: right;">Δ nation</th>
+<th style="text-align: right;">rank v10</th>
+<th style="text-align: right;">rank v11</th>
+<th style="text-align: right;">components</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Gulf of America Program Area A (GAA)</td>
+<td style="text-align: right;">32.9</td>
+<td style="text-align: right;">31.7</td>
+<td style="text-align: right;">-1.2</td>
+<td style="text-align: right;">253.2</td>
+<td style="text-align: right;">232.5</td>
+<td style="text-align: right;">-20.7</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Southern California (SOC)</td>
+<td style="text-align: right;">22.6</td>
+<td style="text-align: right;">25.0</td>
+<td style="text-align: right;">+2.4</td>
+<td style="text-align: right;">166.5</td>
+<td style="text-align: right;">210.8</td>
+<td style="text-align: right;">+44.3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cook Inlet (COK)</td>
+<td style="text-align: right;">47.9</td>
+<td style="text-align: right;">46.9</td>
+<td style="text-align: right;">-1.0</td>
+<td style="text-align: right;">179.4</td>
+<td style="text-align: right;">163.1</td>
+<td style="text-align: right;">-16.3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gulf of America Program Area B (GAB)</td>
+<td style="text-align: right;">18.1</td>
+<td style="text-align: right;">24.2</td>
+<td style="text-align: right;">+6.1</td>
+<td style="text-align: right;">126.5</td>
+<td style="text-align: right;">160.1</td>
+<td style="text-align: right;">+33.6</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Central California (CEC)</td>
+<td style="text-align: right;">17.0</td>
+<td style="text-align: right;">19.3</td>
+<td style="text-align: right;">+2.3</td>
+<td style="text-align: right;">124.4</td>
+<td style="text-align: right;">155.6</td>
+<td style="text-align: right;">+31.2</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hope Basin (HOP)</td>
+<td style="text-align: right;">48.4</td>
+<td style="text-align: right;">51.3</td>
+<td style="text-align: right;">+2.8</td>
+<td style="text-align: right;">113.5</td>
+<td style="text-align: right;">95.0</td>
+<td style="text-align: right;">-18.6</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Northern California (NOC)</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">17.3</td>
+<td style="text-align: right;">+3.0</td>
+<td style="text-align: right;">70.3</td>
+<td style="text-align: right;">91.2</td>
+<td style="text-align: right;">+20.9</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gulf of Alaska (GOA)</td>
+<td style="text-align: right;">32.1</td>
+<td style="text-align: right;">25.0</td>
+<td style="text-align: right;">-7.0</td>
+<td style="text-align: right;">98.0</td>
+<td style="text-align: right;">79.7</td>
+<td style="text-align: right;">-18.3</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Norton Basin (NOR)</td>
+<td style="text-align: right;">29.3</td>
+<td style="text-align: right;">24.7</td>
+<td style="text-align: right;">-4.7</td>
+<td style="text-align: right;">118.8</td>
+<td style="text-align: right;">73.6</td>
+<td style="text-align: right;">-45.1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Shumagin (SHU)</td>
+<td style="text-align: right;">19.4</td>
+<td style="text-align: right;">29.1</td>
+<td style="text-align: right;">+9.7</td>
+<td style="text-align: right;">72.9</td>
+<td style="text-align: right;">67.9</td>
+<td style="text-align: right;">-5.1</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">St.&nbsp;George Basin (GEO)</td>
+<td style="text-align: right;">28.9</td>
+<td style="text-align: right;">27.4</td>
+<td style="text-align: right;">-1.5</td>
+<td style="text-align: right;">88.3</td>
+<td style="text-align: right;">67.0</td>
+<td style="text-align: right;">-21.3</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kodiak (KOD)</td>
+<td style="text-align: right;">22.2</td>
+<td style="text-align: right;">29.0</td>
+<td style="text-align: right;">+6.8</td>
+<td style="text-align: right;">72.4</td>
+<td style="text-align: right;">64.3</td>
+<td style="text-align: right;">-8.1</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">St.&nbsp;Matthew-Hall (MAT)</td>
+<td style="text-align: right;">24.9</td>
+<td style="text-align: right;">19.4</td>
+<td style="text-align: right;">-5.4</td>
+<td style="text-align: right;">85.9</td>
+<td style="text-align: right;">53.6</td>
+<td style="text-align: right;">-32.4</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chukchi Sea (CHU)</td>
+<td style="text-align: right;">23.1</td>
+<td style="text-align: right;">27.5</td>
+<td style="text-align: right;">+4.4</td>
+<td style="text-align: right;">58.7</td>
+<td style="text-align: right;">51.8</td>
+<td style="text-align: right;">-6.9</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Navarin Basin (NAV)</td>
+<td style="text-align: right;">22.6</td>
+<td style="text-align: right;">17.7</td>
+<td style="text-align: right;">-4.9</td>
+<td style="text-align: right;">64.6</td>
+<td style="text-align: right;">44.1</td>
+<td style="text-align: right;">-20.5</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aleutian Arc (ALA)</td>
+<td style="text-align: right;">30.0</td>
+<td style="text-align: right;">20.8</td>
+<td style="text-align: right;">-9.2</td>
+<td style="text-align: right;">49.0</td>
+<td style="text-align: right;">43.0</td>
+<td style="text-align: right;">-5.9</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">8 → 7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Beaufort Sea (BFT)</td>
+<td style="text-align: right;">12.4</td>
+<td style="text-align: right;">11.8</td>
+<td style="text-align: right;">-0.6</td>
+<td style="text-align: right;">43.9</td>
+<td style="text-align: right;">33.0</td>
+<td style="text-align: right;">-11.0</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bowers Basin (BOW)</td>
+<td style="text-align: right;">19.1</td>
+<td style="text-align: right;">14.8</td>
+<td style="text-align: right;">-4.3</td>
+<td style="text-align: right;">43.2</td>
+<td style="text-align: right;">30.1</td>
+<td style="text-align: right;">-13.1</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aleutian Basin (ALB)</td>
+<td style="text-align: right;">14.9</td>
+<td style="text-align: right;">10.1</td>
+<td style="text-align: right;">-4.8</td>
+<td style="text-align: right;">41.2</td>
+<td style="text-align: right;">25.8</td>
+<td style="text-align: right;">-15.4</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">High Arctic (HAR)</td>
+<td style="text-align: right;">9.3</td>
+<td style="text-align: right;">7.7</td>
+<td style="text-align: right;">-1.6</td>
+<td style="text-align: right;">22.1</td>
+<td style="text-align: right;">17.2</td>
+<td style="text-align: right;">-4.9</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">7</td>
+</tr>
+</tbody>
+</table>
+<section id="by-component" class="level3" data-number="6.4.1">
+<h3 data-number="6.4.1" class="anchored" data-anchor-id="by-component"><span class="header-section-number">6.4.1</span> By component</h3>
+<table class="caption-top table">
+<caption>Across-the-nation component scores (<code>extrisk_{category}_v10_global</code>, <code>primprod_v10</code>), v10 → v11 over the Program Areas that report the component in both. A component is added or removed in a Program Area when its scored cells cross the reporting floor; below it there is no score, never a zero.</caption>
+<colgroup>
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 14%">
+<col style="width: 13%">
+<col style="width: 27%">
+<col style="width: 6%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Component</th>
+<th style="text-align: right;">reported v10</th>
+<th style="text-align: right;">reported v11</th>
+<th style="text-align: right;">mean |Δ|</th>
+<th style="text-align: right;">max |Δ|</th>
+<th style="text-align: left;">at</th>
+<th style="text-align: left;">added in</th>
+<th style="text-align: left;">removed in</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Seabirds</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">31.5</td>
+<td style="text-align: right;">106.2</td>
+<td style="text-align: left;">Northern California (NOC)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Corals</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: right;">19.1</td>
+<td style="text-align: left;">Gulf of America Program Area A (GAA)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fish</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">23.9</td>
+<td style="text-align: right;">80.3</td>
+<td style="text-align: left;">Cook Inlet (COK)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Invertebrates</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">10.2</td>
+<td style="text-align: right;">59.5</td>
+<td style="text-align: left;">Gulf of America Program Area A (GAA)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Marine Mammals</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">52.1</td>
+<td style="text-align: right;">195.3</td>
+<td style="text-align: left;">Southern California (SOC)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Flora</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">8.8</td>
+<td style="text-align: left;">Chukchi Sea (CHU)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sea Turtles</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">44.0</td>
+<td style="text-align: right;">268.7</td>
+<td style="text-align: left;">Gulf of America Program Area B (GAB)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">ALA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Productivity</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">44.7</td>
+<td style="text-align: right;">201.0</td>
+<td style="text-align: left;">Hope Basin (HOP)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="which-rule-moved-which-score" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="which-rule-moved-which-score"><span class="header-section-number">6.5</span> Which rule moved which score</h2>
+<p>A release cannot say which of its rules moved a score, so the build answers it by runs. The <strong>control</strong> run has every flag at its v10 value. The <strong>candidate</strong> has the 8 method flags on, before the 3 decided last (<code>FOLD_DENSITY_CAL</code>, <code>SHARE_BASIS</code>, <code>RANGE_FILL</code>). Each one-flag run is the candidate with one flag back at its control value, so the candidate minus that run is what the flag owns. The runs are made by <code>scripts/attribution_runs.sh</code> and recorded by <code>snapshot_scores.qmd</code>; only the v11 run is the release.</p>
+<table class="caption-top table">
+<caption>What each flag owns: the candidate (<code>full2023</code>) minus the run with that flag at its control value, over the 20 Program Areas, for the across-the-nation composite (<code>score_v10_equalweights_global</code>) and the within-ecoregion composite. Sorted by the across-the-nation mean.</caption>
+<colgroup>
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 17%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Flag</th>
+<th style="text-align: left;">Run</th>
+<th style="text-align: right;">nation mean |Δ|</th>
+<th style="text-align: right;">nation max |Δ|</th>
+<th style="text-align: left;">at</th>
+<th style="text-align: right;">within mean |Δ|</th>
+<th style="text-align: right;">within max |Δ|</th>
+<th style="text-align: left;">at</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>REGION_WEIGHT</code></td>
+<td style="text-align: left;"><code>no_region_weight</code></td>
+<td style="text-align: right;">7.35</td>
+<td style="text-align: right;">15.4</td>
+<td style="text-align: left;">Norton Basin (NOR)</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">Norton Basin (NOR)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>VGPM_INTEGRATED</code></td>
+<td style="text-align: left;"><code>no_vgpm</code></td>
+<td style="text-align: right;">6.17</td>
+<td style="text-align: right;">28.7</td>
+<td style="text-align: left;">Hope Basin (HOP)</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">0.6</td>
+<td style="text-align: left;">Cook Inlet (COK)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>FOLD_DENSITY</code></td>
+<td style="text-align: left;"><code>no_fold_density</code></td>
+<td style="text-align: right;">3.66</td>
+<td style="text-align: right;">19.6</td>
+<td style="text-align: left;">Southern California (SOC)</td>
+<td style="text-align: right;">0.64</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: left;">Gulf of America Program Area B (GAB)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>TURTLE_SUIT</code></td>
+<td style="text-align: left;"><code>no_turtle_suit</code></td>
+<td style="text-align: right;">2.26</td>
+<td style="text-align: right;">23.9</td>
+<td style="text-align: left;">Gulf of America Program Area A (GAA)</td>
+<td style="text-align: right;">1.43</td>
+<td style="text-align: right;">7.5</td>
+<td style="text-align: left;">Gulf of Alaska (GOA)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>OCC_RULE</code></td>
+<td style="text-align: left;"><code>no_occ_rule</code></td>
+<td style="text-align: right;">1.46</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: left;">Gulf of Alaska (GOA)</td>
+<td style="text-align: right;">1.29</td>
+<td style="text-align: right;">6.9</td>
+<td style="text-align: left;">Aleutian Arc (ALA)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>NC_ATL_SOURCE</code></td>
+<td style="text-align: left;"><code>nc_atl_2018</code></td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: left;">Southern California (SOC)</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: left;">Gulf of America Program Area B (GAB)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>TURTLE_RULE</code></td>
+<td style="text-align: left;"><code>no_turtle_rule</code></td>
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: left;">Gulf of America Program Area A (GAA)</td>
+<td style="text-align: right;">2.09</td>
+<td style="text-align: right;">10.5</td>
+<td style="text-align: left;">Shumagin (SHU)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>COMPONENTS_V11</code></td>
+<td style="text-align: left;"><code>no_components</code></td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">Gulf of America Program Area A (GAA)</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">Hope Basin (HOP)</td>
+</tr>
+</tbody>
+</table>
+<p>The flags compound. On the across-the-nation composite the whole change from the control to the candidate is a mean of 20.6 points (largest 48.5, Gulf of America Program Area B (GAB)), and the one-flag deltas do not add up to it: in Gulf of America Program Area A (GAA) they sum to +28.5 against a whole change of -19.1.</p>
+<table class="caption-top table">
+<caption>From the control to the release, in the order the methods were decided: the candidate’s flags, then single counting with the mean fill, then the calibration prior. The last row is the whole change, v10 → v11.</caption>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 52%">
+<col style="width: 9%">
+<col style="width: 8%">
+<col style="width: 9%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Step</th>
+<th style="text-align: left;">Sets</th>
+<th style="text-align: right;">nation mean |Δ|</th>
+<th style="text-align: right;">nation max |Δ|</th>
+<th style="text-align: right;">within mean |Δ|</th>
+<th style="text-align: right;">within max |Δ|</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>control</code> → <code>full2023</code></td>
+<td style="text-align: left;"><code>VGPM_INTEGRATED=1</code>, <code>TURTLE_SUIT=ogm</code>, <code>TURTLE_RULE=dps</code>, <code>OCC_RULE=1</code>, <code>REGION_WEIGHT=1</code>, <code>FOLD_DENSITY=1</code>, <code>NC_ATL_SOURCE=2023</code>, <code>COMPONENTS_V11=1</code></td>
+<td style="text-align: right;">20.57</td>
+<td style="text-align: right;">48.5</td>
+<td style="text-align: right;">2.95</td>
+<td style="text-align: right;">9.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>full2023</code> → <code>full2023_basis_mean</code></td>
+<td style="text-align: left;"><code>SHARE_BASIS=cell</code>, <code>RANGE_FILL=mean</code></td>
+<td style="text-align: right;">1.90</td>
+<td style="text-align: right;">11.4</td>
+<td style="text-align: right;">2.07</td>
+<td style="text-align: right;">4.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>full2023_basis_mean</code> → <code>v11</code></td>
+<td style="text-align: left;"><code>FOLD_DENSITY_CAL=suit</code></td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">1.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>control</code> → <code>v11</code></td>
+<td style="text-align: left;">all of the above</td>
+<td style="text-align: right;">19.57</td>
+<td style="text-align: right;">45.0</td>
+<td style="text-align: right;">4.09</td>
+<td style="text-align: right;">9.6</td>
+</tr>
+</tbody>
+</table>
+<p>Against the published tables, the control run differs from v10’s Program-Area metrics by at most 3.6e-05 and the v11 run from v11’s by at most 13.</p>
+</section>
+<section id="what-v11-does-not-contain" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="what-v11-does-not-contain"><span class="header-section-number">6.6</span> What v11 does not contain</h2>
+<ul>
+<li><strong>A range constraint for species modelled only by AquaMaps.</strong> 14,992 of the 17,115 scored species are modelled by AquaMaps alone, and their footprint is not constrained by an expert range. A rule for it (keep the connected parts of the footprint that hold a good AquaMaps cell or a record) was explored for v11 and is not applied.</li>
+<li><strong>AquaX.</strong> Its models are clipped to US waters and cannot supply the whole-range denominator of the share; no AquaX cell is in v11’s merge.</li>
+<li><strong>Distribution models for the species that have none,</strong> and our own models for any species but the sea turtles.</li>
+<li><strong>Survey density models not yet ingested</strong>, among them the Atlantic cetacean models of <span class="citation" data-cites="roberts2016">Roberts et al. (<a href="../references.html#ref-roberts2016" role="doc-biblioref">2016</a>)</span>; and every interval (monthly or seasonal) density surface, which no score reads.</li>
+<li><strong>WoRMS read from the OBIS snapshot.</strong> The taxonomy is downloaded as in v10 (<code>WORMS_SOURCE</code>).</li>
+</ul>
+</section>
+<section id="caveats" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="caveats"><span class="header-section-number">6.7</span> Caveats</h2>
+<ul>
+<li><strong>The occurrence rule is only as good as the record.</strong> A gated pair is a species that the record does not place in an ecoregion that was searched for it; a weighted pair is one recorded less often there than elsewhere. Seasonal and coastal stocks, and species whose records sit in a few places, are the hard cases; the rule’s overrides (critical habitat, core areas, narrow-range species, unsearched ecoregions) exist for them, and the full table of pairs is in the workflows repository.</li>
+<li><strong>The survey calibration fixes the level, not the pattern.</strong> A calibrated survey keeps its pattern inside its domain and takes the mass of the surface it replaces, so how much of a species a survey domain holds still comes from the suitability model or the range.</li>
+<li><strong>The mean fill is a modelling choice.</strong> An unmodelled range cell is worth the species’ average modelled cell; it is not evidence that the species is there at that level.</li>
+<li><strong>The attribution describes runs, not the release.</strong> Each one-flag delta is measured on the candidate, before single counting and the calibration were decided, and the flags compound, so the deltas are a guide to which rule moved a score, not a decomposition of the v10 → v11 change.</li>
+</ul>
+</section>
+<section id="reproducing-v11" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="reproducing-v11"><span class="header-section-number">6.8</span> Reproducing v11</h2>
+<p>The rules are msens functions, each guarded by unit tests with one synthetic fixture per rule: <code>vgpm_annual_integrate()</code> (<code>test-productivity.R</code>: twelve months equal the day-weighted mean, six observed months give 100 × days/365), <code>merge_sql(basis, fill)</code> and <code>dps_sql(fill, er_floor)</code> (<code>test-merge.R</code>: both bases, every fill, the defaults reproduce the earlier SQL byte for byte, a density taxon keeps its national floor), <code>occurrence_rule()</code> and <code>occurrence_exclusions()</code> (<code>test-occurrence.R</code>: the East Bering Sea case falls out of the rule, each override), <code>encounter_weight()</code> and <code>zone_adjust_sql()</code> (<code>test-encounter_weight.R</code>, <code>test-exclude.R</code>), <code>density_cal_factors_sql()</code> and <code>density_prior_sql()</code> (<code>test-density_cal.R</code>) and <code>components_registry()</code> (<code>test-components.R</code>).</p>
+<p>The pipeline is the workflows repository at <code>ver = v11</code>: <code>scripts/run_version.sh</code> renders every stage in order (<code>--control</code>, every flag off, reproduces v10), <code>scripts/attribution_runs.sh v11</code> makes the release run with the decided flags and the one-flag runs by name, and <code>snapshot_scores.qmd</code> records each run’s Program-Area scores in <code>data/v11/attribution/</code>. The evidence on this page was copied from that checkout by <code>libs/v11-copy-data.R</code>.</p>
+<p><em>Evidence copied from workflows <code>d73f14a6</code> (branch <code>v11-q0-bootstrap</code>).</em></p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-roberts2016" class="csl-entry" role="listitem">
+Roberts, Jason J., Benjamin D. Best, Laura Mannocci, et al. 2016. <span>“Habitat-Based Cetacean Density Models for the <span>U.S.</span> <span>Atlantic</span> and <span>Gulf</span> of <span>Mexico</span>.”</span> <em>Scientific Reports</em> 6: 22615. <a href="https://doi.org/10.1038/srep22615">https://doi.org/10.1038/srep22615</a>.
+</div>
+<div id="ref-winship2023" class="csl-entry" role="listitem">
+Winship, A. J., J. B. Leirness, M. Coyne, J. Howell, V. S. Saba, and J. Christensen. 2023. <em>Modeling the Distributions of Marine Birds at Sea to Inform Planning of Energy Development on the <span>US</span> <span>Atlantic</span> <span>Outer</span> <span>Continental</span> <span>Shelf</span></em>. OCS Study BOEM 2023-060. U.S. Department of the Interior, Bureau of Ocean Energy Management. <a href="https://espis.boem.gov/Final%20Reports/BOEM_2023-060.pdf">https://espis.boem.gov/Final%20Reports/BOEM_2023-060.pdf</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+<nav class="page-navigation" aria-label="Page">
+  <div class="nav-page nav-page-previous">
+      <a href="../releases/v10.html" class="pagination-link" aria-label="v10 — scoring across the nation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">v10 — scoring across the nation</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../science.html" class="pagination-link" aria-label="Science">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Science</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© <a href="https://bbest.github.io/cv/" target="_blank">Ben Best</a>, <a href="https://www.boem.gov/environment/environmental-studies/environmental-studies-information" target="_blank">BOEM-ESP</a></p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/MarineSensitivity/docs/edit/main/releases/v11.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org/" target="_blank">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
