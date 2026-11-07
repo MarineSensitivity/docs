@@ -354,13 +354,13 @@ if (!pub) placeholder("The sea-turtle table") else {
   kt <- c(names(sort(tg, decreasing = TRUE)), setdiff(names(cov_t), names(tg)))
   v10_kbl(data.frame(
     `Program Area` = pa_label(kt),
-    global = f1(tg[kt]), usa = f1(vec("extrisk_turtle_v10_usa")[kt]),
-    pooled = f1(vec("extrisk_turtle_v10_pooled")[kt]),
-    `global, floor stripped` = f1(vec("extrisk_turtle_v10_global_strip")[kt]),
-    `% of world` = f2(vec("extrisk_turtle_pct_world")[kt]),
-    `% of nation` = f2(vec("extrisk_turtle_pct_nation_global")[kt]),
-    `coverage (%)` = formatC(100 * vec("extrisk_turtle_coverage")[kt], format = "f", digits = 1),
-    species = ifelse(is.na(vec("extrisk_turtle_n_species")[kt]), "", vec("extrisk_turtle_n_species")[kt]),
+    global = f1(unname(tg[kt])), usa = f1(unname(vec("extrisk_turtle_v10_usa")[kt])),
+    pooled = f1(unname(vec("extrisk_turtle_v10_pooled")[kt])),
+    `global, floor stripped` = f1(unname(vec("extrisk_turtle_v10_global_strip")[kt])),
+    `% of world` = f2(unname(vec("extrisk_turtle_pct_world")[kt])),
+    `% of nation` = f2(unname(vec("extrisk_turtle_pct_nation_global")[kt])),
+    `coverage (%)` = formatC(100 * unname(vec("extrisk_turtle_coverage")[kt]), format = "f", digits = 1),
+    species = ifelse(is.na(unname(vec("extrisk_turtle_n_species")[kt])), "", unname(vec("extrisk_turtle_n_species")[kt])),
     check.names = FALSE),
     caption = "Sea turtles by Program Area, sorted by the headline score (`extrisk_turtle_v10_{global,usa,pooled,global_strip}`, `_pct_world`, `_pct_nation_global`, `_coverage`, `_n_species`). 100 is the national average concentration. n/r = not reportable: turtle cells cover less than κ of the area. Coverage is the share of the Program Area that carries any turtle cell.",
     align = c("l", rep("r", 8)))
