@@ -18,6 +18,18 @@ The [Scoring Walkthrough](scoring-walkthrough.qmd) animates this — maximum mer
 
 The merge rules are **`msens::merge_sql()`**, **`msens::turtle_sql()`** and **`msens::dps_sql()`** — SQL held in the package rather than inside a notebook. The merge notebook executes them and the unit tests assert them against synthetic fixtures, one per taxon category, so the pipeline and its tests cannot drift apart. Changing a rule in a way that breaks a documented case fails the tests.
 
+```{r}
+#| label: merge-sequence
+#| output: asis
+# The sequence is the v8-onward pipeline (dist_merged_global, er_mode, the rule table):
+# gated on the release keying its models by mdl_key, as the two-surfaces text below is,
+# so a v1-v7 book omits it. Inside, the v10 share nodes and paragraph are gated on
+# doc_has_share().
+if (mdl_key_style) {
+  cat(knitr::knit_child(here::here("_merge-sequence.qmd"), quiet = TRUE, envir = environment()))
+}
+```
+
 ## Pipeline
 
 ```{mermaid}
@@ -78,8 +90,9 @@ if (mdl_key_style) {
 "Since v8 the merge emits **two** surfaces from the same rules, because they answer different
 questions:
 
-- a **global** surface (expert range ∪ the taxon's whole AquaMaps footprint) — the honest
-  whole-range merged model, which is what the species maps draw;
+- a **global** surface — the taxon's whole range footprint under the same rule and the same range
+  mask (AquaMaps beyond the expert range is masked away here too), which is what the species maps
+  draw; AquaMaps-only taxa are drawn from their AquaMaps model directly;
 - a **US scoring** surface — the range-constrained, US-clipped result described above, which is
   what the scores are computed from.
 

@@ -56,6 +56,8 @@ book:
         - releases.qmd
         - releases/v1.qmd
         - releases/v7c.qmd
+        - releases/v10.qmd
+        - releases/v11.qmd
     - part: Science
       chapters:
         - science.qmd
