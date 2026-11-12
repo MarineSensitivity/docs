@@ -4,7 +4,7 @@ description: "v1 methodology as delivered in the 2025 BOEM final report"
 
 # v1 — Planning Areas {#sec-release-v1}
 
-v1 was the first delivered version of the Marine Sensitivity Toolkit, reported to BOEM's Environmental Studies Program under contract 140M0123P0018 as the *Marine Sensitivity Toolkit* final report (2025).
+v1 was the first delivered version of the Marine Sensitivity Toolkit, reported to the Environmental Studies Program of the Bureau of Ocean Energy Management (BOEM, reorganized into the Marine Minerals Administration, MMA, in July 2026) under contract 140M0123P0018 as the *Marine Sensitivity Toolkit* final report (2025).
 
 It is documented here in its own right because several of its choices — the conceptual framing, the extinction-risk weighting and its justification, and the honest account of what ecoregional rescaling does and does not preserve — remain the foundation of every later release, and because reports and decisions cite it.
 

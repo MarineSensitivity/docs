@@ -11,7 +11,7 @@
 ```
 
 
-The **Marine Sensitivity Toolkit** (MST) is a cloud-native system developed for the Bureau of Ocean Energy Management (BOEM) to assess the sensitivity of marine ecosystems to offshore energy development.
+The **Marine Sensitivity Toolkit** (MST) is a cloud-native system developed for the Marine Minerals Administration (MMA), formerly the Bureau of Ocean Energy Management (BOEM), to assess the sensitivity of marine ecosystems to offshore energy development.
 
 ```{r}
 #| label: index-headline
@@ -20,7 +20,7 @@ cat("It integrates ", doc_stat("valid_species"),
     " species distribution models with extinction risk assessments across US waters", sep = "")
 if (doc_can("programareas")) cat(" (", doc_stat("species_program_areas"),
     " of which fall within the ", doc_stat("n_program_areas"),
-    " BOEM Program Areas of the current program cycle)", sep = "")
+    " MMA Program Areas of the current program cycle)", sep = "")
 cat(".\n\n")
 ```
 
@@ -55,8 +55,8 @@ This book documents the scientific methodology, software infrastructure, and int
 
 ### How to Cite
 
-> Best, B.D., T.P. White (2026). Marine Sensitivity Toolkit: Project Documentation. Bureau of Ocean Energy Management, Environmental Studies Program. <https://marinesensitivity.org/docs/>
+> Best, B.D., T.P. White (2026). Marine Sensitivity Toolkit: Project Documentation. Marine Minerals Administration, Environmental Studies Program. <https://marinesensitivity.org/docs/>
 
 ### Acknowledgments
 
-This work is funded by the [BOEM Environmental Studies Program](https://www.boem.gov/environment/environmental-studies/environmental-studies-information) (BOEM-ESP). We thank the data providers whose open datasets make this work possible: [AquaMaps](https://www.aquamaps.org), [BirdLife International](https://www.birdlife.org), [IUCN Red List](https://www.iucnredlist.org), [NOAA Fisheries](https://www.fisheries.noaa.gov), and [U.S. Fish & Wildlife Service](https://www.fws.gov).
+This work is funded by the [MMA Environmental Studies Program](https://www.boem.gov/environment/environmental-science) (the BOEM Environmental Studies Program before the agency's July 2026 reorganization). We thank the data providers whose open datasets make this work possible: [AquaMaps](https://www.aquamaps.org), [BirdLife International](https://www.birdlife.org), [IUCN Red List](https://www.iucnredlist.org), [NOAA Fisheries](https://www.fisheries.noaa.gov), and [U.S. Fish & Wildlife Service](https://www.fws.gov).

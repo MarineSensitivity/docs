@@ -29,7 +29,7 @@ The **Scores** application (`app.marinesensitivity.org/{ver}/scores/`) was the p
 ### Map Display
 
 - **Cell-level view**: 0.05° grid cells colored by sensitivity score for the selected metric
-- **Program area view**: aggregated scores by BOEM Program Area, with boundaries overlaid
+- **Program area view**: aggregated scores by Program Area, with boundaries overlaid
 - **Base maps**: multiple MapBox base layers (satellite, streets, light, dark)
 - **Study area selection**: click a program area to focus the view and update summary panels
 

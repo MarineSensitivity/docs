@@ -67,7 +67,7 @@ doc_version_row <- function(ver = doc_ver()) {
 # ---- where this release is served --------------------------------------------
 #
 # `access` (public | restricted) is the pre-release review gate: a restricted
-# release -- a pre-release under review by SDM data providers and BOEM/NOAA
+# release -- a pre-release under review by SDM data providers and MMA/NOAA
 # colleagues -- is served ONLY through the signed-in preview host, apps and docs
 # alike (msens::atlas_allow_access()). So the app links a book prints must follow
 # its own release: the v8 book under review must send its reader to

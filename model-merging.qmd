@@ -231,7 +231,7 @@ cat("In ", doc_ver(), " this yields **", doc_stat("valid_species"),
     " valid species** across the study area", sep = "")
 if (doc_can("programareas")) cat(", of which **", doc_stat("species_program_areas"),
     "** contribute to scores within the ", doc_stat("n_program_areas"),
-    " BOEM Program Areas of the current program cycle", sep = "")
+    " MMA Program Areas of the current program cycle", sep = "")
 cat(".\n\n")
 ```
 

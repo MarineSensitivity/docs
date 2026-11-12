@@ -64,7 +64,7 @@ v2:
     A model-merging pipeline is introduced, producing one merged surface per taxon where a taxon
     has more than one source.
   scope: >
-    The **BOEM Program Areas** of the 2026 program cycle are introduced. They do not yet *replace*
+    The **Program Areas** of the 2026 program cycle are introduced. They do not yet *replace*
     the Planning Areas — this release scores both, and the changeover completes at v3.
   technology: >
     Individual model layers are published, and distributions are stored as cloud-optimized

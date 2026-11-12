@@ -31,7 +31,7 @@ The [Atlas](`r doc_atlas_url()`) is a static web app (Svelte and MapLibre) with 
 
 It has two **lenses**, switched from the top bar, and four tools on its rail, the same in both lenses — Layers, Details, Table and Report:
 
-- **[Scores lens](`r doc_atlas_url(lens = "scores")`)** — composite and per-category sensitivity, mapped as the 0.05° cell grid or aggregated to BOEM Program Areas (Planning Areas for v1), with a flower plot and a component table (in Details) and a species table for the selected cell or area.
+- **[Scores lens](`r doc_atlas_url(lens = "scores")`)** — composite and per-category sensitivity, mapped as the 0.05° cell grid or aggregated to MMA Program Areas (Planning Areas for v1), with a flower plot and a component table (in Details) and a species table for the selected cell or area.
 - **[Species lens](`r doc_atlas_url(lens = "species")`)** — individual and merged distribution models with their contributing input datasets, regulatory status (ESA listing, IUCN Red List category, MMPA and MBTA protection) in the Details tool. Search by common or scientific name.
 - **Places** (the first part of the Report tool) — outline any area of interest (pick a Program Area or a gazetteer place, draw a shape, type coordinates, or upload a file) and get the same scores and species results, shareable entirely through the URL.
 - **Report** — a printable, downloadable document (print, HTML, ZIP or Word) for any place.

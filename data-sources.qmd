@@ -208,7 +208,7 @@ if ("ax" %in% ds$ds_key) cat('
 ten-algorithm ensemble of habitat suitability, cropped to the species\' biogeographic range. The
 delivery used here is **native to the analysis grid** (0.05°, the same lattice as this release\'s
 cells, so each pixel *is* a cell — no interpolation) and **masked to US waters**: it covers the
-BOEM study-area polygon and nothing beyond it. Values are the present-day ensemble mean on a
+MMA study-area polygon and nothing beyond it. Values are the present-day ensemble mean on a
 0–1000 scale, divided by 10 to sit on AquaMaps\' 0–100 scale; the model\'s TSS threshold (`cutoff`)
 and skill (`AUC`, `TSS`) are carried as metadata but the threshold is **not** applied, matching how
 AquaMaps has always been used.

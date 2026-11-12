@@ -74,7 +74,7 @@ cat("One extinction-risk metric exists per **scored** species category — ",
 
 ## Ecoregional rescaling
 
-Raw cell scores vary naturally between ecoregions, through differences in species richness, oceanography and biogeography. Each metric is therefore rescaled to 0–100 **within each BOEM Ecoregion**:
+Raw cell scores vary naturally between ecoregions, through differences in species richness, oceanography and biogeography. Each metric is therefore rescaled to 0–100 **within each MMA ecoregion**:
 
 $$
 \text{score}'_{c} = \frac{\text{score}_{c} - \text{score}_{min}}{\text{score}_{max} - \text{score}_{min}} \times 100
@@ -111,8 +111,8 @@ if (doc_has_share()) {
 #| tbl-cap: !expr paste0("Spatial units ", doc_ver(), " scored, with the geometry vintage each used.")
 
 if (nrow(zones)) {
-  nm <- c(programarea_key = "BOEM Program Area", ecoregion_key = "BOEM Ecoregion",
-          subregion_key = "Subregion", planarea_key = "BOEM Planning Area")
+  nm <- c(programarea_key = "MMA Program Area", ecoregion_key = "MMA ecoregion",
+          subregion_key = "Subregion", planarea_key = "OCS Planning Area")
   knitr::kable(
     data.frame(
       Unit    = ifelse(zones$fld %in% names(nm), nm[zones$fld], zones$fld),
@@ -130,7 +130,7 @@ if (nrow(zones)) {
 
 if (doc_can("planareas") && !doc_can("programareas")) cat(
   "::: {.callout-note}\n## Planning Areas, not Program Areas\n\n",
-  doc_ver(), " predates the BOEM Program Areas of the 2026 program cycle and scores **Planning ",
+  doc_ver(), " predates the Program Areas of the 2026 program cycle and scores **Planning ",
   "Areas** instead. Sections elsewhere in this book that discuss Program Areas do not apply to ",
   "this release.\n:::\n\n", sep = "")
 
@@ -148,7 +148,7 @@ cat("Geometry is versioned by its own **vintage** rather than by release, so sev
 #| output: asis
 
 if (doc_can("programareas")) cat(
-  "The analysis covers **", doc_stat("n_program_areas"), " BOEM Program Areas** from the 11th ",
+  "The analysis covers **", doc_stat("n_program_areas"), " Program Areas** from the 11th ",
   "National Draft Proposed Program (2025), spanning Alaska, the Pacific and the Gulf of America. ",
   "The Atlantic OCS is not part of this program cycle, so ecoregions containing no Program Area ",
   "are outside the scored footprint.\n\n", sep = "")
@@ -232,7 +232,7 @@ The flower plot summarizes a zone's sensitivity profile by category, after the O
 - **petal width** — that category's weight in the composite; wider means more influence
 - **centre** — the weighted mean across categories
 
-![Flower plots for the BOEM Program Areas, showing ecoregionally rescaled sensitivity scores by species category.](figures/flower-plot_programareas.png){#fig-flower-programareas}
+![Flower plots for the MMA Program Areas, showing ecoregionally rescaled sensitivity scores by species category.](figures/flower-plot_programareas.png){#fig-flower-programareas}
 
 It lets a reader see at a glance which ecological elements drive sensitivity in an area. The scores app implements an interactive version.
 

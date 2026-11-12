@@ -11,7 +11,7 @@ editor_options:
 By creating an R package, we document functions and make them easily available across workflows and apps.
 
 - [`msens`](https://github.com/MarineSensitivity/msens)\
-  R library of functions for mapping marine sensitivities, sponsored by BOEM
+  R library of functions for mapping marine sensitivities, sponsored by MMA (formerly BOEM)
 
 Functions `read` data from @sec-db, `analyze` it, and `visualize` results. The retired Shiny apps consumed `msens::*` helpers exclusively — their code never talked to the tile factory or PMTiles URL templates directly. The Atlas (@sec-apps) is a JavaScript app and reads the release manifest itself; its in-browser score and species queries are checked against msens by the Atlas's parity tests.
 

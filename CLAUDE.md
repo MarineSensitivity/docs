@@ -26,6 +26,15 @@ apply (2-space indent, snake_case, `|>`, lowercase comments).
   they were told; give the checker the sources.
 - **Screenshots carry their provenance.** A figure captured on an older build states it in the
   caption until recaptured; captions and `fig-alt` describe the pixels, not the intended state.
+- **The agency is MMA.** The Marine Minerals Administration (MMA) took over from the Bureau of Ocean
+  Energy Management (BOEM) in the July 2026 reorganization; the book switched on 2026-11-12. Write
+  MMA in the present tense ("MMA Program Areas", "MMA ecoregions", lowercase, as the agency's own
+  editor does) and say "formerly BOEM" once per chapter where there is room. Keep BOEM where it is
+  the historical fact: BOEM-authored references and report numbers, the published "BOEM Ecoregions"
+  product, the 2025 final report, the v1 chapter and the v1 release notes. Statements about what
+  happened before July 2026 take no agency prefix ("the Program Areas of the 2026 program cycle").
+  Planning areas are "OCS Planning Areas". Never write that BOEM was "renamed". Agency links stay
+  on `boem.gov`, the live site.
 - **Restricted releases never reach GitHub Pages.** Their pages go to `gh-pages-preview` and the
   review host; do not link a restricted version's chapter from a public page.
 

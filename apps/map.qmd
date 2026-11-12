@@ -1,5 +1,5 @@
 ---
-description: "Basic interactive map of BOEM regions."
+description: "Basic interactive map of OCS regions."
 image: "/figures/apps/map.png"
 url: "https://shiny.marinesensitivity.org/map/"
 url-code: "https://github.com/MarineSensitivity/apps/tree/main/map"
