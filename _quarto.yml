@@ -32,7 +32,6 @@ book:
   repo-url: https://github.com/MarineSensitivity/docs/
   repo-actions: [edit]
   favicon: images/favicon.ico
-  cover-image: images/mst-hero.png
   downloads: [pdf, docx]
   sharing: [twitter, facebook]
   # analytics live in _analytics.html (include-in-header under format.html), not
