@@ -882,18 +882,18 @@ window.Quarto = {
 
 <section id="software-overview" class="level2" data-number="15.1">
 <h2 data-number="15.1" class="anchored" data-anchor-id="software-overview"><span class="header-section-number">15.1</span> Software Overview</h2>
-<p>The <strong>Marine Sensitivity Toolkit</strong> (MST) is a stack of software components for reproducibly, interactively and hierarchically generating environmental vulnerability maps and scores. Tabular data is collated across studies evaluating sensitivity of species to oil &amp; gas and offshore wind energy development. The best available species and benthic habitat distributions are being mosaicked across the US EEZ. Scores are summarized according to subgroups within Species, Benthic Habitats and Primary Productivity, averaged into an overall score, and visualized as a flower plot, applicable to various levels of BOEM relevancy: regional, ecoregions, protraction diagrams, blocks and aliquots.</p>
+<p>The <strong>Marine Sensitivity Toolkit</strong> (MST) is a stack of software components for reproducibly, interactively and hierarchically generating environmental vulnerability maps and scores. Tabular data is collated across studies evaluating sensitivity of species to oil &amp; gas and offshore wind energy development. The best available species and benthic habitat distributions are being mosaicked across the US EEZ. Scores are summarized according to subgroups within Species, Benthic Habitats and Primary Productivity, averaged into an overall score, and visualized as a flower plot, applicable to various levels of MMA relevancy: regional, ecoregions, protraction diagrams, blocks and aliquots.</p>
 <p>The software components for achieving this interactively are:</p>
 <ol type="1">
 <li><strong>server</strong> — a Docker Compose configuration orchestrating the reverse proxy, Shiny server, APIs, TiTiler raster serving and file server;</li>
 <li><strong>database</strong> — a columnar, embedded analytic database (<a href="https://duckdb.org"><strong>DuckDB</strong></a>) as the single source of truth for species distributions, per-cell scores and derived per-zone metrics;</li>
-<li><strong>workflows</strong> — Quarto notebooks to ingest source datasets (AquaMaps, IUCN, NMFS/FWS, BirdLife, WoRMS, BOEM zones), merge taxonomic authorities, and compute scores that are written back to DuckDB;</li>
+<li><strong>workflows</strong> — Quarto notebooks to ingest source datasets (AquaMaps, IUCN, NMFS/FWS, BirdLife, WoRMS, MMA zones), merge taxonomic authorities, and compute scores that are written back to DuckDB;</li>
 <li><strong>APIs</strong> — a custom R <a href="https://www.rplumber.io"><code>plumber</code></a> API for data requests, <a href="https://developmentseed.org/titiler/"><strong>TiTiler</strong></a> serving the published COGs, and a searchable STAC API with one Item per model;</li>
 <li><strong>libraries</strong> — re-usable documented functions as the <a href="https://github.com/MarineSensitivities/msens"><code>msens</code></a> R package, including the version/manifest registry that lets one application render any release, and the tile-URL helpers the applications use;</li>
 <li><strong>applications</strong> — the static, in-browser <strong>Atlas</strong>, which combines COG raster layers with static <a href="https://protomaps.com/docs/pmtiles/">PMTiles</a> vector layers and per-zone choropleth fills computed in the browser, rendering <strong>any published release</strong> (it replaced the earlier <code>scores</code> and <code>species</code> Shiny apps);</li>
 <li><strong>documentation</strong> — this Quarto book with figures, tables, glossary and references in interactive HTML or static DOCX / PDF output.</li>
 </ol>
-<p>This toolbox is intended to primarily serve BOEM needs internally, but by being open-source and fully reproducible the hope is to enlist buy-in and even contributions from external partners, whether from other government agencies, academia, NGOs or industry.</p>
+<p>This toolbox is intended to primarily serve MMA needs internally, but by being open-source and fully reproducible the hope is to enlist buy-in and even contributions from external partners, whether from other government agencies, academia, NGOs or industry.</p>
 <p>We ascribe to the philosophy of sharing all code for the sake of reproducibility, transparency and efficiency <span class="citation" data-cites="maitner2024 lowndes2017">(<a href="references.html#ref-maitner2024" role="doc-biblioref">Maitner et al. 2024</a>; <a href="references.html#ref-lowndes2017" role="doc-biblioref">Lowndes et al. 2017</a>)</span>; i.e.&nbsp;the FAIR principles of Findability, Accessibility, Interoperability, and Reusability <span class="citation" data-cites="wilkinson2016">(<a href="references.html#ref-wilkinson2016" role="doc-biblioref"><span class="nocase">Wilkinson et al.</span> 2016</a>)</span>.</p>
 <div class="cell" data-file="diagrams/architecture.mmd" data-layout-align="default">
 <div class="cell-output-display">
@@ -1020,72 +1020,7 @@ Figure&nbsp;15.5: Data pipeline: ingest workflows populate DuckDB; scoring workf
 <h3 data-number="15.1.3" class="anchored" data-anchor-id="github-repositories"><span class="header-section-number">15.1.3</span> Github Repositories</h3>
 <div class="cell">
 <div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: left;">repo</th>
-<th style="text-align: left;">description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/.github">.github</a></td>
-<td style="text-align: left;">organization README</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/analytics">analytics</a></td>
-<td style="text-align: left;">NA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/api">api</a></td>
-<td style="text-align: left;">application programming interface (API) using R Plumber package</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/app">app</a></td>
-<td style="text-align: left;">app for viewing and summarizing MST composite scores and individual species distributions</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/apps">apps</a></td>
-<td style="text-align: left;">Shiny applications</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/atlas">atlas</a></td>
-<td style="text-align: left;">Marine Sensitivity Atlas: one static browser app for scores, species, places and reports, reading the published marine-atlas release</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/docs">docs</a></td>
-<td style="text-align: left;">documentation for BOEM’s offshore environmental sensitivity index products</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/manuscripts">manuscripts</a></td>
-<td style="text-align: left;">Manuscripts with review of sensitivities by industry and receptors (species, habitats, human uses)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/MarineSensitivity.github.io">MarineSensitivity.github.io</a></td>
-<td style="text-align: left;">default website</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/msens">msens</a></td>
-<td style="text-align: left;">R library of functions for mapping marine sensitivities, sponsored by BOEM</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/objectives">objectives</a></td>
-<td style="text-align: left;">repository for issues spanning multiple repositories and doing big picture roadmapping</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/server">server</a></td>
-<td style="text-align: left;">server setup for R Shiny apps, RStudio IDE, Caddy web server, h3 TiTiler service and Varnish cache</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/stac-sdm">stac-sdm</a></td>
-<td style="text-align: left;">STAC extension for Species Distribution Models (SDMs)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><a href="https://github.com/MarineSensitivity/workflows">workflows</a></td>
-<td style="text-align: left;">scripts for testing data analytics and visualization as well as production workflows</td>
-</tr>
-</tbody>
-</table>
+<p>See the <a href="https://github.com/MarineSensitivity">MarineSensitivity organization on GitHub</a>.</p>
 </div>
 </div>
 </section>
@@ -1093,7 +1028,7 @@ Figure&nbsp;15.5: Data pipeline: ingest workflows populate DuckDB; scoring workf
 <h3 data-number="15.1.4" class="anchored" data-anchor-id="software-components"><span class="header-section-number">15.1.4</span> Software Components</h3>
 <div id="listing-list-components" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1794485389473" data-listing-reading-time-sort="5" data-listing-word-count-sort="933">
+<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1794498172004" data-listing-reading-time-sort="5" data-listing-word-count-sort="933">
 <a href="./apis.html" class="quarto-grid-link no-external-icon">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1114,7 +1049,7 @@ APIs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1794485389474" data-listing-reading-time-sort="5" data-listing-word-count-sort="929">
+<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1794498172005" data-listing-reading-time-sort="5" data-listing-word-count-sort="929">
 <a href="./apps.html" class="quarto-grid-link no-external-icon">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1135,7 +1070,7 @@ Apps
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1794485389548" data-listing-reading-time-sort="10" data-listing-word-count-sort="1811">
+<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1794498172120" data-listing-reading-time-sort="10" data-listing-word-count-sort="1811">
 <a href="./db.html" class="quarto-grid-link no-external-icon">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1156,7 +1091,7 @@ Database
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1794485389554" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
+<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1794498172135" data-listing-reading-time-sort="1" data-listing-word-count-sort="33">
 <a href="./docs.html" class="quarto-grid-link no-external-icon">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1177,7 +1112,7 @@ Docs
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1794485389650" data-listing-reading-time-sort="2" data-listing-word-count-sort="237">
+<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1794498172389" data-listing-reading-time-sort="2" data-listing-word-count-sort="239">
 <a href="./libraries.html" class="quarto-grid-link no-external-icon">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1198,7 +1133,7 @@ Libraries
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1794485389653" data-listing-reading-time-sort="7" data-listing-word-count-sort="1351">
+<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1794498172398" data-listing-reading-time-sort="7" data-listing-word-count-sort="1351">
 <a href="./server.html" class="quarto-grid-link no-external-icon">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1219,7 +1154,7 @@ Server
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1794485389653" data-listing-reading-time-sort="6" data-listing-word-count-sort="1020">
+<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1794498172399" data-listing-reading-time-sort="6" data-listing-word-count-sort="1020">
 <a href="./workflows.html" class="quarto-grid-link no-external-icon">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1756,7 +1691,7 @@ Maitner, Brian, Paul Efren Santos Andrade, Luna Lei, et al. 2024. <span>“Code 
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
-<p>© <a href="https://bbest.github.io/cv/" target="_blank">Ben Best</a>, <a href="https://www.boem.gov/environment/environmental-studies/environmental-studies-information" target="_blank">BOEM-ESP</a></p>
+<p>© <a href="https://bbest.github.io/cv/" target="_blank">Ben Best</a>, <a href="https://www.boem.gov/environment/environmental-science" target="_blank">MMA Environmental Studies Program</a></p>
 </div>   
     <div class="nav-footer-center">
       &nbsp;

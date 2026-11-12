@@ -824,7 +824,7 @@ ul.task-list li input[type="checkbox"] {
 <p>The <a href="https://marinesensitivity.org/atlas/?ver=v7">Atlas</a> is a static web app (Svelte and MapLibre) with <strong>no application server of its own</strong>: the Scores lens’s cell and area clicks, flowers, tables and reports are computed in your browser by a DuckDB-WASM instance that queries the release’s published Parquet directly over HTTPS. What a browser cannot compute itself comes from services that are not Atlas-specific: score and species map tiles from the project’s titiler (which range-reads the release’s Cloud-Optimized GeoTIFFs, and also answers a species click and the legend’s histogram), zone outlines and species range inputs from static PMTiles archives, and the basemap from CARTO.</p>
 <p>It has two <strong>lenses</strong>, switched from the top bar, and four tools on its rail, the same in both lenses — Layers, Details, Table and Report:</p>
 <ul>
-<li><strong><a href="https://marinesensitivity.org/atlas/?ver=v7&amp;lens=scores">Scores lens</a></strong> — composite and per-category sensitivity, mapped as the 0.05° cell grid or aggregated to BOEM Program Areas (Planning Areas for v1), with a flower plot and a component table (in Details) and a species table for the selected cell or area.</li>
+<li><strong><a href="https://marinesensitivity.org/atlas/?ver=v7&amp;lens=scores">Scores lens</a></strong> — composite and per-category sensitivity, mapped as the 0.05° cell grid or aggregated to MMA Program Areas (Planning Areas for v1), with a flower plot and a component table (in Details) and a species table for the selected cell or area.</li>
 <li><strong><a href="https://marinesensitivity.org/atlas/?ver=v7&amp;lens=species">Species lens</a></strong> — individual and merged distribution models with their contributing input datasets, regulatory status (ESA listing, IUCN Red List category, MMPA and MBTA protection) in the Details tool. Search by common or scientific name.</li>
 <li><strong>Places</strong> (the first part of the Report tool) — outline any area of interest (pick a Program Area or a gazetteer place, draw a shape, type coordinates, or upload a file) and get the same scores and species results, shareable entirely through the URL.</li>
 <li><strong>Report</strong> — a printable, downloadable document (print, HTML, ZIP or Word) for any place.</li>
@@ -1351,7 +1351,7 @@ ul.task-list li input[type="checkbox"] {
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
-<p>© <a href="https://bbest.github.io/cv/" target="_blank">Ben Best</a>, <a href="https://www.boem.gov/environment/environmental-studies/environmental-studies-information" target="_blank">BOEM-ESP</a></p>
+<p>© <a href="https://bbest.github.io/cv/" target="_blank">Ben Best</a>, <a href="https://www.boem.gov/environment/environmental-science" target="_blank">MMA Environmental Studies Program</a></p>
 </div>   
     <div class="nav-footer-center">
       &nbsp;
