@@ -159,7 +159,7 @@ This yields **`r doc_stat("valid_species")` valid species** across the study are
 
 if (doc_can("programareas")) cat(
   "Of those, **", doc_stat("species_program_areas"), "** have modeled distributions inside the **",
-  doc_stat("n_program_areas"), " BOEM Program Areas** of the current program cycle. That is a ",
+  doc_stat("n_program_areas"), " MMA Program Areas** of the current program cycle. That is a ",
   "**spatial** result, obtained by asking the zone tables which species occur there — not a ",
   "property of the validity flag.\n\n", sep = "")
 ```
@@ -167,7 +167,7 @@ if (doc_can("programareas")) cat(
 ::: {.callout-important}
 ## Validity is not the same question as "occurs in a Program Area"
 
-Through v6 the validity flag silently *required* overlap with a BOEM Program Area, conflating "this is a real, mapped marine species" with "this species happens to fall inside the areas of the current program cycle" — and so hiding biodiversity outside that cycle. From **v7** the two are separate: validity means the taxon has a modeled distribution in the study area, and Program-Area membership is a zone query answered afterwards.
+Through v6 the validity flag silently *required* overlap with a Program Area, conflating "this is a real, mapped marine species" with "this species happens to fall inside the areas of the current program cycle" — and so hiding biodiversity outside that cycle. From **v7** the two are separate: validity means the taxon has a modeled distribution in the study area, and Program-Area membership is a zone query answered afterwards.
 
 This is why the headline count is **not comparable across releases**: it rose sharply at v7 without a single species being added, because the definition changed. Per-release counts are on the [Releases](releases.qmd) page.
 :::

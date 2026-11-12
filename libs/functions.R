@@ -16,7 +16,7 @@ g <- function(x){
 }
 
 map_ecoregions <- function() {
-  # Interactive map of BOEM Ecoregions — plus Program Area outlines for the
+  # Interactive map of MMA ecoregions — plus Program Area outlines for the
   # releases that HAVE Program Areas. v1 scored Planning Areas and declares
   # `capabilities.programareas = FALSE`, so drawing the 2026 Program Areas there
   # would put entirely plausible, entirely wrong boundaries under a v1 heading.
@@ -178,7 +178,7 @@ map_ecoregions <- function() {
                           "Program Area labels"   = "pra_lbl"))) |>
     mapgl::add_fullscreen_control() |>
     mapgl::add_categorical_legend(
-      legend_title = "BOEM Ecoregions",
+      legend_title = "MMA ecoregions",
       values       = eco_names,
       colors       = eco_colors,
       position     = "bottom-left")
@@ -207,9 +207,9 @@ caption_ecoregions <- function() {
   # come from whichever chapter last drew a map — or error outright on the first.
   # It now derives the same lookup from the same source, independently.
   z <- .zone_names()
-  if (!length(z$eco)) return("BOEM Ecoregions (colored) and Program Area outlines.")
+  if (!length(z$eco)) return("MMA ecoregions (colored) and Program Area outlines.")
   paste0(
-    "BOEM Ecoregions (colored) and Program Area outlines. ",
+    "MMA ecoregions (colored) and Program Area outlines. ",
     "**Ecoregion keys**: ", z$eco, ".",
     if (nzchar(z$pra)) paste0(" **Program Area keys**: ", z$pra, ".") else "")
 }

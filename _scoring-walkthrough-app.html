@@ -455,7 +455,7 @@ function App() {
       };
       return e("div",null,
         e("h3",{style:{color:C.text,fontSize:18,fontWeight:700,marginBottom:8}},"Step 6: Ecoregional Rescaling"),
-        e("p",{style:{color:C.textDim,fontSize:13,lineHeight:1.6,marginBottom:12}},"Raw scores (summed ER-weighted species contributions, often in the hundreds) are rescaled to 0\u2013100 within each BOEM Ecoregion, ",e("strong",{style:{color:C.text}},"per component")," (bird, mammal, fish, etc.). This prevents species-rich zones from dominating."),
+        e("p",{style:{color:C.textDim,fontSize:13,lineHeight:1.6,marginBottom:12}},"Raw scores (summed ER-weighted species contributions, often in the hundreds) are rescaled to 0\u2013100 within each MMA ecoregion, ",e("strong",{style:{color:C.text}},"per component")," (bird, mammal, fish, etc.). This prevents species-rich zones from dominating."),
         e(Formula,{tex:"score'(c) = [ score(c) \u2212 min_eco ] / [ max_eco \u2212 min_eco ] \u00D7 100",note:"Applied per component (bird, coral, fish, invertebrate, mammal, other, turtle, primary prod.) within each ecoregion"}),
         e("div",{style:{display:"flex",gap:6,justifyContent:"center",marginBottom:10}},
           e("span",{style:{fontSize:11,padding:"3px 10px",background:"#f59e0b22",border:"1.5px solid #f59e0baa",borderRadius:12,color:"#f59e0b"}},"Ecoregion A (left 3 cols)"),
@@ -535,7 +535,7 @@ function App() {
         ),
         e(FadeIn,{delay:800},
           e("div",{style:{marginTop:16,display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}},
-            [{l:"Program Areas",d:"20 BOEM planning regions",i:"\uD83D\uDDFA\uFE0F"},{l:"Subregions",d:"Alaska, Pacific, Gulf, USA",i:"\uD83C\uDFD4\uFE0F"},{l:"Ecoregions",d:"12 BOEM ecological zones",i:"\uD83C\uDF0A"}].map(function(z){return e("div",{key:z.l,style:{background:C.panelLight,borderRadius:8,padding:10,border:"1px solid "+C.border,textAlign:"center"}},e("div",{style:{fontSize:18}},z.i),e("div",{style:{fontSize:11,color:C.text,fontWeight:600,marginTop:3}},z.l),e("div",{style:{fontSize:9,color:C.textDim}},z.d));})))
+            [{l:"Program Areas",d:"20 MMA planning regions",i:"\uD83D\uDDFA\uFE0F"},{l:"Subregions",d:"Alaska, Pacific, Gulf, USA",i:"\uD83C\uDFD4\uFE0F"},{l:"Ecoregions",d:"12 MMA ecological zones",i:"\uD83C\uDF0A"}].map(function(z){return e("div",{key:z.l,style:{background:C.panelLight,borderRadius:8,padding:10,border:"1px solid "+C.border,textAlign:"center"}},e("div",{style:{fontSize:18}},z.i),e("div",{style:{fontSize:11,color:C.text,fontWeight:600,marginTop:3}},z.l),e("div",{style:{fontSize:9,color:C.textDim}},z.d));})))
       );
     }
   }

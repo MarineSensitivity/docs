@@ -24,7 +24,7 @@ book:
   - name: "Timothy P. White"
     email: timothy.white@boem.gov
     affiliations:
-      - name: BOEM’s Office of Environmental Programs
+      - name: Division of Environmental Sciences, Marine Minerals Administration
         city: Sterling
         state: VA
   date: today
@@ -45,7 +45,7 @@ book:
   page-footer:
     left: |
       © <a href="https://bbest.github.io/cv/"  target="_blank">Ben Best</a>,
-      <a href="https://www.boem.gov/environment/environmental-studies/environmental-studies-information"  target="_blank">BOEM-ESP</a>
+      <a href="https://www.boem.gov/environment/environmental-science"  target="_blank">MMA Environmental Studies Program</a>
     right: |
       Built with <a href="https://quarto.org/" target="_blank">Quarto</a>
   chapters:

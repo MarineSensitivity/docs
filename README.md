@@ -1,6 +1,7 @@
 # docs
 
-The documentation book for BOEM's offshore environmental sensitivity index products
+The documentation book for the offshore environmental sensitivity index products of MMA (the Marine
+Minerals Administration, formerly BOEM)
 (**marinesensitivity.org/docs**): the science (receptors, stressors, extinction risk, scoring), the
 data sources, the application (the Atlas; the Scores and Species Shiny apps are retired and kept in a Legacy appendix), the API, the server, and the
 release notes — rendered **once per release version** so every number a chapter prints is computed
